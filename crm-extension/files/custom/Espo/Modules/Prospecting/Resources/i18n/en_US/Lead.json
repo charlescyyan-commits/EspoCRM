@@ -91,7 +91,9 @@
     }
   },
   "links": {
-    "researchEvidences": "Research Evidence"
+    "researchEvidences": "Research Evidence",
+    "salesFeedbacks": "Sales Feedback",
+    "learningSignals": "Learning Signals"
   },
   "tooltips": {
     "peOpportunityScoreV4": "Engine-owned Canonical Scoring V4 score.",

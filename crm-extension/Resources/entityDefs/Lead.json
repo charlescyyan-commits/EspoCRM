@@ -387,6 +387,16 @@
       "type": "hasMany",
       "entity": "ResearchEvidence",
       "foreign": "lead"
+    },
+    "salesFeedbacks": {
+      "type": "hasMany",
+      "entity": "SalesFeedback",
+      "foreign": "lead"
+    },
+    "learningSignals": {
+      "type": "hasMany",
+      "entity": "LearningSignal",
+      "foreign": "lead"
     }
   },
   "indexes": {

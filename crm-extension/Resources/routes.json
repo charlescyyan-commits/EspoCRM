@@ -13,5 +13,10 @@
     "route": "/Prospecting/sync/opportunity-proposal",
     "method": "post",
     "actionClassName": "Espo\\Modules\\Prospecting\\Api\\PostSyncOpportunityProposal"
+  },
+  {
+    "route": "/Prospecting/feedback/sync",
+    "method": "post",
+    "actionClassName": "Espo\\Modules\\Prospecting\\Api\\PostSyncFeedback"
   }
 ]

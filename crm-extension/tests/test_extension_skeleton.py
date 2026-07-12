@@ -236,11 +236,11 @@ class ExtensionSkeletonTests(unittest.TestCase):
         manifest = _load_json(EXT / "manifest.json")
         self.assertEqual(manifest["extensionName"], "Chitu Prospecting Integration")
         self.assertEqual(manifest["name"], "Chitu Prospecting Integration")
-        self.assertEqual(manifest["version"], "1.3.1-alpha")
+        self.assertEqual(manifest["version"], "1.4.1-alpha")
         self.assertIn("author", manifest)
         self.assertEqual(
             manifest["description"],
-            "Chitu Prospecting CRM connector sync layer for EspoCRM",
+            "Chitu Prospecting CRM connector sync and sales feedback layer for EspoCRM",
         )
         self.assertIsInstance(manifest["acceptableVersions"], list)
         self.assertTrue(manifest["acceptableVersions"])
@@ -513,6 +513,13 @@ class ExtensionSkeletonTests(unittest.TestCase):
             MODULE / "Api" / "PostSyncEvidence.php",
             MODULE / "Api" / "PostSyncOpportunityProposal.php",
             MODULE / "Services" / "ChituSyncService.php",
+            MODULE / "Api" / "PostSyncFeedback.php",
+            MODULE / "Services" / "FeedbackSyncService.php",
+            MODULE / "Entities" / "SalesFeedback.php",
+            MODULE / "Entities" / "LearningSignal.php",
+            MODULE / "Controllers" / "SalesFeedback.php",
+            MODULE / "Controllers" / "LearningSignal.php",
+            EXT / "files" / "custom" / "Espo" / "Custom" / "Hooks" / "SalesFeedback" / "SalesFeedbackLearningSignalHook.php",
         }
         self.assertEqual(set(php_files), expected, msg=f"Unexpected PHP files: {php_files}")
 
@@ -670,6 +677,7 @@ class ExtensionSkeletonTests(unittest.TestCase):
                 ("post", "/Prospecting/sync/lead", "Espo\\Modules\\Prospecting\\Api\\PostSyncLead"),
                 ("post", "/Prospecting/sync/evidence", "Espo\\Modules\\Prospecting\\Api\\PostSyncEvidence"),
                 ("post", "/Prospecting/sync/opportunity-proposal", "Espo\\Modules\\Prospecting\\Api\\PostSyncOpportunityProposal"),
+                ("post", "/Prospecting/feedback/sync", "Espo\\Modules\\Prospecting\\Api\\PostSyncFeedback"),
             },
         )
 
@@ -705,6 +713,45 @@ class ExtensionSkeletonTests(unittest.TestCase):
         self.assertIn("NO_AUTOMATIC_OPPORTUNITY", service)
         self.assertIn("foreach ($payload['evidence'] as $item)", service)
         self.assertNotIn("getEntity('Opportunity')", service)
+
+    def test_phase3b04_feedback_loop_metadata(self) -> None:
+        for name in ("SalesFeedback.json", "LearningSignal.json"):
+            self.assertEqual(
+                _load_json(SURFACE_ENTITY_DEFS / name),
+                _load_json(MODULE_ENTITY_DEFS / name),
+                msg=f"Parity mismatch for {name}",
+            )
+
+        feedback = _load_json(MODULE_ENTITY_DEFS / "SalesFeedback.json")
+        signal = _load_json(MODULE_ENTITY_DEFS / "LearningSignal.json")
+        lead = _load_json(MODULE_ENTITY_DEFS / "Lead.json")
+        self.assertEqual(
+            set(feedback["fields"]),
+            {
+                "name", "externalFeedbackId", "externalLeadId", "feedbackType", "outcome", "reason", "note",
+                "currentStage", "product", "productResult", "source", "feedbackAt", "createdAt", "lead", "learningSignal",
+                "assignedUser", "teams",
+            },
+        )
+        self.assertEqual(
+            set(signal["fields"]),
+            {"name", "signalType", "predictionScore", "actualOutcome", "product", "createdAt", "lead", "salesFeedback", "assignedUser", "teams"},
+        )
+        self.assertEqual(feedback["links"]["lead"]["foreign"], "salesFeedbacks")
+        self.assertEqual(signal["links"]["salesFeedback"]["foreign"], "learningSignal")
+        self.assertIn("salesFeedbacks", lead["links"])
+        self.assertIn("learningSignals", lead["links"])
+        self.assertEqual(feedback["fields"]["feedbackType"]["options"], [
+            "CONTACT_ATTEMPT", "CUSTOMER_REPLY", "INTERESTED", "NOT_INTERESTED", "NO_RESPONSE", "WON", "LOST",
+        ])
+        self.assertEqual(feedback["fields"]["outcome"]["options"], ["POSITIVE", "NEGATIVE", "NEUTRAL"])
+
+        service = (MODULE / "Services" / "FeedbackSyncService.php").read_text(encoding="utf-8")
+        hook = (EXT / "files" / "custom" / "Espo" / "Custom" / "Hooks" / "SalesFeedback" / "SalesFeedbackLearningSignalHook.php").read_text(encoding="utf-8")
+        self.assertIn("externalFeedbackId", service)
+        self.assertIn("hash('sha256'", service)
+        self.assertIn("LearningSignal", hook)
+        self.assertIn("salesFeedbackId", hook)
 
 
 if __name__ == "__main__":

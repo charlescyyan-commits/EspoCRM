@@ -1,0 +1,9 @@
+{
+  "fields": {"name": "Title", "signalType": "Signal Type", "predictionScore": "Prediction Score", "actualOutcome": "Actual Outcome", "product": "Product", "lead": "Lead", "salesFeedback": "Sales Feedback"},
+  "links": {"lead": "Lead", "salesFeedback": "Sales Feedback"},
+  "labels": {"Create LearningSignal": "Create Learning Signal", "LearningSignals": "Learning Signals"},
+  "options": {
+    "signalType": {"CONTACT_ATTEMPT": "Contact Attempt", "CUSTOMER_REPLY": "Customer Reply", "INTERESTED": "Interested", "NOT_INTERESTED": "Not Interested", "NO_RESPONSE": "No Response", "WON": "Won", "LOST": "Lost"},
+    "actualOutcome": {"POSITIVE": "Positive", "NEGATIVE": "Negative", "NEUTRAL": "Neutral"}
+  }
+}

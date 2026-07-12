@@ -12,6 +12,7 @@ from chitu_connector.espocrm_sync.lifecycle_sync import LifecycleRuntimeResult, 
 from chitu_connector.espocrm_sync.email_lifecycle import EmailLifecycleStatus, EmailLifecycleSyncResult, EmailLifecycleSyncService, EmailLifecycleUpdate
 from chitu_connector.espocrm_sync.email_lifecycle_sync import EmailLifecycleRuntimeResult, run_local_synthetic_email_lifecycle_sync
 from chitu_connector.espocrm_sync.connector_api import ConnectorApiError, ConnectorSyncResponse, ProspectingConnectorClient
+from chitu_connector.espocrm_sync.feedback_api import FeedbackApiError, FeedbackConnectorClient, FeedbackSyncPayload, FeedbackSyncResponse
 
 __all__ = [
     "AdapterResult", "AuditStatus", "EspoCRMSyncAdapter", "EspoCRMSyncMapper", "GateDecision",
@@ -22,4 +23,5 @@ __all__ = [
     "EmailLifecycleStatus", "EmailLifecycleSyncResult", "EmailLifecycleSyncService", "EmailLifecycleUpdate",
     "EmailLifecycleRuntimeResult", "run_local_synthetic_email_lifecycle_sync",
     "ConnectorApiError", "ConnectorSyncResponse", "ProspectingConnectorClient",
+    "FeedbackApiError", "FeedbackConnectorClient", "FeedbackSyncPayload", "FeedbackSyncResponse",
 ]

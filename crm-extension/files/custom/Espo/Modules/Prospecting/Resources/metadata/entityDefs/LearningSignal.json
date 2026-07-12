@@ -1,0 +1,22 @@
+{
+  "fields": {
+    "name": {"type": "varchar", "maxLength": 255, "required": true, "trim": true},
+    "signalType": {"type": "enum", "required": true, "options": ["CONTACT_ATTEMPT", "CUSTOMER_REPLY", "INTERESTED", "NOT_INTERESTED", "NO_RESPONSE", "WON", "LOST"], "displayAsLabel": true},
+    "predictionScore": {"type": "float", "required": false, "notNull": false, "min": 0, "max": 100},
+    "actualOutcome": {"type": "enum", "required": true, "options": ["POSITIVE", "NEGATIVE", "NEUTRAL"], "displayAsLabel": true},
+    "product": {"type": "varchar", "maxLength": 255, "required": false, "notNull": false, "trim": true},
+    "createdAt": {"type": "datetime", "readOnly": true},
+    "lead": {"type": "link"},
+    "salesFeedback": {"type": "link"},
+    "assignedUser": {"type": "link"},
+    "teams": {"type": "linkMultiple"}
+  },
+  "links": {
+    "lead": {"type": "belongsTo", "entity": "Lead", "foreign": "learningSignals"},
+    "salesFeedback": {"type": "belongsTo", "entity": "SalesFeedback", "foreign": "learningSignal"},
+    "assignedUser": {"type": "belongsTo", "entity": "User"},
+    "teams": {"type": "hasMany", "entity": "Team", "relationName": "entityTeam", "layoutRelationshipsDisabled": true}
+  },
+  "collection": {"orderBy": "createdAt", "order": "desc", "textFilterFields": ["name", "signalType", "product"]},
+  "indexes": {"salesFeedbackId": {"columns": ["salesFeedbackId"]}, "leadId": {"columns": ["leadId"]}}
+}

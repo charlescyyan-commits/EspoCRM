@@ -1,0 +1,25 @@
+{
+  "fields": {
+    "name": "Title",
+    "externalFeedbackId": "External Feedback ID",
+    "externalLeadId": "External Lead ID",
+    "feedbackType": "Feedback Type",
+    "outcome": "Outcome",
+    "reason": "Reason",
+    "note": "Note",
+    "currentStage": "Current Stage",
+    "product": "Product",
+    "productResult": "Product Result",
+    "source": "Source",
+    "feedbackAt": "Feedback At",
+    "lead": "Lead",
+    "learningSignal": "Learning Signal"
+  },
+  "links": {"lead": "Lead", "learningSignal": "Learning Signal"},
+  "labels": {"Create SalesFeedback": "Create Sales Feedback", "SalesFeedbacks": "Sales Feedback"},
+  "options": {
+    "feedbackType": {"CONTACT_ATTEMPT": "Contact Attempt", "CUSTOMER_REPLY": "Customer Reply", "INTERESTED": "Interested", "NOT_INTERESTED": "Not Interested", "NO_RESPONSE": "No Response", "WON": "Won", "LOST": "Lost"},
+    "outcome": {"POSITIVE": "Positive", "NEGATIVE": "Negative", "NEUTRAL": "Neutral"},
+    "source": {"CRM_MANUAL": "CRM Manual", "CONNECTOR_SYNC": "Connector Sync"}
+  }
+}

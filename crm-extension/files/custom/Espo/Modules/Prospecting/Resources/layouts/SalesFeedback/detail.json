@@ -1,0 +1,16 @@
+[
+  {
+    "label": "Feedback",
+    "rows": [
+      [{"name": "name"}, {"name": "feedbackType"}],
+      [{"name": "outcome"}, {"name": "currentStage"}],
+      [{"name": "product"}, {"name": "productResult"}],
+      [{"name": "reason"}, {"name": "feedbackAt"}],
+      [{"name": "source"}, {"name": "externalFeedbackId"}],
+      [{"name": "externalLeadId"}, {"name": "lead"}],
+      [{"name": "assignedUser"}, {"name": "teams"}],
+      [{"name": "note", "fullWidth": true}],
+      [{"name": "learningSignal", "fullWidth": true}]
+    ]
+  }
+]

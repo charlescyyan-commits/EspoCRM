@@ -1,0 +1,29 @@
+{
+  "fields": {
+    "name": {"type": "varchar", "maxLength": 255, "required": true, "trim": true},
+    "externalFeedbackId": {"type": "varchar", "maxLength": 128, "required": false, "notNull": false, "trim": true},
+    "externalLeadId": {"type": "varchar", "maxLength": 128, "required": false, "notNull": false, "trim": true},
+    "feedbackType": {"type": "enum", "required": true, "options": ["CONTACT_ATTEMPT", "CUSTOMER_REPLY", "INTERESTED", "NOT_INTERESTED", "NO_RESPONSE", "WON", "LOST"], "displayAsLabel": true},
+    "outcome": {"type": "enum", "required": true, "options": ["POSITIVE", "NEGATIVE", "NEUTRAL"], "displayAsLabel": true},
+    "reason": {"type": "varchar", "maxLength": 255, "required": false, "notNull": false, "trim": true},
+    "note": {"type": "text", "required": false, "notNull": false},
+    "currentStage": {"type": "varchar", "maxLength": 64, "required": false, "notNull": false, "trim": true},
+    "product": {"type": "varchar", "maxLength": 255, "required": false, "notNull": false, "trim": true},
+    "productResult": {"type": "varchar", "maxLength": 255, "required": false, "notNull": false, "trim": true},
+    "source": {"type": "enum", "required": true, "options": ["CRM_MANUAL", "CONNECTOR_SYNC"], "default": "CRM_MANUAL", "displayAsLabel": true},
+    "feedbackAt": {"type": "datetime", "required": false, "notNull": false},
+    "createdAt": {"type": "datetime", "readOnly": true},
+    "lead": {"type": "link"},
+    "learningSignal": {"type": "link"},
+    "assignedUser": {"type": "link"},
+    "teams": {"type": "linkMultiple"}
+  },
+  "links": {
+    "lead": {"type": "belongsTo", "entity": "Lead", "foreign": "salesFeedbacks"},
+    "learningSignal": {"type": "hasOne", "entity": "LearningSignal", "foreign": "salesFeedback"},
+    "assignedUser": {"type": "belongsTo", "entity": "User"},
+    "teams": {"type": "hasMany", "entity": "Team", "relationName": "entityTeam", "layoutRelationshipsDisabled": true}
+  },
+  "collection": {"orderBy": "createdAt", "order": "desc", "textFilterFields": ["name", "externalFeedbackId", "reason", "product"]},
+  "indexes": {"externalFeedbackId": {"columns": ["externalFeedbackId"]}, "leadId": {"columns": ["leadId"]}}
+}
