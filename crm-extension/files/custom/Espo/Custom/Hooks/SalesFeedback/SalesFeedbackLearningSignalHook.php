@@ -37,6 +37,7 @@ class SalesFeedbackLearningSignalHook implements AfterSave
             'predictionScore' => $lead->get('peOpportunityScoreV4'),
             'actualOutcome' => $feedback->get('outcome'),
             'product' => $feedback->get('product'),
+            'campaign' => $feedback->get('campaign'),
             'assignedUserId' => $feedback->get('assignedUserId'),
         ]);
         $this->entityManager->saveEntity($signal);

@@ -18,5 +18,10 @@
     "route": "/Prospecting/feedback/sync",
     "method": "post",
     "actionClassName": "Espo\\Modules\\Prospecting\\Api\\PostSyncFeedback"
+  },
+  {
+    "route": "/Prospecting/brevo/email-event",
+    "method": "post",
+    "actionClassName": "Espo\\Modules\\Prospecting\\Api\\PostSyncBrevoEmailEvent"
   }
 ]

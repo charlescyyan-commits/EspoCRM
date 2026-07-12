@@ -236,11 +236,11 @@ class ExtensionSkeletonTests(unittest.TestCase):
         manifest = _load_json(EXT / "manifest.json")
         self.assertEqual(manifest["extensionName"], "Chitu Prospecting Integration")
         self.assertEqual(manifest["name"], "Chitu Prospecting Integration")
-        self.assertEqual(manifest["version"], "1.4.1-alpha")
+        self.assertEqual(manifest["version"], "1.5.2-alpha")
         self.assertIn("author", manifest)
         self.assertEqual(
             manifest["description"],
-            "Chitu Prospecting CRM connector sync and sales feedback layer for EspoCRM",
+            "Chitu Prospecting CRM sync, email workflow, and email-feedback learning loop for EspoCRM",
         )
         self.assertIsInstance(manifest["acceptableVersions"], list)
         self.assertTrue(manifest["acceptableVersions"])
@@ -519,7 +519,13 @@ class ExtensionSkeletonTests(unittest.TestCase):
             MODULE / "Entities" / "LearningSignal.php",
             MODULE / "Controllers" / "SalesFeedback.php",
             MODULE / "Controllers" / "LearningSignal.php",
+            MODULE / "Entities" / "EmailEvent.php",
+            MODULE / "Controllers" / "EmailEvent.php",
+            MODULE / "Api" / "PostSyncBrevoEmailEvent.php",
+            MODULE / "Services" / "BrevoEmailEventSyncService.php",
             EXT / "files" / "custom" / "Espo" / "Custom" / "Hooks" / "SalesFeedback" / "SalesFeedbackLearningSignalHook.php",
+            EXT / "files" / "custom" / "Espo" / "Custom" / "Hooks" / "EmailEvent" / "EmailEventWorkflowHook.php",
+            EXT / "files" / "custom" / "Espo" / "Custom" / "Hooks" / "EmailEvent" / "EmailEventSalesFeedbackHook.php",
         }
         self.assertEqual(set(php_files), expected, msg=f"Unexpected PHP files: {php_files}")
 
@@ -678,6 +684,7 @@ class ExtensionSkeletonTests(unittest.TestCase):
                 ("post", "/Prospecting/sync/evidence", "Espo\\Modules\\Prospecting\\Api\\PostSyncEvidence"),
                 ("post", "/Prospecting/sync/opportunity-proposal", "Espo\\Modules\\Prospecting\\Api\\PostSyncOpportunityProposal"),
                 ("post", "/Prospecting/feedback/sync", "Espo\\Modules\\Prospecting\\Api\\PostSyncFeedback"),
+                ("post", "/Prospecting/brevo/email-event", "Espo\\Modules\\Prospecting\\Api\\PostSyncBrevoEmailEvent"),
             },
         )
 
@@ -729,13 +736,13 @@ class ExtensionSkeletonTests(unittest.TestCase):
             set(feedback["fields"]),
             {
                 "name", "externalFeedbackId", "externalLeadId", "feedbackType", "outcome", "reason", "note",
-                "currentStage", "product", "productResult", "source", "feedbackAt", "createdAt", "lead", "learningSignal",
+                "currentStage", "product", "productResult", "campaign", "source", "feedbackAt", "createdAt", "lead", "learningSignal",
                 "assignedUser", "teams",
             },
         )
         self.assertEqual(
             set(signal["fields"]),
-            {"name", "signalType", "predictionScore", "actualOutcome", "product", "createdAt", "lead", "salesFeedback", "assignedUser", "teams"},
+            {"name", "signalType", "predictionScore", "actualOutcome", "product", "campaign", "createdAt", "lead", "salesFeedback", "assignedUser", "teams"},
         )
         self.assertEqual(feedback["links"]["lead"]["foreign"], "salesFeedbacks")
         self.assertEqual(signal["links"]["salesFeedback"]["foreign"], "learningSignal")
@@ -743,8 +750,10 @@ class ExtensionSkeletonTests(unittest.TestCase):
         self.assertIn("learningSignals", lead["links"])
         self.assertEqual(feedback["fields"]["feedbackType"]["options"], [
             "CONTACT_ATTEMPT", "CUSTOMER_REPLY", "INTERESTED", "NOT_INTERESTED", "NO_RESPONSE", "WON", "LOST",
+            "EMAIL_INTERESTED", "EMAIL_NOT_INTERESTED", "EMAIL_BOUNCED", "EMAIL_NO_RESPONSE",
         ])
         self.assertEqual(feedback["fields"]["outcome"]["options"], ["POSITIVE", "NEGATIVE", "NEUTRAL"])
+        self.assertEqual(signal["fields"]["signalType"]["options"], feedback["fields"]["feedbackType"]["options"])
 
         service = (MODULE / "Services" / "FeedbackSyncService.php").read_text(encoding="utf-8")
         hook = (EXT / "files" / "custom" / "Espo" / "Custom" / "Hooks" / "SalesFeedback" / "SalesFeedbackLearningSignalHook.php").read_text(encoding="utf-8")
@@ -752,6 +761,93 @@ class ExtensionSkeletonTests(unittest.TestCase):
         self.assertIn("hash('sha256'", service)
         self.assertIn("LearningSignal", hook)
         self.assertIn("salesFeedbackId", hook)
+        self.assertIn("campaign", hook)
+
+    def test_phase3b05a_brevo_email_event_metadata(self) -> None:
+        self.assertEqual(
+            _load_json(SURFACE_ENTITY_DEFS / "EmailEvent.json"),
+            _load_json(MODULE_ENTITY_DEFS / "EmailEvent.json"),
+        )
+        event = _load_json(MODULE_ENTITY_DEFS / "EmailEvent.json")
+        lead = _load_json(MODULE_ENTITY_DEFS / "Lead.json")
+        self.assertEqual(
+            set(event["fields"]),
+            {
+                "name",
+                "externalMessageId",
+                "eventType",
+                "campaign",
+                "eventAt",
+                "source",
+                "createdAt",
+                "lead",
+                "assignedUser",
+                "teams",
+            },
+        )
+        self.assertEqual(
+            event["fields"]["eventType"]["options"],
+            ["SENT", "DELIVERED", "OPENED", "CLICKED", "REPLIED", "BOUNCED"],
+        )
+        self.assertEqual(event["links"]["lead"]["foreign"], "emailEvents")
+        self.assertIn("emailEvents", lead["links"])
+        self.assertEqual(lead["links"]["emailEvents"]["entity"], "EmailEvent")
+
+        client_defs = _load_json(MODULE / "Resources" / "metadata" / "clientDefs" / "Lead.json")
+        self.assertIn("emailEvents", client_defs.get("relationshipPanels", {}))
+
+        service = (MODULE / "Services" / "BrevoEmailEventSyncService.php").read_text(encoding="utf-8")
+        self.assertIn("externalMessageId", service)
+        self.assertIn("eventType", service)
+        self.assertIn("email_sent", service)
+        self.assertIn("duplicate", service)
+        self.assertIn("EmailEventWorkflowHook", service)
+
+        hook = (
+            EXT / "files" / "custom" / "Espo" / "Custom" / "Hooks" / "EmailEvent" / "EmailEventWorkflowHook.php"
+        ).read_text(encoding="utf-8")
+        self.assertIn("class EmailEventWorkflowHook", hook)
+        self.assertIn("Follow up customer reply", hook)
+        self.assertIn("Verify customer email", hook)
+        self.assertIn("peEmailStatus", hook)
+        self.assertIn("'OPENED', 'CLICKED'", hook)
+        self.assertIn("getEntity('Task')", hook)
+
+    def test_phase3b05b_email_workflow_hook(self) -> None:
+        fields = _load_json(MODULE_ENTITY_DEFS / "Lead.json")["fields"]
+        self.assertEqual(fields["peEmailStatus"]["options"], EMAIL_STATUS_OPTIONS)
+        self.assertEqual(fields["peLastEmailDate"]["type"], "datetime")
+        self.assertEqual(fields["peEmailReplyStatus"]["type"], "varchar")
+        self.assertIn("emailEvents", _load_json(MODULE_ENTITY_DEFS / "Lead.json")["links"])
+
+        hook = (
+            EXT / "files" / "custom" / "Espo" / "Custom" / "Hooks" / "EmailEvent" / "EmailEventWorkflowHook.php"
+        ).read_text(encoding="utf-8")
+        self.assertIn("applySent", hook)
+        self.assertIn("applyReplied", hook)
+        self.assertIn("applyBounced", hook)
+        self.assertIn("applyEngagementOnly", hook)
+        self.assertIn("createTaskOnce", hook)
+        # LearningSignal must remain untouched by this phase.
+        self.assertNotIn("LearningSignal", hook)
+
+    def test_phase3b05c_email_feedback_integration(self) -> None:
+        feedback_hook = (
+            EXT / "files" / "custom" / "Espo" / "Custom" / "Hooks" / "EmailEvent" / "EmailEventSalesFeedbackHook.php"
+        ).read_text(encoding="utf-8")
+        self.assertIn("class EmailEventSalesFeedbackHook", feedback_hook)
+        self.assertIn("email-event:", feedback_hook)
+        self.assertIn("CUSTOMER_REPLY", feedback_hook)
+        self.assertIn("EMAIL_INTERESTED", feedback_hook)
+        self.assertIn("EMAIL_BOUNCED", feedback_hook)
+        self.assertIn("EMAIL_EVENT", feedback_hook)
+        self.assertIn("getEntity('SalesFeedback')", feedback_hook)
+        self.assertNotIn("getEntity('LearningSignal')", feedback_hook)
+
+        panels = _load_json(MODULE / "Resources" / "metadata" / "clientDefs" / "Lead.json")["relationshipPanels"]
+        self.assertIn("emailEvents", panels)
+        self.assertIn("salesFeedbacks", panels)
+        self.assertIn("learningSignals", panels)
 
 
 if __name__ == "__main__":

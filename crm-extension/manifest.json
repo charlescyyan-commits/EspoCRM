@@ -1,7 +1,7 @@
 {
   "name": "Chitu Prospecting Integration",
   "extensionName": "Chitu Prospecting Integration",
-  "version": "1.4.1-alpha",
+  "version": "1.5.2-alpha",
   "acceptableVersions": [
     ">=7.4.0"
   ],
@@ -10,7 +10,7 @@
   ],
   "releaseDate": "2026-07-12",
   "author": "Chitu Intelligence",
-  "description": "Chitu Prospecting CRM connector sync and sales feedback layer for EspoCRM",
+  "description": "Chitu Prospecting CRM sync, email workflow, and email-feedback learning loop for EspoCRM",
   "skipBackup": false,
   "checkVersionConflict": true
 }

@@ -1,0 +1,12 @@
+[
+  {
+    "label": "Email Event",
+    "rows": [
+      [{"name": "name"}, {"name": "eventType"}],
+      [{"name": "externalMessageId"}, {"name": "eventAt"}],
+      [{"name": "campaign"}, {"name": "source"}],
+      [{"name": "lead"}, {"name": "assignedUser"}],
+      [{"name": "teams", "fullWidth": true}]
+    ]
+  }
+]

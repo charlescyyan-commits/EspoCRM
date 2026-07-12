@@ -125,9 +125,15 @@
     "status": "CRM-owned sales lifecycle status. Technical sync/research state stays in peSyncStatus and peResearchStatus.",
     "peNextActionDate": "CRM-owned date for the next sales follow-up action.",
     "peLastContactDate": "CRM-owned date of the most recent sales contact.",
-    "peEmailStatus": "Chitu-owned email lifecycle status summary. EspoCRM displays this value but does not generate, approve, send, or process replies.",
-    "peLastEmailDate": "Timestamp of the latest Chitu email lifecycle event synced to EspoCRM.",
-    "peEmailCampaignName": "Human-readable campaign reference synced from Chitu.",
-    "peEmailReplyStatus": "Reply state summary synced from Chitu without email body content."
+    "peEmailStatus": "Email lifecycle / execution status summary. EspoCRM does not send outreach email; values may be refreshed from Chitu lifecycle sync or Brevo execution events.",
+    "peLastEmailDate": "Timestamp of the latest email lifecycle or Brevo execution event synced to EspoCRM.",
+    "peEmailCampaignName": "Human-readable campaign reference synced from Chitu or Brevo events.",
+    "peEmailReplyStatus": "Reply/bounce state summary synced without email body content."
+  },
+  "links": {
+    "researchEvidences": "Research Evidence",
+    "salesFeedbacks": "Sales Feedback",
+    "learningSignals": "Learning Signals",
+    "emailEvents": "Email Events"
   }
 }

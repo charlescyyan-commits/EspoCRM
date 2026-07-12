@@ -16,6 +16,7 @@ class FeedbackSyncService
 {
     private const FEEDBACK_TYPES = [
         'CONTACT_ATTEMPT', 'CUSTOMER_REPLY', 'INTERESTED', 'NOT_INTERESTED', 'NO_RESPONSE', 'WON', 'LOST',
+        'EMAIL_INTERESTED', 'EMAIL_NOT_INTERESTED', 'EMAIL_BOUNCED', 'EMAIL_NO_RESPONSE',
     ];
     private const OUTCOMES = ['POSITIVE', 'NEGATIVE', 'NEUTRAL'];
 
@@ -58,6 +59,7 @@ class FeedbackSyncService
             'currentStage' => $payload['stage'] ?? null,
             'product' => $payload['product'] ?? null,
             'productResult' => $payload['product_result'] ?? null,
+            'campaign' => $payload['campaign'] ?? null,
             'source' => 'CONNECTOR_SYNC',
             'feedbackAt' => $this->dateTime($payload['timestamp']),
             'assignedUserId' => $lead->get('assignedUserId'),
@@ -101,7 +103,7 @@ class FeedbackSyncService
         if (!in_array($payload['outcome'], self::OUTCOMES, true)) {
             throw new BadRequest('Unsupported outcome.');
         }
-        foreach (['external_lead_id', 'reason', 'note', 'product', 'product_result', 'stage'] as $field) {
+        foreach (['external_lead_id', 'reason', 'note', 'product', 'product_result', 'stage', 'campaign'] as $field) {
             if (isset($payload[$field]) && !is_string($payload[$field])) {
                 throw new BadRequest("Feedback field {$field} must be a string.");
             }

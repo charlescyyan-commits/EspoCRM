@@ -1,10 +1,11 @@
 {
   "fields": {
     "name": {"type": "varchar", "maxLength": 255, "required": true, "trim": true},
-    "signalType": {"type": "enum", "required": true, "options": ["CONTACT_ATTEMPT", "CUSTOMER_REPLY", "INTERESTED", "NOT_INTERESTED", "NO_RESPONSE", "WON", "LOST"], "displayAsLabel": true},
+    "signalType": {"type": "enum", "required": true, "options": ["CONTACT_ATTEMPT", "CUSTOMER_REPLY", "INTERESTED", "NOT_INTERESTED", "NO_RESPONSE", "WON", "LOST", "EMAIL_INTERESTED", "EMAIL_NOT_INTERESTED", "EMAIL_BOUNCED", "EMAIL_NO_RESPONSE"], "displayAsLabel": true},
     "predictionScore": {"type": "float", "required": false, "notNull": false, "min": 0, "max": 100},
     "actualOutcome": {"type": "enum", "required": true, "options": ["POSITIVE", "NEGATIVE", "NEUTRAL"], "displayAsLabel": true},
     "product": {"type": "varchar", "maxLength": 255, "required": false, "notNull": false, "trim": true},
+    "campaign": {"type": "varchar", "maxLength": 255, "required": false, "notNull": false, "trim": true},
     "createdAt": {"type": "datetime", "readOnly": true},
     "lead": {"type": "link"},
     "salesFeedback": {"type": "link"},
@@ -17,6 +18,6 @@
     "assignedUser": {"type": "belongsTo", "entity": "User"},
     "teams": {"type": "hasMany", "entity": "Team", "relationName": "entityTeam", "layoutRelationshipsDisabled": true}
   },
-  "collection": {"orderBy": "createdAt", "order": "desc", "textFilterFields": ["name", "signalType", "product"]},
+  "collection": {"orderBy": "createdAt", "order": "desc", "textFilterFields": ["name", "signalType", "product", "campaign"]},
   "indexes": {"salesFeedbackId": {"columns": ["salesFeedbackId"]}, "leadId": {"columns": ["leadId"]}}
 }

@@ -1,0 +1,47 @@
+{
+  "fields": {
+    "name": {"type": "varchar", "maxLength": 255, "required": true, "trim": true},
+    "externalMessageId": {"type": "varchar", "maxLength": 255, "required": true, "trim": true},
+    "eventType": {
+      "type": "enum",
+      "required": true,
+      "options": ["SENT", "DELIVERED", "OPENED", "CLICKED", "REPLIED", "BOUNCED"],
+      "displayAsLabel": true,
+      "style": {
+        "SENT": "primary",
+        "DELIVERED": "info",
+        "OPENED": "success",
+        "CLICKED": "success",
+        "REPLIED": "success",
+        "BOUNCED": "danger"
+      }
+    },
+    "campaign": {"type": "varchar", "maxLength": 255, "required": false, "notNull": false, "trim": true},
+    "eventAt": {"type": "datetime", "required": true},
+    "source": {
+      "type": "enum",
+      "required": true,
+      "options": ["BREVO", "CONNECTOR_SYNC", "MANUAL"],
+      "default": "BREVO",
+      "displayAsLabel": true
+    },
+    "createdAt": {"type": "datetime", "readOnly": true},
+    "lead": {"type": "link"},
+    "assignedUser": {"type": "link"},
+    "teams": {"type": "linkMultiple"}
+  },
+  "links": {
+    "lead": {"type": "belongsTo", "entity": "Lead", "foreign": "emailEvents"},
+    "assignedUser": {"type": "belongsTo", "entity": "User"},
+    "teams": {"type": "hasMany", "entity": "Team", "relationName": "entityTeam", "layoutRelationshipsDisabled": true}
+  },
+  "collection": {
+    "orderBy": "eventAt",
+    "order": "desc",
+    "textFilterFields": ["name", "externalMessageId", "campaign", "eventType"]
+  },
+  "indexes": {
+    "externalMessageIdEventType": {"columns": ["externalMessageId", "eventType"]},
+    "leadId": {"columns": ["leadId"]}
+  }
+}

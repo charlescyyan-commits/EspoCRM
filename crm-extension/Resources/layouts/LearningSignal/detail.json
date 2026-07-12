@@ -4,9 +4,9 @@
     "rows": [
       [{"name": "name"}, {"name": "signalType"}],
       [{"name": "predictionScore"}, {"name": "actualOutcome"}],
-      [{"name": "product"}, {"name": "lead"}],
-      [{"name": "salesFeedback"}, {"name": "assignedUser"}],
-      [{"name": "teams"}, false]
+      [{"name": "product"}, {"name": "campaign"}],
+      [{"name": "lead"}, {"name": "salesFeedback"}],
+      [{"name": "assignedUser"}, {"name": "teams"}]
     ]
   }
 ]

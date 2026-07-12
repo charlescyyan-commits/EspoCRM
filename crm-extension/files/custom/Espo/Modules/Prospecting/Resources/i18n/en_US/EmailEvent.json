@@ -1,0 +1,28 @@
+{
+  "fields": {
+    "name": "Title",
+    "externalMessageId": "External Message ID",
+    "eventType": "Event Type",
+    "campaign": "Campaign",
+    "eventAt": "Event Time",
+    "source": "Source",
+    "lead": "Lead"
+  },
+  "links": {"lead": "Lead"},
+  "labels": {"Create EmailEvent": "Create Email Event", "EmailEvents": "Email Events"},
+  "options": {
+    "eventType": {
+      "SENT": "Sent",
+      "DELIVERED": "Delivered",
+      "OPENED": "Opened",
+      "CLICKED": "Clicked",
+      "REPLIED": "Replied",
+      "BOUNCED": "Bounced"
+    },
+    "source": {
+      "BREVO": "Brevo",
+      "CONNECTOR_SYNC": "Connector Sync",
+      "MANUAL": "Manual"
+    }
+  }
+}

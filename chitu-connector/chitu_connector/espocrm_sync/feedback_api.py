@@ -13,6 +13,7 @@ from urllib.request import Request, urlopen
 
 _FEEDBACK_TYPES = frozenset({
     "CONTACT_ATTEMPT", "CUSTOMER_REPLY", "INTERESTED", "NOT_INTERESTED", "NO_RESPONSE", "WON", "LOST",
+    "EMAIL_INTERESTED", "EMAIL_NOT_INTERESTED", "EMAIL_BOUNCED", "EMAIL_NO_RESPONSE",
 })
 _OUTCOMES = frozenset({"POSITIVE", "NEGATIVE", "NEUTRAL"})
 
@@ -34,6 +35,7 @@ class FeedbackSyncPayload:
     stage: str | None = None
     reason: str | None = None
     note: str | None = None
+    campaign: str | None = None
 
     def __post_init__(self) -> None:
         if not self.lead_id:
@@ -52,6 +54,7 @@ class FeedbackSyncPayload:
             self.stage,
             self.reason,
             self.note,
+            self.campaign,
         ):
             if value is not None and not isinstance(value, str):
                 raise FeedbackApiError("optional feedback fields must be strings")
@@ -69,6 +72,7 @@ class FeedbackSyncPayload:
             "stage": self.stage,
             "reason": self.reason,
             "note": self.note,
+            "campaign": self.campaign,
         }
         return {key: value for key, value in values.items() if value is not None}
 

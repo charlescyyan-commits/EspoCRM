@@ -13,6 +13,8 @@ from chitu_connector.espocrm_sync.email_lifecycle import EmailLifecycleStatus, E
 from chitu_connector.espocrm_sync.email_lifecycle_sync import EmailLifecycleRuntimeResult, run_local_synthetic_email_lifecycle_sync
 from chitu_connector.espocrm_sync.connector_api import ConnectorApiError, ConnectorSyncResponse, ProspectingConnectorClient
 from chitu_connector.espocrm_sync.feedback_api import FeedbackApiError, FeedbackConnectorClient, FeedbackSyncPayload, FeedbackSyncResponse
+from chitu_connector.espocrm_sync.brevo_api import BrevoApiError, BrevoConnectorClient, BrevoEmailEventPayload, BrevoEmailEventResponse
+from chitu_connector.espocrm_sync.feedback_signal_export import FeedbackSignalExportClient, FeedbackSignalExportError, FeedbackSignalPayload
 
 __all__ = [
     "AdapterResult", "AuditStatus", "EspoCRMSyncAdapter", "EspoCRMSyncMapper", "GateDecision",
@@ -24,4 +26,6 @@ __all__ = [
     "EmailLifecycleRuntimeResult", "run_local_synthetic_email_lifecycle_sync",
     "ConnectorApiError", "ConnectorSyncResponse", "ProspectingConnectorClient",
     "FeedbackApiError", "FeedbackConnectorClient", "FeedbackSyncPayload", "FeedbackSyncResponse",
+    "BrevoApiError", "BrevoConnectorClient", "BrevoEmailEventPayload", "BrevoEmailEventResponse",
+    "FeedbackSignalExportClient", "FeedbackSignalExportError", "FeedbackSignalPayload",
 ]

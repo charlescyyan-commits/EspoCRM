@@ -6,5 +6,35 @@
     {
       "name": "peRecentlySynced"
     }
-  ]
+  ],
+  "relationshipPanels": {
+    "emailEvents": {
+      "create": false,
+      "select": false,
+      "view": "views/record/panels/relationship",
+      "orderBy": "eventAt",
+      "orderDirection": "desc"
+    },
+    "tasks": {
+      "create": true,
+      "select": false,
+      "view": "views/record/panels/tasks",
+      "orderBy": "createdAt",
+      "orderDirection": "desc"
+    },
+    "salesFeedbacks": {
+      "create": true,
+      "select": false,
+      "view": "views/record/panels/relationship",
+      "orderBy": "createdAt",
+      "orderDirection": "desc"
+    },
+    "learningSignals": {
+      "create": false,
+      "select": false,
+      "view": "views/record/panels/relationship",
+      "orderBy": "createdAt",
+      "orderDirection": "desc"
+    }
+  }
 }

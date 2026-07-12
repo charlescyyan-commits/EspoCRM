@@ -397,6 +397,11 @@
       "type": "hasMany",
       "entity": "LearningSignal",
       "foreign": "lead"
+    },
+    "emailEvents": {
+      "type": "hasMany",
+      "entity": "EmailEvent",
+      "foreign": "lead"
     }
   },
   "indexes": {
