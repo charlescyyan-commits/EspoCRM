@@ -1,0 +1,3 @@
+{
+  "beforeSaveCustomScript": "if (entity\\isAttributeChanged('peResearchStatus') && peResearchStatus == 'COMPLETED') {\n    outreachStatus = 'RESEARCH_COMPLETED';\n}\nif (entity\\isAttributeChanged('peOpportunityScoreV4') && peOpportunityScoreV4 >= 80) {\n    pePriorityLevel = 'HIGH';\n}\nif ((entity\\isAttributeChanged('emailAddress') && emailAddress != '') || (entity\\isAttributeChanged('phoneNumber') && phoneNumber != '')) {\n    if (outreachStatus == 'RESEARCH_COMPLETED' || outreachStatus == 'QUALIFIED') {\n        outreachStatus = 'CONTACT_READY';\n    }\n}"
+}

@@ -1,0 +1,6 @@
+{
+  "primaryFilterClassNameMap": {
+    "peTierA": "Espo\\Modules\\Prospecting\\Classes\\Select\\Lead\\PrimaryFilters\\PeTierA",
+    "peRecentlySynced": "Espo\\Modules\\Prospecting\\Classes\\Select\\Lead\\PrimaryFilters\\PeRecentlySynced"
+  }
+}

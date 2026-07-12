@@ -1,0 +1,31 @@
+{
+  "fields": {
+    "name": "Title",
+    "peEvidenceId": "Evidence ID",
+    "peClaim": "Claim",
+    "peClaimType": "Claim Type",
+    "peEvidenceType": "Evidence Type",
+    "peSourceUrl": "Source URL",
+    "peEvidenceText": "Evidence Text",
+    "peContentSummary": "Content Summary",
+    "peConfidence": "Confidence",
+    "peCapturedAt": "Captured At",
+    "peSchemaVersion": "Schema Version",
+    "peSnapshotHash": "Snapshot Hash",
+    "lead": "Lead"
+  },
+  "links": {
+    "lead": "Lead"
+  },
+  "labels": {
+    "Create ResearchEvidence": "Create Research Evidence",
+    "ResearchEvidences": "Research Evidence"
+  },
+  "tooltips": {
+    "peEvidenceId": "Stable Engine evidence item identifier.",
+    "peClaimType": "Maps to Sync Contract claim_type (not Engine evidence_type).",
+    "peEvidenceType": "Evidence-format classification retained separately from the Sync Contract claim type.",
+    "peEvidenceText": "Compact excerpt only. Raw HTML and crawler payloads are never stored.",
+    "peContentSummary": "Short normalized evidence summary for CRM review."
+  }
+}

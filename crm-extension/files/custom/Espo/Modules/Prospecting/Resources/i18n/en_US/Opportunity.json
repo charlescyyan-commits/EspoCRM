@@ -1,0 +1,28 @@
+{
+  "fields": {
+    "peOpportunitySource": "Opportunity Source",
+    "peProductInterest": "Recommended Product",
+    "peProductFitScore": "Product Fit Score",
+    "peCooperationType": "Cooperation Type",
+    "peNextAction": "Next Action",
+    "peEstimatedValue": "Estimated Value",
+    "peExpectedCloseDate": "Expected Close Date",
+    "peEmailStatus": "Email Status",
+    "peLastEmailDate": "Last Email Date",
+    "peEmailCampaignName": "Campaign Name",
+    "peEmailReplyStatus": "Reply Status"
+  },
+  "tooltips": {
+    "peOpportunitySource": "CRM-owned source context for this sales opportunity.",
+    "peProductInterest": "Chitu-provided product recommendation displayed on the native CRM opportunity; EspoCRM does not generate it.",
+    "peProductFitScore": "Chitu-provided product-fit score; native Opportunity probability remains CRM-owned.",
+    "peCooperationType": "Chitu-provided suggested cooperation model.",
+    "peNextAction": "Chitu-provided recommended next sales action; it does not create an activity.",
+    "peEstimatedValue": "Optional estimated value context. Native Amount remains the CRM sales amount.",
+    "peExpectedCloseDate": "Optional expected-close context. Native Close Date remains the CRM sales close date.",
+    "peEmailStatus": "Chitu-owned email lifecycle status summary. EspoCRM displays this value but does not generate, approve, send, or process replies.",
+    "peLastEmailDate": "Timestamp of the latest Chitu email lifecycle event synced to EspoCRM.",
+    "peEmailCampaignName": "Human-readable campaign reference synced from Chitu.",
+    "peEmailReplyStatus": "Reply state summary synced from Chitu without message content."
+  }
+}

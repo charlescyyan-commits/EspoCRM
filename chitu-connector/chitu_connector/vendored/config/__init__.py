@@ -1,0 +1,1 @@
+"""Vendored stable configuration interfaces."""

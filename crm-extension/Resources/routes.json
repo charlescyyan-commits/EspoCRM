@@ -1,0 +1,17 @@
+[
+  {
+    "route": "/Prospecting/sync/lead",
+    "method": "post",
+    "actionClassName": "Espo\\Modules\\Prospecting\\Api\\PostSyncLead"
+  },
+  {
+    "route": "/Prospecting/sync/evidence",
+    "method": "post",
+    "actionClassName": "Espo\\Modules\\Prospecting\\Api\\PostSyncEvidence"
+  },
+  {
+    "route": "/Prospecting/sync/opportunity-proposal",
+    "method": "post",
+    "actionClassName": "Espo\\Modules\\Prospecting\\Api\\PostSyncOpportunityProposal"
+  }
+]

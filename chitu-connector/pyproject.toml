@@ -1,0 +1,13 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "chitu-connector"
+version = "1.0.0a0"
+description = "Chitu Intelligence to EspoCRM connector"
+requires-python = ">=3.11"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["chitu_connector*"]

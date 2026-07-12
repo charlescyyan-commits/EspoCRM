@@ -1,0 +1,71 @@
+[
+  {
+    "label": "Lead Intelligence Summary",
+    "rows": [
+      [{"name": "name"}, {"name": "website"}],
+      [{"name": "addressCountry"}, {"name": "addressState"}],
+      [{"name": "peSourceType"}, {"name": "peDiscoverySource"}],
+      [{"name": "peSourceBatchId"}, {"name": "peCompanyType"}],
+      [{"name": "peIndustry"}, {"name": "peBusinessModel"}],
+      [{"name": "peOpportunityScoreV4"}, {"name": "peScoreTier"}],
+      [{"name": "peBestFirstProduct"}, {"name": "pePriorityLevel"}]
+    ]
+  },
+  {
+    "label": "Pipeline",
+    "rows": [
+      [{"name": "outreachStatus"}, {"name": "pePriorityLevel"}],
+      [{"name": "nextFollowUpAt"}, {"name": "lastContactAt"}]
+    ]
+  },
+  {
+    "label": "Opportunity Proposal",
+    "rows": [
+      [{"name": "peBestFirstProduct"}, {"name": "peOpportunityScoreV4"}],
+      [{"name": "peProposalProductFitScore"}, {"name": "peProposalCooperationType"}],
+      [{"name": "peProposalEligibility"}, {"name": "peProposalAction"}],
+      [{"name": "peProposalSuggestedNextAction", "fullWidth": true}]
+    ]
+  },
+  {
+    "label": "Sales Activity",
+    "rows": [
+      [{"name": "status"}, {"name": "assignedUser"}],
+      [{"name": "peNextActionDate"}, {"name": "peLastContactDate"}]
+    ]
+  },
+  {
+    "label": "Email Status",
+    "rows": [
+      [{"name": "peEmailStatus"}, {"name": "peLastEmailDate"}],
+      [{"name": "peEmailCampaignName"}, {"name": "peEmailReplyStatus"}]
+    ]
+  },
+  {
+    "label": "AI Research Information",
+    "rows": [
+      [{"name": "peResearchStatus"}, {"name": "peLastResearchedAt"}],
+      [{"name": "peResearchSummary", "fullWidth": true}],
+      [{"name": "peKeyEvidence", "fullWidth": true}],
+      [{"name": "peRecommendedApproach", "fullWidth": true}]
+    ]
+  },
+  {
+    "label": "Sync Information",
+    "rows": [
+      [{"name": "peCandidateId"}, {"name": "peSyncStatus"}],
+      [{"name": "peResearchStatus"}, {"name": "peLastSyncAt"}],
+      [{"name": "peEngineVersion"}, {"name": "peScoreRulesVersion"}],
+      [{"name": "peQualificationStatus"}, {"name": "peEvidenceCoverage"}]
+    ]
+  },
+  {
+    "label": "Contact & Ownership",
+    "rows": [
+      [{"name": "emailAddress"}, {"name": "phoneNumber"}],
+      [{"name": "peContactFormUrl"}, {"name": "peLinkedinUrl"}],
+      [{"name": "assignedUser"}, {"name": "teams"}],
+      [{"name": "description", "fullWidth": true}]
+    ]
+  }
+]

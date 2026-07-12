@@ -1,0 +1,131 @@
+{
+  "fields": {
+    "peOpportunityScoreV4": "Opportunity Score",
+    "peScoreTier": "Score Tier",
+    "peConfidence": "Confidence",
+    "peEvidenceCoverage": "Evidence Coverage",
+    "peBestFirstProduct": "Best First Product",
+    "peQualificationStatus": "Qualification Status",
+    "peEngineVersion": "Engine Version",
+    "peScoreRulesVersion": "Score Rules Version",
+    "peSyncStatus": "Sync Status",
+    "peResearchStatus": "Research Status",
+    "peEmailStatus": "Email Status",
+    "peLastEmailDate": "Last Email Date",
+    "peEmailCampaignName": "Campaign Name",
+    "peEmailReplyStatus": "Reply Status",
+    "peSourceSystem": "Source System",
+    "peSourceType": "Source Type",
+    "peDiscoverySource": "Discovery Source",
+    "peSourceBatchId": "Source Batch ID",
+    "peCompanyType": "Company Type",
+    "peIndustry": "Industry",
+    "peBusinessModel": "Business Model",
+    "pePriorityLevel": "Priority Level",
+    "peLastResearchedAt": "Last Researched At",
+    "peProposalProductFitScore": "Proposal Product Fit Score",
+    "peProposalCooperationType": "Proposal Cooperation Type",
+    "peProposalSuggestedNextAction": "Proposal Suggested Next Action",
+    "peProposalEligibility": "Proposal Eligible for Review",
+    "peProposalAction": "Proposal Action",
+    "peContactFormUrl": "Contact Form URL",
+    "peLinkedinUrl": "LinkedIn URL",
+    "peCandidateId": "Chitu Lead ID",
+    "peLastSyncAt": "Last Sync Time",
+    "peResearchSummary": "Research Summary",
+    "peKeyEvidence": "Key Evidence",
+    "peRecommendedApproach": "Recommended Approach",
+    "outreachStatus": "Outreach Status",
+    "lastContactAt": "Last Contact At",
+    "nextFollowUpAt": "Next Follow-Up At",
+    "peNextActionDate": "Next Action Date",
+    "peLastContactDate": "Last Contact Date",
+    "leadSourceEngine": "Lead Source Engine",
+    "syncVersion": "Sync Version"
+  },
+  "filters": {
+    "peTierA": "A Tier Leads",
+    "peRecentlySynced": "Recently Synced"
+  },
+  "options": {
+    "peSyncStatus": {
+      "PENDING": "Pending",
+      "SYNCED": "Synced",
+      "FAILED": "Failed"
+    },
+    "pePriorityLevel": {
+      "LOW": "Low",
+      "NORMAL": "Normal",
+      "HIGH": "High",
+      "URGENT": "Urgent"
+    },
+    "peResearchStatus": {
+      "NONE": "None",
+      "RESEARCHING": "Researching",
+      "COMPLETED": "Completed",
+      "FAILED": "Failed"
+    },
+    "peEmailStatus": {
+      "NONE": "None",
+      "DRAFT_READY": "Draft Ready",
+      "APPROVED": "Approved",
+      "SENT": "Sent",
+      "REPLIED": "Replied",
+      "BOUNCED": "Bounced"
+    },
+    "peScoreTier": {
+      "": "",
+      "A": "A",
+      "B": "B",
+      "C": "C",
+      "D": "D"
+    },
+    "status": {
+      "New": "New",
+      "Reviewed": "Reviewed",
+      "Contacted": "Contacted",
+      "Interested": "Interested",
+      "Qualified": "Qualified",
+      "Converted": "Converted",
+      "Rejected": "Rejected"
+    }
+  },
+  "links": {
+    "researchEvidences": "Research Evidence"
+  },
+  "tooltips": {
+    "peOpportunityScoreV4": "Engine-owned Canonical Scoring V4 score.",
+    "peScoreTier": "Engine-owned V4 tier A/B/C/D.",
+    "peBestFirstProduct": "AI product recommendation for first outreach.",
+    "peSyncStatus": "Engine→CRM sync technical status only (PENDING/SYNCED/FAILED).",
+    "peResearchStatus": "AI research lifecycle status for sales context.",
+    "peSourceSystem": "Origin system label for imported leads.",
+    "peSourceType": "Stable high-level source category supplied by Chitu Intelligence.",
+    "peDiscoverySource": "Human-readable discovery channel or source reference.",
+    "peSourceBatchId": "Stable Chitu batch identifier for operational traceability.",
+    "peCompanyType": "Chitu business entity classification; the native Lead remains the CRM record.",
+    "peIndustry": "Industry classification supplied by Chitu Intelligence.",
+    "peBusinessModel": "Business-model classification supplied by Chitu Intelligence.",
+    "pePriorityLevel": "Operational priority derived by Chitu; this is not a CRM sales stage.",
+    "peLastResearchedAt": "Last completed Chitu research collection timestamp.",
+    "peProposalProductFitScore": "Derived from the Chitu opportunity score for human opportunity review only.",
+    "peProposalCooperationType": "Contract V1 does not provide a cooperation type; this field remains unspecified unless a later approved contract supplies one.",
+    "peProposalSuggestedNextAction": "Human-review guidance only; it creates no Opportunity, activity, or workflow.",
+    "peProposalEligibility": "True means score >= 80 and eligible for manual review. It never authorizes automatic Opportunity creation.",
+    "peProposalAction": "Always records the V1 contract safety action: NO_AUTOMATIC_OPPORTUNITY.",
+    "peContactFormUrl": "Public company contact-form endpoint when no direct email is available.",
+    "peLinkedinUrl": "Public LinkedIn company or contact profile URL.",
+    "peCandidateId": "Stable Chitu Intelligence candidate identifier.",
+    "peLastSyncAt": "Timestamp of last successful Engine sync write.",
+    "peResearchSummary": "Short sales-readable research summary from Engine.",
+    "peKeyEvidence": "Compact evidence highlights supporting the score.",
+    "peRecommendedApproach": "Suggested first-touch approach for sales follow-up.",
+    "status": "CRM-owned sales lifecycle status. Technical sync/research state stays in peSyncStatus and peResearchStatus.",
+    "peNextActionDate": "CRM-owned date for the next sales follow-up action.",
+    "peLastContactDate": "CRM-owned date of the most recent sales contact.",
+    "peEmailStatus": "Chitu-owned email lifecycle status summary. EspoCRM displays this value but does not generate, approve, send, or process replies.",
+    "peLastEmailDate": "Timestamp of the latest Chitu email lifecycle event synced to EspoCRM.",
+    "peEmailCampaignName": "Human-readable campaign reference synced from Chitu.",
+    "peEmailReplyStatus": "Reply state summary synced from Chitu without email body content."
+  }
+}

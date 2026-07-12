@@ -1,0 +1,156 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://chitu-intelligence.local/contracts/espocrm-sync/v1",
+  "title": "Prospecting Engine to EspoCRM Sync Contract V1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_version",
+    "identity",
+    "qualification",
+    "company",
+    "source",
+    "research",
+    "score",
+    "recommendation",
+    "evidence",
+    "provenance",
+    "sync"
+  ],
+  "properties": {
+    "contract_version": {
+      "const": "1.0"
+    },
+    "identity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["candidate_id", "canonical_domain", "record_identity_key"],
+      "properties": {
+        "candidate_id": {"type": "string", "minLength": 1},
+        "canonical_domain": {"type": "string", "pattern": "^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?(?:\\.[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)+$"},
+        "record_identity_key": {"type": "string", "minLength": 32}
+      }
+    },
+    "qualification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "customer_type"],
+      "properties": {
+        "status": {"const": "OUTREACH_READY"},
+        "customer_type": {"type": ["string", "null"]}
+      }
+    },
+    "company": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "website", "country_code"],
+      "properties": {
+        "name": {"type": "string", "minLength": 1, "maxLength": 255},
+        "website": {"type": "string", "format": "uri", "pattern": "^https?://"},
+        "country_code": {"type": ["string", "null"], "pattern": "^[A-Z]{2}$"}
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["channel", "source_url"],
+      "properties": {
+        "channel": {"type": "string", "enum": ["WEB_SEARCH", "CONTROLLED_MANUAL_INPUT", "APPROVED_IMPORT"]},
+        "source_url": {"type": ["string", "null"], "format": "uri"}
+      }
+    },
+    "research": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "website_accessible", "failure_code"],
+      "properties": {
+        "status": {"const": "COMPLETE"},
+        "website_accessible": {"const": true},
+        "failure_code": {"type": "null"}
+      }
+    },
+    "score": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["value", "score_tier", "aggregate_confidence", "evidence_coverage", "rules_version", "result_hash"],
+      "properties": {
+        "value": {"type": "number", "minimum": 0, "maximum": 100},
+        "score_tier": {"type": "string", "enum": ["A", "B", "C"]},
+        "aggregate_confidence": {"type": "number", "minimum": 0.6, "maximum": 1},
+        "evidence_coverage": {"type": "number", "minimum": 0.5, "maximum": 1},
+        "rules_version": {"const": "canonical-scoring-v4.0"},
+        "result_hash": {"type": "string", "minLength": 32}
+      }
+    },
+    "recommendation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["best_first_product", "cross_sell_path", "reason_codes"],
+      "properties": {
+        "best_first_product": {"type": ["string", "null"], "maxLength": 255},
+        "cross_sell_path": {"type": "array", "items": {"type": "string", "maxLength": 255}, "maxItems": 10},
+        "reason_codes": {"type": "array", "items": {"type": "string", "maxLength": 100}, "maxItems": 20}
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 50,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["evidence_id", "claim_type", "claim", "source_url", "evidence_text", "confidence", "captured_at", "schema_version"],
+        "properties": {
+          "evidence_id": {"type": "string", "minLength": 1},
+          "claim_type": {"type": "string", "minLength": 1},
+          "claim": {"type": "string", "minLength": 1, "maxLength": 500},
+          "source_url": {"type": "string", "format": "uri"},
+          "evidence_text": {"type": "string", "minLength": 1, "maxLength": 1000},
+          "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+          "captured_at": {"type": "string", "format": "date-time"},
+          "schema_version": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["engine_version", "evidence_schema_version", "evidence_snapshot_hash", "official_brand_excluded", "official_brand_registry_version"],
+      "properties": {
+        "engine_version": {"type": "string", "minLength": 1},
+        "evidence_schema_version": {"type": "string", "minLength": 1},
+        "evidence_snapshot_hash": {"type": "string", "minLength": 32},
+        "official_brand_excluded": {"const": false},
+        "official_brand_registry_version": {"type": ["string", "null"]}
+      }
+    },
+    "sync": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["idempotency_key", "payload_hash", "requested_at"],
+      "properties": {
+        "idempotency_key": {"type": "string", "minLength": 32},
+        "payload_hash": {"type": "string", "minLength": 32},
+        "requested_at": {"type": "string", "format": "date-time"}
+      }
+    },
+    "account_transition_proposal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["eligible", "action"],
+      "properties": {
+        "eligible": {"type": "boolean"},
+        "action": {"const": "HUMAN_REVIEW_REQUIRED"}
+      }
+    },
+    "opportunity_proposal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["eligible", "action"],
+      "properties": {
+        "eligible": {"const": false},
+        "action": {"const": "NO_AUTOMATIC_OPPORTUNITY"}
+      }
+    }
+  }
+}

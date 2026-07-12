@@ -1,0 +1,157 @@
+{
+  "fields": {
+    "name": {
+      "type": "varchar",
+      "maxLength": 255,
+      "required": true,
+      "trim": true
+    },
+    "peEvidenceId": {
+      "type": "varchar",
+      "maxLength": 255,
+      "required": false,
+      "notNull": false,
+      "trim": true,
+      "tooltip": true
+    },
+    "peClaim": {
+      "type": "varchar",
+      "maxLength": 500,
+      "required": false,
+      "notNull": false,
+      "trim": true
+    },
+    "peClaimType": {
+      "type": "varchar",
+      "maxLength": 100,
+      "required": false,
+      "notNull": false,
+      "trim": true,
+      "tooltip": true
+    },
+    "peEvidenceType": {
+      "type": "varchar",
+      "maxLength": 100,
+      "required": false,
+      "notNull": false,
+      "trim": true,
+      "tooltip": true
+    },
+    "peSourceUrl": {
+      "type": "url",
+      "required": false,
+      "notNull": false
+    },
+    "peEvidenceText": {
+      "type": "text",
+      "required": false,
+      "notNull": false,
+      "tooltip": true
+    },
+    "peContentSummary": {
+      "type": "text",
+      "required": false,
+      "notNull": false,
+      "tooltip": true
+    },
+    "peConfidence": {
+      "type": "float",
+      "required": false,
+      "notNull": false,
+      "min": 0,
+      "max": 1
+    },
+    "peCapturedAt": {
+      "type": "datetime",
+      "required": false,
+      "notNull": false
+    },
+    "peSchemaVersion": {
+      "type": "varchar",
+      "maxLength": 64,
+      "required": false,
+      "notNull": false,
+      "trim": true
+    },
+    "peSnapshotHash": {
+      "type": "varchar",
+      "maxLength": 128,
+      "required": false,
+      "notNull": false,
+      "trim": true
+    },
+    "lead": {
+      "type": "link"
+    },
+    "createdAt": {
+      "type": "datetime",
+      "readOnly": true
+    },
+    "modifiedAt": {
+      "type": "datetime",
+      "readOnly": true
+    },
+    "createdBy": {
+      "type": "link",
+      "readOnly": true,
+      "view": "views/fields/user"
+    },
+    "modifiedBy": {
+      "type": "link",
+      "readOnly": true,
+      "view": "views/fields/user"
+    },
+    "assignedUser": {
+      "type": "link"
+    },
+    "teams": {
+      "type": "linkMultiple"
+    }
+  },
+  "links": {
+    "lead": {
+      "type": "belongsTo",
+      "entity": "Lead",
+      "foreign": "researchEvidences"
+    },
+    "createdBy": {
+      "type": "belongsTo",
+      "entity": "User"
+    },
+    "modifiedBy": {
+      "type": "belongsTo",
+      "entity": "User"
+    },
+    "assignedUser": {
+      "type": "belongsTo",
+      "entity": "User"
+    },
+    "teams": {
+      "type": "hasMany",
+      "entity": "Team",
+      "relationName": "entityTeam",
+      "layoutRelationshipsDisabled": true
+    }
+  },
+  "collection": {
+    "orderBy": "peCapturedAt",
+    "order": "desc",
+    "textFilterFields": [
+      "name",
+      "peClaim",
+      "peEvidenceId"
+    ]
+  },
+  "indexes": {
+    "peEvidenceId": {
+      "columns": [
+        "peEvidenceId"
+      ]
+    },
+    "peSnapshotHash": {
+      "columns": [
+        "peSnapshotHash"
+      ]
+    }
+  }
+}

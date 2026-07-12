@@ -1,0 +1,10 @@
+{
+  "filterList": [
+    {
+      "name": "peTierA"
+    },
+    {
+      "name": "peRecentlySynced"
+    }
+  ]
+}

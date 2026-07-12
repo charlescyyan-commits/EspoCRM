@@ -1,0 +1,60 @@
+# EspoCRM-Production .gitignore
+
+# Logs
+*.log
+logs/
+
+# Secrets / local env
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*credentials*
+*secret*
+
+# Python / runtime cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+
+# Node / vendor temps
+node_modules/
+vendor/
+npm-debug.log*
+yarn-error.log*
+
+# EspoCRM / local runtime
+cache/
+data/
+*.sqlite
+*.sqlite3
+*.db
+*.sql
+*.dump
+
+# Local temp / debug
+temp/
+tmp/
+*.tmp
+*.bak
+*.swp
+*~
+
+# Tooling / IDE (local only)
+.agents/
+.codex/
+.idea/
+.vscode/
+*.code-workspace
+
+# OS
+.DS_Store
+Thumbs.db
+Desktop.ini
