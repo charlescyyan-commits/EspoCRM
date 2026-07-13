@@ -163,3 +163,45 @@
 ### Final Phase3C03 Readiness
 
 - **NO.** Phase3C03 remains blocked until the exact runtime residue is removed and zero-residue verification succeeds.
+
+## 26. Admin Authentication Recovery (Phase3C02.2C-R2)
+
+### Root Cause of 401
+
+- Docker, database, daemon, URL, and base path were healthy and stable; `http://127.0.0.1:8080/` returned HTTP 200.
+- The existing standard UI login form reached the correct `App/user` flow but returned HTTP 401 because the stored administrator password was stale/invalid. This was not a wrong-port, wrong-protocol, wrong-endpoint, or missing-cookie problem.
+- The official EspoCRM command `bin/command set-password admin` accepted a new password and reported `Password for user 'admin' has been changed.`
+
+### Authentication Method Used
+
+- Administrator identity was confirmed through the standard EspoCRM UI flow as `admin`, type `admin`.
+- The new password was entered only through a hidden interactive prompt. It was never placed in a command argument, environment file, report, Git object, or log.
+- The existing UI login then reached the authenticated home page, and `GET /api/v1/App/user` returned HTTP 200 for `admin`.
+- No API key spoofing, token fabrication, ACL change, role change, security downgrade, or database access was used.
+
+### Deleted IDs
+
+- `ProspectPool/6a54b593305a7d93b` — DELETE HTTP 200.
+- `ProspectPool/6a54b5930e1636ca4` — DELETE HTTP 200.
+- `SearchJob/6a54b54a4f14bb42b` — DELETE HTTP 200.
+- `SearchJob/6a54b5e1acdef5f80` — DELETE HTTP 200.
+- Access logs show only these four exact DELETE endpoints from the administrator HeadlessChrome session.
+
+### GET 404 Verification
+
+- Ordinary API reads using the existing integration API identity returned HTTP 404 for all four IDs after deletion.
+- The administrator view returns soft-deleted rows as HTTP 200, but these rows are not visible to the ordinary API and are not deleted from the database, consistent with the allowed EspoCRM soft-delete behavior.
+
+### Marker Zero-Residue Verification
+
+- Administrator list/search checks returned zero list entries for SearchJob marker, ProspectPool marker/linkage, Lead, Opportunity, and ResearchEvidence.
+- Email marker search returned an empty list (`listCount=0`); EspoCRM reported its count sentinel as `-2`, so the empty result list is the zero-residue evidence for that endpoint.
+- No new SearchJob, ProspectPool, Lead, Opportunity, ResearchEvidence, Email, or other business record was created.
+
+### Final Phase3C02 Closure Readiness
+
+- **YES.** Administrator authentication is restored, all four exact diagnostic records were deleted through REST, ordinary API GETs return 404, and marker searches are empty.
+
+### Final Phase3C03 Readiness
+
+- **YES.** Phase3C02 runtime cleanup is complete. Do not begin Phase3C03 within this task; this is only the readiness result.
