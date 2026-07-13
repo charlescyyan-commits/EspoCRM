@@ -5,7 +5,7 @@ from copy import deepcopy
 from typing import Any, Mapping
 from unittest import TestCase
 
-from chitu_connector.acquisition import AcquisitionWorker, DeterministicFakeProvider
+from chitu_connector.acquisition import AcquisitionWorker, ClaimResult, DeterministicFakeProvider, PersistenceError
 from chitu_connector.acquisition.models import ProviderResult, RawCandidate, SearchRequest
 from chitu_connector.acquisition.normalization import normalize_candidate, normalize_domain
 
@@ -19,15 +19,33 @@ class MemoryAcquisitionStore:
         self.claims: list[str] = []
         self.other_entity_writes: list[str] = []
 
-    def claim_queued_job(self, job_id: str, started_at: str) -> Mapping[str, Any] | None:
+    def claim_search_job(
+        self,
+        job_id: str,
+        *,
+        expected_status: str,
+        started_at: str,
+        expected_version: str | None = None,
+    ) -> ClaimResult:
         job = self.jobs.get(job_id)
-        if job is None or job["status"] != "QUEUED":
-            return None
+        if job is None:
+            return ClaimResult(False, reason="NOT_FOUND")
+        if job["status"] != expected_status:
+            return ClaimResult(False, previous_status=job["status"], current_status=job["status"], reason="STATUS_MISMATCH")
         job.update({"status": "RUNNING", "startedAt": started_at})
         self.claims.append(job_id)
-        return deepcopy(job)
+        return ClaimResult(True, deepcopy(job), expected_status, "RUNNING")
 
-    def update_search_job(self, job_id: str, values: Mapping[str, Any]) -> None:
+    def update_search_job(
+        self,
+        job_id: str,
+        values: Mapping[str, Any],
+        *,
+        expected_status: str | None = None,
+        expected_version: str | None = None,
+    ) -> None:
+        if expected_status is not None and self.jobs[job_id]["status"] != expected_status:
+            raise PersistenceError("STATUS_CONFLICT", "SearchJob status changed before update", retryable=True)
         self.jobs[job_id].update(values)
 
     def has_prospect(self, provider_name: str, normalized_domain: str) -> bool:
@@ -180,4 +198,3 @@ class AcquisitionWorkerCoreTests(TestCase):
         source = Path(worker_module.__file__).read_text(encoding="utf-8")
         for forbidden in ("ChituSyncService", "Lead", "Opportunity", "ResearchEvidence", "Email", "urlopen", "requests", "socket"):
             self.assertNotIn(forbidden, source)
-

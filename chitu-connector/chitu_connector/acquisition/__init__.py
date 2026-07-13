@@ -7,8 +7,10 @@ without changing the worker contract.
 
 from .fake_provider import DeterministicFakeProvider
 from .models import (
+    ClaimResult,
     JobExecutionResult,
     NormalizedCandidate,
+    PersistenceError,
     ProviderError,
     ProviderResult,
     RawCandidate,
@@ -19,9 +21,11 @@ from .worker import AcquisitionStore, AcquisitionWorker
 __all__ = [
     "AcquisitionStore",
     "AcquisitionWorker",
+    "ClaimResult",
     "DeterministicFakeProvider",
     "JobExecutionResult",
     "NormalizedCandidate",
+    "PersistenceError",
     "ProviderError",
     "ProviderResult",
     "RawCandidate",
