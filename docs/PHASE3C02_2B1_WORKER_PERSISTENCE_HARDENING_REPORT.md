@@ -122,9 +122,8 @@ This is still a single-runner Worker Core. It deliberately does not implement a 
 
 ## 14. Git Commit Result
 
-The phase files are prepared for an explicit-path-only commit after final staged review. No parallel `crm-extension`, C02.1A, C02.2B-R review, or C02.2C-A design file is eligible for this commit.
+Worker Core hardening, both Worker test files, and this initial report were committed by explicit path as `716e8da Phase3C02.2B.1 harden worker persistence boundaries`. No parallel `crm-extension`, C02.1A, C02.2B-R review, or C02.2C-A design file was included.
 
 ## 15. Readiness for Phase3C02.2C
 
 **YES.** The Worker Core exposes the failure, claim, and persistence outcome information required by a minimal single-runner Runner/REST-adapter implementation. The adapter must implement the reserved conditional-claim/CAS behavior; multi-runner robustness remains a later concern.
-
