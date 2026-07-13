@@ -1,6 +1,30 @@
 {
   "primaryFilterClassNameMap": {
     "peTierA": "Espo\\Modules\\Prospecting\\Classes\\Select\\Lead\\PrimaryFilters\\PeTierA",
-    "peRecentlySynced": "Espo\\Modules\\Prospecting\\Classes\\Select\\Lead\\PrimaryFilters\\PeRecentlySynced"
+    "peTierB": "Espo\\Modules\\Prospecting\\Classes\\Select\\Lead\\PrimaryFilters\\PeTierB",
+    "peTierC": "Espo\\Modules\\Prospecting\\Classes\\Select\\Lead\\PrimaryFilters\\PeTierC",
+    "peTierD": "Espo\\Modules\\Prospecting\\Classes\\Select\\Lead\\PrimaryFilters\\PeTierD",
+    "pePendingOutreach": "Espo\\Modules\\Prospecting\\Classes\\Select\\Lead\\PrimaryFilters\\PePendingOutreach",
+    "peAwaitingReply": "Espo\\Modules\\Prospecting\\Classes\\Select\\Lead\\PrimaryFilters\\PeAwaitingReply",
+    "peHighPriority": "Espo\\Modules\\Prospecting\\Classes\\Select\\Lead\\PrimaryFilters\\PeHighPriority",
+    "peFollowUpDue": "Espo\\Modules\\Prospecting\\Classes\\Select\\Lead\\PrimaryFilters\\PeFollowUpDue",
+    "peRecentlySynced": "Espo\\Modules\\Prospecting\\Classes\\Select\\Lead\\PrimaryFilters\\PeRecentlySynced",
+    "peRecentlyResearched": "Espo\\Modules\\Prospecting\\Classes\\Select\\Lead\\PrimaryFilters\\PeRecentlyResearched",
+    "peContactReady": "Espo\\Modules\\Prospecting\\Classes\\Select\\Lead\\PrimaryFilters\\PeContactReady",
+    "peResearchPending": "Espo\\Modules\\Prospecting\\Classes\\Select\\Lead\\PrimaryFilters\\PeResearchPending",
+    "peResearchCompleted": "Espo\\Modules\\Prospecting\\Classes\\Select\\Lead\\PrimaryFilters\\PeResearchCompleted",
+    "peResearchFailed": "Espo\\Modules\\Prospecting\\Classes\\Select\\Lead\\PrimaryFilters\\PeResearchFailed",
+    "peMissingEvidence": "Espo\\Modules\\Prospecting\\Classes\\Select\\Lead\\PrimaryFilters\\PeMissingEvidence",
+    "peCompletedWithoutEvidence": "Espo\\Modules\\Prospecting\\Classes\\Select\\Lead\\PrimaryFilters\\PeMissingEvidence",
+    "peIncompleteResearchProjection": "Espo\\Modules\\Prospecting\\Classes\\Select\\Lead\\PrimaryFilters\\PeIncompleteResearchProjection",
+    "peProposalReviewRequired": "Espo\\Modules\\Prospecting\\Classes\\Select\\Lead\\PrimaryFilters\\PeProposalReviewRequired",
+    "peProposalEligible": "Espo\\Modules\\Prospecting\\Classes\\Select\\Lead\\PrimaryFilters\\PeProposalEligible",
+    "peProposalNotReady": "Espo\\Modules\\Prospecting\\Classes\\Select\\Lead\\PrimaryFilters\\PeProposalNotReady",
+    "peScoreWithoutTier": "Espo\\Modules\\Prospecting\\Classes\\Select\\Lead\\PrimaryFilters\\PeScoreWithoutTier",
+    "peMissingBestFirstProduct": "Espo\\Modules\\Prospecting\\Classes\\Select\\Lead\\PrimaryFilters\\PeMissingBestFirstProduct",
+    "peSyncFailed": "Espo\\Modules\\Prospecting\\Classes\\Select\\Lead\\PrimaryFilters\\PeSyncFailed",
+    "peMissingWebsite": "Espo\\Modules\\Prospecting\\Classes\\Select\\Lead\\PrimaryFilters\\PeMissingWebsite",
+    "peProposalActionMissing": "Espo\\Modules\\Prospecting\\Classes\\Select\\Lead\\PrimaryFilters\\PeProposalActionMissing",
+    "peContactReadyWithoutContactMethod": "Espo\\Modules\\Prospecting\\Classes\\Select\\Lead\\PrimaryFilters\\PeContactReadyWithoutContactMethod"
   }
 }

@@ -1,0 +1,35 @@
+{
+  "view": "views/dashlets/abstract/record-list",
+  "aclScope": "ResearchEvidence",
+  "entityType": "ResearchEvidence",
+  "options": {
+    "defaults": {
+      "title": "Recent Research Evidence",
+      "orderBy": "peCapturedAt",
+      "order": "desc",
+      "displayRecords": 10,
+      "populateAssignedUser": false,
+      "includeShared": true,
+      "expandedLayout": {
+        "rows": [
+          [
+            {"name": "name", "link": true},
+            {"name": "peEvidenceType"}
+          ],
+          [
+            {"name": "peClaim"},
+            {"name": "peConfidence", "soft": true, "small": true}
+          ]
+        ]
+      },
+      "searchData": {
+        "primary": null
+      }
+    }
+  },
+  "accessDataList": [
+    {
+      "inPortalDisabled": true
+    }
+  ]
+}

@@ -1,9 +1,9 @@
 [
-  {"name": "name", "width": 24, "link": true},
-  {"name": "peClaimType", "width": 12},
-  {"name": "peEvidenceType", "width": 12},
+  {"name": "name", "width": 22, "link": true},
+  {"name": "lead", "width": 16},
+  {"name": "peEvidenceType", "width": 14},
+  {"name": "peClaim", "width": 22},
+  {"name": "peSourceUrl", "width": 20},
   {"name": "peConfidence", "width": 10},
-  {"name": "peCapturedAt", "width": 14},
-  {"name": "lead", "width": 20},
-  {"name": "peSchemaVersion", "width": 12}
+  {"name": "createdAt", "width": 14}
 ]

@@ -1,0 +1,35 @@
+{
+  "view": "views/dashlets/abstract/record-list",
+  "aclScope": "SalesFeedback",
+  "entityType": "SalesFeedback",
+  "options": {
+    "defaults": {
+      "title": "Recent Sales Feedback",
+      "orderBy": "createdAt",
+      "order": "desc",
+      "displayRecords": 10,
+      "populateAssignedUser": false,
+      "includeShared": true,
+      "expandedLayout": {
+        "rows": [
+          [
+            {"name": "name", "link": true},
+            {"name": "outcome"}
+          ],
+          [
+            {"name": "feedbackType"},
+            {"name": "lead", "soft": true, "small": true}
+          ]
+        ]
+      },
+      "searchData": {
+        "primary": "recentFeedback"
+      }
+    }
+  },
+  "accessDataList": [
+    {
+      "inPortalDisabled": true
+    }
+  ]
+}

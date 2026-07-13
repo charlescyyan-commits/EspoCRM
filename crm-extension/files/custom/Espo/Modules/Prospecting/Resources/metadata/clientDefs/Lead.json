@@ -4,10 +4,140 @@
       "name": "peTierA"
     },
     {
+      "name": "peTierB"
+    },
+    {
+      "name": "peTierC"
+    },
+    {
+      "name": "peTierD"
+    },
+    {
+      "name": "pePendingOutreach"
+    },
+    {
+      "name": "peAwaitingReply"
+    },
+    {
+      "name": "peHighPriority"
+    },
+    {
+      "name": "peFollowUpDue"
+    },
+    {
+      "name": "peRecentlyResearched"
+    },
+    {
+      "name": "peContactReady"
+    },
+    {
       "name": "peRecentlySynced"
+    },
+    {
+      "name": "peResearchPending"
+    },
+    {
+      "name": "peResearchCompleted"
+    },
+    {
+      "name": "peResearchFailed"
+    },
+    {
+      "name": "peMissingEvidence"
+    },
+    {
+      "name": "peIncompleteResearchProjection"
+    },
+    {
+      "name": "peProposalReviewRequired"
+    },
+    {
+      "name": "peProposalEligible"
+    },
+    {
+      "name": "peProposalNotReady"
+    },
+    {
+      "name": "peScoreWithoutTier"
+    },
+    {
+      "name": "peCompletedWithoutEvidence"
+    },
+    {
+      "name": "peMissingBestFirstProduct"
+    },
+    {
+      "name": "peSyncFailed"
+    },
+    {
+      "name": "peMissingWebsite"
+    },
+    {
+      "name": "peProposalActionMissing"
+    },
+    {
+      "name": "peContactReadyWithoutContactMethod"
     }
   ],
+  "bottomPanels": {
+    "detail": [
+      "__APPEND__",
+      {
+        "name": "researchEvidences",
+        "label": "AI Research Evidence",
+        "view": "views/record/panels/relationship",
+        "create": false,
+        "select": false,
+        "orderBy": "peCapturedAt",
+        "orderDirection": "desc",
+        "layout": "listSmall",
+        "order": 5,
+        "disabled": false
+      },
+      {
+        "name": "emailEvents",
+        "label": "Email Events",
+        "view": "views/record/panels/relationship",
+        "create": false,
+        "select": false,
+        "orderBy": "eventAt",
+        "orderDirection": "desc",
+        "order": 6,
+        "disabled": false
+      },
+      {
+        "name": "salesFeedbacks",
+        "label": "Sales Feedback",
+        "view": "views/record/panels/relationship",
+        "create": true,
+        "select": false,
+        "orderBy": "createdAt",
+        "orderDirection": "desc",
+        "order": 7,
+        "disabled": false
+      },
+      {
+        "name": "learningSignals",
+        "label": "Learning Signals",
+        "view": "views/record/panels/relationship",
+        "create": false,
+        "select": false,
+        "orderBy": "createdAt",
+        "orderDirection": "desc",
+        "order": 8,
+        "disabled": false
+      }
+    ]
+  },
   "relationshipPanels": {
+    "researchEvidences": {
+      "create": false,
+      "select": false,
+      "view": "views/record/panels/relationship",
+      "orderBy": "peCapturedAt",
+      "orderDirection": "desc",
+      "layout": "listSmall"
+    },
     "emailEvents": {
       "create": false,
       "select": false,

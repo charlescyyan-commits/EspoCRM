@@ -1,0 +1,8 @@
+[
+  {"name": "name", "width": 22, "link": true},
+  {"name": "peEvidenceType", "width": 14},
+  {"name": "peClaim", "width": 24},
+  {"name": "peSourceUrl", "width": 22},
+  {"name": "peConfidence", "width": 12},
+  {"name": "createdAt", "width": 14}
+]

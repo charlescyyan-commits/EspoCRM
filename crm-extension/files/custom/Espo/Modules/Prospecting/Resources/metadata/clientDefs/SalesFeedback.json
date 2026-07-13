@@ -1,1 +1,10 @@
-{"controller": "controllers/record", "iconClass": "fas fa-comment-dots"}
+{
+  "controller": "controllers/record",
+  "iconClass": "fas fa-comment-dots",
+  "filterList": [
+    {"name": "positiveFeedback"},
+    {"name": "negativeFeedback"},
+    {"name": "needsFollowUp"},
+    {"name": "recentFeedback"}
+  ]
+}

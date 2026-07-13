@@ -6,5 +6,24 @@
     "list": {
       "module": "Prospecting"
     }
+  },
+  "ResearchEvidence": {
+    "detail": {
+      "module": "Prospecting"
+    },
+    "listSmall": {
+      "module": "Prospecting"
+    },
+    "list": {
+      "module": "Prospecting"
+    }
+  },
+  "SalesFeedback": {
+    "detail": {
+      "module": "Prospecting"
+    },
+    "list": {
+      "module": "Prospecting"
+    }
   }
 }

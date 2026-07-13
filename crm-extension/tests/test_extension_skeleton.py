@@ -236,11 +236,11 @@ class ExtensionSkeletonTests(unittest.TestCase):
         manifest = _load_json(EXT / "manifest.json")
         self.assertEqual(manifest["extensionName"], "Chitu Prospecting Integration")
         self.assertEqual(manifest["name"], "Chitu Prospecting Integration")
-        self.assertEqual(manifest["version"], "1.5.2-alpha")
+        self.assertEqual(manifest["version"], "1.7.1-alpha")
         self.assertIn("author", manifest)
         self.assertEqual(
             manifest["description"],
-            "Chitu Prospecting CRM sync, email workflow, and email-feedback learning loop for EspoCRM",
+            "Chitu Prospecting CRM sync, email workflow, feedback loop, and native Prospecting Workspace UI for EspoCRM",
         )
         self.assertIsInstance(manifest["acceptableVersions"], list)
         self.assertTrue(manifest["acceptableVersions"])
@@ -295,7 +295,7 @@ class ExtensionSkeletonTests(unittest.TestCase):
         sections = {section["label"]: section["rows"] for section in detail}
         intelligence_fields = {
             cell["name"]
-            for row in sections["Lead Intelligence Summary"]
+            for row in sections["Intelligence Summary"]
             for cell in row
             if isinstance(cell, dict)
         }
@@ -349,7 +349,7 @@ class ExtensionSkeletonTests(unittest.TestCase):
             sales_fields,
             {"status", "assignedUser", "peNextActionDate", "peLastContactDate"},
         )
-        for label in ("Lead Intelligence Summary", "AI Research Information", "Sync Information"):
+        for label in ("Intelligence Summary", "AI Research Information", "Sync Information"):
             self.assertIn(label, sections)
 
     def test_phase3a34_lead_layout_activation_metadata(self) -> None:
@@ -361,7 +361,7 @@ class ExtensionSkeletonTests(unittest.TestCase):
         detail = _load_json(MODULE_LAYOUTS / "Lead" / "detail.json")
         sections = {section["label"] for section in detail}
         for label in (
-            "Lead Intelligence Summary",
+            "Intelligence Summary",
             "AI Research Information",
             "Email Status",
             "Sync Information",
@@ -398,7 +398,7 @@ class ExtensionSkeletonTests(unittest.TestCase):
             email_fields,
             {"peEmailStatus", "peLastEmailDate", "peEmailCampaignName", "peEmailReplyStatus"},
         )
-        for label in ("Sales Activity", "Lead Intelligence Summary", "AI Research Information", "Sync Information"):
+        for label in ("Sales Activity", "Intelligence Summary", "AI Research Information", "Sync Information"):
             self.assertIn(label, sections)
 
     def test_phase3a28_opportunity_workflow_metadata(self) -> None:
@@ -508,6 +508,8 @@ class ExtensionSkeletonTests(unittest.TestCase):
             MODULE / "Controllers" / "ResearchEvidence.php",
             MODULE / "Classes" / "Select" / "Lead" / "PrimaryFilters" / "PeTierA.php",
             MODULE / "Classes" / "Select" / "Lead" / "PrimaryFilters" / "PeRecentlySynced.php",
+            MODULE / "Classes" / "Select" / "Lead" / "PrimaryFilters" / "PeRecentlyResearched.php",
+            MODULE / "Classes" / "Select" / "Lead" / "PrimaryFilters" / "PeContactReady.php",
             EXT / "files" / "custom" / "Espo" / "Custom" / "Hooks" / "Lead" / "LeadWorkflowHook.php",
             MODULE / "Api" / "PostSyncLead.php",
             MODULE / "Api" / "PostSyncEvidence.php",
@@ -527,6 +529,8 @@ class ExtensionSkeletonTests(unittest.TestCase):
             EXT / "files" / "custom" / "Espo" / "Custom" / "Hooks" / "EmailEvent" / "EmailEventWorkflowHook.php",
             EXT / "files" / "custom" / "Espo" / "Custom" / "Hooks" / "EmailEvent" / "EmailEventSalesFeedbackHook.php",
         }
+        expected |= set((MODULE / "Classes" / "Select" / "Lead" / "PrimaryFilters").glob("*.php"))
+        expected |= set((MODULE / "Classes" / "Select" / "SalesFeedback" / "PrimaryFilters").glob("*.php"))
         self.assertEqual(set(php_files), expected, msg=f"Unexpected PHP files: {php_files}")
 
     def test_core_espocrm_untouched(self) -> None:
@@ -643,7 +647,7 @@ class ExtensionSkeletonTests(unittest.TestCase):
         }
         self.assertEqual(
             pipeline_fields,
-            {"outreachStatus", "pePriorityLevel", "nextFollowUpAt", "lastContactAt"},
+            {"outreachStatus", "nextFollowUpAt", "lastContactAt"},
         )
 
     def test_phase3b02_opportunity_field_count(self) -> None:
@@ -719,6 +723,17 @@ class ExtensionSkeletonTests(unittest.TestCase):
         service = (MODULE / "Services" / "ChituSyncService.php").read_text(encoding="utf-8")
         self.assertIn("NO_AUTOMATIC_OPPORTUNITY", service)
         self.assertIn("foreach ($payload['evidence'] as $item)", service)
+        self.assertNotIn("getEntity('Opportunity')", service)
+
+    def test_phase3b06_1_lead_projection_uses_only_v1_fields(self) -> None:
+        service = (MODULE / "Services" / "ChituSyncService.php").read_text(encoding="utf-8")
+        for field in ("peResearchSummary", "peKeyEvidence", "peRecommendedApproach"):
+            self.assertIn(f"'{field}'", service)
+        self.assertIn("private function researchSummary", service)
+        self.assertIn("private function keyEvidence", service)
+        self.assertIn("private function recommendedApproach", service)
+        self.assertIn("foreach ($payload['evidence'] as $item)", service)
+        self.assertIn("return $lines ?", service)
         self.assertNotIn("getEntity('Opportunity')", service)
 
     def test_phase3b04_feedback_loop_metadata(self) -> None:
@@ -848,6 +863,214 @@ class ExtensionSkeletonTests(unittest.TestCase):
         self.assertIn("emailEvents", panels)
         self.assertIn("salesFeedbacks", panels)
         self.assertIn("learningSignals", panels)
+
+    def test_phase3b06_prospecting_workspace_ui(self) -> None:
+        detail = _load_json(MODULE_LAYOUTS / "Lead" / "detail.json")
+        sections = {section["label"]: section["rows"] for section in detail}
+        self.assertIn("Intelligence Summary", sections)
+        self.assertIn("Opportunity Proposal", sections)
+        self.assertIn("AI Research Information", sections)
+        intelligence_fields = {
+            cell["name"]
+            for row in sections["Intelligence Summary"]
+            for cell in row
+            if isinstance(cell, dict)
+        }
+        self.assertTrue(
+            {
+                "name",
+                "website",
+                "addressCountry",
+                "peOpportunityScoreV4",
+                "peScoreTier",
+                "peBestFirstProduct",
+                "peResearchStatus",
+                "peSourceType",
+            }.issubset(intelligence_fields)
+        )
+        self.assertNotIn("peSourceBatchId", intelligence_fields)
+        self.assertNotIn("peCandidateId", intelligence_fields)
+
+        list_layout = _load_json(MODULE_LAYOUTS / "Lead" / "list.json")
+        list_fields = [cell["name"] for cell in list_layout]
+        self.assertEqual(
+            list_fields,
+            [
+                "name",
+                "addressCountry",
+                "peOpportunityScoreV4",
+                "peScoreTier",
+                "peBestFirstProduct",
+                "peResearchStatus",
+                "outreachStatus",
+                "nextFollowUpAt",
+                "peEmailStatus",
+                "pePriorityLevel",
+            ],
+        )
+
+        client_defs = _load_json(MODULE / "Resources" / "metadata" / "clientDefs" / "Lead.json")
+        filter_names = [item["name"] for item in client_defs["filterList"]]
+        self.assertEqual(
+            filter_names,
+            [
+                "peTierA", "peTierB", "peTierC", "peTierD", "pePendingOutreach", "peAwaitingReply",
+                "peHighPriority", "peFollowUpDue", "peRecentlyResearched", "peContactReady", "peRecentlySynced",
+                "peResearchPending", "peResearchCompleted", "peResearchFailed", "peMissingEvidence",
+                "peIncompleteResearchProjection", "peProposalReviewRequired", "peProposalEligible", "peProposalNotReady",
+                "peScoreWithoutTier", "peCompletedWithoutEvidence", "peMissingBestFirstProduct", "peSyncFailed",
+                "peMissingWebsite", "peProposalActionMissing", "peContactReadyWithoutContactMethod",
+            ],
+        )
+        panels = client_defs["relationshipPanels"]
+        self.assertIn("researchEvidences", panels)
+        self.assertFalse(panels["researchEvidences"].get("create", True))
+        self.assertEqual(panels["researchEvidences"].get("layout"), "listSmall")
+        bottom = client_defs["bottomPanels"]["detail"]
+        self.assertEqual(bottom[0], "__APPEND__")
+        bottom_names = [item["name"] for item in bottom if isinstance(item, dict)]
+        self.assertEqual(
+            bottom_names,
+            ["researchEvidences", "emailEvents", "salesFeedbacks", "learningSignals"],
+        )
+
+        select_defs = _load_json(MODULE / "Resources" / "metadata" / "selectDefs" / "Lead.json")
+        filter_map = select_defs["primaryFilterClassNameMap"]
+        for key in ("peTierA", "peRecentlyResearched", "peContactReady", "peRecentlySynced"):
+            self.assertIn(key, filter_map)
+
+        tier_a = (
+            MODULE / "Classes" / "Select" / "Lead" / "PrimaryFilters" / "PeTierA.php"
+        ).read_text(encoding="utf-8")
+        self.assertIn("peScoreTier", tier_a)
+        self.assertIn("'A'", tier_a)
+
+        recently = (
+            MODULE / "Classes" / "Select" / "Lead" / "PrimaryFilters" / "PeRecentlyResearched.php"
+        ).read_text(encoding="utf-8")
+        self.assertIn("peLastResearchedAt>=", recently)
+        self.assertIn("COMPLETED", recently)
+
+        contact_ready = (
+            MODULE / "Classes" / "Select" / "Lead" / "PrimaryFilters" / "PeContactReady.php"
+        ).read_text(encoding="utf-8")
+        self.assertIn("CONTACT_READY", contact_ready)
+
+        dashlet = _load_json(
+            MODULE / "Resources" / "metadata" / "dashlets" / "ProspectingIntelligence.json"
+        )
+        self.assertEqual(dashlet["view"], "views/dashlets/abstract/record-list")
+        self.assertEqual(dashlet["aclScope"], "Lead")
+        self.assertEqual(dashlet["entityType"], "Lead")
+        self.assertEqual(dashlet["options"]["defaults"]["orderBy"], "peOpportunityScoreV4")
+        self.assertEqual(dashlet["options"]["defaults"]["order"], "desc")
+        self.assertEqual(dashlet["options"]["defaults"]["displayRecords"], 10)
+
+        evidence_list_small = _load_json(MODULE_LAYOUTS / "ResearchEvidence" / "listSmall.json")
+        evidence_fields = [cell["name"] for cell in evidence_list_small]
+        self.assertEqual(
+            evidence_fields,
+            ["name", "peEvidenceType", "peClaim", "peSourceUrl", "peConfidence", "createdAt"],
+        )
+
+        global_i18n = _load_json(MODULE / "Resources" / "i18n" / "en_US" / "Global.json")
+        self.assertEqual(
+            global_i18n["dashlets"]["ProspectingIntelligence"],
+            "Prospecting Intelligence",
+        )
+
+        lead_i18n = _load_json(MODULE / "Resources" / "i18n" / "en_US" / "Lead.json")
+        self.assertEqual(lead_i18n["presetFilters"]["peRecentlyResearched"], "Recently Researched")
+        self.assertEqual(lead_i18n["presetFilters"]["peContactReady"], "Ready for Outreach")
+        self.assertEqual(lead_i18n["labels"]["researchEvidences"], "AI Research Evidence")
+
+        manifest = _load_json(EXT / "manifest.json")
+        self.assertEqual(manifest["version"], "1.7.1-alpha")
+
+    def test_phase3b07_operations_metadata(self) -> None:
+        lead_filters = _load_json(MODULE / "Resources" / "metadata" / "selectDefs" / "Lead.json")["primaryFilterClassNameMap"]
+        required_filters = {
+            "peTierA", "peTierB", "peTierC", "peTierD", "pePendingOutreach", "peAwaitingReply",
+            "peHighPriority", "peFollowUpDue", "peResearchPending", "peResearchCompleted", "peResearchFailed",
+            "peMissingEvidence", "peIncompleteResearchProjection", "peProposalReviewRequired", "peProposalEligible",
+            "peProposalNotReady", "peScoreWithoutTier", "peCompletedWithoutEvidence", "peMissingBestFirstProduct",
+            "peSyncFailed", "peMissingWebsite", "peProposalActionMissing", "peContactReadyWithoutContactMethod",
+        }
+        self.assertTrue(required_filters.issubset(lead_filters))
+
+        filter_directory = MODULE / "Classes" / "Select" / "Lead" / "PrimaryFilters"
+        for filter_name in required_filters:
+            class_name = lead_filters[filter_name].rsplit("\\", 1)[-1]
+            self.assertTrue((filter_directory / f"{class_name}.php").is_file(), msg=filter_name)
+
+        missing_evidence = (filter_directory / "PeMissingEvidence.php").read_text(encoding="utf-8")
+        self.assertIn("leftJoin('ResearchEvidence'", missing_evidence)
+        self.assertIn("'researchEvidence.id' => null", missing_evidence)
+        score_without_tier = (filter_directory / "PeScoreWithoutTier.php").read_text(encoding="utf-8")
+        self.assertIn("peOpportunityScoreV4", score_without_tier)
+        self.assertIn("peScoreTier", score_without_tier)
+
+        detail = _load_json(MODULE_LAYOUTS / "Lead" / "detail.json")
+        sections = {section["label"]: section["rows"] for section in detail}
+        self.assertEqual(sections["Pipeline"][0], [{"name": "outreachStatus"}, False])
+        self.assertIn("pePriorityLevel", {cell["name"] for row in sections["Intelligence Summary"] for cell in row if isinstance(cell, dict)})
+
+        evidence_list = [item["name"] for item in _load_json(MODULE_LAYOUTS / "ResearchEvidence" / "list.json")]
+        self.assertEqual(evidence_list, ["name", "lead", "peEvidenceType", "peClaim", "peSourceUrl", "peConfidence", "createdAt"])
+        feedback_list = [item["name"] for item in _load_json(MODULE_LAYOUTS / "SalesFeedback" / "list.json")]
+        self.assertEqual(feedback_list, ["name", "lead", "feedbackType", "outcome", "reason", "createdAt", "createdBy"])
+        feedback_detail = _load_json(MODULE_LAYOUTS / "SalesFeedback" / "detail.json")
+        feedback_fields = {cell["name"] for row in feedback_detail[0]["rows"] for cell in row if isinstance(cell, dict)}
+        self.assertTrue({"lead", "feedbackType", "outcome", "reason", "note", "createdAt", "createdBy"}.issubset(feedback_fields))
+
+        app_layouts = _load_json(MODULE / "Resources" / "metadata" / "app" / "layouts.json")
+        self.assertEqual(app_layouts["ResearchEvidence"]["detail"]["module"], "Prospecting")
+        self.assertEqual(app_layouts["SalesFeedback"]["list"]["module"], "Prospecting")
+        self.assertEqual(app_layouts["SalesFeedback"]["detail"]["module"], "Prospecting")
+
+        feedback_filters = _load_json(MODULE / "Resources" / "metadata" / "selectDefs" / "SalesFeedback.json")["primaryFilterClassNameMap"]
+        self.assertEqual(set(feedback_filters), {"positiveFeedback", "negativeFeedback", "needsFollowUp", "recentFeedback"})
+        feedback_filter_directory = MODULE / "Classes" / "Select" / "SalesFeedback" / "PrimaryFilters"
+        for class_path in feedback_filters.values():
+            class_name = class_path.rsplit("\\", 1)[-1]
+            self.assertTrue((feedback_filter_directory / f"{class_name}.php").is_file())
+
+        for name, entity_type in (("RecentResearchEvidence", "ResearchEvidence"), ("RecentSalesFeedback", "SalesFeedback")):
+            dashlet = _load_json(MODULE / "Resources" / "metadata" / "dashlets" / f"{name}.json")
+            self.assertEqual(dashlet["view"], "views/dashlets/abstract/record-list")
+            self.assertEqual(dashlet["entityType"], entity_type)
+            self.assertEqual(dashlet["aclScope"], entity_type)
+
+        role_script = (ROOT / "deployment" / "provisioning" / "phase3b06_provision_workspace_roles.php").read_text(encoding="utf-8")
+        self.assertIn("'ResearchEvidence' => ['create' => 'no', 'read' => 'own'", role_script)
+        self.assertIn("$fd[$f] = ['read' => 'no', 'edit' => 'no'];", role_script)
+
+        provisioning = ROOT / "deployment" / "provisioning"
+        dashboard_script = (provisioning / "phase3b07_provision_operations_dashboards.php").read_text(encoding="utf-8")
+        self.assertIn("Prospecting Operations", dashboard_script)
+        self.assertIn("phase3b07-tier-a", dashboard_script)
+        self.assertIn("RecentResearchEvidence", dashboard_script)
+        self.assertIn("$includeRelatedEntityDashlets", dashboard_script)
+        self.assertIn("$userName !== 'manager_test'", dashboard_script)
+        self.assertIn(
+            "dashboardOptions('Sync Issues', 'Lead', 'modifiedAt', 'peSyncFailed')",
+            dashboard_script,
+        )
+        self.assertNotIn("peLastSyncAt", dashboard_script)
+        self.assertNotIn("getEntity('Role')", dashboard_script)
+        self.assertIn("'peLastSyncAt'", role_script)
+        self.assertIn("$fd[$f] = ['read' => 'no', 'edit' => 'no'];", role_script)
+        cleanup_script = (provisioning / "phase3b07_cleanup_validation_records.php").read_text(encoding="utf-8")
+        self.assertIn("[CHITU_PHASE3B07_TEST]%", cleanup_script)
+        self.assertIn("ResearchEvidence", cleanup_script)
+        self.assertIn("SalesFeedback", cleanup_script)
+        self.assertIn("Task", cleanup_script)
+        self.assertNotIn("Opportunity", cleanup_script)
+        self.assertTrue((provisioning / "phase3b07_provision_validation_user.php").is_file())
+        self.assertTrue((provisioning / "phase3b07_provision_synthetic_records.php").is_file())
+
+        manifest = _load_json(EXT / "manifest.json")
+        self.assertEqual(manifest["version"], "1.7.1-alpha")
 
 
 if __name__ == "__main__":

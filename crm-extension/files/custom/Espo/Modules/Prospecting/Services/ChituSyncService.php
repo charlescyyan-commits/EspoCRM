@@ -170,6 +170,9 @@ class ChituSyncService
             'peOpportunityScoreV4' => $score,
             'peScoreTier' => $payload['score']['score_tier'],
             'peBestFirstProduct' => $payload['recommendation']['best_first_product'],
+            'peResearchSummary' => $this->researchSummary($payload),
+            'peKeyEvidence' => $this->keyEvidence($payload),
+            'peRecommendedApproach' => $this->recommendedApproach($payload),
             'pePriorityLevel' => $score >= 80 ? 'HIGH' : 'NORMAL',
             'peQualificationStatus' => $payload['qualification']['status'] ?? null,
             'peConfidence' => $payload['score']['aggregate_confidence'],
@@ -179,6 +182,43 @@ class ChituSyncService
             'peLastSyncAt' => $this->dateTime($payload['sync']['requested_at']),
             'peSyncStatus' => 'SYNCED',
         ];
+    }
+
+    private function researchSummary(array $payload): string
+    {
+        $company = $payload['company']['name'];
+        $score = (string) $payload['score']['value'];
+        $tier = $payload['score']['score_tier'];
+        $product = $payload['recommendation']['best_first_product'];
+        $coverage = (string) $payload['score']['evidence_coverage'];
+
+        return "Chitu V1 research for {$company}: score {$score} (tier {$tier}), best first product {$product}, evidence coverage {$coverage}.";
+    }
+
+    private function keyEvidence(array $payload): ?string
+    {
+        $lines = [];
+        foreach ($payload['evidence'] as $item) {
+            $claim = trim((string) ($item['claim'] ?? ''));
+            if ($claim === '') {
+                continue;
+            }
+            $claimType = trim((string) ($item['claim_type'] ?? 'evidence'));
+            $lines[] = "- [{$claimType}] {$claim}";
+        }
+
+        return $lines ? implode("\n", array_slice($lines, 0, 5)) : null;
+    }
+
+    private function recommendedApproach(array $payload): ?string
+    {
+        $product = trim((string) ($payload['recommendation']['best_first_product'] ?? ''));
+
+        if ($product === '') {
+            return null;
+        }
+
+        return "Open with {$product} relevance based on the supplied research evidence; keep the first ask reply-oriented.";
     }
 
     private function dateTime(string $value): string

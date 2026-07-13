@@ -9,7 +9,8 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import urlparse
 from urllib.request import Request, urlopen
 
-from chitu_connector.espocrm_sync.contract import SyncContractPayload
+from chitu_connector.espocrm_sync.contract import SyncContractPayload, validate_sync_contract
+from chitu_connector.espocrm_sync.gate import evaluate_sync_gate
 from chitu_connector.espocrm_sync.mapper import EspoCRMSyncMapper
 from chitu_connector.espocrm_sync.models import SyncSource
 
@@ -27,6 +28,23 @@ class ConnectorSyncResponse:
     crm_id: str
     eligibility: bool | None = None
     action: str | None = None
+
+
+@dataclass(frozen=True, slots=True)
+class ConnectorSyncStep:
+    completed: bool
+    reason: str | None = None
+    response: ConnectorSyncResponse | None = None
+
+
+@dataclass(frozen=True, slots=True)
+class ConnectorSyncResult:
+    success: bool
+    validation: ConnectorSyncStep
+    gate: ConnectorSyncStep
+    lead: ConnectorSyncStep
+    evidence: ConnectorSyncStep
+    proposal: ConnectorSyncStep
 
 
 class ProspectingConnectorClient:
@@ -49,8 +67,63 @@ class ProspectingConnectorClient:
     def sync_opportunity_proposal(self, payload: SyncContractPayload) -> ConnectorSyncResponse:
         return self._post("Prospecting/sync/opportunity-proposal", payload)
 
-    def sync_source(self, source: SyncSource) -> ConnectorSyncResponse:
-        return self.sync_lead(EspoCRMSyncMapper().build(source))
+    def sync_source(self, source: SyncSource) -> ConnectorSyncResult:
+        payload = EspoCRMSyncMapper().build(source)
+        errors = validate_sync_contract(payload.to_dict())
+        if errors:
+            return self._rejected_result(errors[0], validation=True)
+
+        gate = evaluate_sync_gate(source, payload)
+        if not gate.accepted:
+            return self._rejected_result(gate.reason_code)
+
+        lead = self.sync_lead(payload)
+        if not lead.success:
+            return self._failed_result(lead=lead)
+        evidence = self.sync_evidence(payload)
+        if not evidence.success:
+            return self._failed_result(lead=lead, evidence=evidence)
+        proposal = self.sync_opportunity_proposal(payload)
+        if not proposal.success:
+            return self._failed_result(lead=lead, evidence=evidence, proposal=proposal)
+
+        return ConnectorSyncResult(
+            success=lead.success and evidence.success and proposal.success,
+            validation=ConnectorSyncStep(completed=True),
+            gate=ConnectorSyncStep(completed=True),
+            lead=ConnectorSyncStep(completed=True, response=lead),
+            evidence=ConnectorSyncStep(completed=True, response=evidence),
+            proposal=ConnectorSyncStep(completed=True, response=proposal),
+        )
+
+    @staticmethod
+    def _rejected_result(reason: str, *, validation: bool = False) -> ConnectorSyncResult:
+        rejected = ConnectorSyncStep(completed=False, reason=reason)
+        not_run = ConnectorSyncStep(completed=False)
+        return ConnectorSyncResult(
+            success=False,
+            validation=rejected if validation else ConnectorSyncStep(completed=True),
+            gate=not_run if validation else rejected,
+            lead=not_run,
+            evidence=not_run,
+            proposal=not_run,
+        )
+
+    @staticmethod
+    def _failed_result(
+        *,
+        lead: ConnectorSyncResponse | None = None,
+        evidence: ConnectorSyncResponse | None = None,
+        proposal: ConnectorSyncResponse | None = None,
+    ) -> ConnectorSyncResult:
+        return ConnectorSyncResult(
+            success=False,
+            validation=ConnectorSyncStep(completed=True),
+            gate=ConnectorSyncStep(completed=True),
+            lead=ConnectorSyncStep(completed=lead is not None, response=lead),
+            evidence=ConnectorSyncStep(completed=evidence is not None, response=evidence),
+            proposal=ConnectorSyncStep(completed=proposal is not None, response=proposal),
+        )
 
     def _post(self, path: str, payload: SyncContractPayload) -> ConnectorSyncResponse:
         body = json.dumps(payload.to_dict(), ensure_ascii=False, separators=(",", ":")).encode("utf-8")

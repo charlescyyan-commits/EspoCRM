@@ -93,6 +93,26 @@ class GateTests(TestCase):
         source = build_source(evidence=())
         self.assertEqual(evaluate_sync_gate(source, payload_for(source)).reason_code, "MISSING_EVIDENCE")
 
+    def test_invalid_tier_is_rejected(self) -> None:
+        source = build_source()
+        source.score["score_tier"] = "D"
+        self.assertEqual(evaluate_sync_gate(source, payload_for(source)).reason_code, "INVALID_SCORE_TIER")
+
+    def test_empty_best_first_product_is_rejected(self) -> None:
+        source = build_source()
+        source.score["best_first_product"] = ""
+        self.assertEqual(evaluate_sync_gate(source, payload_for(source)).reason_code, "MISSING_BEST_FIRST_PRODUCT")
+
+    def test_low_coverage_is_rejected(self) -> None:
+        source = build_source()
+        source.score["evidence_coverage"] = 0.49
+        self.assertEqual(evaluate_sync_gate(source, payload_for(source)).reason_code, "INSUFFICIENT_EVIDENCE_COVERAGE")
+
+    def test_low_confidence_is_rejected(self) -> None:
+        source = build_source()
+        source.score["aggregate_confidence"] = 0.59
+        self.assertEqual(evaluate_sync_gate(source, payload_for(source)).reason_code, "INSUFFICIENT_CONFIDENCE")
+
     def test_official_brand_is_rejected(self) -> None:
         source = build_source(official_brand_excluded=True)
         self.assertEqual(evaluate_sync_gate(source, payload_for(source)).reason_code, "OFFICIAL_BRAND_EXCLUDED")

@@ -1,20 +1,20 @@
 [
   {
-    "label": "Lead Intelligence Summary",
+    "label": "Intelligence Summary",
     "rows": [
       [{"name": "name"}, {"name": "website"}],
       [{"name": "addressCountry"}, {"name": "addressState"}],
       [{"name": "peSourceType"}, {"name": "peDiscoverySource"}],
-      [{"name": "peSourceBatchId"}, {"name": "peCompanyType"}],
-      [{"name": "peIndustry"}, {"name": "peBusinessModel"}],
       [{"name": "peOpportunityScoreV4"}, {"name": "peScoreTier"}],
-      [{"name": "peBestFirstProduct"}, {"name": "pePriorityLevel"}]
+      [{"name": "peBestFirstProduct"}, {"name": "peResearchStatus"}],
+      [{"name": "pePriorityLevel"}, {"name": "peCompanyType"}],
+      [{"name": "peIndustry"}, {"name": "peBusinessModel"}]
     ]
   },
   {
     "label": "Pipeline",
     "rows": [
-      [{"name": "outreachStatus"}, {"name": "pePriorityLevel"}],
+      [{"name": "outreachStatus"}, false],
       [{"name": "nextFollowUpAt"}, {"name": "lastContactAt"}]
     ]
   },
@@ -45,6 +45,7 @@
     "label": "AI Research Information",
     "rows": [
       [{"name": "peResearchStatus"}, {"name": "peLastResearchedAt"}],
+      [{"name": "peConfidence"}, {"name": "peEvidenceCoverage"}],
       [{"name": "peResearchSummary", "fullWidth": true}],
       [{"name": "peKeyEvidence", "fullWidth": true}],
       [{"name": "peRecommendedApproach", "fullWidth": true}]
@@ -54,9 +55,9 @@
     "label": "Sync Information",
     "rows": [
       [{"name": "peCandidateId"}, {"name": "peSyncStatus"}],
-      [{"name": "peResearchStatus"}, {"name": "peLastSyncAt"}],
-      [{"name": "peEngineVersion"}, {"name": "peScoreRulesVersion"}],
-      [{"name": "peQualificationStatus"}, {"name": "peEvidenceCoverage"}]
+      [{"name": "peSourceSystem"}, {"name": "peSourceBatchId"}],
+      [{"name": "peLastSyncAt"}, {"name": "peQualificationStatus"}],
+      [{"name": "peEngineVersion"}, {"name": "peScoreRulesVersion"}]
     ]
   },
   {

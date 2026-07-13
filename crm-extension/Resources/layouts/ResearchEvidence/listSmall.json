@@ -1,0 +1,7 @@
+[
+  {"name": "name", "width": 22, "link": true},
+  {"name": "peSourceUrl", "width": 22},
+  {"name": "peContentSummary", "width": 28},
+  {"name": "peConfidence", "width": 12},
+  {"name": "peCapturedAt", "width": 14}
+]

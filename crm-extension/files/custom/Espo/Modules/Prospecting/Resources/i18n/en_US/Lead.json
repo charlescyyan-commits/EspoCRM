@@ -43,9 +43,36 @@
     "leadSourceEngine": "Lead Source Engine",
     "syncVersion": "Sync Version"
   },
-  "filters": {
+  "presetFilters": {
     "peTierA": "A Tier Leads",
-    "peRecentlySynced": "Recently Synced"
+    "peTierB": "B Tier Leads",
+    "peTierC": "C Tier Leads",
+    "peTierD": "D Tier Leads",
+    "pePendingOutreach": "Pending Outreach",
+    "peAwaitingReply": "Awaiting Reply",
+    "peHighPriority": "High Priority",
+    "peFollowUpDue": "Follow-Up Due",
+    "peRecentlyResearched": "Recently Researched",
+    "peContactReady": "Ready for Outreach",
+    "peRecentlySynced": "Recently Synced",
+    "peResearchPending": "Research Pending",
+    "peResearchCompleted": "Research Completed",
+    "peResearchFailed": "Research Failed",
+    "peMissingEvidence": "Completed Without Evidence",
+    "peCompletedWithoutEvidence": "Completed Without Evidence",
+    "peIncompleteResearchProjection": "Incomplete Research Projection",
+    "peProposalReviewRequired": "Proposal Review Required",
+    "peProposalEligible": "Proposal Eligible",
+    "peProposalNotReady": "Proposal Not Ready",
+    "peScoreWithoutTier": "Score Without Tier",
+    "peMissingBestFirstProduct": "Missing Best First Product",
+    "peSyncFailed": "Sync Failed",
+    "peMissingWebsite": "Missing Website",
+    "peProposalActionMissing": "Proposal Action Missing",
+    "peContactReadyWithoutContactMethod": "Contact Ready Without Contact Method"
+  },
+  "labels": {
+    "researchEvidences": "AI Research Evidence"
   },
   "options": {
     "peSyncStatus": {
@@ -89,11 +116,6 @@
       "Converted": "Converted",
       "Rejected": "Rejected"
     }
-  },
-  "links": {
-    "researchEvidences": "Research Evidence",
-    "salesFeedbacks": "Sales Feedback",
-    "learningSignals": "Learning Signals"
   },
   "tooltips": {
     "peOpportunityScoreV4": "Engine-owned Canonical Scoring V4 score.",

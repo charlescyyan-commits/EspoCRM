@@ -1,0 +1,8 @@
+{
+  "primaryFilterClassNameMap": {
+    "positiveFeedback": "Espo\\Modules\\Prospecting\\Classes\\Select\\SalesFeedback\\PrimaryFilters\\PositiveFeedback",
+    "negativeFeedback": "Espo\\Modules\\Prospecting\\Classes\\Select\\SalesFeedback\\PrimaryFilters\\NegativeFeedback",
+    "needsFollowUp": "Espo\\Modules\\Prospecting\\Classes\\Select\\SalesFeedback\\PrimaryFilters\\NeedsFollowUp",
+    "recentFeedback": "Espo\\Modules\\Prospecting\\Classes\\Select\\SalesFeedback\\PrimaryFilters\\RecentFeedback"
+  }
+}

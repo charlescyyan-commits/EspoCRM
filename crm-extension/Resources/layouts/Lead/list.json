@@ -1,10 +1,10 @@
 [
-  {"name": "name", "link": true, "width": 18},
+  {"name": "name", "link": true, "width": 16},
+  {"name": "addressCountry", "width": 10},
   {"name": "peOpportunityScoreV4", "width": 10},
   {"name": "peScoreTier", "width": 8},
-  {"name": "addressCountry", "width": 10},
   {"name": "peBestFirstProduct", "width": 14},
-  {"name": "status", "width": 10},
-  {"name": "peSourceSystem", "width": 14},
-  {"name": "createdAt", "width": 12}
+  {"name": "peResearchStatus", "width": 12},
+  {"name": "peEmailStatus", "width": 12},
+  {"name": "pePriorityLevel", "width": 10}
 ]

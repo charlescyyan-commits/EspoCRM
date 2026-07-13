@@ -18,6 +18,12 @@
   },
   "links": {"lead": "Lead", "learningSignal": "Learning Signal"},
   "labels": {"Create SalesFeedback": "Create Sales Feedback", "SalesFeedbacks": "Sales Feedback"},
+  "presetFilters": {
+    "positiveFeedback": "Positive Feedback",
+    "negativeFeedback": "Negative Feedback",
+    "needsFollowUp": "Needs Follow-Up",
+    "recentFeedback": "Recent Feedback"
+  },
   "options": {
     "feedbackType": {
       "CONTACT_ATTEMPT": "Contact Attempt",

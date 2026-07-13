@@ -22,6 +22,8 @@ def evaluate_sync_gate(source: SyncSource, payload: SyncContractPayload) -> Gate
         return GateDecision(False, "MISSING_EVIDENCE")
     if data["score"]["score_tier"] not in {"A", "B", "C"}:
         return GateDecision(False, "INVALID_SCORE_TIER")
+    if not data["recommendation"]["best_first_product"]:
+        return GateDecision(False, "MISSING_BEST_FIRST_PRODUCT")
     if not isinstance(data["score"]["value"], (int, float)):
         return GateDecision(False, "MISSING_SCORE")
     if data["score"]["evidence_coverage"] is None or data["score"]["evidence_coverage"] < 0.5:
