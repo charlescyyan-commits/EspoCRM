@@ -110,13 +110,17 @@ The first connector discovery form using `-s tests -t .` was rejected because `t
 
 ## 9. Final Worktree State
 
-After the 2A commit the index is clean. The remaining 20 tracked and 24 untracked entries listed above are intentionally unstaged. This report is the sole 1B documentation artifact and is reviewed separately.
+After the 2A commit the index is clean. At the final check, 20 tracked and 22 untracked status entries remain intentionally unstaged. This report is the sole 1B documentation artifact and is reviewed separately.
 
-## 10. Remaining Unclassified Changes
+## 10. Parallel Task File Handling
 
-The remaining set is the uncommitted SearchStrategy/SearchJob 1.9 foundation (including the shared test hunk) and the generated 1.9 archive/checksum. A dedicated foundation ownership decision is required; no file was forced into another phase merely to obtain a clean worktree.
+`docs/PHASE3C02_2C_JOB_RUNNER_DESIGN.md` appeared during the final worktree check. It is an active C02.2C-A design report, so it was not read, staged, included in any commit, or otherwise modified. `docs/PHASE3C02_2B_WORKER_CORE_REVIEW.md` was not present. The active C02.2C-A report does not block the independently verifiable commits above.
 
-## 11. Commit Hashes
+## 11. Remaining Unclassified Changes
+
+The remaining set is the uncommitted SearchStrategy/SearchJob 1.9 foundation (including the shared test hunk), the generated 1.9 archive/checksum, and the active C02.2C-A design report. A dedicated foundation ownership decision is required; no file was forced into another phase merely to obtain a clean worktree.
+
+## 12. Commit Hashes
 
 | Phase | Result |
 | --- | --- |
@@ -126,7 +130,7 @@ The remaining set is the uncommitted SearchStrategy/SearchJob 1.9 foundation (in
 | Phase3C02.2A | `be4bdab` |
 | Phase3C02.2B | `7db88c4` |
 
-## 12. Safety Confirmation
+## 13. Safety Confirmation
 
 - Used explicit-path staging only; never used `git add .` or `git add -A`.
 - Inspected and rejected every shared test hunk through `git add -p`.
@@ -135,7 +139,7 @@ The remaining set is the uncommitted SearchStrategy/SearchJob 1.9 foundation (in
 - Did not modify business logic, runtime state, Docker, browser state, or a real provider.
 - No change was discarded or overwritten.
 
-## 13. Readiness for Phase3C02.2C
+## 14. Readiness for Phase3C02.2C
 
 **NO.** C02.2B is independently committed and test-verified, but the baseline is not clean because the SearchStrategy foundation and C02.1A dependencies still require safe ownership and commit separation.
 
@@ -147,5 +151,6 @@ The remaining set is the uncommitted SearchStrategy/SearchJob 1.9 foundation (in
 - Phase3C02.2A safely committed: `be4bdab`.
 - Phase3C02.2B safely committed: `7db88c4`.
 - Phase3C02.1A is blocked by exact shared metadata and test hunks.
+- The active C02.2C-A design report remains untracked and untouched.
 - Remaining files are preserved and explicitly classified; no changes were lost.
 - Phase3C02.2C readiness: **NO**.
