@@ -1,0 +1,10 @@
+[
+  {"name": "name", "width": 24, "link": true},
+  {"name": "product", "width": 14},
+  {"name": "country", "width": 12},
+  {"name": "targetPersona", "width": 18},
+  {"name": "sourcePlan", "width": 16},
+  {"name": "status", "width": 12},
+  {"name": "generatedJobCount", "width": 12},
+  {"name": "createdAt", "width": 16}
+]

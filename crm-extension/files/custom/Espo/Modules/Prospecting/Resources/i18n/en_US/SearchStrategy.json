@@ -1,0 +1,11 @@
+{
+  "fields": {"name": "Search Strategy", "product": "Product", "country": "Country", "region": "Region", "targetPersona": "Target Persona", "targetCompanyType": "Target Company Type", "keywords": "Additional Keywords", "excludedKeywords": "Excluded Keywords", "sourcePlan": "Source Plan", "status": "Status", "generatedJobCount": "Generated Job Count", "searchJobs": "Discovery Jobs"},
+  "links": {"searchJobs": "Discovery Jobs"},
+  "labels": {"Create SearchStrategy": "Create Search Strategy", "SearchStrategys": "Search Strategies", "Generate Jobs": "Generate Jobs"},
+  "options": {
+    "product": {"PlateCycler": "PlateCycler", "Resin Tank": "Resin Tank", "Filament Dryer": "Filament Dryer", "Resin": "Resin", "LCD Replacement": "LCD Replacement", "Mainboard": "Mainboard", "UV Meter": "UV Meter", "Heater": "Heater"},
+    "targetPersona": {"Distributor": "Distributor", "Reseller": "Reseller", "Dealer": "Dealer", "3D Printer Store": "3D Printer Store", "Print Farm": "Print Farm", "Service Provider": "Service Provider", "Education Supplier": "Education Supplier", "Dental Distributor": "Dental Distributor", "Industrial Distributor": "Industrial Distributor"},
+    "sourcePlan": {"GOOGLE_SEARCH": "Google Search Plan", "GOOGLE_MAPS": "Google Maps Plan", "APIFY": "Apify Plan", "DIRECTORY": "Directory Plan", "CUSTOM_IMPORT": "Custom Import Plan", "CUSTOMS_DATA": "Customs Data Plan"},
+    "status": {"DRAFT": "Draft", "READY": "Ready", "GENERATED": "Generated", "RUNNING": "Running", "COMPLETED": "Completed", "FAILED": "Failed", "CANCELLED": "Cancelled"}
+  }
+}

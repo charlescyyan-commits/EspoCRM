@@ -41,5 +41,13 @@
     "list": {
       "module": "Prospecting"
     }
+  },
+  "SearchStrategy": {
+    "detail": {
+      "module": "Prospecting"
+    },
+    "list": {
+      "module": "Prospecting"
+    }
   }
 }

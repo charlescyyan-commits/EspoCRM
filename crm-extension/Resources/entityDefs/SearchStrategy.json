@@ -1,0 +1,28 @@
+{
+  "fields": {
+    "name": {"type": "varchar", "maxLength": 255, "required": true, "trim": true},
+    "product": {"type": "enum", "required": true, "options": ["PlateCycler", "Resin Tank", "Filament Dryer", "Resin", "LCD Replacement", "Mainboard", "UV Meter", "Heater"], "displayAsLabel": true},
+    "country": {"type": "varchar", "maxLength": 100, "required": true, "trim": true},
+    "region": {"type": "varchar", "maxLength": 100, "required": false, "notNull": false, "trim": true},
+    "targetPersona": {"type": "multiEnum", "required": true, "options": ["Distributor", "Reseller", "Dealer", "3D Printer Store", "Print Farm", "Service Provider", "Education Supplier", "Dental Distributor", "Industrial Distributor"], "displayAsLabel": true},
+    "targetCompanyType": {"type": "varchar", "maxLength": 100, "required": false, "notNull": false, "trim": true},
+    "keywords": {"type": "text", "required": false, "notNull": false},
+    "excludedKeywords": {"type": "text", "required": false, "notNull": false},
+    "sourcePlan": {"type": "multiEnum", "required": true, "options": ["GOOGLE_SEARCH", "GOOGLE_MAPS", "APIFY", "DIRECTORY", "CUSTOM_IMPORT", "CUSTOMS_DATA"], "default": ["DIRECTORY"], "displayAsLabel": true},
+    "status": {"type": "enum", "required": true, "options": ["DRAFT", "READY", "GENERATED", "RUNNING", "COMPLETED", "FAILED", "CANCELLED"], "default": "DRAFT", "displayAsLabel": true},
+    "generatedJobCount": {"type": "int", "required": true, "default": 0, "min": 0, "readOnly": true},
+    "createdAt": {"type": "datetime", "readOnly": true},
+    "createdBy": {"type": "link", "readOnly": true, "view": "views/fields/user"},
+    "assignedUser": {"type": "link"},
+    "teams": {"type": "linkMultiple"},
+    "searchJobs": {"type": "linkMultiple"}
+  },
+  "links": {
+    "createdBy": {"type": "belongsTo", "entity": "User"},
+    "assignedUser": {"type": "belongsTo", "entity": "User"},
+    "teams": {"type": "hasMany", "entity": "Team", "relationName": "entityTeam", "layoutRelationshipsDisabled": true},
+    "searchJobs": {"type": "hasMany", "entity": "SearchJob", "foreign": "strategy"}
+  },
+  "collection": {"orderBy": "createdAt", "order": "desc", "textFilterFields": ["name", "product", "country", "region", "targetCompanyType"]},
+  "indexes": {"status": {"columns": ["status"]}, "productCountry": {"columns": ["product", "country"]}}
+}
