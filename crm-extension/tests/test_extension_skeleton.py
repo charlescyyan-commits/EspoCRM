@@ -1159,5 +1159,21 @@ class ExtensionSkeletonTests(unittest.TestCase):
         self.assertEqual(manifest["version"], "1.8.0-alpha")
 
 
+    def test_phase3c02_1_acquisition_acl_provisioning(self) -> None:
+        script = (ROOT / "deployment" / "provisioning" / "phase3c02_1_provision_acquisition_acl.php").read_text(encoding="utf-8")
+
+        self.assertIn("$scopeList = ['SearchStrategy', 'SearchJob', 'ProspectPool'];", script)
+        self.assertIn("'Admin' => ['create' => 'yes', 'read' => 'all', 'edit' => 'all', 'delete' => 'all']", script)
+        self.assertIn("'Sales Manager' => ['create' => 'yes', 'read' => 'all', 'edit' => 'all', 'delete' => 'no']", script)
+        self.assertIn("'Sales User' => ['create' => 'yes', 'read' => 'own', 'edit' => 'own', 'delete' => 'no']", script)
+        self.assertIn("'Integration Bot' => ['create' => 'yes', 'read' => 'all', 'edit' => 'all', 'delete' => 'no']", script)
+        self.assertIn("$roleData[$scopeName] = $permissions;", script)
+        self.assertNotIn("getEntity('Role')", script)
+        self.assertNotIn("'Lead' =>", script)
+        self.assertNotIn("'Opportunity' =>", script)
+
+        manifest = _load_json(EXT / "manifest.json")
+        self.assertEqual(manifest["version"], "1.9.0-alpha")
+
 if __name__ == "__main__":
     unittest.main()
