@@ -1,0 +1,1 @@
+{"controller": "controllers/record", "iconClass": "fas fa-layer-group", "filterList": [{"name": "discoveryQueue"}, {"name": "qualificationQueue"}, {"name": "researchQueue"}, {"name": "crmQueue"}]}

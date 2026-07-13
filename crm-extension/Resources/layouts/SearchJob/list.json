@@ -1,0 +1,10 @@
+[
+  {"name": "name", "width": 24, "link": true},
+  {"name": "keyword", "width": 16},
+  {"name": "country", "width": 12},
+  {"name": "strategy", "width": 14},
+  {"name": "status", "width": 12},
+  {"name": "source", "width": 14},
+  {"name": "completedAt", "width": 16},
+  {"name": "createdAt", "width": 16}
+]

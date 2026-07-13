@@ -1,0 +1,5 @@
+[
+  {"label": "Search Definition", "rows": [[{"name": "name"}, {"name": "status"}], [{"name": "keyword"}, {"name": "country"}], [{"name": "strategy"}, {"name": "source"}]]},
+  {"label": "Execution", "rows": [[{"name": "prospectCount"}, {"name": "completedAt"}], [{"name": "failureReason"}, false]]},
+  {"label": "Ownership", "rows": [[{"name": "assignedUser"}, {"name": "teams"}], [{"name": "createdAt"}, false]]}
+]

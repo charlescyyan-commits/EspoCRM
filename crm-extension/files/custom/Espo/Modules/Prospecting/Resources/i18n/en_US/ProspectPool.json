@@ -1,0 +1,13 @@
+{
+  "fields": {"name": "Prospect", "externalProspectId": "External Prospect ID", "source": "Source", "sourceUrl": "Source URL", "website": "Website", "country": "Country", "queue": "Queue", "status": "Status", "researchStatus": "Research Status", "qualificationStatus": "Qualification Status", "crmPushStatus": "CRM Push Status", "qualifiedAt": "Qualified At", "crmPushedAt": "CRM Pushed At", "note": "Note", "searchJob": "Search Job"},
+  "links": {"searchJob": "Search Job"},
+  "labels": {"Create ProspectPool": "Create Prospect", "ProspectPools": "Lead Pool"},
+  "presetFilters": {"discoveryQueue": "Discovery Queue", "qualificationQueue": "Qualification Queue", "researchQueue": "Research Queue", "crmQueue": "CRM Queue"},
+  "options": {
+    "queue": {"DISCOVERY": "Discovery Queue", "QUALIFICATION": "Qualification Queue", "RESEARCH": "Research Queue", "CRM": "CRM Queue"},
+    "status": {"WAITING": "Waiting", "RUNNING": "Running", "COMPLETED": "Completed", "FAILED": "Failed"},
+    "researchStatus": {"NOT_STARTED": "Not Started", "PENDING": "Pending", "COMPLETED": "Completed", "FAILED": "Failed"},
+    "qualificationStatus": {"PENDING": "Pending", "QUALIFIED": "Qualified", "REJECTED": "Rejected"},
+    "crmPushStatus": {"NOT_READY": "Not Ready", "READY": "Ready", "PUSHED": "Pushed", "FAILED": "Failed"}
+  }
+}

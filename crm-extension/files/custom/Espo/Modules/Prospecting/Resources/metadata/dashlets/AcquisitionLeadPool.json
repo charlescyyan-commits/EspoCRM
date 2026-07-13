@@ -1,0 +1,1 @@
+{"view": "views/dashlets/abstract/record-list", "aclScope": "ProspectPool", "entityType": "ProspectPool", "options": {"defaults": {"title": "Lead Pool", "orderBy": "createdAt", "order": "desc", "displayRecords": 10, "includeShared": true}}, "accessDataList": [{"inPortalDisabled": true}]}

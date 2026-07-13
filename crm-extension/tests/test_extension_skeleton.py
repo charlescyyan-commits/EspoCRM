@@ -236,11 +236,11 @@ class ExtensionSkeletonTests(unittest.TestCase):
         manifest = _load_json(EXT / "manifest.json")
         self.assertEqual(manifest["extensionName"], "Chitu Prospecting Integration")
         self.assertEqual(manifest["name"], "Chitu Prospecting Integration")
-        self.assertEqual(manifest["version"], "1.7.1-alpha")
+        self.assertEqual(manifest["version"], "1.8.0-alpha")
         self.assertIn("author", manifest)
         self.assertEqual(
             manifest["description"],
-            "Chitu Prospecting CRM sync, email workflow, feedback loop, and native Prospecting Workspace UI for EspoCRM",
+            "Chitu Prospecting CRM sync, feedback loop, native Prospecting Workspace, and Acquisition Workspace foundation for EspoCRM",
         )
         self.assertIsInstance(manifest["acceptableVersions"], list)
         self.assertTrue(manifest["acceptableVersions"])
@@ -523,6 +523,10 @@ class ExtensionSkeletonTests(unittest.TestCase):
             MODULE / "Controllers" / "LearningSignal.php",
             MODULE / "Entities" / "EmailEvent.php",
             MODULE / "Controllers" / "EmailEvent.php",
+            MODULE / "Entities" / "SearchJob.php",
+            MODULE / "Controllers" / "SearchJob.php",
+            MODULE / "Entities" / "ProspectPool.php",
+            MODULE / "Controllers" / "ProspectPool.php",
             MODULE / "Api" / "PostSyncBrevoEmailEvent.php",
             MODULE / "Services" / "BrevoEmailEventSyncService.php",
             EXT / "files" / "custom" / "Espo" / "Custom" / "Hooks" / "SalesFeedback" / "SalesFeedbackLearningSignalHook.php",
@@ -531,6 +535,8 @@ class ExtensionSkeletonTests(unittest.TestCase):
         }
         expected |= set((MODULE / "Classes" / "Select" / "Lead" / "PrimaryFilters").glob("*.php"))
         expected |= set((MODULE / "Classes" / "Select" / "SalesFeedback" / "PrimaryFilters").glob("*.php"))
+        expected |= set((MODULE / "Classes" / "Select" / "SearchJob" / "PrimaryFilters").glob("*.php"))
+        expected |= set((MODULE / "Classes" / "Select" / "ProspectPool" / "PrimaryFilters").glob("*.php"))
         self.assertEqual(set(php_files), expected, msg=f"Unexpected PHP files: {php_files}")
 
     def test_core_espocrm_untouched(self) -> None:
@@ -985,7 +991,7 @@ class ExtensionSkeletonTests(unittest.TestCase):
         self.assertEqual(lead_i18n["labels"]["researchEvidences"], "AI Research Evidence")
 
         manifest = _load_json(EXT / "manifest.json")
-        self.assertEqual(manifest["version"], "1.7.1-alpha")
+        self.assertEqual(manifest["version"], "1.8.0-alpha")
 
     def test_phase3b07_operations_metadata(self) -> None:
         lead_filters = _load_json(MODULE / "Resources" / "metadata" / "selectDefs" / "Lead.json")["primaryFilterClassNameMap"]
@@ -1070,7 +1076,87 @@ class ExtensionSkeletonTests(unittest.TestCase):
         self.assertTrue((provisioning / "phase3b07_provision_synthetic_records.php").is_file())
 
         manifest = _load_json(EXT / "manifest.json")
-        self.assertEqual(manifest["version"], "1.7.1-alpha")
+        self.assertEqual(manifest["version"], "1.8.0-alpha")
+
+    def test_phase3c01_acquisition_workspace_foundation(self) -> None:
+        for name in ("SearchJob", "ProspectPool"):
+            self.assertEqual(
+                _load_json(SURFACE_ENTITY_DEFS / f"{name}.json"),
+                _load_json(MODULE_ENTITY_DEFS / f"{name}.json"),
+                msg=f"Parity mismatch for {name}",
+            )
+            self.assertTrue((MODULE / "Resources" / "metadata" / "scopes" / f"{name}.json").is_file())
+            self.assertTrue((MODULE / "Resources" / "metadata" / "clientDefs" / f"{name}.json").is_file())
+
+        search_job = _load_json(MODULE_ENTITY_DEFS / "SearchJob.json")
+        self.assertEqual(
+            set(search_job["fields"]),
+            {
+                "name", "keyword", "country", "strategy", "status", "source", "completedAt",
+                "prospectCount", "failureReason", "createdAt", "assignedUser", "teams", "prospectPools",
+            },
+        )
+        self.assertEqual(search_job["fields"]["status"]["options"], ["WAITING", "RUNNING", "COMPLETED", "FAILED"])
+        self.assertEqual(search_job["fields"]["status"].get("default"), "WAITING")
+        self.assertEqual(search_job["links"]["prospectPools"]["entity"], "ProspectPool")
+        self.assertEqual(search_job["links"]["prospectPools"]["foreign"], "searchJob")
+
+        pool = _load_json(MODULE_ENTITY_DEFS / "ProspectPool.json")
+        self.assertEqual(pool["fields"]["queue"]["options"], ["DISCOVERY", "QUALIFICATION", "RESEARCH", "CRM"])
+        self.assertEqual(pool["fields"]["queue"].get("default"), "DISCOVERY")
+        self.assertEqual(pool["fields"]["researchStatus"]["options"], ["NOT_STARTED", "PENDING", "COMPLETED", "FAILED"])
+        self.assertEqual(pool["fields"]["qualificationStatus"]["options"], ["PENDING", "QUALIFIED", "REJECTED"])
+        self.assertEqual(pool["fields"]["crmPushStatus"]["options"], ["NOT_READY", "READY", "PUSHED", "FAILED"])
+        self.assertIn("searchJob", pool["links"])
+        self.assertNotIn("lead", pool["fields"])
+        self.assertNotIn("crmLead", pool["fields"])
+
+        search_client = _load_json(MODULE / "Resources" / "metadata" / "clientDefs" / "SearchJob.json")
+        pool_client = _load_json(MODULE / "Resources" / "metadata" / "clientDefs" / "ProspectPool.json")
+        self.assertEqual([item["name"] for item in search_client["filterList"]], ["jobsRunning", "jobsWaiting", "jobsCompleted", "jobsFailed"])
+        self.assertEqual([item["name"] for item in pool_client["filterList"]], ["discoveryQueue", "qualificationQueue", "researchQueue", "crmQueue"])
+
+        search_filters = _load_json(MODULE / "Resources" / "metadata" / "selectDefs" / "SearchJob.json")["primaryFilterClassNameMap"]
+        pool_filters = _load_json(MODULE / "Resources" / "metadata" / "selectDefs" / "ProspectPool.json")["primaryFilterClassNameMap"]
+        self.assertEqual(set(search_filters), {"jobsRunning", "jobsWaiting", "jobsCompleted", "jobsFailed"})
+        self.assertEqual(set(pool_filters), {"discoveryQueue", "qualificationQueue", "researchQueue", "crmQueue"})
+        for class_path in (*search_filters.values(), *pool_filters.values()):
+            entity_name = "SearchJob" if "SearchJob" in class_path else "ProspectPool"
+            class_name = class_path.rsplit("\\", 1)[-1]
+            self.assertTrue(
+                (MODULE / "Classes" / "Select" / entity_name / "PrimaryFilters" / f"{class_name}.php").is_file(),
+                msg=class_path,
+            )
+
+        expected_dashlets = {
+            "AcquisitionDiscoveryJobs": ("SearchJob", None),
+            "AcquisitionJobsRunning": ("SearchJob", "jobsRunning"),
+            "AcquisitionJobsWaiting": ("SearchJob", "jobsWaiting"),
+            "AcquisitionJobsCompleted": ("SearchJob", "jobsCompleted"),
+            "AcquisitionJobsFailed": ("SearchJob", "jobsFailed"),
+            "AcquisitionLeadPool": ("ProspectPool", None),
+            "AcquisitionResearchQueue": ("ProspectPool", "researchQueue"),
+        }
+        for name, (entity_type, primary) in expected_dashlets.items():
+            dashlet = _load_json(MODULE / "Resources" / "metadata" / "dashlets" / f"{name}.json")
+            self.assertEqual(dashlet["entityType"], entity_type)
+            self.assertEqual(dashlet["aclScope"], entity_type)
+            self.assertEqual(dashlet["options"]["defaults"].get("searchData", {}).get("primary"), primary)
+
+        layouts = _load_json(MODULE / "Resources" / "metadata" / "app" / "layouts.json")
+        self.assertEqual(layouts["SearchJob"]["detail"]["module"], "Prospecting")
+        self.assertEqual(layouts["ProspectPool"]["list"]["module"], "Prospecting")
+
+        provisioning = (ROOT / "deployment" / "provisioning" / "phase3c01_provision_acquisition_workspace.php").read_text(encoding="utf-8")
+        self.assertIn("Acquisition", provisioning)
+        self.assertIn("phase3c01-research-queue", provisioning)
+        self.assertIn("SearchJob", provisioning)
+        self.assertIn("ProspectPool", provisioning)
+        self.assertNotIn("getEntity('Lead')", provisioning)
+        self.assertNotIn("getEntity('Opportunity')", provisioning)
+
+        manifest = _load_json(EXT / "manifest.json")
+        self.assertEqual(manifest["version"], "1.8.0-alpha")
 
 
 if __name__ == "__main__":

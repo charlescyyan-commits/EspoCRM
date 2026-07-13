@@ -1,0 +1,24 @@
+{
+  "fields": {
+    "name": {"type": "varchar", "maxLength": 255, "required": true, "trim": true},
+    "keyword": {"type": "varchar", "maxLength": 255, "required": false, "notNull": false, "trim": true},
+    "country": {"type": "varchar", "maxLength": 100, "required": false, "notNull": false, "trim": true},
+    "strategy": {"type": "varchar", "maxLength": 100, "required": false, "notNull": false, "trim": true},
+    "status": {"type": "enum", "required": true, "options": ["WAITING", "RUNNING", "COMPLETED", "FAILED"], "default": "WAITING", "displayAsLabel": true},
+    "source": {"type": "varchar", "maxLength": 100, "required": false, "notNull": false, "trim": true},
+    "completedAt": {"type": "datetime", "required": false, "notNull": false},
+    "prospectCount": {"type": "int", "required": false, "notNull": false, "min": 0},
+    "failureReason": {"type": "text", "required": false, "notNull": false},
+    "createdAt": {"type": "datetime", "readOnly": true},
+    "assignedUser": {"type": "link"},
+    "teams": {"type": "linkMultiple"},
+    "prospectPools": {"type": "linkMultiple"}
+  },
+  "links": {
+    "assignedUser": {"type": "belongsTo", "entity": "User"},
+    "teams": {"type": "hasMany", "entity": "Team", "relationName": "entityTeam", "layoutRelationshipsDisabled": true},
+    "prospectPools": {"type": "hasMany", "entity": "ProspectPool", "foreign": "searchJob"}
+  },
+  "collection": {"orderBy": "createdAt", "order": "desc", "textFilterFields": ["name", "keyword", "country", "strategy", "source"]},
+  "indexes": {"status": {"columns": ["status"]}, "source": {"columns": ["source"]}}
+}

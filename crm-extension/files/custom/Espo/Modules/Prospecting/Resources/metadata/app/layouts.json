@@ -25,5 +25,21 @@
     "list": {
       "module": "Prospecting"
     }
+  },
+  "SearchJob": {
+    "detail": {
+      "module": "Prospecting"
+    },
+    "list": {
+      "module": "Prospecting"
+    }
+  },
+  "ProspectPool": {
+    "detail": {
+      "module": "Prospecting"
+    },
+    "list": {
+      "module": "Prospecting"
+    }
   }
 }

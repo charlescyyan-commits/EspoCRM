@@ -1,7 +1,7 @@
 {
   "name": "Chitu Prospecting Integration",
   "extensionName": "Chitu Prospecting Integration",
-  "version": "1.7.1-alpha",
+  "version": "1.8.0-alpha",
   "acceptableVersions": [
     ">=7.4.0"
   ],
@@ -10,7 +10,7 @@
   ],
   "releaseDate": "2026-07-13",
   "author": "Chitu Intelligence",
-  "description": "Chitu Prospecting CRM sync, email workflow, feedback loop, and native Prospecting Workspace UI for EspoCRM",
+  "description": "Chitu Prospecting CRM sync, feedback loop, native Prospecting Workspace, and Acquisition Workspace foundation for EspoCRM",
   "skipBackup": false,
   "checkVersionConflict": true
 }

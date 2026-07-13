@@ -1,0 +1,8 @@
+{
+  "primaryFilterClassNameMap": {
+    "discoveryQueue": "Espo\\Modules\\Prospecting\\Classes\\Select\\ProspectPool\\PrimaryFilters\\DiscoveryQueue",
+    "qualificationQueue": "Espo\\Modules\\Prospecting\\Classes\\Select\\ProspectPool\\PrimaryFilters\\QualificationQueue",
+    "researchQueue": "Espo\\Modules\\Prospecting\\Classes\\Select\\ProspectPool\\PrimaryFilters\\ResearchQueue",
+    "crmQueue": "Espo\\Modules\\Prospecting\\Classes\\Select\\ProspectPool\\PrimaryFilters\\CrmQueue"
+  }
+}

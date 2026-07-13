@@ -2,6 +2,13 @@
   "dashlets": {
     "ProspectingIntelligence": "Prospecting Intelligence",
     "RecentResearchEvidence": "Recent Research Evidence",
-    "RecentSalesFeedback": "Recent Sales Feedback"
+    "RecentSalesFeedback": "Recent Sales Feedback",
+    "AcquisitionDiscoveryJobs": "Discovery Jobs",
+    "AcquisitionJobsRunning": "Running",
+    "AcquisitionJobsWaiting": "Waiting",
+    "AcquisitionJobsCompleted": "Completed",
+    "AcquisitionJobsFailed": "Failed",
+    "AcquisitionLeadPool": "Lead Pool",
+    "AcquisitionResearchQueue": "Research Queue"
   }
 }

@@ -1,0 +1,7 @@
+{
+  "fields": {"name": "Search Job", "keyword": "Keyword", "country": "Country", "strategy": "Strategy", "status": "Status", "source": "Source", "completedAt": "Completed At", "prospectCount": "Prospects Found", "failureReason": "Failure Reason", "prospectPools": "Lead Pool"},
+  "links": {"prospectPools": "Lead Pool"},
+  "labels": {"Create SearchJob": "Create Search Job", "SearchJobs": "Search Jobs"},
+  "presetFilters": {"jobsRunning": "Running", "jobsWaiting": "Waiting", "jobsCompleted": "Completed", "jobsFailed": "Failed"},
+  "options": {"status": {"WAITING": "Waiting", "RUNNING": "Running", "COMPLETED": "Completed", "FAILED": "Failed"}}
+}
