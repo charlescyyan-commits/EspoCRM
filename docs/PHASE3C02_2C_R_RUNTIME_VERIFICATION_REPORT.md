@@ -132,3 +132,34 @@
 ## 24. Phase3C03 Readiness
 
 - **NO.** Do not start Phase3C03 until the marker residue is removed by an authorized identity and the cleanup verification is repeated.
+
+## 25. Cleanup Retry (Phase3C02.2C-R1)
+
+### Authentication Class Used
+
+- Re-confirmed the existing `chitu_ai_connector` API identity only for read validation; it was deliberately not used for deletion because its SearchJob DELETE denial is the known blocker.
+- Attempted the project’s existing local Playwright administrator UI login flow using the already-configured container administrator environment credentials, entirely in process memory.
+- The existing login flow returned HTTP `401` from `App/user` and remained on the login page. It did not establish an administrator session, and no credential value, token, password, or authorization header was printed or persisted.
+
+### Deleted IDs
+
+- None. No DELETE request was issued without a verified legal administrator session.
+
+### GET 404 Verification
+
+- Not applicable: each target remains visible to the existing read-only integration identity as HTTP `200`.
+- Remaining `ProspectPool` IDs: `6a54b593305a7d93b`, `6a54b5930e1636ca4`.
+- Remaining `SearchJob` IDs: `6a54b54a4f14bb42b`, `6a54b5e1acdef5f80`.
+
+### Marker Zero-Residue Verification
+
+- Not achieved because the four verified marker-scoped diagnostic records remain.
+- No broad marker deletion, ACL change, API-role change, schema change, database access, or new diagnostic data was used.
+
+### Final Phase3C02 Closure Readiness
+
+- **NO.** A valid administrator API key, verified administrator integration identity, or repaired existing administrator login credential is required solely to delete the four exact IDs and repeat the specified GET/search checks.
+
+### Final Phase3C03 Readiness
+
+- **NO.** Phase3C03 remains blocked until the exact runtime residue is removed and zero-residue verification succeeds.
