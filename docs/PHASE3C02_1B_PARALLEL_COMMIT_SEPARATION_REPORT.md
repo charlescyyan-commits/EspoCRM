@@ -68,7 +68,7 @@ Ownership evidence was read from the C01, C02.1, C02.2A, and C02.2B reports and 
 | `deployment/prospecting-extension-1.9.0-alpha.zip` | Generated extension archive | Generated / temporary | High | No | Leave untracked |
 | `deployment/prospecting-extension-1.9.0-alpha.zip.sha256` | Generated archive checksum | Generated / temporary | High | No | Leave untracked |
 | `deployment/validation/test_phase3c02_1a_search_strategy_detail.py` | Two recursion regression tests | Phase3C02.1A | High | No | Add only with metadata baseline |
-| `docs/PHASE3C02_2A_ACQUISITION_RUNTIME_BOUNDARY_AUDIT.md` | Standalone boundary audit | Unknown / Phase3C02.2A | High | No | Leave unstaged |
+| `docs/PHASE3C02_2A_ACQUISITION_RUNTIME_BOUNDARY_AUDIT.md` | Standalone boundary audit | Phase3C02.2A | High | No | Explicit add; committed `be4bdab` |
 | `docs/PHASE3C02_2B_ACQUISITION_WORKER_CORE_REPORT.md` | Worker-core report | Phase3C02.2B | High | No | Explicit add; committed `7db88c4` |
 
 ## 3. Shared File / Hunk Analysis
@@ -91,7 +91,11 @@ No C01 commit was created because `8e185c2 Phase3C01 Acquisition Workspace Found
 
 `7db88c4 Phase3C02.2B acquisition worker core` contains only the eight files identified by the 2B report. The staged review confirmed no SearchStrategy UI, ACL, C01, manifest, or unrelated file was included.
 
-## 7. Tests Run
+## 7. Phase3C02.2A Commit Result
+
+`be4bdab Phase3C02.2A document acquisition runtime boundary` contains only the completed, read-only acquisition runtime-boundary audit. It contains no implementation, provider, manifest, runtime, or parallel-task file.
+
+## 8. Tests Run
 
 | Check | Result |
 | --- | --- |
@@ -104,32 +108,34 @@ No C01 commit was created because `8e185c2 Phase3C01 Acquisition Workspace Found
 
 The first connector discovery form using `-s tests -t .` was rejected because `tests` is not importable. It made no repository change; root discovery then completed successfully with 68 tests. No Docker, EspoCRM runtime, browser, rebuild, cache-clear, or provider action was run.
 
-## 8. Final Worktree State
+## 9. Final Worktree State
 
-After the 2B commit the index is clean. The remaining 20 tracked and 25 untracked entries listed above are intentionally unstaged. This report is the sole 1B documentation artifact and is reviewed separately.
+After the 2A commit the index is clean. The remaining 20 tracked and 24 untracked entries listed above are intentionally unstaged. This report is the sole 1B documentation artifact and is reviewed separately.
 
-## 9. Remaining Unclassified Changes
+## 10. Remaining Unclassified Changes
 
-The remaining set is the uncommitted SearchStrategy/SearchJob 1.9 foundation (including the shared test hunk), the standalone 2A audit, and the generated 1.9 archive/checksum. A dedicated foundation ownership decision is required; no file was forced into another phase merely to obtain a clean worktree.
+The remaining set is the uncommitted SearchStrategy/SearchJob 1.9 foundation (including the shared test hunk) and the generated 1.9 archive/checksum. A dedicated foundation ownership decision is required; no file was forced into another phase merely to obtain a clean worktree.
 
-## 10. Commit Hashes
+## 11. Commit Hashes
 
 | Phase | Result |
 | --- | --- |
 | Phase3C01 | `8e185c2` (already committed) |
 | Phase3C02.1 ACL baseline | `441cb02` (already committed) |
 | Phase3C02.1A | COMMIT BLOCKED |
+| Phase3C02.2A | `be4bdab` |
 | Phase3C02.2B | `7db88c4` |
 
-## 11. Safety Confirmation
+## 12. Safety Confirmation
 
 - Used explicit-path staging only; never used `git add .` or `git add -A`.
 - Inspected and rejected every shared test hunk through `git add -p`.
+- Committed the standalone 2A audit independently after a staged full-content review.
 - Did not use reset, checkout, restore, clean, blob/index construction, or destructive Git commands.
 - Did not modify business logic, runtime state, Docker, browser state, or a real provider.
 - No change was discarded or overwritten.
 
-## 12. Readiness for Phase3C02.2C
+## 13. Readiness for Phase3C02.2C
 
 **NO.** C02.2B is independently committed and test-verified, but the baseline is not clean because the SearchStrategy foundation and C02.1A dependencies still require safe ownership and commit separation.
 
@@ -138,6 +144,7 @@ The remaining set is the uncommitted SearchStrategy/SearchJob 1.9 foundation (in
 **PARTIAL PASS**
 
 - Phase3C01 already committed: `8e185c2`.
+- Phase3C02.2A safely committed: `be4bdab`.
 - Phase3C02.2B safely committed: `7db88c4`.
 - Phase3C02.1A is blocked by exact shared metadata and test hunks.
 - Remaining files are preserved and explicitly classified; no changes were lost.
