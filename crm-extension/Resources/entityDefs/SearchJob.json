@@ -3,9 +3,17 @@
     "name": {"type": "varchar", "maxLength": 255, "required": true, "trim": true},
     "keyword": {"type": "varchar", "maxLength": 255, "required": false, "notNull": false, "trim": true},
     "country": {"type": "varchar", "maxLength": 100, "required": false, "notNull": false, "trim": true},
-    "strategy": {"type": "varchar", "maxLength": 100, "required": false, "notNull": false, "trim": true},
-    "status": {"type": "enum", "required": true, "options": ["WAITING", "RUNNING", "COMPLETED", "FAILED"], "default": "WAITING", "displayAsLabel": true},
+    "strategy": {"type": "link"},
+    "product": {"type": "enum", "required": false, "notNull": false, "options": ["PlateCycler", "Resin Tank", "Filament Dryer", "Resin", "LCD Replacement", "Mainboard", "UV Meter", "Heater"], "displayAsLabel": true},
+    "status": {"type": "enum", "required": true, "options": ["QUEUED", "RUNNING", "COMPLETED", "FAILED", "CANCELLED"], "default": "QUEUED", "displayAsLabel": true, "style": {"QUEUED": "default", "RUNNING": "warning", "COMPLETED": "success", "FAILED": "danger", "CANCELLED": "default"}},
     "source": {"type": "varchar", "maxLength": 100, "required": false, "notNull": false, "trim": true},
+    "priority": {"type": "enum", "required": true, "options": ["P1", "P2", "P3"], "default": "P2", "displayAsLabel": true},
+    "queryFingerprint": {"type": "varchar", "maxLength": 64, "required": false, "notNull": false, "trim": true},
+    "resultCount": {"type": "int", "required": true, "default": 0, "min": 0},
+    "acceptedCount": {"type": "int", "required": true, "default": 0, "min": 0},
+    "rejectedCount": {"type": "int", "required": true, "default": 0, "min": 0},
+    "errorMessage": {"type": "text", "required": false, "notNull": false},
+    "startedAt": {"type": "datetime", "required": false, "notNull": false},
     "completedAt": {"type": "datetime", "required": false, "notNull": false},
     "prospectCount": {"type": "int", "required": false, "notNull": false, "min": 0},
     "failureReason": {"type": "text", "required": false, "notNull": false},
@@ -15,10 +23,11 @@
     "prospectPools": {"type": "linkMultiple"}
   },
   "links": {
+    "strategy": {"type": "belongsTo", "entity": "SearchStrategy", "foreign": "searchJobs"},
     "assignedUser": {"type": "belongsTo", "entity": "User"},
     "teams": {"type": "hasMany", "entity": "Team", "relationName": "entityTeam", "layoutRelationshipsDisabled": true},
     "prospectPools": {"type": "hasMany", "entity": "ProspectPool", "foreign": "searchJob"}
   },
-  "collection": {"orderBy": "createdAt", "order": "desc", "textFilterFields": ["name", "keyword", "country", "strategy", "source"]},
-  "indexes": {"status": {"columns": ["status"]}, "source": {"columns": ["source"]}}
+  "collection": {"orderBy": "createdAt", "order": "desc", "textFilterFields": ["name", "keyword", "country", "product", "source", "queryFingerprint"]},
+  "indexes": {"status": {"columns": ["status"]}, "source": {"columns": ["source"]}, "queryFingerprint": {"columns": ["queryFingerprint"]}}
 }

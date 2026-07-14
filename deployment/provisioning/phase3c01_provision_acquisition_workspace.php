@@ -26,30 +26,36 @@ if (!is_array($layout)) {
 
 $tabIndex = null;
 foreach ($layout as $index => $tab) {
-    if (($tab['name'] ?? null) === 'Acquisition') {
+    $tabName = $tab['name'] ?? null;
+    if ($tabName === 'Prospecting Home' || $tabName === 'Acquisition') {
         $tabIndex = $index;
         break;
     }
 }
 if ($tabIndex === null) {
-    $layout[] = ['name' => 'Acquisition', 'layout' => []];
+    $layout[] = ['name' => 'Prospecting Home', 'layout' => []];
     $tabIndex = array_key_last($layout);
 }
 
+$layout[$tabIndex]['name'] = 'Prospecting Home';
+
 $items = [
-    ['id' => 'phase3c01-discovery-jobs', 'name' => 'AcquisitionDiscoveryJobs', 'x' => 0, 'y' => 0, 'width' => 2, 'height' => 2],
-    ['id' => 'phase3c01-running', 'name' => 'AcquisitionJobsRunning', 'x' => 2, 'y' => 0, 'width' => 1, 'height' => 2],
-    ['id' => 'phase3c01-waiting', 'name' => 'AcquisitionJobsWaiting', 'x' => 3, 'y' => 0, 'width' => 1, 'height' => 2],
-    ['id' => 'phase3c01-completed', 'name' => 'AcquisitionJobsCompleted', 'x' => 0, 'y' => 2, 'width' => 2, 'height' => 2],
-    ['id' => 'phase3c01-failed', 'name' => 'AcquisitionJobsFailed', 'x' => 2, 'y' => 2, 'width' => 2, 'height' => 2],
-    ['id' => 'phase3c01-lead-pool', 'name' => 'AcquisitionLeadPool', 'x' => 0, 'y' => 4, 'width' => 2, 'height' => 3],
-    ['id' => 'phase3c01-research-queue', 'name' => 'AcquisitionResearchQueue', 'x' => 2, 'y' => 4, 'width' => 2, 'height' => 3],
+    ['id' => 'phase3u03-summary', 'name' => 'ProspectingSummary', 'x' => 0, 'y' => 0, 'width' => 4, 'height' => 2],
+    ['id' => 'phase3u03-recent-discovery', 'name' => 'ProspectingRecentDiscovery', 'x' => 0, 'y' => 2, 'width' => 4, 'height' => 3],
+    ['id' => 'phase3c02-search-strategies', 'name' => 'AcquisitionSearchStrategies', 'x' => 0, 'y' => 5, 'width' => 2, 'height' => 2],
+    ['id' => 'phase3c01-discovery-jobs', 'name' => 'AcquisitionDiscoveryJobs', 'x' => 2, 'y' => 5, 'width' => 2, 'height' => 2],
+    ['id' => 'phase3c01-running', 'name' => 'AcquisitionJobsRunning', 'x' => 0, 'y' => 7, 'width' => 1, 'height' => 2],
+    ['id' => 'phase3c01-waiting', 'name' => 'AcquisitionJobsWaiting', 'x' => 1, 'y' => 7, 'width' => 1, 'height' => 2],
+    ['id' => 'phase3c01-completed', 'name' => 'AcquisitionJobsCompleted', 'x' => 2, 'y' => 7, 'width' => 1, 'height' => 2],
+    ['id' => 'phase3c01-failed', 'name' => 'AcquisitionJobsFailed', 'x' => 3, 'y' => 7, 'width' => 1, 'height' => 2],
+    ['id' => 'phase3c01-lead-pool', 'name' => 'AcquisitionLeadPool', 'x' => 0, 'y' => 9, 'width' => 2, 'height' => 3],
+    ['id' => 'phase3c01-research-queue', 'name' => 'AcquisitionResearchQueue', 'x' => 2, 'y' => 9, 'width' => 2, 'height' => 3],
 ];
 
 $layout[$tabIndex]['layout'] = array_merge(
     array_values(array_filter(
         $layout[$tabIndex]['layout'] ?? [],
-        fn(array $item): bool => !str_starts_with((string) ($item['id'] ?? ''), 'phase3c01-')
+        fn(array $item): bool => !preg_match('/^(phase3c0[12]|phase3u03)-/', (string) ($item['id'] ?? ''))
     )),
     $items
 );
@@ -59,7 +65,7 @@ if (!is_array($options)) {
     $options = [];
 }
 foreach (array_keys($options) as $id) {
-    if (str_starts_with((string) $id, 'phase3c01-')) {
+    if (preg_match('/^(phase3c0[12]|phase3u03)-/', (string) $id)) {
         unset($options[$id]);
     }
 }
@@ -73,11 +79,29 @@ function phase3c01Dashlet(string $title, string $entityType, string $orderBy, ?s
     return $options;
 }
 
+$options['phase3u03-summary'] = [
+    'title' => 'Prospecting Summary',
+];
+$options['phase3u03-recent-discovery'] = [
+    'title' => 'Recent Discovery Activity',
+    'entityType' => 'SearchJob',
+    'orderBy' => 'createdAt',
+    'order' => 'desc',
+    'displayRecords' => 8,
+    'includeShared' => true,
+    'expandedLayout' => [
+        'rows' => [
+            [['name' => 'name', 'link' => true], ['name' => 'status']],
+            [['name' => 'createdAt'], ['name' => 'resultCount']],
+        ],
+    ],
+];
+$options['phase3c02-search-strategies'] = phase3c01Dashlet('Search Strategies', 'SearchStrategy', 'createdAt');
 $options['phase3c01-discovery-jobs'] = phase3c01Dashlet('Discovery Jobs', 'SearchJob', 'createdAt');
-$options['phase3c01-running'] = phase3c01Dashlet('Running', 'SearchJob', 'createdAt', 'jobsRunning');
-$options['phase3c01-waiting'] = phase3c01Dashlet('Waiting', 'SearchJob', 'createdAt', 'jobsWaiting');
-$options['phase3c01-completed'] = phase3c01Dashlet('Completed', 'SearchJob', 'completedAt', 'jobsCompleted');
-$options['phase3c01-failed'] = phase3c01Dashlet('Failed', 'SearchJob', 'createdAt', 'jobsFailed');
+$options['phase3c01-running'] = phase3c01Dashlet('Running Jobs', 'SearchJob', 'createdAt', 'jobsRunning');
+$options['phase3c01-waiting'] = phase3c01Dashlet('Queued Jobs', 'SearchJob', 'createdAt', 'jobsQueued');
+$options['phase3c01-completed'] = phase3c01Dashlet('Completed Jobs', 'SearchJob', 'completedAt', 'jobsCompleted');
+$options['phase3c01-failed'] = phase3c01Dashlet('Failed Jobs', 'SearchJob', 'createdAt', 'jobsFailed');
 $options['phase3c01-lead-pool'] = phase3c01Dashlet('Lead Pool', 'ProspectPool', 'createdAt');
 $options['phase3c01-research-queue'] = phase3c01Dashlet('Research Queue', 'ProspectPool', 'createdAt', 'researchQueue');
 

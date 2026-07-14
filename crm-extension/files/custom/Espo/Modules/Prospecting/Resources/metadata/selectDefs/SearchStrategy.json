@@ -1,0 +1,8 @@
+{
+  "primaryFilterClassNameMap": {
+    "strategiesDraft": "Espo\\Modules\\Prospecting\\Classes\\Select\\SearchStrategy\\PrimaryFilters\\StrategiesDraft",
+    "strategiesReady": "Espo\\Modules\\Prospecting\\Classes\\Select\\SearchStrategy\\PrimaryFilters\\StrategiesReady",
+    "strategiesActive": "Espo\\Modules\\Prospecting\\Classes\\Select\\SearchStrategy\\PrimaryFilters\\StrategiesActive",
+    "strategiesCompleted": "Espo\\Modules\\Prospecting\\Classes\\Select\\SearchStrategy\\PrimaryFilters\\StrategiesCompleted"
+  }
+}

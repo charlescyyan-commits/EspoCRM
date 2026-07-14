@@ -1,8 +1,9 @@
 {
   "primaryFilterClassNameMap": {
+    "jobsQueued": "Espo\\Modules\\Prospecting\\Classes\\Select\\SearchJob\\PrimaryFilters\\JobsQueued",
     "jobsRunning": "Espo\\Modules\\Prospecting\\Classes\\Select\\SearchJob\\PrimaryFilters\\JobsRunning",
-    "jobsWaiting": "Espo\\Modules\\Prospecting\\Classes\\Select\\SearchJob\\PrimaryFilters\\JobsWaiting",
     "jobsCompleted": "Espo\\Modules\\Prospecting\\Classes\\Select\\SearchJob\\PrimaryFilters\\JobsCompleted",
-    "jobsFailed": "Espo\\Modules\\Prospecting\\Classes\\Select\\SearchJob\\PrimaryFilters\\JobsFailed"
+    "jobsFailed": "Espo\\Modules\\Prospecting\\Classes\\Select\\SearchJob\\PrimaryFilters\\JobsFailed",
+    "jobsCancelled": "Espo\\Modules\\Prospecting\\Classes\\Select\\SearchJob\\PrimaryFilters\\JobsCancelled"
   }
 }

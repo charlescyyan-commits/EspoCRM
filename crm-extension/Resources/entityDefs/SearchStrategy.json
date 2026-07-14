@@ -9,7 +9,7 @@
     "keywords": {"type": "text", "required": false, "notNull": false},
     "excludedKeywords": {"type": "text", "required": false, "notNull": false},
     "sourcePlan": {"type": "multiEnum", "required": true, "options": ["GOOGLE_SEARCH", "GOOGLE_MAPS", "APIFY", "DIRECTORY", "CUSTOM_IMPORT", "CUSTOMS_DATA"], "default": ["DIRECTORY"], "displayAsLabel": true},
-    "status": {"type": "enum", "required": true, "options": ["DRAFT", "READY", "GENERATED", "RUNNING", "COMPLETED", "FAILED", "CANCELLED"], "default": "DRAFT", "displayAsLabel": true},
+    "status": {"type": "enum", "required": true, "options": ["DRAFT", "READY", "GENERATED", "RUNNING", "COMPLETED", "FAILED", "CANCELLED"], "default": "DRAFT", "displayAsLabel": true, "style": {"DRAFT": "default", "READY": "info", "GENERATED": "primary", "RUNNING": "warning", "COMPLETED": "success", "FAILED": "danger", "CANCELLED": "default"}},
     "generatedJobCount": {"type": "int", "required": true, "default": 0, "min": 0, "readOnly": true},
     "createdAt": {"type": "datetime", "readOnly": true},
     "createdBy": {"type": "link", "readOnly": true, "view": "views/fields/user"},

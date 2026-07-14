@@ -1,11 +1,8 @@
 [
-  {"name": "name", "width": 22, "link": true},
+  {"name": "name", "width": 28, "link": true},
+  {"name": "website", "width": 18},
   {"name": "country", "width": 12},
   {"name": "source", "width": 14},
-  {"name": "queue", "width": 14},
-  {"name": "status", "width": 12},
-  {"name": "researchStatus", "width": 14},
-  {"name": "qualificationStatus", "width": 14},
-  {"name": "crmPushStatus", "width": 14},
+  {"name": "researchStatus", "width": 16},
   {"name": "createdAt", "width": 16}
 ]

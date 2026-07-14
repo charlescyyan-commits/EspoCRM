@@ -1,5 +1,10 @@
 {
   "primaryFilterClassNameMap": {
+    "prospectsNew": "Espo\\Modules\\Prospecting\\Classes\\Select\\ProspectPool\\PrimaryFilters\\ProspectsNew",
+    "prospectsAccepted": "Espo\\Modules\\Prospecting\\Classes\\Select\\ProspectPool\\PrimaryFilters\\ProspectsAccepted",
+    "prospectsRejected": "Espo\\Modules\\Prospecting\\Classes\\Select\\ProspectPool\\PrimaryFilters\\ProspectsRejected",
+    "prospectsDuplicate": "Espo\\Modules\\Prospecting\\Classes\\Select\\ProspectPool\\PrimaryFilters\\ProspectsDuplicate",
+    "prospectsReadyForResearch": "Espo\\Modules\\Prospecting\\Classes\\Select\\ProspectPool\\PrimaryFilters\\ProspectsReadyForResearch",
     "discoveryQueue": "Espo\\Modules\\Prospecting\\Classes\\Select\\ProspectPool\\PrimaryFilters\\DiscoveryQueue",
     "qualificationQueue": "Espo\\Modules\\Prospecting\\Classes\\Select\\ProspectPool\\PrimaryFilters\\QualificationQueue",
     "researchQueue": "Espo\\Modules\\Prospecting\\Classes\\Select\\ProspectPool\\PrimaryFilters\\ResearchQueue",
