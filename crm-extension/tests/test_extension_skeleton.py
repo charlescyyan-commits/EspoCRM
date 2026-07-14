@@ -211,6 +211,7 @@ OPPORTUNITY_FIELD_TYPES = {
 CONTRACT_EVIDENCE_TO_CRM = {
     "claim": "peClaim",
     "claim_type": "peClaimType",
+    "evidence_type": "peEvidenceType",
     "source_url": "peSourceUrl",
     "evidence_text": "peEvidenceText",
     "confidence": "peConfidence",
@@ -236,11 +237,11 @@ class ExtensionSkeletonTests(unittest.TestCase):
         manifest = _load_json(EXT / "manifest.json")
         self.assertEqual(manifest["extensionName"], "Chitu Prospecting Integration")
         self.assertEqual(manifest["name"], "Chitu Prospecting Integration")
-        self.assertEqual(manifest["version"], "1.8.0-alpha")
+        self.assertEqual(manifest["version"], "1.9.5-alpha")
         self.assertIn("author", manifest)
         self.assertEqual(
             manifest["description"],
-            "Chitu Prospecting CRM sync, feedback loop, native Prospecting Workspace, and Acquisition Workspace foundation for EspoCRM",
+            "Chitu Prospecting CRM sync, native Prospecting Workspace, and deterministic Acquisition Strategy planning for EspoCRM",
         )
         self.assertIsInstance(manifest["acceptableVersions"], list)
         self.assertTrue(manifest["acceptableVersions"])
@@ -495,10 +496,10 @@ class ExtensionSkeletonTests(unittest.TestCase):
         self.assertIn("rules_version", score)
         self.assertIn("peScoreRulesVersion", lead)
 
-        # Sync Contract uses claim_type; Engine also has evidence_type.
-        # Skeleton maps claim_type -> peClaimType and does not invent peEvidenceType.
+        # C10.6 accepts the engine evidence-format classification as an
+        # optional V1 pass-through without changing V1 required fields.
         self.assertIn("claim_type", evidence_props)
-        self.assertNotIn("evidence_type", evidence_props)
+        self.assertIn("evidence_type", evidence_props)
 
     def test_only_standard_research_evidence_php_shells_exist(self) -> None:
         php_files = list(EXT.rglob("*.php"))
@@ -527,6 +528,11 @@ class ExtensionSkeletonTests(unittest.TestCase):
             MODULE / "Controllers" / "SearchJob.php",
             MODULE / "Entities" / "ProspectPool.php",
             MODULE / "Controllers" / "ProspectPool.php",
+            MODULE / "Entities" / "SearchStrategy.php",
+            MODULE / "Controllers" / "SearchStrategy.php",
+            MODULE / "Api" / "PostGenerateSearchStrategyJobs.php",
+            MODULE / "Services" / "SearchStrategyService.php",
+            MODULE / "Services" / "SearchStrategyTemplates.php",
             MODULE / "Api" / "PostSyncBrevoEmailEvent.php",
             MODULE / "Services" / "BrevoEmailEventSyncService.php",
             EXT / "files" / "custom" / "Espo" / "Custom" / "Hooks" / "SalesFeedback" / "SalesFeedbackLearningSignalHook.php",
@@ -537,6 +543,21 @@ class ExtensionSkeletonTests(unittest.TestCase):
         expected |= set((MODULE / "Classes" / "Select" / "SalesFeedback" / "PrimaryFilters").glob("*.php"))
         expected |= set((MODULE / "Classes" / "Select" / "SearchJob" / "PrimaryFilters").glob("*.php"))
         expected |= set((MODULE / "Classes" / "Select" / "ProspectPool" / "PrimaryFilters").glob("*.php"))
+        # Phase3U02 presentation filters — exact inventory (no arbitrary future PHP)
+        strategy_filters = {
+            MODULE / "Classes" / "Select" / "SearchStrategy" / "PrimaryFilters" / "StrategiesDraft.php",
+            MODULE / "Classes" / "Select" / "SearchStrategy" / "PrimaryFilters" / "StrategiesReady.php",
+            MODULE / "Classes" / "Select" / "SearchStrategy" / "PrimaryFilters" / "StrategiesActive.php",
+            MODULE / "Classes" / "Select" / "SearchStrategy" / "PrimaryFilters" / "StrategiesCompleted.php",
+        }
+        for path in strategy_filters:
+            self.assertTrue(path.is_file(), msg=f"Missing U02 SearchStrategy filter: {path}")
+        expected |= strategy_filters
+        self.assertEqual(
+            set((MODULE / "Classes" / "Select" / "SearchStrategy" / "PrimaryFilters").glob("*.php")),
+            strategy_filters,
+            msg="SearchStrategy PrimaryFilters must match the approved U02 inventory exactly",
+        )
         self.assertEqual(set(php_files), expected, msg=f"Unexpected PHP files: {php_files}")
 
     def test_core_espocrm_untouched(self) -> None:
@@ -695,6 +716,7 @@ class ExtensionSkeletonTests(unittest.TestCase):
                 ("post", "/Prospecting/sync/opportunity-proposal", "Espo\\Modules\\Prospecting\\Api\\PostSyncOpportunityProposal"),
                 ("post", "/Prospecting/feedback/sync", "Espo\\Modules\\Prospecting\\Api\\PostSyncFeedback"),
                 ("post", "/Prospecting/brevo/email-event", "Espo\\Modules\\Prospecting\\Api\\PostSyncBrevoEmailEvent"),
+                ("post", "/Prospecting/search-strategy/generate-jobs", "Espo\\Modules\\Prospecting\\Api\\PostGenerateSearchStrategyJobs"),
             },
         )
 
@@ -991,7 +1013,7 @@ class ExtensionSkeletonTests(unittest.TestCase):
         self.assertEqual(lead_i18n["labels"]["researchEvidences"], "AI Research Evidence")
 
         manifest = _load_json(EXT / "manifest.json")
-        self.assertEqual(manifest["version"], "1.8.0-alpha")
+        self.assertEqual(manifest["version"], "1.9.5-alpha")
 
     def test_phase3b07_operations_metadata(self) -> None:
         lead_filters = _load_json(MODULE / "Resources" / "metadata" / "selectDefs" / "Lead.json")["primaryFilterClassNameMap"]
@@ -1055,6 +1077,9 @@ class ExtensionSkeletonTests(unittest.TestCase):
         dashboard_script = (provisioning / "phase3b07_provision_operations_dashboards.php").read_text(encoding="utf-8")
         self.assertIn("Prospecting Operations", dashboard_script)
         self.assertIn("phase3b07-tier-a", dashboard_script)
+        self.assertIn("phase3u03-summary", dashboard_script)
+        self.assertIn("ProspectingSummary", dashboard_script)
+        self.assertIn("ProspectingRecentDiscovery", dashboard_script)
         self.assertIn("RecentResearchEvidence", dashboard_script)
         self.assertIn("$includeRelatedEntityDashlets", dashboard_script)
         self.assertIn("$userName !== 'manager_test'", dashboard_script)
@@ -1076,7 +1101,7 @@ class ExtensionSkeletonTests(unittest.TestCase):
         self.assertTrue((provisioning / "phase3b07_provision_synthetic_records.php").is_file())
 
         manifest = _load_json(EXT / "manifest.json")
-        self.assertEqual(manifest["version"], "1.8.0-alpha")
+        self.assertEqual(manifest["version"], "1.9.5-alpha")
 
     def test_phase3c01_acquisition_workspace_foundation(self) -> None:
         for name in ("SearchJob", "ProspectPool"):
@@ -1087,17 +1112,22 @@ class ExtensionSkeletonTests(unittest.TestCase):
             )
             self.assertTrue((MODULE / "Resources" / "metadata" / "scopes" / f"{name}.json").is_file())
             self.assertTrue((MODULE / "Resources" / "metadata" / "clientDefs" / f"{name}.json").is_file())
+            self.assertFalse(
+                (EXT / "files" / "custom" / "Espo" / "Custom" / "Resources" / "metadata" / "scopes" / f"{name}.json").exists(),
+                msg=f"{name} scope must have a single module authority",
+            )
 
         search_job = _load_json(MODULE_ENTITY_DEFS / "SearchJob.json")
         self.assertEqual(
             set(search_job["fields"]),
             {
-                "name", "keyword", "country", "strategy", "status", "source", "completedAt",
-                "prospectCount", "failureReason", "createdAt", "assignedUser", "teams", "prospectPools",
+                "name", "keyword", "country", "strategy", "product", "status", "source", "priority",
+                "queryFingerprint", "resultCount", "acceptedCount", "rejectedCount", "errorMessage", "startedAt",
+                "completedAt", "prospectCount", "failureReason", "createdAt", "assignedUser", "teams", "prospectPools",
             },
         )
-        self.assertEqual(search_job["fields"]["status"]["options"], ["WAITING", "RUNNING", "COMPLETED", "FAILED"])
-        self.assertEqual(search_job["fields"]["status"].get("default"), "WAITING")
+        self.assertEqual(search_job["fields"]["status"]["options"], ["QUEUED", "RUNNING", "COMPLETED", "FAILED", "CANCELLED"])
+        self.assertEqual(search_job["fields"]["status"].get("default"), "QUEUED")
         self.assertEqual(search_job["links"]["prospectPools"]["entity"], "ProspectPool")
         self.assertEqual(search_job["links"]["prospectPools"]["foreign"], "searchJob")
 
@@ -1113,13 +1143,40 @@ class ExtensionSkeletonTests(unittest.TestCase):
 
         search_client = _load_json(MODULE / "Resources" / "metadata" / "clientDefs" / "SearchJob.json")
         pool_client = _load_json(MODULE / "Resources" / "metadata" / "clientDefs" / "ProspectPool.json")
-        self.assertEqual([item["name"] for item in search_client["filterList"]], ["jobsRunning", "jobsWaiting", "jobsCompleted", "jobsFailed"])
-        self.assertEqual([item["name"] for item in pool_client["filterList"]], ["discoveryQueue", "qualificationQueue", "researchQueue", "crmQueue"])
+        self.assertEqual([item["name"] for item in search_client["filterList"]], ["jobsQueued", "jobsRunning", "jobsCompleted", "jobsFailed", "jobsCancelled"])
+        # Phase3U02: business filters first, then existing queue filters (UI order intentional)
+        self.assertEqual(
+            [item["name"] for item in pool_client["filterList"]],
+            [
+                "prospectsNew",
+                "prospectsAccepted",
+                "prospectsRejected",
+                "prospectsDuplicate",
+                "prospectsReadyForResearch",
+                "discoveryQueue",
+                "qualificationQueue",
+                "researchQueue",
+                "crmQueue",
+            ],
+        )
 
         search_filters = _load_json(MODULE / "Resources" / "metadata" / "selectDefs" / "SearchJob.json")["primaryFilterClassNameMap"]
         pool_filters = _load_json(MODULE / "Resources" / "metadata" / "selectDefs" / "ProspectPool.json")["primaryFilterClassNameMap"]
-        self.assertEqual(set(search_filters), {"jobsRunning", "jobsWaiting", "jobsCompleted", "jobsFailed"})
-        self.assertEqual(set(pool_filters), {"discoveryQueue", "qualificationQueue", "researchQueue", "crmQueue"})
+        self.assertEqual(set(search_filters), {"jobsQueued", "jobsRunning", "jobsCompleted", "jobsFailed", "jobsCancelled"})
+        self.assertEqual(
+            set(pool_filters),
+            {
+                "prospectsNew",
+                "prospectsAccepted",
+                "prospectsRejected",
+                "prospectsDuplicate",
+                "prospectsReadyForResearch",
+                "discoveryQueue",
+                "qualificationQueue",
+                "researchQueue",
+                "crmQueue",
+            },
+        )
         for class_path in (*search_filters.values(), *pool_filters.values()):
             entity_name = "SearchJob" if "SearchJob" in class_path else "ProspectPool"
             class_name = class_path.rsplit("\\", 1)[-1]
@@ -1129,9 +1186,10 @@ class ExtensionSkeletonTests(unittest.TestCase):
             )
 
         expected_dashlets = {
+            "AcquisitionSearchStrategies": ("SearchStrategy", None),
             "AcquisitionDiscoveryJobs": ("SearchJob", None),
             "AcquisitionJobsRunning": ("SearchJob", "jobsRunning"),
-            "AcquisitionJobsWaiting": ("SearchJob", "jobsWaiting"),
+            "AcquisitionJobsWaiting": ("SearchJob", "jobsQueued"),
             "AcquisitionJobsCompleted": ("SearchJob", "jobsCompleted"),
             "AcquisitionJobsFailed": ("SearchJob", "jobsFailed"),
             "AcquisitionLeadPool": ("ProspectPool", None),
@@ -1148,16 +1206,90 @@ class ExtensionSkeletonTests(unittest.TestCase):
         self.assertEqual(layouts["ProspectPool"]["list"]["module"], "Prospecting")
 
         provisioning = (ROOT / "deployment" / "provisioning" / "phase3c01_provision_acquisition_workspace.php").read_text(encoding="utf-8")
-        self.assertIn("Acquisition", provisioning)
+        self.assertIn("Prospecting Home", provisioning)
+        self.assertIn("ProspectingSummary", provisioning)
+        self.assertIn("ProspectingRecentDiscovery", provisioning)
+        self.assertIn("phase3u03-summary", provisioning)
+        self.assertIn("phase3u03-recent-discovery", provisioning)
         self.assertIn("phase3c01-research-queue", provisioning)
+        self.assertIn("phase3c02-search-strategies", provisioning)
+        self.assertIn("/^(phase3c0[12]|phase3u03)-/", provisioning)
         self.assertIn("SearchJob", provisioning)
         self.assertIn("ProspectPool", provisioning)
         self.assertNotIn("getEntity('Lead')", provisioning)
         self.assertNotIn("getEntity('Opportunity')", provisioning)
 
-        manifest = _load_json(EXT / "manifest.json")
-        self.assertEqual(manifest["version"], "1.8.0-alpha")
+        summary_dashlet = _load_json(MODULE / "Resources" / "metadata" / "dashlets" / "ProspectingSummary.json")
+        self.assertEqual(summary_dashlet["view"], "custom:views/dashlets/prospecting-summary")
+        self.assertEqual(summary_dashlet["aclScope"], "ProspectPool")
+        recent_dashlet = _load_json(MODULE / "Resources" / "metadata" / "dashlets" / "ProspectingRecentDiscovery.json")
+        self.assertEqual(recent_dashlet["entityType"], "SearchJob")
+        self.assertEqual(recent_dashlet["options"]["defaults"]["title"], "Recent Discovery Activity")
+        self.assertTrue((EXT / "files" / "client" / "custom" / "src" / "views" / "dashlets" / "prospecting-summary.js").is_file())
+        self.assertTrue((EXT / "files" / "client" / "custom" / "res" / "templates" / "dashlets" / "prospecting-summary.tpl").is_file())
 
+        manifest = _load_json(EXT / "manifest.json")
+        self.assertEqual(manifest["version"], "1.9.5-alpha")
+
+    def test_phase3c02_search_strategy_discovery_jobs(self) -> None:
+        search_job = _load_json(MODULE_ENTITY_DEFS / "SearchJob.json")
+        self.assertEqual(search_job["links"]["strategy"]["entity"], "SearchStrategy")
+        self.assertEqual(search_job["links"]["strategy"]["foreign"], "searchJobs")
+        self.assertEqual(search_job["fields"]["priority"]["options"], ["P1", "P2", "P3"])
+        self.assertEqual(search_job["fields"]["priority"].get("default"), "P2")
+        self.assertIn("queryFingerprint", search_job["indexes"])
+
+        client_defs = _load_json(MODULE / "Resources" / "metadata" / "clientDefs" / "SearchStrategy.json")
+        # Phase3U03-C: list-only empty-state presentation view is allowed; detail/edit remain frozen.
+        self.assertEqual(
+            client_defs.get("recordViews"),
+            {"list": "custom:views/search-strategy/record/list"},
+        )
+        self.assertNotIn("detail", client_defs.get("recordViews", {}))
+        self.assertNotIn("edit", client_defs.get("recordViews", {}))
+        self.assertEqual(client_defs["detailActionList"][-1]["name"], "generateJobs")
+        self.assertEqual(client_defs["detailActionList"][-1]["handler"], "custom:handlers/search-strategy/generate-jobs")
+        self.assertFalse(client_defs["relationshipPanels"]["searchJobs"]["create"])
+        self.assertTrue((EXT / "files" / "client" / "custom" / "src" / "views" / "search-strategy" / "detail.js").is_file())
+        self.assertTrue((EXT / "files" / "client" / "custom" / "src" / "views" / "search-strategy" / "record" / "list.js").is_file())
+
+        templates = (MODULE / "Services" / "SearchStrategyTemplates.php").read_text(encoding="utf-8")
+        for product in ("PlateCycler", "Resin Tank", "Filament Dryer", "Resin", "LCD Replacement", "Mainboard", "UV Meter", "Heater"):
+            self.assertIn(f"'{product}'", templates)
+        for persona in ("Distributor", "Reseller", "Dealer", "3D Printer Store", "Print Farm", "Service Provider", "Education Supplier", "Dental Distributor", "Industrial Distributor"):
+            self.assertIn(f"'{persona}'", templates)
+        self.assertIn("MAX_JOBS = 40", templates)
+
+        service = (MODULE / "Services" / "SearchStrategyService.php").read_text(encoding="utf-8")
+        self.assertIn("hash('sha256'", service)
+        self.assertIn("queryFingerprint", service)
+        self.assertIn("Unsupported or missing product", service)
+        self.assertIn("Missing country", service)
+        self.assertIn("Unsupported targetPersona", service)
+        self.assertIn("exceeds maximum Discovery Job count", service)
+        self.assertIn("checkEntityEdit($strategy)", service)
+        self.assertIn("'status' => 'QUEUED'", service)
+        self.assertNotIn("getEntity('Lead')", service)
+        self.assertNotIn("getEntity('Opportunity')", service)
+        self.assertNotIn("curl_", service)
+        self.assertNotIn("file_get_contents", service)
+        self.assertNotIn("DeepSeek", service)
+
+        routes = _load_json(MODULE / "Resources" / "routes.json")
+        self.assertIn(
+            {
+                "route": "/Prospecting/search-strategy/generate-jobs",
+                "method": "post",
+                "actionClassName": "Espo\\Modules\\Prospecting\\Api\\PostGenerateSearchStrategyJobs",
+            },
+            routes,
+        )
+        self.assertEqual(_load_json(MODULE / "Resources" / "routes.json"), _load_json(EXT / "Resources" / "routes.json"))
+
+        role_script = (ROOT / "deployment" / "provisioning" / "phase3b06_provision_workspace_roles.php").read_text(encoding="utf-8")
+        self.assertNotIn("SearchStrategy", role_script)
+        self.assertNotIn("SearchJob", role_script)
+        self.assertNotIn("ProspectPool", role_script)
 
     def test_phase3c02_1_acquisition_acl_provisioning(self) -> None:
         script = (ROOT / "deployment" / "provisioning" / "phase3c02_1_provision_acquisition_acl.php").read_text(encoding="utf-8")
@@ -1173,7 +1305,8 @@ class ExtensionSkeletonTests(unittest.TestCase):
         self.assertNotIn("'Opportunity' =>", script)
 
         manifest = _load_json(EXT / "manifest.json")
-        self.assertEqual(manifest["version"], "1.9.0-alpha")
+        self.assertEqual(manifest["version"], "1.9.5-alpha")
+
 
 if __name__ == "__main__":
     unittest.main()
