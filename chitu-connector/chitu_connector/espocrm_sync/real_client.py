@@ -31,6 +31,8 @@ _RESEARCH_EVIDENCE_FIELDS = {
     "peCapturedAt", "peSchemaVersion", "peSnapshotHash",
 }
 _LIFECYCLE_ENTITY_TYPES = {"Lead", "Account", "Contact", "Opportunity"}
+_LEAD_SCORE_PROJECTION_FIELDS = {"peOpportunityScoreV4", "peScoreTier", "peBestFirstProduct", "peScoreRulesVersion"}
+_LEAD_CAMPAIGN_PROJECTION_FIELDS = {"peEmailStatus", "peEmailCampaignName", "peRecommendedApproach"}
 
 
 class LocalEspoCRMError(RuntimeError):
@@ -136,6 +138,65 @@ class LocalEspoCRMClient:
         response = self._request("GET", f"Lead/{lead_id}/researchEvidences", query={"maxSize": "50", "select": "id"})
         records = response.get("list", ()) if isinstance(response, Mapping) else ()
         return tuple(str(item["id"]) for item in records if isinstance(item, Mapping) and item.get("id"))
+
+    def find_research_evidence_for_snapshot(self, lead_id: str, snapshot_hash: str) -> tuple[Mapping[str, Any], ...]:
+        """Find persisted evidence for an existing Lead/snapshot pair only."""
+        response = self._request("GET", "ResearchEvidence", query={
+            "maxSize": "200", "select": "id,leadId,peEvidenceId,peSnapshotHash,peSourceUrl,peClaimType,peClaim",
+            "where[0][type]": "equals", "where[0][attribute]": "leadId", "where[0][value]": lead_id,
+            "where[1][type]": "equals", "where[1][attribute]": "peSnapshotHash", "where[1][value]": snapshot_hash,
+        })
+        records = response.get("list", ()) if isinstance(response, Mapping) else ()
+        return tuple(item for item in records if isinstance(item, Mapping))
+
+    def find_research_evidence_by_identity(
+        self,
+        lead_id: str,
+        source_url: str,
+        claim_type: str,
+        claim: str,
+    ) -> tuple[Mapping[str, Any], ...]:
+        """Read only candidate evidence matching one Lead-scoped fact."""
+        response = self._request("GET", "ResearchEvidence", query={
+            "maxSize": "200", "select": "id,leadId,peEvidenceId,peSnapshotHash,peSourceUrl,peClaimType,peClaim",
+            "where[0][type]": "equals", "where[0][attribute]": "leadId", "where[0][value]": lead_id,
+            "where[1][type]": "equals", "where[1][attribute]": "peSourceUrl", "where[1][value]": source_url,
+            "where[2][type]": "equals", "where[2][attribute]": "peClaimType", "where[2][value]": claim_type,
+            "where[3][type]": "equals", "where[3][attribute]": "peClaim", "where[3][value]": claim,
+        })
+        records = response.get("list", ()) if isinstance(response, Mapping) else ()
+        return tuple(item for item in records if isinstance(item, Mapping))
+
+    def create_research_evidence(self, body: Mapping[str, Any]) -> Mapping[str, Any]:
+        """Create evidence only; the caller must supply an existing ``leadId``."""
+        value = self._request("POST", "ResearchEvidence", body=body)
+        if not isinstance(value, Mapping):
+            raise LocalEspoCRMError("ResearchEvidence create response was not an object")
+        return value
+
+    def update_lead_score_projection(self, lead_id: str, fields: Mapping[str, Any]) -> Mapping[str, Any]:
+        """Update only the allowlisted score projection fields on an existing Lead."""
+        self._require_authentication()
+        if not isinstance(lead_id, str) or not lead_id.strip():
+            raise EnvironmentSafetyError("Lead id is required for score projection")
+        if not set(fields).issubset(_LEAD_SCORE_PROJECTION_FIELDS):
+            raise EnvironmentSafetyError("score projection contains non-allowlisted Lead fields")
+        value = self._request("PUT", f"Lead/{lead_id}", body=fields)
+        if not isinstance(value, Mapping):
+            raise LocalEspoCRMError("Lead score projection response was not an object")
+        return value
+
+    def update_lead_campaign_projection(self, lead_id: str, fields: Mapping[str, Any]) -> Mapping[str, Any]:
+        """Update only existing Lead draft-preparation fields; never send or approve."""
+        self._require_authentication()
+        if not isinstance(lead_id, str) or not lead_id.strip():
+            raise EnvironmentSafetyError("Lead id is required for campaign projection")
+        if not set(fields).issubset(_LEAD_CAMPAIGN_PROJECTION_FIELDS):
+            raise EnvironmentSafetyError("campaign projection contains non-allowlisted Lead fields")
+        value = self._request("PUT", f"Lead/{lead_id}", body=fields)
+        if not isinstance(value, Mapping):
+            raise LocalEspoCRMError("Lead campaign projection response was not an object")
+        return value
 
     def sync_payload(self, payload: SyncContractPayload) -> RealSyncResult:
         existing = self.find_synthetic_lead()
