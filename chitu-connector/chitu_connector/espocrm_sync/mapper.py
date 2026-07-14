@@ -133,6 +133,7 @@ class EspoCRMSyncMapper:
         return {
             "evidence_id": item.evidence_id,
             "claim_type": item.claim_type,
+            "evidence_type": item.evidence_type,
             "claim": item.claim,
             "source_url": item.source_url,
             "evidence_text": item.evidence_text,

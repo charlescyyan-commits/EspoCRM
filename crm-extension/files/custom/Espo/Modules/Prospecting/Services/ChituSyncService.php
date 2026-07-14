@@ -49,15 +49,31 @@ class ChituSyncService
 
         $ids = [];
         $lastEvidence = null;
+        $createdAny = false;
+        $updatedAny = false;
         foreach ($payload['evidence'] as $item) {
-            $evidence = $this->entityManager->getEntity('ResearchEvidence');
+            $identity = $this->evidenceIdentity($lead->getId(), $item);
+            $evidence = $this->findEvidenceByIdentity(
+                $lead->getId(),
+                $identity['canonicalUrl'],
+                $identity['normalizedEvidenceType'],
+                $identity['claimHash'],
+            );
+            if ($evidence === null) {
+                $evidence = $this->entityManager->getEntity('ResearchEvidence');
+                $createdAny = true;
+            } elseif (!$this->acl->checkEntityEdit($evidence)) {
+                throw new Forbidden();
+            } else {
+                $updatedAny = true;
+            }
             $evidence->set([
                 'name' => $payload['company']['name'] . ' — ' . $item['evidence_id'],
                 'leadId' => $lead->getId(),
                 'peEvidenceId' => $item['evidence_id'],
                 'peClaim' => $item['claim'],
                 'peClaimType' => $item['claim_type'],
-                'peEvidenceType' => $item['claim_type'],
+                'peEvidenceType' => $this->evidenceType($item),
                 'peSourceUrl' => $item['source_url'],
                 'peEvidenceText' => $item['evidence_text'],
                 'peContentSummary' => $item['evidence_text'],
@@ -65,17 +81,139 @@ class ChituSyncService
                 'peCapturedAt' => $this->dateTime($item['captured_at']),
                 'peSchemaVersion' => $item['schema_version'],
                 'peSnapshotHash' => $payload['provenance']['evidence_snapshot_hash'],
+                'peCanonicalUrl' => $identity['canonicalUrl'],
+                'peEvidenceTypeNormalized' => $identity['normalizedEvidenceType'],
+                'peClaimHash' => $identity['claimHash'],
             ]);
             $this->entityManager->saveEntity($evidence);
             $ids[] = $evidence->getId();
             $lastEvidence = $evidence;
         }
 
-        $result = $this->response($lastEvidence, $payload, true, false);
+        $result = $this->response($lastEvidence, $payload, $createdAny, $updatedAny);
         $result['crm_ids'] = $ids;
         $result['evidence_count'] = count($ids);
 
         return $result;
+    }
+
+    /**
+     * Find a currently active row by the C10.6 identity columns. The database
+     * unique index remains the final guard against concurrent inserts.
+     */
+    private function findEvidenceByIdentity(
+        string $leadId,
+        string $canonicalUrl,
+        string $normalizedEvidenceType,
+        string $claimHash,
+    ): ?Entity {
+        return $this->entityManager->getRDBRepository('ResearchEvidence')
+            ->where([
+                'leadId' => $leadId,
+                'peCanonicalUrl' => $canonicalUrl,
+                'peEvidenceTypeNormalized' => $normalizedEvidenceType,
+                'peClaimHash' => $claimHash,
+            ])
+            ->findOne();
+    }
+
+    /**
+     * @return array{canonicalUrl: string, normalizedEvidenceType: string, claimHash: string}
+     */
+    private function evidenceIdentity(string $leadId, array $item): array
+    {
+        if ($leadId === '') {
+            throw new BadRequest('Missing evidence lead ID.');
+        }
+        $canonicalUrl = $this->canonicalUrl($this->evidenceString($item, 'source_url'));
+        $normalizedEvidenceType = $this->normalizeEvidenceType($this->evidenceType($item));
+        $claimHash = hash('sha256', $this->normalizeText($this->evidenceString($item, 'claim')));
+
+        return [
+            'canonicalUrl' => $canonicalUrl,
+            'normalizedEvidenceType' => $normalizedEvidenceType,
+            'claimHash' => $claimHash,
+        ];
+    }
+
+    /**
+     * `evidence_type` is an optional, backward-compatible V1 pass-through.
+     * Legacy payloads receive an explicit unknown value; claim_type is never
+     * used as the evidence-format classification.
+     */
+    private function evidenceType(array $item): string
+    {
+        $value = $item['evidence_type'] ?? null;
+
+        return is_string($value) && trim($value) !== '' ? trim($value) : 'LEGACY_UNKNOWN';
+    }
+
+    private function evidenceString(array $item, string $name): string
+    {
+        $value = $item[$name] ?? null;
+        if (!is_string($value) || trim($value) === '') {
+            throw new BadRequest("Missing evidence field: {$name}.");
+        }
+
+        return trim($value);
+    }
+
+    private function canonicalUrl(string $value): string
+    {
+        $parts = parse_url($value);
+        if ($parts === false || !isset($parts['scheme'], $parts['host'])) {
+            throw new BadRequest('Invalid evidence source URL.');
+        }
+        $scheme = strtolower($parts['scheme']);
+        $host = strtolower($parts['host']);
+        if (!in_array($scheme, ['http', 'https'], true) || $host === '') {
+            throw new BadRequest('Invalid evidence source URL.');
+        }
+        $port = $parts['port'] ?? null;
+        $portPart = $port !== null && !(($scheme === 'http' && $port === 80) || ($scheme === 'https' && $port === 443))
+            ? ':' . $port
+            : '';
+        $path = $parts['path'] ?? '/';
+        $path = $path === '/' ? '/' : rtrim($path, '/');
+        $query = $this->canonicalQuery($parts['query'] ?? '');
+        $canonical = $scheme . '://' . $host . $portPart . $path . ($query === '' ? '' : '?' . $query);
+        if (strlen($canonical) > 255) {
+            throw new BadRequest('Canonical evidence source URL is too long.');
+        }
+
+        return $canonical;
+    }
+
+    private function canonicalQuery(string $query): string
+    {
+        if ($query === '') {
+            return '';
+        }
+        $pairs = [];
+        foreach (explode('&', $query) as $part) {
+            $pair = explode('=', $part, 2);
+            $key = rawurldecode($pair[0]);
+            $value = rawurldecode($pair[1] ?? '');
+            $pairs[] = rawurlencode($key) . '=' . rawurlencode($value);
+        }
+        sort($pairs, SORT_STRING);
+
+        return implode('&', $pairs);
+    }
+
+    private function normalizeEvidenceType(string $value): string
+    {
+        $normalized = strtolower($this->normalizeText($value));
+        if (strlen($normalized) > 100) {
+            throw new BadRequest('Evidence type is too long.');
+        }
+
+        return $normalized;
+    }
+
+    private function normalizeText(string $value): string
+    {
+        return preg_replace('/\s+/u', ' ', trim($value)) ?? trim($value);
     }
 
     public function syncOpportunityProposal(stdClass $body): array

@@ -132,15 +132,18 @@ def _validate_evidence(value: Any, errors: list[str]) -> None:
         errors.append("MISSING_EVIDENCE")
         return
     required = {"evidence_id", "claim_type", "claim", "source_url", "evidence_text", "confidence", "captured_at", "schema_version"}
+    optional = {"evidence_type"}
     for index, item in enumerate(value):
         if not isinstance(item, Mapping):
             errors.append(f"INVALID_EVIDENCE:{index}")
             continue
         keys = set(item)
         errors.extend(f"MISSING_EVIDENCE_FIELD:{index}.{name}" for name in sorted(required - keys))
-        errors.extend(f"UNKNOWN_EVIDENCE_FIELD:{index}.{name}" for name in sorted(keys - required))
+        errors.extend(f"UNKNOWN_EVIDENCE_FIELD:{index}.{name}" for name in sorted(keys - required - optional))
         if not _non_empty(item.get("evidence_id")) or not _non_empty(item.get("claim_type")):
             errors.append(f"INVALID_EVIDENCE_REFERENCE:{index}")
+        if "evidence_type" in item and not _non_empty(item.get("evidence_type")):
+            errors.append(f"INVALID_EVIDENCE_TYPE:{index}")
         if not _valid_url(item.get("source_url")):
             errors.append(f"INVALID_EVIDENCE_URL:{index}")
         text = item.get("evidence_text")

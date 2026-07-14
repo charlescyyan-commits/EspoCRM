@@ -80,6 +80,30 @@
       "notNull": false,
       "trim": true
     },
+    "peCanonicalUrl": {
+      "type": "varchar",
+      "maxLength": 255,
+      "required": false,
+      "notNull": false,
+      "trim": true,
+      "utility": true
+    },
+    "peEvidenceTypeNormalized": {
+      "type": "varchar",
+      "maxLength": 100,
+      "required": false,
+      "notNull": false,
+      "trim": true,
+      "utility": true
+    },
+    "peClaimHash": {
+      "type": "varchar",
+      "maxLength": 64,
+      "required": false,
+      "notNull": false,
+      "trim": true,
+      "utility": true
+    },
     "lead": {
       "type": "link"
     },
@@ -142,6 +166,7 @@
       "peEvidenceId"
     ]
   },
+  "deleteId": true,
   "indexes": {
     "peEvidenceId": {
       "columns": [
@@ -151,6 +176,16 @@
     "peSnapshotHash": {
       "columns": [
         "peSnapshotHash"
+      ]
+    },
+    "c10EvidenceIdentity": {
+      "type": "unique",
+      "columns": [
+        "leadId",
+        "peCanonicalUrl",
+        "peEvidenceTypeNormalized",
+        "peClaimHash",
+        "deleteId"
       ]
     }
   }
