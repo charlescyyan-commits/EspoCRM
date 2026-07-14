@@ -1,0 +1,5 @@
+{
+  "controller": "custom:controllers/prospecting-search",
+  "iconClass": "fas fa-search",
+  "color": "#1B4F72"
+}

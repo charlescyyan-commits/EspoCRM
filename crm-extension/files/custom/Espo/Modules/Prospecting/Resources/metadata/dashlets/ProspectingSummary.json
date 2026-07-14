@@ -1,0 +1,30 @@
+{
+  "view": "custom:views/dashlets/prospecting-summary",
+  "aclScope": "ProspectPool",
+  "options": {
+    "defaults": {
+      "title": "Prospecting Summary"
+    },
+    "fields": {
+      "title": {
+        "type": "varchar",
+        "required": true
+      },
+      "autorefreshInterval": {
+        "type": "enumFloat",
+        "options": [0, 0.5, 1, 2, 5, 10]
+      }
+    },
+    "layout": [
+      {
+        "rows": [
+          [
+            {"name": "title"},
+            {"name": "autorefreshInterval"}
+          ]
+        ]
+      }
+    ]
+  },
+  "accessDataList": [{"inPortalDisabled": true}]
+}

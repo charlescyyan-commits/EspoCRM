@@ -1,0 +1,7 @@
+{
+  "fields": {"name": "标题", "externalFeedbackId": "外部反馈 ID", "externalLeadId": "外部潜客 ID", "feedbackType": "反馈类型", "outcome": "结果", "reason": "原因", "note": "备注", "currentStage": "当前阶段", "product": "产品", "productResult": "产品结果", "campaign": "活动", "source": "来源", "feedbackAt": "反馈时间", "lead": "潜客", "learningSignal": "学习信号"},
+  "links": {"lead": "潜客", "learningSignal": "学习信号"},
+  "labels": {"Create SalesFeedback": "创建销售反馈", "SalesFeedbacks": "销售反馈"},
+  "presetFilters": {"positiveFeedback": "正面反馈", "negativeFeedback": "负面反馈", "needsFollowUp": "需要跟进", "recentFeedback": "最近反馈"},
+  "options": {"feedbackType": {"CONTACT_ATTEMPT": "联系尝试", "CUSTOMER_REPLY": "客户回复", "INTERESTED": "有兴趣", "NOT_INTERESTED": "无兴趣", "NO_RESPONSE": "未回复", "WON": "赢单", "LOST": "丢单", "EMAIL_INTERESTED": "邮件有兴趣", "EMAIL_NOT_INTERESTED": "邮件无兴趣", "EMAIL_BOUNCED": "邮件退信", "EMAIL_NO_RESPONSE": "邮件未回复"}, "outcome": {"POSITIVE": "正面", "NEGATIVE": "负面", "NEUTRAL": "中性"}, "source": {"CRM_MANUAL": "CRM 手动录入", "CONNECTOR_SYNC": "连接器同步", "EMAIL_EVENT": "邮件事件"}}
+}

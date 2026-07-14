@@ -1,0 +1,34 @@
+{
+  "scopeNames": {
+    "SearchStrategy": "搜索策略",
+    "SearchJob": "搜索任务",
+    "ProspectPool": "潜客池",
+    "ProspectingDashboard": "潜客运营",
+    "ProspectingSearch": "搜索",
+    "ResearchEvidence": "AI 研究证据"
+  },
+  "scopeNamesPlural": {
+    "SearchStrategy": "搜索策略",
+    "SearchJob": "搜索任务",
+    "ProspectPool": "潜客池",
+    "ProspectingDashboard": "潜客运营",
+    "ProspectingSearch": "搜索",
+    "ResearchEvidence": "AI 研究证据"
+  },
+  "dashlets": {
+    "ProspectingIntelligence": "潜客智能",
+    "ProspectingSummary": "潜客概览",
+    "ProspectingRecentDiscovery": "最近发现活动",
+    "RecentResearchEvidence": "最近研究证据",
+    "RecentSalesFeedback": "最近销售反馈",
+    "AcquisitionOverview": "获客概览",
+    "AcquisitionSearchStrategies": "搜索策略",
+    "AcquisitionDiscoveryJobs": "发现任务",
+    "AcquisitionJobsRunning": "运行中的任务",
+    "AcquisitionJobsWaiting": "排队中的任务",
+    "AcquisitionJobsCompleted": "已完成任务",
+    "AcquisitionJobsFailed": "失败任务",
+    "AcquisitionLeadPool": "潜客池",
+    "AcquisitionResearchQueue": "研究队列"
+  }
+}

@@ -19,7 +19,8 @@
   },
   "labels": {
     "Create ResearchEvidence": "Create Research Evidence",
-    "ResearchEvidences": "Research Evidence"
+    "ResearchEvidences": "Research Evidence",
+    "No Data": "Website research results will appear after prospects are analyzed."
   },
   "tooltips": {
     "peEvidenceId": "Stable Engine evidence item identifier.",

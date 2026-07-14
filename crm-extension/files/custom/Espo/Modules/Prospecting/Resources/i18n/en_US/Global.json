@@ -1,14 +1,34 @@
 {
+  "scopeNames": {
+    "SearchStrategy": "Search Strategy",
+    "SearchJob": "Search Job",
+    "ProspectPool": "Prospect Pool",
+    "ProspectingDashboard": "Prospecting Operations",
+    "ProspectingSearch": "Search",
+    "ResearchEvidence": "Research Evidence"
+  },
+  "scopeNamesPlural": {
+    "SearchStrategy": "Search Strategies",
+    "SearchJob": "Search Jobs",
+    "ProspectPool": "Prospect Pool",
+    "ProspectingDashboard": "Prospecting Operations",
+    "ProspectingSearch": "Search",
+    "ResearchEvidence": "Research Evidence"
+  },
   "dashlets": {
     "ProspectingIntelligence": "Prospecting Intelligence",
+    "ProspectingSummary": "Prospecting Summary",
+    "ProspectingRecentDiscovery": "Recent Discovery Activity",
     "RecentResearchEvidence": "Recent Research Evidence",
     "RecentSalesFeedback": "Recent Sales Feedback",
-    "AcquisitionDiscoveryJobs": "Discovery Jobs",
-    "AcquisitionJobsRunning": "Running",
-    "AcquisitionJobsWaiting": "Waiting",
-    "AcquisitionJobsCompleted": "Completed",
-    "AcquisitionJobsFailed": "Failed",
-    "AcquisitionLeadPool": "Lead Pool",
+    "AcquisitionOverview": "Acquisition Overview",
+    "AcquisitionSearchStrategies": "Search Strategies",
+    "AcquisitionDiscoveryJobs": "Search Jobs",
+    "AcquisitionJobsRunning": "Running Jobs",
+    "AcquisitionJobsWaiting": "Queued Jobs",
+    "AcquisitionJobsCompleted": "Completed Jobs",
+    "AcquisitionJobsFailed": "Failed Jobs",
+    "AcquisitionLeadPool": "Prospect Pool",
     "AcquisitionResearchQueue": "Research Queue"
   }
 }

@@ -1,0 +1,39 @@
+{
+  "fields": {
+    "name": "公司",
+    "externalProspectId": "服务提供商参考 ID",
+    "source": "服务提供商",
+    "sourceUrl": "来源 URL",
+    "website": "网站",
+    "country": "国家/地区",
+    "queue": "流程阶段",
+    "status": "处理状态",
+    "researchStatus": "研究状态",
+    "qualificationStatus": "资格状态",
+    "crmPushStatus": "CRM 推送状态",
+    "qualifiedAt": "资格确认时间",
+    "crmPushedAt": "CRM 推送时间",
+    "note": "备注",
+    "searchJob": "搜索任务"
+  },
+  "links": {"searchJob": "搜索任务"},
+  "labels": {
+    "Create ProspectPool": "创建潜客",
+    "ProspectPools": "潜客池",
+    "No Data": "尚无潜客。请启动发现搜索以建立潜客池。"
+  },
+  "presetFilters": {"prospectsNew": "新增", "prospectsAccepted": "已接受", "prospectsRejected": "已拒绝", "prospectsDuplicate": "重复", "prospectsReadyForResearch": "可开始研究", "discoveryQueue": "发现队列", "qualificationQueue": "资格确认队列", "researchQueue": "研究队列", "crmQueue": "CRM 队列"},
+  "tooltips": {
+    "externalProspectId": "此潜客由服务提供商分配的参考标识（内部跟踪）。",
+    "queue": "当前阶段：发现 → 资格确认 → 研究 → CRM。",
+    "qualificationStatus": "此潜客的销售资格确认结果。",
+    "researchStatus": "网站研究是否待处理或已完成。"
+  },
+  "options": {
+    "queue": {"DISCOVERY": "发现", "QUALIFICATION": "资格确认", "RESEARCH": "研究", "CRM": "CRM"},
+    "status": {"WAITING": "等待中", "RUNNING": "运行中", "COMPLETED": "已完成", "FAILED": "失败"},
+    "researchStatus": {"NOT_STARTED": "未开始", "PENDING": "待处理", "COMPLETED": "已完成", "FAILED": "失败"},
+    "qualificationStatus": {"PENDING": "待处理", "QUALIFIED": "已确认", "REJECTED": "已拒绝"},
+    "crmPushStatus": {"NOT_READY": "未就绪", "READY": "就绪", "PUSHED": "已推送", "FAILED": "失败"}
+  }
+}

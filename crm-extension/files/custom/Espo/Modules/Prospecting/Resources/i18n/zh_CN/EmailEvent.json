@@ -1,0 +1,6 @@
+{
+  "fields": {"name": "标题", "externalMessageId": "外部邮件 ID", "eventType": "事件类型", "campaign": "活动", "eventAt": "事件时间", "source": "来源", "lead": "潜客"},
+  "links": {"lead": "潜客"},
+  "labels": {"Create EmailEvent": "创建邮件事件", "EmailEvents": "邮件事件"},
+  "options": {"eventType": {"SENT": "已发送", "DELIVERED": "已送达", "OPENED": "已打开", "CLICKED": "已点击", "REPLIED": "已回复", "BOUNCED": "退信"}, "source": {"BREVO": "Brevo", "CONNECTOR_SYNC": "连接器同步", "MANUAL": "手动"}}
+}

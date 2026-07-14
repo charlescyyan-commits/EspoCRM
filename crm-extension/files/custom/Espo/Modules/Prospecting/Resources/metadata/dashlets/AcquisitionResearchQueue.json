@@ -1,1 +1,22 @@
-{"view": "views/dashlets/abstract/record-list", "aclScope": "ProspectPool", "entityType": "ProspectPool", "options": {"defaults": {"title": "Research Queue", "orderBy": "createdAt", "order": "desc", "displayRecords": 10, "includeShared": true, "searchData": {"primary": "researchQueue"}}}, "accessDataList": [{"inPortalDisabled": true}]}
+{
+  "view": "views/dashlets/abstract/record-list",
+  "aclScope": "ProspectPool",
+  "entityType": "ProspectPool",
+  "options": {
+    "defaults": {
+      "title": "Research Queue",
+      "orderBy": "createdAt",
+      "order": "desc",
+      "displayRecords": 10,
+      "includeShared": true,
+      "searchData": {"primary": "researchQueue"},
+      "expandedLayout": {
+        "rows": [
+          [{"name": "name", "link": true}, {"name": "website"}],
+          [{"name": "country"}, {"name": "researchStatus"}]
+        ]
+      }
+    }
+  },
+  "accessDataList": [{"inPortalDisabled": true}]
+}

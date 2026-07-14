@@ -1,10 +1,46 @@
 {
-  "fields": {"name": "Prospect", "externalProspectId": "External Prospect ID", "source": "Source", "sourceUrl": "Source URL", "website": "Website", "country": "Country", "queue": "Queue", "status": "Status", "researchStatus": "Research Status", "qualificationStatus": "Qualification Status", "crmPushStatus": "CRM Push Status", "qualifiedAt": "Qualified At", "crmPushedAt": "CRM Pushed At", "note": "Note", "searchJob": "Search Job"},
+  "fields": {
+    "name": "Company",
+    "externalProspectId": "Provider Reference ID",
+    "source": "Provider",
+    "sourceUrl": "Source URL",
+    "website": "Website",
+    "country": "Country",
+    "queue": "Pipeline Stage",
+    "status": "Processing Status",
+    "researchStatus": "Research Status",
+    "qualificationStatus": "Qualification",
+    "crmPushStatus": "CRM Push Status",
+    "qualifiedAt": "Qualified At",
+    "crmPushedAt": "CRM Pushed At",
+    "note": "Notes",
+    "searchJob": "Search Job"
+  },
   "links": {"searchJob": "Search Job"},
-  "labels": {"Create ProspectPool": "Create Prospect", "ProspectPools": "Lead Pool"},
-  "presetFilters": {"discoveryQueue": "Discovery Queue", "qualificationQueue": "Qualification Queue", "researchQueue": "Research Queue", "crmQueue": "CRM Queue"},
+  "labels": {
+    "Create ProspectPool": "Create Prospect",
+    "ProspectPools": "Prospect Pool",
+    "No Data": "No prospects yet. Start a discovery search to build your prospect pool."
+  },
+  "presetFilters": {
+    "prospectsNew": "New",
+    "prospectsAccepted": "Accepted",
+    "prospectsRejected": "Rejected",
+    "prospectsDuplicate": "Duplicate",
+    "prospectsReadyForResearch": "Ready for Research",
+    "discoveryQueue": "Discovery Queue",
+    "qualificationQueue": "Qualification Queue",
+    "researchQueue": "Research Queue",
+    "crmQueue": "CRM Queue"
+  },
+  "tooltips": {
+    "externalProspectId": "Provider-assigned reference for this prospect (internal tracking).",
+    "queue": "Current stage: Discovery → Qualification → Research → CRM.",
+    "qualificationStatus": "Sales qualification outcome for this prospect.",
+    "researchStatus": "Whether website research is pending or complete."
+  },
   "options": {
-    "queue": {"DISCOVERY": "Discovery Queue", "QUALIFICATION": "Qualification Queue", "RESEARCH": "Research Queue", "CRM": "CRM Queue"},
+    "queue": {"DISCOVERY": "Discovery", "QUALIFICATION": "Qualification", "RESEARCH": "Research", "CRM": "CRM"},
     "status": {"WAITING": "Waiting", "RUNNING": "Running", "COMPLETED": "Completed", "FAILED": "Failed"},
     "researchStatus": {"NOT_STARTED": "Not Started", "PENDING": "Pending", "COMPLETED": "Completed", "FAILED": "Failed"},
     "qualificationStatus": {"PENDING": "Pending", "QUALIFIED": "Qualified", "REJECTED": "Rejected"},

@@ -53,22 +53,25 @@ function provisionOperationsDashboard(
         $tabIndex = array_key_last($layout);
     }
 
+    // Phase3U03: sales-facing Prospecting Overview first; Lead ops dashlets remain below.
     $items = [
-        ['id' => 'phase3b07-tier-a', 'name' => 'ProspectingIntelligence', 'x' => 0, 'y' => 0, 'width' => 1, 'height' => 2],
-        ['id' => 'phase3b07-research-pending', 'name' => 'ProspectingIntelligence', 'x' => 1, 'y' => 0, 'width' => 1, 'height' => 2],
-        ['id' => 'phase3b07-contact-ready', 'name' => 'ProspectingIntelligence', 'x' => 2, 'y' => 0, 'width' => 1, 'height' => 2],
-        ['id' => 'phase3b07-sync-issues', 'name' => 'ProspectingIntelligence', 'x' => 3, 'y' => 0, 'width' => 1, 'height' => 2],
-        ['id' => 'phase3b07-lead-queue', 'name' => 'ProspectingIntelligence', 'x' => 0, 'y' => 2, 'width' => 4, 'height' => 3],
-        ['id' => 'phase3b07-proposal-review', 'name' => 'ProspectingIntelligence', 'x' => 0, 'y' => 5, 'width' => 2, 'height' => 2],
-        ['id' => 'phase3b07-missing-evidence', 'name' => 'ProspectingIntelligence', 'x' => 2, 'y' => 5, 'width' => 2, 'height' => 2],
+        ['id' => 'phase3u03-summary', 'name' => 'ProspectingSummary', 'x' => 0, 'y' => 0, 'width' => 4, 'height' => 2],
+        ['id' => 'phase3u03-recent-discovery', 'name' => 'ProspectingRecentDiscovery', 'x' => 0, 'y' => 2, 'width' => 4, 'height' => 3],
+        ['id' => 'phase3b07-tier-a', 'name' => 'ProspectingIntelligence', 'x' => 0, 'y' => 5, 'width' => 1, 'height' => 2],
+        ['id' => 'phase3b07-research-pending', 'name' => 'ProspectingIntelligence', 'x' => 1, 'y' => 5, 'width' => 1, 'height' => 2],
+        ['id' => 'phase3b07-contact-ready', 'name' => 'ProspectingIntelligence', 'x' => 2, 'y' => 5, 'width' => 1, 'height' => 2],
+        ['id' => 'phase3b07-sync-issues', 'name' => 'ProspectingIntelligence', 'x' => 3, 'y' => 5, 'width' => 1, 'height' => 2],
+        ['id' => 'phase3b07-lead-queue', 'name' => 'ProspectingIntelligence', 'x' => 0, 'y' => 7, 'width' => 4, 'height' => 3],
+        ['id' => 'phase3b07-proposal-review', 'name' => 'ProspectingIntelligence', 'x' => 0, 'y' => 10, 'width' => 2, 'height' => 2],
+        ['id' => 'phase3b07-missing-evidence', 'name' => 'ProspectingIntelligence', 'x' => 2, 'y' => 10, 'width' => 2, 'height' => 2],
     ];
     if ($includeRelatedEntityDashlets) {
-        $items[] = ['id' => 'phase3b07-recent-evidence', 'name' => 'RecentResearchEvidence', 'x' => 0, 'y' => 7, 'width' => 2, 'height' => 2];
-        $items[] = ['id' => 'phase3b07-recent-feedback', 'name' => 'RecentSalesFeedback', 'x' => 2, 'y' => 7, 'width' => 2, 'height' => 2];
+        $items[] = ['id' => 'phase3b07-recent-evidence', 'name' => 'RecentResearchEvidence', 'x' => 0, 'y' => 12, 'width' => 2, 'height' => 2];
+        $items[] = ['id' => 'phase3b07-recent-feedback', 'name' => 'RecentSalesFeedback', 'x' => 2, 'y' => 12, 'width' => 2, 'height' => 2];
     }
     $existingItems = array_filter(
         $layout[$tabIndex]['layout'] ?? [],
-        fn(array $item): bool => !str_starts_with((string) ($item['id'] ?? ''), 'phase3b07-')
+        fn(array $item): bool => !preg_match('/^(phase3b07|phase3u03)-/', (string) ($item['id'] ?? ''))
     );
     $layout[$tabIndex]['layout'] = array_merge(array_values($existingItems), $items);
 
@@ -77,10 +80,28 @@ function provisionOperationsDashboard(
         $options = [];
     }
     foreach (array_keys($options) as $id) {
-        if (str_starts_with((string) $id, 'phase3b07-')) {
+        if (
+            str_starts_with((string) $id, 'phase3b07-')
+            || str_starts_with((string) $id, 'phase3u03-')
+        ) {
             unset($options[$id]);
         }
     }
+    $options['phase3u03-summary'] = ['title' => 'Prospecting Summary'];
+    $options['phase3u03-recent-discovery'] = [
+        'title' => 'Recent Discovery Activity',
+        'entityType' => 'SearchJob',
+        'orderBy' => 'createdAt',
+        'order' => 'desc',
+        'displayRecords' => 8,
+        'includeShared' => true,
+        'expandedLayout' => [
+            'rows' => [
+                [['name' => 'name', 'link' => true], ['name' => 'status']],
+                [['name' => 'createdAt'], ['name' => 'resultCount']],
+            ],
+        ],
+    ];
     $options['phase3b07-tier-a'] = dashboardOptions('A Tier Leads', 'Lead', 'peOpportunityScoreV4', 'peTierA');
     $options['phase3b07-research-pending'] = dashboardOptions('Research Pending', 'Lead', 'peLastResearchedAt', 'peResearchPending');
     $options['phase3b07-contact-ready'] = dashboardOptions('Contact Ready', 'Lead', 'nextFollowUpAt', 'peContactReady');

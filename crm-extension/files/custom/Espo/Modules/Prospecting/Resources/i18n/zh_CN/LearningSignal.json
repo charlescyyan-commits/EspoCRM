@@ -1,0 +1,6 @@
+{
+  "fields": {"name": "标题", "signalType": "信号类型", "predictionScore": "预测评分", "actualOutcome": "实际结果", "product": "产品", "campaign": "活动", "lead": "潜客", "salesFeedback": "销售反馈"},
+  "links": {"lead": "潜客", "salesFeedback": "销售反馈"},
+  "labels": {"Create LearningSignal": "创建学习信号", "LearningSignals": "学习信号"},
+  "options": {"signalType": {"CONTACT_ATTEMPT": "联系尝试", "CUSTOMER_REPLY": "客户回复", "INTERESTED": "有兴趣", "NOT_INTERESTED": "无兴趣", "NO_RESPONSE": "未回复", "WON": "赢单", "LOST": "丢单", "EMAIL_INTERESTED": "邮件有兴趣", "EMAIL_NOT_INTERESTED": "邮件无兴趣", "EMAIL_BOUNCED": "邮件退信", "EMAIL_NO_RESPONSE": "邮件未回复"}, "actualOutcome": {"POSITIVE": "正面", "NEGATIVE": "负面", "NEUTRAL": "中性"}}
+}

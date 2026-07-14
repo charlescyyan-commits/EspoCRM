@@ -1,0 +1,40 @@
+{
+  "fields": {
+    "name": "任务名称",
+    "strategy": "搜索策略",
+    "product": "产品",
+    "keyword": "关键词",
+    "country": "国家/地区",
+    "status": "状态",
+    "source": "服务提供商",
+    "priority": "优先级",
+    "queryFingerprint": "查询指纹",
+    "resultCount": "发现结果数",
+    "acceptedCount": "已接受数",
+    "rejectedCount": "已拒绝数",
+    "errorMessage": "错误信息",
+    "startedAt": "开始时间",
+    "completedAt": "完成时间",
+    "prospectCount": "潜客数量",
+    "failureReason": "失败摘要",
+    "prospectPools": "已发现潜客"
+  },
+  "links": {"strategy": "搜索策略", "prospectPools": "已发现潜客"},
+  "labels": {
+    "Create SearchJob": "创建搜索任务",
+    "SearchJobs": "搜索任务",
+    "No Data": "尚无搜索任务。请创建首个搜索任务。"
+  },
+  "presetFilters": {"jobsQueued": "排队中", "jobsRunning": "运行中", "jobsCompleted": "已完成", "jobsFailed": "失败", "jobsCancelled": "已取消"},
+  "tooltips": {
+    "queryFingerprint": "内部去重键（在标准销售布局中隐藏）。",
+    "source": "此任务使用的发现服务提供商。",
+    "failureReason": "任务失败原因的简要摘要（如可用）。",
+    "errorMessage": "服务提供商或任务运行器的详细错误信息（如可用）。"
+  },
+  "options": {
+    "status": {"QUEUED": "排队中", "RUNNING": "运行中", "COMPLETED": "已完成", "FAILED": "失败", "CANCELLED": "已取消"},
+    "priority": {"P1": "P1", "P2": "P2", "P3": "P3"},
+    "product": {"PlateCycler": "PlateCycler", "Resin Tank": "树脂槽", "Filament Dryer": "耗材烘干机", "Resin": "树脂", "LCD Replacement": "LCD 替换件", "Mainboard": "主板", "UV Meter": "紫外线测量仪", "Heater": "加热器"}
+  }
+}

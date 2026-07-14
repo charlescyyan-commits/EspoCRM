@@ -1,1 +1,22 @@
-{"view": "views/dashlets/abstract/record-list", "aclScope": "SearchJob", "entityType": "SearchJob", "options": {"defaults": {"title": "Running", "orderBy": "createdAt", "order": "desc", "displayRecords": 10, "includeShared": true, "searchData": {"primary": "jobsRunning"}}}, "accessDataList": [{"inPortalDisabled": true}]}
+{
+  "view": "views/dashlets/abstract/record-list",
+  "aclScope": "SearchJob",
+  "entityType": "SearchJob",
+  "options": {
+    "defaults": {
+      "title": "Running Jobs",
+      "orderBy": "createdAt",
+      "order": "desc",
+      "displayRecords": 10,
+      "includeShared": true,
+      "searchData": {"primary": "jobsRunning"},
+      "expandedLayout": {
+        "rows": [
+          [{"name": "name", "link": true}, {"name": "strategy"}],
+          [{"name": "source"}, {"name": "startedAt"}]
+        ]
+      }
+    }
+  },
+  "accessDataList": [{"inPortalDisabled": true}]
+}

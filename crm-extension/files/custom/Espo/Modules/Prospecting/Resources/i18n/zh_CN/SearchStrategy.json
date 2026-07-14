@@ -1,0 +1,35 @@
+{
+  "fields": {
+    "name": "搜索策略",
+    "product": "产品",
+    "country": "国家/地区",
+    "region": "区域",
+    "targetPersona": "目标角色",
+    "targetCompanyType": "目标公司类型",
+    "keywords": "附加关键词",
+    "excludedKeywords": "排除关键词",
+    "sourcePlan": "来源计划",
+    "status": "状态",
+    "generatedJobCount": "已创建搜索任务数",
+    "searchJobs": "搜索任务"
+  },
+  "links": {"searchJobs": "搜索任务"},
+  "labels": {
+    "Create SearchStrategy": "创建搜索策略",
+    "SearchStrategys": "搜索策略",
+    "Generate Jobs": "生成搜索任务",
+    "No Data": "尚未配置搜索策略。请创建策略以开始发现潜客。"
+  },
+  "presetFilters": {"strategiesDraft": "草稿", "strategiesReady": "就绪", "strategiesActive": "进行中", "strategiesCompleted": "已完成"},
+  "tooltips": {
+    "keywords": "可选。留空将使用产品和目标角色关键词模板。",
+    "excludedKeywords": "可选。每行一个关键词，用于排除生成的搜索任务。",
+    "sourcePlan": "必填。为生成的任务选择一个或多个发现来源。"
+  },
+  "options": {
+    "product": {"PlateCycler": "PlateCycler", "Resin Tank": "树脂槽", "Filament Dryer": "耗材烘干机", "Resin": "树脂", "LCD Replacement": "LCD 替换件", "Mainboard": "主板", "UV Meter": "紫外线测量仪", "Heater": "加热器"},
+    "targetPersona": {"Distributor": "分销商", "Reseller": "经销商", "Dealer": "代理商", "3D Printer Store": "3D 打印机门店", "Print Farm": "打印农场", "Service Provider": "服务商", "Education Supplier": "教育供应商", "Dental Distributor": "牙科分销商", "Industrial Distributor": "工业分销商"},
+    "sourcePlan": {"GOOGLE_SEARCH": "Google 搜索", "GOOGLE_MAPS": "Google 地图", "APIFY": "Apify", "DIRECTORY": "目录", "CUSTOM_IMPORT": "自定义导入", "CUSTOMS_DATA": "海关数据"},
+    "status": {"DRAFT": "草稿", "READY": "就绪", "GENERATED": "已生成", "RUNNING": "运行中", "COMPLETED": "已完成", "FAILED": "失败", "CANCELLED": "已取消"}
+  }
+}

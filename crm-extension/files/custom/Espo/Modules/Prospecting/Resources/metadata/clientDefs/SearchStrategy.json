@@ -1,0 +1,18 @@
+{
+  "controller": "controllers/record",
+  "iconClass": "fas fa-sitemap",
+  "color": "#6C3483",
+  "recordViews": {
+    "list": "custom:views/search-strategy/record/list"
+  },
+  "filterList": [
+    {"name": "strategiesDraft"},
+    {"name": "strategiesReady"},
+    {"name": "strategiesActive"},
+    {"name": "strategiesCompleted"}
+  ],
+  "detailActionList": ["__APPEND__", {"label": "Generate Jobs", "name": "generateJobs", "acl": "edit", "handler": "custom:handlers/search-strategy/generate-jobs", "actionFunction": "process"}],
+  "relationshipPanels": {
+    "searchJobs": {"create": false, "select": false, "view": "views/record/panels/relationship", "orderBy": "createdAt", "orderDirection": "desc"}
+  }
+}

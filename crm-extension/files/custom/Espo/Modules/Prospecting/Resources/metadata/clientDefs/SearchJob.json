@@ -1,1 +1,25 @@
-{"controller": "controllers/record", "iconClass": "fas fa-search", "filterList": [{"name": "jobsRunning"}, {"name": "jobsWaiting"}, {"name": "jobsCompleted"}, {"name": "jobsFailed"}], "relationshipPanels": {"prospectPools": {"create": true, "select": false, "view": "views/record/panels/relationship", "orderBy": "createdAt", "orderDirection": "desc"}}}
+{
+  "controller": "controllers/record",
+  "iconClass": "fas fa-list",
+  "color": "#1B4F72",
+  "recordViews": {
+    "list": "custom:views/search-job/record/list"
+  },
+  "filterList": [
+    {"name": "jobsQueued"},
+    {"name": "jobsRunning"},
+    {"name": "jobsCompleted"},
+    {"name": "jobsFailed"},
+    {"name": "jobsCancelled"}
+  ],
+  "relationshipPanels": {
+    "prospectPools": {
+      "create": true,
+      "select": false,
+      "view": "views/record/panels/relationship",
+      "orderBy": "createdAt",
+      "orderDirection": "desc",
+      "label": "Discovered Prospects"
+    }
+  }
+}

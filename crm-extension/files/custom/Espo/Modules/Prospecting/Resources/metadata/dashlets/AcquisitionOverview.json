@@ -1,0 +1,21 @@
+{
+  "view": "views/dashlets/abstract/record-list",
+  "aclScope": "SearchStrategy",
+  "entityType": "SearchStrategy",
+  "options": {
+    "defaults": {
+      "title": "Acquisition Overview",
+      "orderBy": "createdAt",
+      "order": "desc",
+      "displayRecords": 5,
+      "includeShared": true,
+      "expandedLayout": {
+        "rows": [
+          [{"name": "name", "link": true}, {"name": "status"}],
+          [{"name": "product"}, {"name": "generatedJobCount"}]
+        ]
+      }
+    }
+  },
+  "accessDataList": [{"inPortalDisabled": true}]
+}

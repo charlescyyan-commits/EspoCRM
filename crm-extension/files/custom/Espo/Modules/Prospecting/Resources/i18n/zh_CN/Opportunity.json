@@ -1,0 +1,4 @@
+{
+  "fields": {"peOpportunitySource": "商机来源", "peProductInterest": "推荐产品", "peProductFitScore": "产品匹配评分", "peCooperationType": "合作类型", "peNextAction": "下一步操作", "peEstimatedValue": "预估价值", "peExpectedCloseDate": "预计成交日期", "peEmailStatus": "邮件状态", "peLastEmailDate": "最近邮件日期", "peEmailCampaignName": "活动名称", "peEmailReplyStatus": "回复状态"},
+  "tooltips": {"peOpportunitySource": "此销售商机由 CRM 管理的来源上下文。", "peProductInterest": "Chitu 提供的产品推荐，显示在原生 CRM 商机中；EspoCRM 不生成该推荐。", "peProductFitScore": "Chitu 提供的产品匹配评分；原生商机概率仍由 CRM 管理。", "peCooperationType": "Chitu 提供的建议合作模式。", "peNextAction": "Chitu 提供的建议下一步销售操作；不会创建活动。", "peEstimatedValue": "可选的预估价值上下文；原生金额仍是 CRM 销售金额。", "peExpectedCloseDate": "可选的预计成交上下文；原生成交日期仍是 CRM 销售成交日期。", "peEmailStatus": "Chitu 管理的邮件生命周期状态摘要。EspoCRM 只显示该值，不生成、批准、发送邮件或处理回复。", "peLastEmailDate": "最近一次同步到 EspoCRM 的 Chitu 邮件生命周期事件时间戳。", "peEmailCampaignName": "从 Chitu 同步的可读活动参考。", "peEmailReplyStatus": "从 Chitu 同步且不含邮件内容的回复状态摘要。"}
+}

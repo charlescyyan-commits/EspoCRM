@@ -1,7 +1,40 @@
 {
-  "fields": {"name": "Search Job", "keyword": "Keyword", "country": "Country", "strategy": "Strategy", "status": "Status", "source": "Source", "completedAt": "Completed At", "prospectCount": "Prospects Found", "failureReason": "Failure Reason", "prospectPools": "Lead Pool"},
-  "links": {"prospectPools": "Lead Pool"},
-  "labels": {"Create SearchJob": "Create Search Job", "SearchJobs": "Search Jobs"},
-  "presetFilters": {"jobsRunning": "Running", "jobsWaiting": "Waiting", "jobsCompleted": "Completed", "jobsFailed": "Failed"},
-  "options": {"status": {"WAITING": "Waiting", "RUNNING": "Running", "COMPLETED": "Completed", "FAILED": "Failed"}}
+  "fields": {
+    "name": "Job Name",
+    "strategy": "Search Strategy",
+    "product": "Product",
+    "keyword": "Keyword",
+    "country": "Country",
+    "status": "Status",
+    "source": "Provider",
+    "priority": "Priority",
+    "queryFingerprint": "Query Fingerprint",
+    "resultCount": "Results Found",
+    "acceptedCount": "Accepted",
+    "rejectedCount": "Rejected",
+    "errorMessage": "Error Message",
+    "startedAt": "Started At",
+    "completedAt": "Finished At",
+    "prospectCount": "Prospect Count",
+    "failureReason": "Failure Summary",
+    "prospectPools": "Discovered Prospects"
+  },
+  "links": {"strategy": "Search Strategy", "prospectPools": "Discovered Prospects"},
+  "labels": {
+    "Create SearchJob": "Create Search Job",
+    "SearchJobs": "Search Jobs",
+    "No Data": "No search jobs yet. Create your first search job."
+  },
+  "presetFilters": {"jobsQueued": "Queued", "jobsRunning": "Running", "jobsCompleted": "Completed", "jobsFailed": "Failed", "jobsCancelled": "Cancelled"},
+  "tooltips": {
+    "queryFingerprint": "Internal deduplication key (hidden from the standard sales layout).",
+    "source": "Discovery provider used for this job.",
+    "failureReason": "Short summary of why the job failed, when available.",
+    "errorMessage": "Detailed provider or runner error text, when available."
+  },
+  "options": {
+    "status": {"QUEUED": "Queued", "RUNNING": "Running", "COMPLETED": "Completed", "FAILED": "Failed", "CANCELLED": "Cancelled"},
+    "priority": {"P1": "P1", "P2": "P2", "P3": "P3"},
+    "product": {"PlateCycler": "PlateCycler", "Resin Tank": "Resin Tank", "Filament Dryer": "Filament Dryer", "Resin": "Resin", "LCD Replacement": "LCD Replacement", "Mainboard": "Mainboard", "UV Meter": "UV Meter", "Heater": "Heater"}
+  }
 }

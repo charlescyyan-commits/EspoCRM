@@ -1,4 +1,8 @@
 {
   "controller": "controllers/record",
-  "iconClass": "fas fa-search"
+  "iconClass": "fas fa-flask",
+  "color": "#B9770E",
+  "recordViews": {
+    "list": "custom:views/research-evidence/record/list"
+  }
 }

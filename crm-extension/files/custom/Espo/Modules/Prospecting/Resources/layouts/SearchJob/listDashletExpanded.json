@@ -1,0 +1,7 @@
+[
+  {"name": "name", "width": 28, "link": true},
+  {"name": "status", "width": 12},
+  {"name": "strategy", "width": 18},
+  {"name": "country", "width": 12},
+  {"name": "createdAt", "width": 16}
+]

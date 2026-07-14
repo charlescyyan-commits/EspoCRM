@@ -1,1 +1,19 @@
-{"controller": "controllers/record", "iconClass": "fas fa-layer-group", "filterList": [{"name": "discoveryQueue"}, {"name": "qualificationQueue"}, {"name": "researchQueue"}, {"name": "crmQueue"}]}
+{
+  "controller": "controllers/record",
+  "iconClass": "fas fa-address-book",
+  "color": "#0B6E4F",
+  "recordViews": {
+    "list": "custom:views/prospect-pool/record/list"
+  },
+  "filterList": [
+    {"name": "prospectsNew"},
+    {"name": "prospectsAccepted"},
+    {"name": "prospectsRejected"},
+    {"name": "prospectsDuplicate"},
+    {"name": "prospectsReadyForResearch"},
+    {"name": "discoveryQueue"},
+    {"name": "qualificationQueue"},
+    {"name": "researchQueue"},
+    {"name": "crmQueue"}
+  ]
+}

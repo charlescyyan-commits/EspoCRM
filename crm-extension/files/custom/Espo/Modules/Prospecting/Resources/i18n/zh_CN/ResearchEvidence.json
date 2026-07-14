@@ -1,0 +1,6 @@
+{
+  "fields": {"name": "标题", "peEvidenceId": "证据 ID", "peClaim": "主张", "peClaimType": "主张类型", "peEvidenceType": "证据类型", "peSourceUrl": "来源 URL", "peEvidenceText": "证据文本", "peContentSummary": "内容摘要", "peConfidence": "置信度", "peCapturedAt": "采集时间", "peSchemaVersion": "架构版本", "peSnapshotHash": "快照哈希", "lead": "潜客"},
+  "links": {"lead": "潜客"},
+  "labels": {"Create ResearchEvidence": "创建研究证据", "ResearchEvidences": "研究证据", "No Data": "潜客完成分析后将显示网站研究结果。"},
+  "tooltips": {"peEvidenceId": "稳定的引擎证据项标识。", "peClaimType": "映射到同步合同的 claim_type（不是引擎 evidence_type）。", "peEvidenceType": "与同步合同主张类型分开保留的证据格式分类。", "peEvidenceText": "仅保存精简摘录；绝不保存原始 HTML 或爬虫载荷。", "peContentSummary": "用于 CRM 审核的简短规范化证据摘要。"}
+}
