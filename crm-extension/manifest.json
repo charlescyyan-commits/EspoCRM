@@ -1,7 +1,7 @@
 {
   "name": "Chitu Prospecting Integration",
   "extensionName": "Chitu Prospecting Integration",
-  "version": "1.9.0-alpha",
+  "version": "1.9.5-alpha",
   "acceptableVersions": [
     ">=7.4.0"
   ],
