@@ -1,71 +1,65 @@
-# Chitu Prospecting Integration — EspoCRM Extension Skeleton V1
+# Chitu Prospecting Integration - EspoCRM Extension
 
-**Phase:** 3B01  
-**Version:** `1.1.0-alpha`  
-**Status:** CRM entity model only; no new sync endpoint, email sending, or AI runtime
+**Current version:** `1.9.5-alpha`
+**Version authority:** [`manifest.json`](manifest.json)
+**Compatibility:** EspoCRM `>=7.4.0`, PHP `>=8.1`
+**Release posture:** alpha; validate only in a disposable or explicitly approved CRM.
 
 ## Purpose
 
-Installable EspoCRM extension skeleton for a future one-way Prospecting Engine → EspoCRM integration.
+This is the installable EspoCRM **Prospecting** extension. It supplies native EspoCRM metadata and module code for Prospecting workspace UI, acquisition planning, prospect pools, lead intelligence, research evidence, and the existing connector-facing CRM boundaries.
 
-Frozen Phase 3A-1 principles:
+The extension does not contain Chitu scoring, AI research, provider execution, email-generation logic, production credentials, or customer data. The connector remains a separate package under `../chitu-connector/` and imports only its vendored stable interfaces.
 
-1. Prospecting Engine is the business source of truth.
-2. EspoCRM is the sales execution layer.
-3. Data direction is Engine → EspoCRM only.
-4. Future sync requires `qualification_status = OUTREACH_READY`.
-5. V4-only: `score_rules_version` must identify Canonical Scoring V4.
-6. Account and Opportunity are never auto-created.
-
-## Package Layout
+## Package layout
 
 ```text
-espocrm_extension/
-├── manifest.json                 # EspoCRM extension manifest
-├── Resources/                    # Design-surface copies of metadata
-│   ├── entityDefs/
-│   ├── layouts/
-│   ├── acl/
-│   └── metadata/
-├── files/                        # EspoCRM installable package root (required lowercase)
-│   └── custom/Espo/Modules/Prospecting/
-├── custom/Espo/Modules/Prospecting/   # Module placeholders (Controllers/Services/Api)
-├── application/                  # Reserved placeholder (not packaged into EspoCRM)
-├── scripts/                      # Future BeforeInstall/AfterInstall hooks
-├── docs/
-└── tests/
+crm-extension/
+  manifest.json                         # Release version and platform compatibility
+  files/                                # Installed ZIP root
+    custom/Espo/Modules/Prospecting/
+      Api/ Controllers/ Entities/ Services/
+      Resources/
+        metadata/ layouts/ i18n/
+    client/custom/
+      src/                               # Native EspoCRM controllers, handlers, and views
+      res/templates/                     # Native EspoCRM templates
+  Resources/                             # Non-installed metadata/design mirror
+  tests/                                 # Offline extension contract tests
+  scripts/build_release_package.ps1      # ZIP package builder
 ```
 
-EspoCRM packages require a lowercase `files/` directory. On Windows this collides with a capital `Files/` name, so the skeleton uses `files/` plus a top-level `application/` placeholder.
+EspoCRM packages require a lowercase `files/` directory. The ZIP includes `manifest.json` plus `files/`; source mirrors, tests, scripts, and documentation are not included.
 
-## Entities
+## Packaged module areas
 
-| Entity | Role in V1 skeleton |
-|---|---|
-| `ResearchEvidence` | Custom evidence entity linked 1:N to native Lead |
-| `Lead` | Metadata overlay for Chitu source, classification, opportunity, research, and contact context |
-| `Opportunity` | Metadata overlay for recommendation, product fit, cooperation type, and next action |
+- **Prospecting UI:** native scopes, client definitions, layouts, labels, templates, and dashboard dashlets.
+- **Acquisition planning:** SearchStrategy, SearchJob, and ProspectPool metadata and supporting module surfaces.
+- **CRM intelligence:** native Lead overlays and ResearchEvidence presentation.
+- **Connector-facing CRM boundary:** existing sync, feedback, and event endpoints/services; no external provider or outreach execution is embedded here.
 
-## Not Implemented
+## Build and install
 
-- Engine API / import endpoint
-- Sync controller / service
-- Authentication
-- Webhooks
-- Automatic Lead / Account / Opportunity creation
-- Email or AI calls
-- Database migrations against a live CRM
-
-## Install / Rollback
-
-See `docs/espocrm-extension/ESPOCRM_EXTENSION_INSTALL_GUIDE_V1.md`.
-
-## Tests
-
-```bash
-python -m unittest espocrm_extension.tests.test_extension_skeleton -v
+```powershell
+cd D:\EspoCRM-Production\crm-extension
+.\scripts\build_release_package.ps1 -OutputPath ..\deployment\prospecting-extension-1.9.5-alpha.zip
 ```
 
-## Next Phase
+Install the ZIP through **Administration > Extensions**, allow EspoCRM to rebuild when prompted, then use the matching release notes and deployment guide for the target version. See [../docs/deployment/INSTALL.md](../docs/deployment/INSTALL.md).
 
-Phase 3A-2.2 may implement Controllers / Services / Api under the Prospecting module after explicit authorization.
+## Validation
+
+```powershell
+cd D:\EspoCRM-Production
+python -m unittest crm-extension.tests.test_extension_skeleton -v
+python -m unittest crm-extension.tests.test_phase3c02_search_strategy_foundation -v
+```
+
+These tests are offline checks; they do not substitute for approved runtime validation. C10.6 remains development work and is not asserted as shipped by this release README.
+
+## Related documentation
+
+- [Documentation Center](../docs/README.md)
+- [Release notes](../docs/release/README.md)
+- [Package build](../docs/deployment/PACKAGE.md)
+- [Upgrade](../docs/deployment/UPGRADE.md)
