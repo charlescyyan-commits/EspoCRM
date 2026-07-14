@@ -56,6 +56,14 @@ class ProviderError(Exception):
         self.retryable = retryable
 
 
+class ProviderRateLimitError(ProviderError):
+    """429 / rate-limit classification with optional retry-after seconds."""
+
+    def __init__(self, code: str, safe_message: str, *, retryable: bool = True, retry_after: int | None = None) -> None:
+        super().__init__(code, safe_message, retryable=retryable)
+        self.retry_after = retry_after
+
+
 class PersistenceError(Exception):
     """Safe store failure classification; never carries a response or credential."""
 

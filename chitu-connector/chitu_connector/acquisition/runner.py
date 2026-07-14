@@ -9,10 +9,15 @@ import os
 import sys
 from time import monotonic
 from typing import Any, Callable, Mapping, Sequence
+import urllib.error
+import urllib.request
 
 from .espo_repository import EspoAcquisitionRepository
 from .fake_provider import DeterministicFakeProvider
 from .models import JobExecutionResult, PersistenceError
+from .providers.base import HttpRequest, HttpResponse
+from .providers.config import ProviderConfigurationError, SerperConfig
+from .providers.serper_provider import SerperSearchProvider
 from .worker import AcquisitionWorker, AcquisitionStore
 
 
@@ -37,7 +42,7 @@ def main(
     argv: Sequence[str] | None = None,
     *,
     repository_factory: Callable[[RunnerConfig], AcquisitionStore] | None = None,
-    provider_factory: Callable[[], DeterministicFakeProvider] = DeterministicFakeProvider,
+    provider_factory: Callable[[], Any] | None = None,
     environ: Mapping[str, str] | None = None,
     stdout: Any = None,
     stderr: Any = None,
@@ -51,8 +56,8 @@ def main(
         return int(error.code)
     if args.command != "run-job" or not args.job_id.strip():
         return _emit_error(stdout, args.output if hasattr(args, "output") else "json", "INVALID_ARGUMENT", "run-job requires --job-id")
-    if args.provider != "fake":
-        return _emit_error(stdout, args.output, "INVALID_ARGUMENT", "only provider 'fake' is supported")
+    if args.provider not in ("fake", "serper"):
+        return _emit_error(stdout, args.output, "INVALID_ARGUMENT", "provider must be 'fake' or 'serper'")
 
     started = monotonic()
     try:
@@ -71,7 +76,8 @@ def main(
         initial_status = _optional_text(initial_job.get("status"))
         if initial_status != "QUEUED":
             return _emit_result(stdout, args.output, _not_claimed(args.job_id, "JOB_NOT_QUEUED", initial_status, duration_ms=_duration_ms(started)), EXIT_NOT_CLAIMED)
-        result = AcquisitionWorker(repository, provider_factory()).execute_job(args.job_id)
+        provider = _resolve_provider(args.provider, provider_factory, environ)
+        result = AcquisitionWorker(repository, provider).execute_job(args.job_id)
         payload = result_payload(result, duration_ms=_duration_ms(started))
         exit_code = exit_code_for(result)
     except PersistenceError as error:
@@ -238,6 +244,53 @@ def _safe_summary(value: Any) -> str | None:
 
 def _duration_ms(started: float) -> int:
     return max(0, round((monotonic() - started) * 1000))
+
+
+def _resolve_provider(
+    name: str,
+    explicit_factory: Callable[[], Any] | None,
+    environ: Mapping[str, str] | None,
+) -> Any:
+    """Return a provider instance for *name*, preferring *explicit_factory* when set."""
+    if explicit_factory is not None:
+        return explicit_factory()
+    if name == "fake":
+        return DeterministicFakeProvider()
+    if name == "serper":
+        config = SerperConfig.from_env(environ)
+        transport = _UrllibTransport(timeout_seconds=config.timeout_seconds)
+        return SerperSearchProvider(config, transport=transport)
+    raise ValueError(f"Unsupported provider: {name}")
+
+
+class _UrllibTransport:
+    """Minimal urllib-backed HTTP transport for production runner use.
+
+    This transport is NOT used in tests — tests inject fixture transports directly.
+    """
+
+    def __init__(self, timeout_seconds: float = 30.0) -> None:
+        self._timeout = timeout_seconds
+
+    def send(self, request: HttpRequest) -> HttpResponse:
+        data = request.body
+        req = urllib.request.Request(
+            request.url,
+            data=data,
+            headers=dict(request.headers),
+            method=request.method,
+        )
+        try:
+            with urllib.request.urlopen(req, timeout=self._timeout) as resp:
+                body = resp.read()
+                headers: Mapping[str, str] = dict(resp.headers)
+                return HttpResponse(resp.status, body, headers=headers)
+        except urllib.error.HTTPError as error:
+            body = error.read()
+            headers: Mapping[str, str] = dict(error.headers)
+            return HttpResponse(error.code, body, headers=headers)
+        except urllib.error.URLError as error:
+            raise OSError(str(error.reason)) from error
 
 
 if __name__ == "__main__":
