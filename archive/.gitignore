@@ -1,0 +1,5 @@
+# Local, recoverable freeze evidence. These may contain runtime state, logs,
+# or credentials and must remain outside release history.
+/audit-artifacts/
+/debug-scripts/
+/runtime-backups/
