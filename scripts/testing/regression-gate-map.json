@@ -1,0 +1,122 @@
+{
+  "schemaVersion": "1.0",
+  "gateVersion": "T05.1",
+  "executionPolicy": "always-run-complete-core-gate",
+  "requiredSuites": [
+    "Extension",
+    "Connector",
+    "Worker",
+    "Static",
+    "Runtime",
+    "Baseline",
+    "Runner integrity"
+  ],
+  "rules": [
+    {
+      "area": "crm-extension",
+      "pattern": "crm-extension/**",
+      "requiredSuites": ["Extension", "Static"],
+      "conditionalSuites": ["Browser acceptance"],
+      "severity": "REQUIRED",
+      "reason": "Extension metadata and JSON changes require static and metadata validation."
+    },
+    {
+      "area": "chitu-connector",
+      "pattern": "chitu-connector/**",
+      "requiredSuites": ["Connector", "Worker"],
+      "conditionalSuites": ["Runtime REST adapter"],
+      "severity": "REQUIRED",
+      "reason": "Connector changes can affect contracts and shared worker boundaries."
+    },
+    {
+      "area": "worker",
+      "pattern": "chitu-connector/chitu_connector/acquisition/**",
+      "requiredSuites": ["Worker", "Connector"],
+      "conditionalSuites": ["Runtime worker execution"],
+      "severity": "REQUIRED",
+      "reason": "Acquisition worker changes require worker and connector-contract coverage."
+    },
+    {
+      "area": "testing-infrastructure",
+      "pattern": "scripts/testing/**",
+      "requiredSuites": ["Extension", "Connector", "Worker", "Static", "Runtime", "Baseline", "Runner integrity"],
+      "conditionalSuites": [],
+      "severity": "REQUIRED",
+      "reason": "Test infrastructure changes must prove the complete core gate still runs."
+    },
+    {
+      "area": "tests",
+      "pattern": "tests/**",
+      "requiredSuites": ["Extension", "Connector", "Worker", "Static", "Runtime", "Baseline"],
+      "conditionalSuites": [],
+      "severity": "REQUIRED",
+      "reason": "New root-level test suites require the complete current core gate."
+    },
+    {
+      "area": "deployment",
+      "pattern": "deployment/**",
+      "requiredSuites": ["Extension", "Static"],
+      "conditionalSuites": ["Package lifecycle"],
+      "severity": "REQUIRED",
+      "reason": "Deployment changes require offline metadata/static validation and future package validation."
+    },
+    {
+      "area": "manifest",
+      "pattern": "manifest.json",
+      "requiredSuites": ["Extension"],
+      "conditionalSuites": ["Package lifecycle"],
+      "severity": "REQUIRED",
+      "reason": "Manifest changes affect extension packaging and static inventory."
+    },
+    {
+      "area": "docs-only",
+      "pattern": "docs/**",
+      "requiredSuites": [],
+      "conditionalSuites": [],
+      "severity": "OPTIONAL",
+      "reason": "Documentation alone does not add a runtime test requirement."
+    }
+  ],
+  "conditionalSuites": [
+    {
+      "name": "Browser acceptance",
+      "triggerAreas": ["crm-extension"],
+      "status": "NOT_IMPLEMENTED",
+      "blocking": false,
+      "reason": "No browser suite exists yet; T05 owns this layer."
+    },
+    {
+      "name": "Runtime REST adapter",
+      "triggerAreas": ["chitu-connector"],
+      "status": "NOT_IMPLEMENTED",
+      "blocking": false,
+      "reason": "No reusable runtime harness exists yet; T04 owns this layer."
+    },
+    {
+      "name": "Runtime worker execution",
+      "triggerAreas": ["worker"],
+      "status": "NOT_IMPLEMENTED",
+      "blocking": false,
+      "reason": "Single-runner runtime validation remains manual until T04."
+    },
+    {
+      "name": "Package lifecycle",
+      "triggerAreas": ["deployment", "manifest"],
+      "status": "NOT_IMPLEMENTED",
+      "blocking": false,
+      "reason": "Archive build and package metadata preflight are required in T05; live install, upgrade, and rollback automation remains out of scope."
+    }
+  ],
+  "optionalSuites": [
+    {
+      "name": "Performance baseline",
+      "status": "NOT_IMPLEMENTED",
+      "reason": "T07 has not established a performance test layer."
+    },
+    {
+      "name": "Documentation review",
+      "status": "SKIPPED",
+      "reason": "Informational only; it does not affect the core gate."
+    }
+  ]
+}

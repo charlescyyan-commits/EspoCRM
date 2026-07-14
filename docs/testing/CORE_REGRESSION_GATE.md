@@ -73,3 +73,25 @@ First add a real, offline suite to the T02 runner. Then update the required suit
 ## Current non-implemented layers
 
 Browser acceptance, live runtime execution, live package installation/upgrade/rollback, and performance baselines are outside the current offline gate. Runtime-harness safety and package archive preflight are required offline suites.
+
+## T07 final baseline (before C11.1)
+
+Use the freeze wrapper with an explicit Python executable when Python is not on
+`PATH`:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts\testing\run-freeze-gate.ps1 -PythonExecutable <python-3.12-plus>
+```
+
+The 2026-07-14 T07 baseline is **7/7 required suites PASS**, **382/382 test
+invocations PASS**, and exit code **0**: Extension 65, Connector 270, Worker
+31, Static 2, Runtime 11, and package/metadata Baseline 3. Worker intentionally
+overlaps the complete Connector suite, so the invocation total is not a count
+of unique test definitions.
+
+Before C11.1, a regression is any required-suite failure, non-zero freeze-gate
+exit code, missing or unparseable gate result, or a reduction in required
+suite coverage. Test-count changes are permitted only with a reviewed baseline
+update and an all-suite PASS run. Browser and live-runtime acceptance remain
+`NOT_IMPLEMENTED` outside this offline baseline; they must not be recorded as
+passed without their own runtime evidence.
