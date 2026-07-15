@@ -1,0 +1,33 @@
+{
+  "fields": {
+    "name": {"type": "varchar", "maxLength": 255, "required": true, "trim": true},
+    "externalEventId": {"type": "varchar", "maxLength": 255, "required": true, "trim": true},
+    "replyStatus": {"type": "enum", "required": true, "options": ["SENT", "REPLIED", "BOUNCED", "UNSUBSCRIBED"], "displayAsLabel": true, "style": {"SENT": "primary", "REPLIED": "success", "BOUNCED": "danger", "UNSUBSCRIBED": "warning"}},
+    "receivedAt": {"type": "datetime", "required": true},
+    "eventMetadata": {"type": "text", "required": false, "notNull": false},
+    "sendTraceReference": {"type": "varchar", "maxLength": 255, "required": true, "trim": true},
+    "sendExecution": {"type": "link", "required": true},
+    "lead": {"type": "link", "required": true},
+    "createdAt": {"type": "datetime", "readOnly": true},
+    "modifiedAt": {"type": "datetime", "readOnly": true},
+    "createdBy": {"type": "link", "readOnly": true},
+    "modifiedBy": {"type": "link", "readOnly": true},
+    "assignedUser": {"type": "link"},
+    "teams": {"type": "linkMultiple"}
+  },
+  "links": {
+    "sendExecution": {"type": "belongsTo", "entity": "SendExecution", "foreign": "replyEvents"},
+    "lead": {"type": "belongsTo", "entity": "Lead", "foreign": "replyEvents"},
+    "createdBy": {"type": "belongsTo", "entity": "User"},
+    "modifiedBy": {"type": "belongsTo", "entity": "User"},
+    "assignedUser": {"type": "belongsTo", "entity": "User"},
+    "teams": {"type": "hasMany", "entity": "Team", "relationName": "entityTeam", "layoutRelationshipsDisabled": true}
+  },
+  "collection": {"orderBy": "receivedAt", "order": "desc", "textFilterFields": ["name", "externalEventId", "replyStatus", "sendTraceReference"]},
+  "deleteId": true,
+  "indexes": {
+    "externalEventId": {"type": "unique", "columns": ["externalEventId", "deleteId"]},
+    "leadId": {"columns": ["leadId"]},
+    "sendExecutionId": {"columns": ["sendExecutionId"]}
+  }
+}

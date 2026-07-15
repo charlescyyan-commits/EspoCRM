@@ -1,0 +1,24 @@
+{
+  "fields": {
+    "name": "Title",
+    "draftId": "Draft ID",
+    "status": "Approval Status",
+    "approvedBy": "Approved By",
+    "approvedAt": "Approved At",
+    "decisionReason": "Decision Reason",
+    "evidenceReference": "Evidence Reference",
+    "scoreSnapshot": "Score Snapshot Reference",
+    "contentHash": "Approved Content Hash",
+    "lead": "Lead"
+  },
+  "links": {"lead": "Lead", "approvedBy": "Approved By", "sendExecutions": "Send Executions"},
+  "labels": {"Create DraftApproval": "Create Draft Approval", "DraftApprovals": "Draft Approvals"},
+  "options": {
+    "status": {"PENDING": "Pending", "APPROVED": "Approved", "REJECTED": "Rejected"}
+  },
+  "tooltips": {
+    "contentHash": "Approved content hash reference only; no draft body or prompt content is stored.",
+    "evidenceReference": "Compact evidence reference only; this entity does not link or persist ResearchEvidence content.",
+    "scoreSnapshot": "Compact score snapshot reference only; no AI reasoning is stored."
+  }
+}

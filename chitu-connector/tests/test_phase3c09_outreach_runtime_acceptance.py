@@ -43,6 +43,11 @@ class SyntheticExistingLeadTarget:
         self.lead.update(body)
         return {"id": lead_id, **body}
 
+    def read_record(self, entity_type: str, record_id: str, select: str) -> Mapping[str, Any]:
+        if entity_type != "Lead" or record_id != self.lead["id"]:
+            raise LookupError("synthetic fixture has one existing Lead")
+        return dict(self.lead)
+
 
 def synthetic_evidence() -> tuple[dict[str, object], ...]:
     return (

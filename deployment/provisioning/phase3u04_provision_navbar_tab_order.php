@@ -12,10 +12,26 @@ $config = $container->get('config');
 $injectableFactory = $container->getByClass(\Espo\Core\InjectableFactory::class);
 $configWriter = $injectableFactory->create(\Espo\Core\Utils\Config\ConfigWriter::class);
 
-$prospectingTabs = [
+$hiddenNavigationItems = [
+    'Meeting',
+    'Call',
+    'Case',
+    'Ticket',
     'ProspectingDashboard',
     'ProspectingSearch',
     'SearchStrategy',
+    'SearchJob',
+    'ProspectPool',
+    'ResearchEvidence',
+];
+
+$prospectingNavigationGroup = [
+    [
+        'type' => 'divider',
+        'text' => 'Prospecting',
+        'id' => 'phase3u04-prospecting',
+    ],
+    'ProspectingSearch',
     'SearchJob',
     'ProspectPool',
     'ResearchEvidence',
@@ -26,15 +42,29 @@ if (!is_array($tabList)) {
     throw new \RuntimeException('Expected tabList to be an array.');
 }
 
-// Preserve every existing CRM tab and divider exactly as configured. Remove only
-// previous copies of the Prospecting entries so the requested workflow order is
-// deterministic and the script is safe to run repeatedly.
+// Preserve all remaining CRM tabs and dividers. Remove only the requested hidden
+// modules, prior Prospecting entries, and the previous Prospecting divider so the
+// native tab-list grouping is deterministic and safe to run repeatedly.
 $tabList = array_values(array_filter(
     $tabList,
-    static fn ($item): bool => !is_string($item) || !in_array($item, $prospectingTabs, true)
+    static function ($item) use ($hiddenNavigationItems): bool {
+        if (is_string($item)) {
+            return !in_array($item, $hiddenNavigationItems, true);
+        }
+
+        $dividerId = is_array($item)
+            ? ($item['id'] ?? null)
+            : (is_object($item) ? ($item->id ?? null) : null);
+
+        if ($dividerId === 'phase3u04-prospecting') {
+            return false;
+        }
+
+        return true;
+    }
 ));
 
-$configWriter->set('tabList', array_merge($tabList, $prospectingTabs));
+$configWriter->set('tabList', array_merge($tabList, $prospectingNavigationGroup));
 $configWriter->save();
 
-echo 'PHASE3U04_TAB_LIST_READY ' . implode(',', $prospectingTabs) . PHP_EOL;
+echo 'PHASE3U04_NAVIGATION_READY Prospecting:Search,SearchJob,ProspectPool,ResearchEvidence' . PHP_EOL;

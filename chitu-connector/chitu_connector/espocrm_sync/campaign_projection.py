@@ -4,11 +4,14 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import StrEnum
+import logging
 from typing import Any, Mapping, Protocol
 from urllib.parse import urlparse
+import warnings
 
 from chitu_connector.espocrm_sync.email_draft_generation import DraftEvidenceReference, EmailDraft
 from chitu_connector.espocrm_sync.enrichment_gate import QualificationStatus
+from chitu_connector.espocrm_sync.email_projection_guard import guard_email_summary_update
 
 
 DRAFT_PREPARATION_CAMPAIGN = "C09 Draft Preparation"
@@ -17,10 +20,14 @@ _PROJECTABLE_FIELDS = frozenset({
     "peEmailCampaignName",
     "peRecommendedApproach",
 })
+_EMAIL_SUMMARY_SELECT = "peEmailStatus,peLastEmailDate"
+_LOGGER = logging.getLogger(__name__)
 
 
 class LeadCampaignProjectionClient(Protocol):
     """Existing-Lead update operation; it intentionally has no create or send API."""
+
+    def read_record(self, entity_type: str, record_id: str, select: str) -> Mapping[str, Any]: ...
 
     def update_lead_campaign_projection(self, lead_id: str, fields: Mapping[str, Any]) -> Mapping[str, Any]: ...
 
@@ -44,7 +51,7 @@ class CampaignProjectionResult:
 
 
 class CampaignProjectionAdapter:
-    """Project draft-preparation metadata without storing content or acting on it."""
+    """Deprecated W-CON-02 compatibility writer; prefer the C14.3 CRM bridge where applicable."""
 
     def __init__(self, client: LeadCampaignProjectionClient) -> None:
         self.client = client
@@ -55,11 +62,27 @@ class CampaignProjectionAdapter:
         email_draft: EmailDraft,
         campaign_name: str = DRAFT_PREPARATION_CAMPAIGN,
     ) -> CampaignProjectionResult:
+        warnings.warn(
+            "CampaignProjectionAdapter.project() is deprecated; use the C14.3 CRM SendExecution bridge path where execution submission is required.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         if not isinstance(lead_id, str) or not lead_id.strip():
             return CampaignProjectionResult(CampaignProjectionStatus.SKIPPED, None, reason_code="INVALID_LEAD_ID")
         fields, reason_code = _projection_fields(email_draft, campaign_name)
         if reason_code:
             return _skipped(lead_id, email_draft, reason_code)
+        try:
+            current = self.client.read_record("Lead", lead_id, _EMAIL_SUMMARY_SELECT)
+        except Exception:
+            return _guarded_skip(lead_id, email_draft, "CURRENT_EMAIL_STATE_UNAVAILABLE")
+        decision = guard_email_summary_update(
+            current,
+            proposed_status=fields["peEmailStatus"],
+            proposed_occurred_at=None,
+        )
+        if not decision.allowed:
+            return _guarded_skip(lead_id, email_draft, decision.reason_code or "EMAIL_STATE_CONFLICT")
         try:
             self.client.update_lead_campaign_projection(lead_id, fields)
         except PermissionError:
@@ -118,6 +141,11 @@ def _recommended_approach(recommended_product: str | None) -> str:
 
 def _skipped(lead_id: str, email_draft: Any, reason_code: str) -> CampaignProjectionResult:
     return _result(CampaignProjectionStatus.SKIPPED, lead_id, email_draft, reason_code=reason_code)
+
+
+def _guarded_skip(lead_id: str, email_draft: Any, reason_code: str) -> CampaignProjectionResult:
+    _LOGGER.warning("C14.4A W-CON-02 guarded compatibility writer skipped: %s", reason_code)
+    return _skipped(lead_id, email_draft, reason_code)
 
 
 def _result(

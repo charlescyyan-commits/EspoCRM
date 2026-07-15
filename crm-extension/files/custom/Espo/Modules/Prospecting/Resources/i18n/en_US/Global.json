@@ -5,7 +5,7 @@
     "ProspectPool": "Prospect Pool",
     "ProspectingDashboard": "Prospecting Operations",
     "ProspectingSearch": "Search",
-    "ResearchEvidence": "Research Evidence"
+    "ResearchEvidence": "Research Center"
   },
   "scopeNamesPlural": {
     "SearchStrategy": "Search Strategies",
@@ -13,7 +13,7 @@
     "ProspectPool": "Prospect Pool",
     "ProspectingDashboard": "Prospecting Operations",
     "ProspectingSearch": "Search",
-    "ResearchEvidence": "Research Evidence"
+    "ResearchEvidence": "Research Center"
   },
   "dashlets": {
     "ProspectingIntelligence": "Prospecting Intelligence",

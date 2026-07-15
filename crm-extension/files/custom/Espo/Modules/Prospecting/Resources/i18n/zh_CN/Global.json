@@ -5,7 +5,7 @@
     "ProspectPool": "潜客池",
     "ProspectingDashboard": "潜客运营",
     "ProspectingSearch": "搜索",
-    "ResearchEvidence": "AI 研究证据"
+    "ResearchEvidence": "研究中心"
   },
   "scopeNamesPlural": {
     "SearchStrategy": "搜索策略",
@@ -13,7 +13,7 @@
     "ProspectPool": "潜客池",
     "ProspectingDashboard": "潜客运营",
     "ProspectingSearch": "搜索",
-    "ResearchEvidence": "AI 研究证据"
+    "ResearchEvidence": "研究中心"
   },
   "dashlets": {
     "ProspectingIntelligence": "潜客智能",

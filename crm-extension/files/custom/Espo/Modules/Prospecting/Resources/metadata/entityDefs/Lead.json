@@ -74,14 +74,20 @@
       "type": "enum",
       "required": false,
       "notNull": false,
-      "options": ["NONE", "DRAFT_READY", "APPROVED", "SENT", "REPLIED", "BOUNCED"],
+      "options": ["NONE", "DRAFT_READY", "DRAFT_PENDING_APPROVAL", "APPROVED", "REJECTED", "PENDING", "READY_TO_SEND", "SENT", "FAILED", "CANCELLED", "REPLIED", "BOUNCED"],
       "default": "NONE",
       "displayAsLabel": true,
       "style": {
         "NONE": "default",
         "DRAFT_READY": "warning",
+        "DRAFT_PENDING_APPROVAL": "warning",
         "APPROVED": "info",
+        "REJECTED": "danger",
+        "PENDING": "warning",
+        "READY_TO_SEND": "info",
         "SENT": "primary",
+        "FAILED": "danger",
+        "CANCELLED": "default",
         "REPLIED": "success",
         "BOUNCED": "danger"
       },
@@ -401,6 +407,21 @@
     "emailEvents": {
       "type": "hasMany",
       "entity": "EmailEvent",
+      "foreign": "lead"
+    },
+    "draftApprovals": {
+      "type": "hasMany",
+      "entity": "DraftApproval",
+      "foreign": "lead"
+    },
+    "sendExecutions": {
+      "type": "hasMany",
+      "entity": "SendExecution",
+      "foreign": "lead"
+    },
+    "replyEvents": {
+      "type": "hasMany",
+      "entity": "ReplyEvent",
       "foreign": "lead"
     }
   },

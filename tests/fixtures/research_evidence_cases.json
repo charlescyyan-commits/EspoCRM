@@ -1,0 +1,60 @@
+{
+  "lead_id": "lead-regression-fixture-001",
+  "cases": [
+    {
+      "name": "new_evidence",
+      "mode": "single",
+      "evidence": {
+        "evidence_id": "evidence-regression-001",
+        "claim_type": "PRODUCT",
+        "claim": "Acme maintains an authorized reseller network.",
+        "source_url": "https://example.test/resellers",
+        "page_title": "Authorized Resellers",
+        "evidence_text": "Acme maintains an authorized reseller network for industrial customers.",
+        "evidence_type": "PARTNER_PROGRAM",
+        "confidence": 0.91,
+        "captured_at": "2026-07-14T10:00:00+00:00",
+        "extractor_version": "fixture-v1"
+      },
+      "expected_statuses": ["CREATED"],
+      "expected_create_count": 1
+    },
+    {
+      "name": "duplicate_evidence",
+      "mode": "repeat",
+      "evidence": {
+        "evidence_id": "evidence-regression-002",
+        "claim_type": "PRODUCT",
+        "claim": "Acme supplies validated industrial printer components.",
+        "source_url": "https://example.test/components",
+        "page_title": "Industrial Components",
+        "evidence_text": "Validated industrial printer components are supplied by Acme.",
+        "evidence_type": "PRODUCT_CAPABILITY",
+        "confidence": 0.88,
+        "captured_at": "2026-07-14T10:01:00+00:00",
+        "extractor_version": "fixture-v1"
+      },
+      "expected_statuses": ["CREATED", "SKIPPED"],
+      "expected_create_count": 1
+    },
+    {
+      "name": "invalid_evidence",
+      "mode": "single",
+      "evidence": {
+        "evidence_id": "evidence-regression-invalid",
+        "claim_type": "PRODUCT",
+        "claim": "This fixture has an invalid source URL.",
+        "source_url": "not-an-http-url",
+        "page_title": "Invalid fixture",
+        "evidence_text": "The persistence adapter must reject this evidence before a CRM create.",
+        "evidence_type": "PRODUCT_CAPABILITY",
+        "confidence": 0.75,
+        "captured_at": "2026-07-14T10:02:00+00:00",
+        "extractor_version": "fixture-v1"
+      },
+      "expected_statuses": ["REJECTED"],
+      "expected_reason_code": "INVALID_SOURCE_URL",
+      "expected_create_count": 0
+    }
+  ]
+}

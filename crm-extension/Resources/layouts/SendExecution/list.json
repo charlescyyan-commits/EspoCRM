@@ -1,0 +1,9 @@
+[
+  {"name": "name", "width": 22, "link": true},
+  {"name": "status", "width": 14},
+  {"name": "failureCategory", "width": 14},
+  {"name": "sendRequestId", "width": 22},
+  {"name": "lead", "width": 18},
+  {"name": "providerName", "width": 14},
+  {"name": "modifiedAt", "width": 16}
+]

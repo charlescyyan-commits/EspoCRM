@@ -1,0 +1,52 @@
+{
+  "cases": [
+    {
+      "name": "draft",
+      "source_entity": "DraftApproval",
+      "source_status": "PENDING",
+      "occurred_at": "2026-07-14 10:00:00",
+      "initial": {"peEmailStatus": "NONE", "peEmailReplyStatus": "", "peLastEmailDate": null},
+      "expected": {"peEmailStatus": "DRAFT_PENDING_APPROVAL", "peEmailReplyStatus": "", "peLastEmailDate": "2026-07-14 10:00:00"}
+    },
+    {
+      "name": "approved",
+      "source_entity": "DraftApproval",
+      "source_status": "APPROVED",
+      "occurred_at": "2026-07-14 10:01:00",
+      "initial": {"peEmailStatus": "DRAFT_PENDING_APPROVAL", "peEmailReplyStatus": "", "peLastEmailDate": "2026-07-14 10:00:00"},
+      "expected": {"peEmailStatus": "APPROVED", "peEmailReplyStatus": "", "peLastEmailDate": "2026-07-14 10:01:00"}
+    },
+    {
+      "name": "queued",
+      "source_entity": "SendExecution",
+      "source_status": "CREATED",
+      "occurred_at": "2026-07-14 10:02:00",
+      "initial": {"peEmailStatus": "APPROVED", "peEmailReplyStatus": "", "peLastEmailDate": "2026-07-14 10:01:00"},
+      "expected": {"peEmailStatus": "PENDING", "peEmailReplyStatus": "", "peLastEmailDate": "2026-07-14 10:02:00"}
+    },
+    {
+      "name": "sent",
+      "source_entity": "SendExecution",
+      "source_status": "SENT",
+      "occurred_at": "2026-07-14 10:03:00",
+      "initial": {"peEmailStatus": "PENDING", "peEmailReplyStatus": "", "peLastEmailDate": "2026-07-14 10:02:00"},
+      "expected": {"peEmailStatus": "SENT", "peEmailReplyStatus": "", "peLastEmailDate": "2026-07-14 10:03:00"}
+    },
+    {
+      "name": "failed",
+      "source_entity": "SendExecution",
+      "source_status": "FAILED",
+      "occurred_at": "2026-07-14 10:03:00",
+      "initial": {"peEmailStatus": "PENDING", "peEmailReplyStatus": "", "peLastEmailDate": "2026-07-14 10:02:00"},
+      "expected": {"peEmailStatus": "FAILED", "peEmailReplyStatus": "", "peLastEmailDate": "2026-07-14 10:03:00"}
+    },
+    {
+      "name": "replied",
+      "source_entity": "ReplyEvent",
+      "source_status": "REPLIED",
+      "occurred_at": "2026-07-14 10:04:00",
+      "initial": {"peEmailStatus": "SENT", "peEmailReplyStatus": "", "peLastEmailDate": "2026-07-14 10:03:00"},
+      "expected": {"peEmailStatus": "SENT", "peEmailReplyStatus": "REPLIED", "peLastEmailDate": "2026-07-14 10:04:00"}
+    }
+  ]
+}

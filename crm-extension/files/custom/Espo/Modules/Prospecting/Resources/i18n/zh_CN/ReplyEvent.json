@@ -1,0 +1,6 @@
+{
+  "fields": {"name": "标题", "externalEventId": "外部事件 ID", "replyStatus": "回复状态", "receivedAt": "接收时间", "eventMetadata": "事件元数据", "sendTraceReference": "发送追踪引用", "sendExecution": "发送执行", "lead": "线索"},
+  "links": {"sendExecution": "发送执行", "lead": "线索"},
+  "labels": {"Create ReplyEvent": "创建回复事件", "ReplyEvents": "回复事件"},
+  "options": {"replyStatus": {"SENT": "已发送", "REPLIED": "已回复", "BOUNCED": "退信", "UNSUBSCRIBED": "已退订"}}
+}

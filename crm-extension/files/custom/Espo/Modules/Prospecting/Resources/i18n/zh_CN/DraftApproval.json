@@ -1,0 +1,6 @@
+{
+  "fields": {"name": "标题", "draftId": "草稿 ID", "status": "审批状态", "approvedBy": "审批人", "approvedAt": "审批时间", "decisionReason": "审批原因", "evidenceReference": "证据引用", "scoreSnapshot": "评分快照引用", "contentHash": "已审批内容哈希", "lead": "线索"},
+  "links": {"lead": "线索", "approvedBy": "审批人", "sendExecutions": "发送执行"},
+  "labels": {"Create DraftApproval": "创建草稿审批", "DraftApprovals": "草稿审批"},
+  "options": {"status": {"PENDING": "待审批", "APPROVED": "已批准", "REJECTED": "已拒绝"}}
+}

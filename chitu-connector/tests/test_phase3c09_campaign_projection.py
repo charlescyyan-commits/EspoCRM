@@ -1,4 +1,4 @@
-"""Tests for safe C09.3 draft-preparation projection to an existing Lead."""
+"""Deprecated W-CON-02 compatibility tests; execution submission uses C14.3 bridge coverage."""
 
 from __future__ import annotations
 
@@ -33,6 +33,9 @@ class FakeCampaignProjectionClient:
         self.update_calls.append((lead_id, dict(fields)))
         return {"id": lead_id, **fields}
 
+    def read_record(self, entity_type: str, record_id: str, select: str) -> Mapping[str, Any]:
+        return {"id": record_id}
+
 
 def email_draft() -> EmailDraft:
     return EmailDraft(
@@ -57,7 +60,8 @@ class CampaignProjectionAdapterTests(TestCase):
         self.adapter = CampaignProjectionAdapter(self.client)
 
     def test_projects_only_existing_lead_draft_preparation_fields(self) -> None:
-        result = self.adapter.project("lead-123", email_draft())
+        with self.assertWarnsRegex(DeprecationWarning, "CampaignProjectionAdapter.project"):
+            result = self.adapter.project("lead-123", email_draft())
 
         self.assertEqual(result.status, CampaignProjectionStatus.PROJECTED)
         self.assertEqual(result.updated_fields, ("peEmailStatus", "peEmailCampaignName", "peRecommendedApproach"))

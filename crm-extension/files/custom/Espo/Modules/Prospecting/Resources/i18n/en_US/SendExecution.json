@@ -1,0 +1,28 @@
+{
+  "fields": {
+    "name": "Title",
+    "sendRequestId": "Send Request ID",
+    "status": "Execution Status",
+    "draftApproval": "Draft Approval",
+    "lead": "Lead",
+    "providerName": "Provider Name",
+    "providerMessageId": "Provider Message ID",
+    "retryCount": "Retry Count",
+    "maxRetries": "Maximum Retries",
+    "nextRetryAt": "Next Retry At",
+    "lastError": "Last Error",
+    "failureCategory": "Failure Category"
+  },
+  "links": {"draftApproval": "Draft Approval", "lead": "Lead", "replyEvents": "Reply Events"},
+  "labels": {"Create SendExecution": "Create Send Execution", "SendExecutions": "Send Executions"},
+  "options": {
+    "status": {"CREATED": "Created", "READY": "Ready", "SENT": "Sent", "FAILED": "Failed", "CANCELLED": "Cancelled"},
+    "failureCategory": {"NETWORK": "Network", "PROVIDER": "Provider", "AUTH": "Authentication", "RATE_LIMIT": "Rate Limit", "VALIDATION": "Validation", "UNKNOWN": "Unknown"}
+  },
+  "tooltips": {
+    "retryCount": "Persistence-only retry reservation. This phase does not implement retry execution.",
+    "maxRetries": "Persistence-only retry reservation. This phase does not implement retry execution.",
+    "nextRetryAt": "Reserved for a future retry scheduler; no worker or queue is introduced by this phase.",
+    "failureCategory": "Persistence-only classification of an observed failure. It does not trigger retry execution."
+  }
+}

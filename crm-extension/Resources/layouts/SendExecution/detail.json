@@ -1,0 +1,15 @@
+[
+  {
+    "label": "Send Execution",
+    "rows": [
+      [{"name": "name"}, {"name": "status"}],
+      [{"name": "sendRequestId"}, {"name": "lead"}],
+      [{"name": "draftApproval"}, {"name": "providerName"}],
+      [{"name": "providerMessageId", "fullWidth": true}],
+      [{"name": "retryCount"}, {"name": "maxRetries"}],
+      [{"name": "nextRetryAt"}, {"name": "assignedUser"}],
+      [{"name": "failureCategory"}, {"name": "lastError"}],
+      [{"name": "teams", "fullWidth": true}]
+    ]
+  }
+]

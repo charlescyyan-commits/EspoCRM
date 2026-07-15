@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+"""Deprecated W-CON-01 compatibility tests; new execution tests use C14.3 bridge coverage."""
+
 from datetime import datetime, timezone
 from typing import Any, Mapping
 from unittest import TestCase
@@ -25,6 +27,9 @@ class InMemoryEmailLifecycleClient:
         self.update_calls.append((entity_type, record_id, dict(body)))
         return self.records[entity_type][record_id]
 
+    def read_record(self, entity_type: str, record_id: str, select: str) -> Mapping[str, Any]:
+        return dict(self.records[entity_type][record_id])
+
 
 def _update(status: EmailLifecycleStatus = EmailLifecycleStatus.REPLIED) -> EmailLifecycleUpdate:
     return EmailLifecycleUpdate(
@@ -39,7 +44,8 @@ class EmailLifecycleSyncTests(TestCase):
     def test_syncs_only_allowlisted_summary_fields_to_linked_records(self) -> None:
         client = InMemoryEmailLifecycleClient()
 
-        result = EmailLifecycleSyncService().sync(client, "lead-1", _update(), "opportunity-1")
+        with self.assertWarnsRegex(DeprecationWarning, "EmailLifecycleSyncService.sync"):
+            result = EmailLifecycleSyncService().sync(client, "lead-1", _update(), "opportunity-1")
 
         expected = {
             "peEmailStatus": "REPLIED",

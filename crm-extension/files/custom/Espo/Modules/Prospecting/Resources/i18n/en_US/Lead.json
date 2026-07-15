@@ -95,8 +95,14 @@
     "peEmailStatus": {
       "NONE": "None",
       "DRAFT_READY": "Draft Ready",
+      "DRAFT_PENDING_APPROVAL": "Draft Pending Approval",
       "APPROVED": "Approved",
+      "REJECTED": "Rejected",
+      "PENDING": "Pending",
+      "READY_TO_SEND": "Ready to Send",
       "SENT": "Sent",
+      "FAILED": "Failed",
+      "CANCELLED": "Cancelled",
       "REPLIED": "Replied",
       "BOUNCED": "Bounced"
     },

@@ -1,0 +1,38 @@
+{
+  "fields": {
+    "name": {"type": "varchar", "maxLength": 255, "required": true, "trim": true},
+    "sendRequestId": {"type": "varchar", "maxLength": 255, "required": true, "trim": true},
+    "status": {"type": "enum", "required": true, "options": ["CREATED", "READY", "SENT", "FAILED", "CANCELLED"], "default": "CREATED", "displayAsLabel": true, "style": {"CREATED": "default", "READY": "info", "SENT": "success", "FAILED": "danger", "CANCELLED": "warning"}},
+    "providerName": {"type": "varchar", "maxLength": 100, "required": false, "notNull": false, "trim": true},
+    "providerMessageId": {"type": "varchar", "maxLength": 255, "required": false, "notNull": false, "trim": true},
+    "retryCount": {"type": "int", "required": true, "default": 0, "min": 0},
+    "maxRetries": {"type": "int", "required": true, "default": 0, "min": 0},
+    "nextRetryAt": {"type": "datetime", "required": false, "notNull": false},
+    "lastError": {"type": "text", "required": false, "notNull": false},
+    "failureCategory": {"type": "enum", "required": false, "notNull": false, "options": ["NETWORK", "PROVIDER", "AUTH", "RATE_LIMIT", "VALIDATION", "UNKNOWN"], "displayAsLabel": true, "style": {"NETWORK": "warning", "PROVIDER": "danger", "AUTH": "danger", "RATE_LIMIT": "warning", "VALIDATION": "warning", "UNKNOWN": "default"}},
+    "draftApproval": {"type": "link", "required": true},
+    "lead": {"type": "link", "required": true},
+    "createdAt": {"type": "datetime", "readOnly": true},
+    "modifiedAt": {"type": "datetime", "readOnly": true},
+    "createdBy": {"type": "link", "readOnly": true},
+    "modifiedBy": {"type": "link", "readOnly": true},
+    "assignedUser": {"type": "link"},
+    "teams": {"type": "linkMultiple"}
+  },
+  "links": {
+    "draftApproval": {"type": "belongsTo", "entity": "DraftApproval", "foreign": "sendExecutions"},
+    "lead": {"type": "belongsTo", "entity": "Lead", "foreign": "sendExecutions"},
+    "createdBy": {"type": "belongsTo", "entity": "User"},
+    "modifiedBy": {"type": "belongsTo", "entity": "User"},
+    "assignedUser": {"type": "belongsTo", "entity": "User"},
+    "teams": {"type": "hasMany", "entity": "Team", "relationName": "entityTeam", "layoutRelationshipsDisabled": true},
+    "replyEvents": {"type": "hasMany", "entity": "ReplyEvent", "foreign": "sendExecution"}
+  },
+  "collection": {"orderBy": "modifiedAt", "order": "desc", "textFilterFields": ["name", "sendRequestId", "status", "failureCategory", "providerName", "providerMessageId"]},
+  "deleteId": true,
+  "indexes": {
+    "sendRequestId": {"type": "unique", "columns": ["sendRequestId", "deleteId"]},
+    "leadId": {"columns": ["leadId"]},
+    "draftApprovalId": {"columns": ["draftApprovalId"]}
+  }
+}

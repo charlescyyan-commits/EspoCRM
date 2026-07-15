@@ -1,0 +1,14 @@
+[
+  {
+    "label": "Draft Approval",
+    "rows": [
+      [{"name": "name"}, {"name": "status"}],
+      [{"name": "draftId"}, {"name": "lead"}],
+      [{"name": "approvedBy"}, {"name": "approvedAt"}],
+      [{"name": "evidenceReference"}, {"name": "scoreSnapshot"}],
+      [{"name": "contentHash", "fullWidth": true}],
+      [{"name": "decisionReason", "fullWidth": true}],
+      [{"name": "assignedUser"}, {"name": "teams"}]
+    ]
+  }
+]

@@ -10,7 +10,7 @@
     "peSyncStatus": {"PENDING": "待同步", "SYNCED": "已同步", "FAILED": "失败"},
     "pePriorityLevel": {"LOW": "低", "NORMAL": "普通", "HIGH": "高", "URGENT": "紧急"},
     "peResearchStatus": {"NONE": "无", "RESEARCHING": "研究中", "COMPLETED": "已完成", "FAILED": "失败"},
-    "peEmailStatus": {"NONE": "无", "DRAFT_READY": "草稿已就绪", "APPROVED": "已批准", "SENT": "已发送", "REPLIED": "已回复", "BOUNCED": "退信"},
+    "peEmailStatus": {"NONE": "无", "DRAFT_READY": "草稿已就绪", "DRAFT_PENDING_APPROVAL": "草稿待审批", "APPROVED": "已批准", "REJECTED": "已拒绝", "PENDING": "待处理", "READY_TO_SEND": "待发送", "SENT": "已发送", "FAILED": "失败", "CANCELLED": "已取消", "REPLIED": "已回复", "BOUNCED": "退信"},
     "peScoreTier": {"": "", "A": "A", "B": "B", "C": "C", "D": "D"},
     "status": {"New": "新建", "Reviewed": "已审核", "Contacted": "已联系", "Interested": "有兴趣", "Qualified": "已确认", "Converted": "已转换", "Rejected": "已拒绝"}
   },

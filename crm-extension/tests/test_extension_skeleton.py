@@ -167,7 +167,22 @@ SALES_STATUS_OPTIONS = [
     "Rejected",
 ]
 
-EMAIL_STATUS_OPTIONS = [
+LEAD_EMAIL_STATUS_OPTIONS = [
+    "NONE",
+    "DRAFT_READY",
+    "DRAFT_PENDING_APPROVAL",
+    "APPROVED",
+    "REJECTED",
+    "PENDING",
+    "READY_TO_SEND",
+    "SENT",
+    "FAILED",
+    "CANCELLED",
+    "REPLIED",
+    "BOUNCED",
+]
+
+OPPORTUNITY_EMAIL_STATUS_OPTIONS = [
     "NONE",
     "DRAFT_READY",
     "APPROVED",
@@ -375,7 +390,7 @@ class ExtensionSkeletonTests(unittest.TestCase):
     def test_phase3a27_email_status_integration_metadata(self) -> None:
         fields = _load_json(MODULE_ENTITY_DEFS / "Lead.json")["fields"]
         self.assertEqual(fields["peEmailStatus"]["type"], "enum")
-        self.assertEqual(fields["peEmailStatus"]["options"], EMAIL_STATUS_OPTIONS)
+        self.assertEqual(fields["peEmailStatus"]["options"], LEAD_EMAIL_STATUS_OPTIONS)
         self.assertEqual(fields["peEmailStatus"].get("default"), "NONE")
         self.assertEqual(fields["peLastEmailDate"]["type"], "datetime")
         self.assertEqual(fields["peEmailCampaignName"]["type"], "varchar")
@@ -437,7 +452,7 @@ class ExtensionSkeletonTests(unittest.TestCase):
     def test_phase3a31_opportunity_email_lifecycle_metadata(self) -> None:
         fields = _load_json(MODULE_ENTITY_DEFS / "Opportunity.json")["fields"]
         self.assertEqual(fields["peEmailStatus"]["type"], "enum")
-        self.assertEqual(fields["peEmailStatus"]["options"], EMAIL_STATUS_OPTIONS)
+        self.assertEqual(fields["peEmailStatus"]["options"], OPPORTUNITY_EMAIL_STATUS_OPTIONS)
         self.assertEqual(fields["peEmailStatus"].get("default"), "NONE")
         self.assertEqual(fields["peLastEmailDate"]["type"], "datetime")
         self.assertEqual(fields["peEmailCampaignName"]["type"], "varchar")
@@ -529,15 +544,28 @@ class ExtensionSkeletonTests(unittest.TestCase):
             MODULE / "Entities" / "ProspectPool.php",
             MODULE / "Controllers" / "ProspectPool.php",
             MODULE / "Entities" / "SearchStrategy.php",
+            MODULE / "Entities" / "DraftApproval.php",
+            MODULE / "Entities" / "SendExecution.php",
+            MODULE / "Entities" / "ReplyEvent.php",
             MODULE / "Controllers" / "SearchStrategy.php",
             MODULE / "Api" / "PostGenerateSearchStrategyJobs.php",
             MODULE / "Services" / "SearchStrategyService.php",
             MODULE / "Services" / "SearchStrategyTemplates.php",
             MODULE / "Api" / "PostSyncBrevoEmailEvent.php",
             MODULE / "Services" / "BrevoEmailEventSyncService.php",
+            MODULE / "Services" / "EmailLifecycleProjectionService.php",
+            MODULE / "Services" / "BridgeRejectionException.php",
+            MODULE / "Services" / "BridgeNormalizedStatus.php",
+            MODULE / "Services" / "BridgeErrorClass.php",
+            MODULE / "Services" / "SendExecutionBridgeResult.php",
+            MODULE / "Services" / "SendExecutionBridgeAdapterService.php",
+            MODULE / "Services" / "SendExecutionResultAdapterService.php",
             EXT / "files" / "custom" / "Espo" / "Custom" / "Hooks" / "SalesFeedback" / "SalesFeedbackLearningSignalHook.php",
             EXT / "files" / "custom" / "Espo" / "Custom" / "Hooks" / "EmailEvent" / "EmailEventWorkflowHook.php",
             EXT / "files" / "custom" / "Espo" / "Custom" / "Hooks" / "EmailEvent" / "EmailEventSalesFeedbackHook.php",
+            EXT / "files" / "custom" / "Espo" / "Custom" / "Hooks" / "DraftApproval" / "EmailLifecycleProjectionHook.php",
+            EXT / "files" / "custom" / "Espo" / "Custom" / "Hooks" / "SendExecution" / "EmailLifecycleProjectionHook.php",
+            EXT / "files" / "custom" / "Espo" / "Custom" / "Hooks" / "ReplyEvent" / "EmailLifecycleProjectionHook.php",
         }
         expected |= set((MODULE / "Classes" / "Select" / "Lead" / "PrimaryFilters").glob("*.php"))
         expected |= set((MODULE / "Classes" / "Select" / "SalesFeedback" / "PrimaryFilters").glob("*.php"))
@@ -852,13 +880,15 @@ class ExtensionSkeletonTests(unittest.TestCase):
         self.assertIn("class EmailEventWorkflowHook", hook)
         self.assertIn("Follow up customer reply", hook)
         self.assertIn("Verify customer email", hook)
-        self.assertIn("peEmailStatus", hook)
-        self.assertIn("'OPENED', 'CLICKED'", hook)
+        self.assertIn("EmailLifecycleProjectionService", hook)
+        self.assertIn("projectEmailEvent($event)", hook)
+        self.assertNotIn("peEmailStatus", hook)
+        self.assertNotIn("peEmailReplyStatus", hook)
         self.assertIn("getEntity('Task')", hook)
 
     def test_phase3b05b_email_workflow_hook(self) -> None:
         fields = _load_json(MODULE_ENTITY_DEFS / "Lead.json")["fields"]
-        self.assertEqual(fields["peEmailStatus"]["options"], EMAIL_STATUS_OPTIONS)
+        self.assertEqual(fields["peEmailStatus"]["options"], LEAD_EMAIL_STATUS_OPTIONS)
         self.assertEqual(fields["peLastEmailDate"]["type"], "datetime")
         self.assertEqual(fields["peEmailReplyStatus"]["type"], "varchar")
         self.assertIn("emailEvents", _load_json(MODULE_ENTITY_DEFS / "Lead.json")["links"])
@@ -866,10 +896,12 @@ class ExtensionSkeletonTests(unittest.TestCase):
         hook = (
             EXT / "files" / "custom" / "Espo" / "Custom" / "Hooks" / "EmailEvent" / "EmailEventWorkflowHook.php"
         ).read_text(encoding="utf-8")
-        self.assertIn("applySent", hook)
-        self.assertIn("applyReplied", hook)
-        self.assertIn("applyBounced", hook)
-        self.assertIn("applyEngagementOnly", hook)
+        service = (MODULE / "Services" / "EmailLifecycleProjectionService.php").read_text(encoding="utf-8")
+        self.assertIn("projectEmailEvent($event)", hook)
+        self.assertIn("public function projectEmailEvent", service)
+        self.assertIn("'OPENED', 'CLICKED'", service)
+        self.assertNotIn("$lead->set", hook)
+        self.assertNotIn("saveEntity($lead)", hook)
         self.assertIn("createTaskOnce", hook)
         # LearningSignal must remain untouched by this phase.
         self.assertNotIn("LearningSignal", hook)

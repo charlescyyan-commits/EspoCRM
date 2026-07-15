@@ -1,0 +1,21 @@
+{
+  "fields": {
+    "name": "Title",
+    "externalEventId": "External Event ID",
+    "replyStatus": "Reply Status",
+    "receivedAt": "Received At",
+    "eventMetadata": "Event Metadata",
+    "sendTraceReference": "Send Trace Reference",
+    "sendExecution": "Send Execution",
+    "lead": "Lead"
+  },
+  "links": {"sendExecution": "Send Execution", "lead": "Lead"},
+  "labels": {"Create ReplyEvent": "Create Reply Event", "ReplyEvents": "Reply Events"},
+  "options": {
+    "replyStatus": {"SENT": "Sent", "REPLIED": "Replied", "BOUNCED": "Bounced", "UNSUBSCRIBED": "Unsubscribed"}
+  },
+  "tooltips": {
+    "eventMetadata": "Event metadata only. Do not store a full email body, prompt content, or hidden reasoning.",
+    "sendTraceReference": "Original accepted send trace reference."
+  }
+}

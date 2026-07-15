@@ -58,6 +58,50 @@ from chitu_connector.espocrm_sync.email_draft_generation import (
     EmailDraftGenerator,
     PersonalizationReference,
 )
+from chitu_connector.espocrm_sync.draft_store import (
+    DRAFT_STORE_VERSION,
+    DraftContentReference,
+    DraftSnapshot,
+    DraftSnapshotInput,
+    DraftStore,
+    InMemoryDraftStore,
+    SnapshotVerification,
+)
+from chitu_connector.espocrm_sync.failure_classification import (
+    FailureCategory,
+    classify_failure,
+    normalize_failure_category,
+)
+from chitu_connector.espocrm_sync.provider_contract import (
+    FakeProviderAdapter,
+    FakeProviderMode,
+    ProviderAdapter,
+    ProviderError,
+    ProviderErrorCategory,
+    ProviderStatus,
+    SendRequest as ProviderSendRequest,
+    SendResult,
+    SendResultStatus,
+    map_error_to_failure_category,
+)
+from chitu_connector.espocrm_sync.brevo_http import BrevoHttpClient, BrevoHttpResponse, BrevoTransportError, UrllibBrevoHttpClient
+from chitu_connector.espocrm_sync.brevo_provider import BrevoConfiguration, BrevoProviderAdapter
+from chitu_connector.espocrm_sync.queue_contract import (
+    InMemorySendExecutionQueue,
+    QueueClaim,
+    QueueItem,
+    QueueItemState,
+    SendExecutionQueue,
+    SendExecutionWorker as SendExecutionWorkerProtocol,
+)
+from chitu_connector.espocrm_sync.worker_execution import (
+    InMemorySendExecutionWorkStore,
+    SendExecutionWorkItem,
+    SendExecutionWorkStore,
+    SendExecutionWorker,
+    WorkExecutionStatus,
+    WorkerExecutionOutcome,
+)
 from chitu_connector.espocrm_sync.campaign_projection import (
     CampaignProjectionAdapter,
     CampaignProjectionResult,
@@ -136,6 +180,18 @@ __all__ = [
     "OutreachInputAdapter",
     "DeterministicEmailDraftGenerator", "DraftEvidenceReference", "EmailDraft", "EmailDraftGenerator",
     "PersonalizationReference",
+    "DRAFT_STORE_VERSION", "DraftContentReference", "DraftSnapshot", "DraftSnapshotInput", "DraftStore",
+    "InMemoryDraftStore", "SnapshotVerification",
+    "FailureCategory", "classify_failure", "normalize_failure_category",
+    "FakeProviderAdapter", "FakeProviderMode", "ProviderAdapter", "ProviderError",
+    "ProviderErrorCategory", "ProviderStatus", "ProviderSendRequest", "SendResult",
+    "SendResultStatus", "map_error_to_failure_category",
+    "BrevoHttpClient", "BrevoHttpResponse", "BrevoTransportError", "UrllibBrevoHttpClient",
+    "BrevoConfiguration", "BrevoProviderAdapter",
+    "InMemorySendExecutionQueue", "QueueClaim", "QueueItem", "QueueItemState",
+    "SendExecutionQueue", "SendExecutionWorkerProtocol", "InMemorySendExecutionWorkStore",
+    "SendExecutionWorkItem", "SendExecutionWorkStore", "SendExecutionWorker",
+    "WorkExecutionStatus", "WorkerExecutionOutcome",
     "CampaignProjectionAdapter", "CampaignProjectionResult", "CampaignProjectionStatus",
     "LeadCampaignProjectionClient",
     "InMemorySendIdempotencyRegistry", "SendAttempt", "SendAttemptState", "SendIdempotencyRegistry",

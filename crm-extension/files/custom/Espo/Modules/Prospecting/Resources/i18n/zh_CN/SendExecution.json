@@ -1,0 +1,6 @@
+{
+  "fields": {"name": "标题", "sendRequestId": "发送请求 ID", "status": "执行状态", "draftApproval": "草稿审批", "lead": "线索", "providerName": "提供商名称", "providerMessageId": "提供商消息 ID", "retryCount": "重试次数", "maxRetries": "最大重试次数", "nextRetryAt": "下次重试时间", "lastError": "最后错误", "failureCategory": "失败分类"},
+  "links": {"draftApproval": "草稿审批", "lead": "线索", "replyEvents": "回复事件"},
+  "labels": {"Create SendExecution": "创建发送执行", "SendExecutions": "发送执行"},
+  "options": {"status": {"CREATED": "已创建", "READY": "已就绪", "SENT": "已发送", "FAILED": "失败", "CANCELLED": "已取消"}, "failureCategory": {"NETWORK": "网络", "PROVIDER": "提供商", "AUTH": "认证", "RATE_LIMIT": "速率限制", "VALIDATION": "校验", "UNKNOWN": "未知"}}
+}

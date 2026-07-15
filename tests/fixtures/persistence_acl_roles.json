@@ -1,0 +1,9 @@
+{
+  "roles": {
+    "Admin": {"create": "yes", "read": "all", "edit": "all", "delete": "all"},
+    "Integration Bot": {"create": "yes", "read": "all", "edit": "all", "delete": "no"},
+    "Sales User": {"create": "no", "read": "all", "edit": "no", "delete": "no"},
+    "Sales Manager": {"create": "no", "read": "all", "edit": "no", "delete": "no"}
+  },
+  "scopes": ["DraftApproval", "SendExecution", "ReplyEvent"]
+}

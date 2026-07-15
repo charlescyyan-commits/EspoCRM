@@ -1,0 +1,13 @@
+[
+  {
+    "label": "Reply Event",
+    "rows": [
+      [{"name": "name"}, {"name": "replyStatus"}],
+      [{"name": "externalEventId"}, {"name": "receivedAt"}],
+      [{"name": "sendExecution"}, {"name": "lead"}],
+      [{"name": "sendTraceReference", "fullWidth": true}],
+      [{"name": "eventMetadata", "fullWidth": true}],
+      [{"name": "assignedUser"}, {"name": "teams"}]
+    ]
+  }
+]
