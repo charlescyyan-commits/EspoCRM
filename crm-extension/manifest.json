@@ -1,14 +1,14 @@
 {
   "name": "Chitu Prospecting Integration",
   "extensionName": "Chitu Prospecting Integration",
-  "version": "1.9.5-alpha",
+  "version": "1.9.6-alpha",
   "acceptableVersions": [
     ">=7.4.0"
   ],
   "php": [
     ">=8.1"
   ],
-  "releaseDate": "2026-07-13",
+  "releaseDate": "2026-07-20",
   "author": "Chitu Intelligence",
   "description": "Chitu Prospecting CRM sync, native Prospecting Workspace, and deterministic Acquisition Strategy planning for EspoCRM",
   "skipBackup": false,

@@ -270,11 +270,12 @@ class EspoRepositoryTests(TestCase):
         self.assertEqual(body["searchJobId"], "job-1")
 
     def test_static_boundary_has_no_sync_service_or_real_provider(self) -> None:
-        for path in (
+        repo_root = Path(__file__).resolve().parents[2]
+        for relative in (
             "chitu-connector/chitu_connector/acquisition/runner.py",
             "chitu-connector/chitu_connector/acquisition/espo_repository.py",
         ):
-            source = Path(path).read_text(encoding="utf-8")
+            source = (repo_root / relative).read_text(encoding="utf-8")
             self.assertNotIn("ChituSyncService", source)
             self.assertNotIn("Apify", source)
             self.assertNotIn("while True", source)

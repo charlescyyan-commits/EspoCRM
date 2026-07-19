@@ -4,9 +4,9 @@ This workspace owns the installable **Chitu Prospecting Integration** extension,
 
 ## Current release baseline
 
-- **Extension version:** `1.9.5-alpha`
+- **Extension version:** `1.9.6-alpha`
 - **Version authority:** [`crm-extension/manifest.json`](crm-extension/manifest.json)
-- **Installable artifact:** `deployment/prospecting-extension-1.9.5-alpha.zip`
+- **Installable artifact:** `deployment/prospecting-extension-1.9.6-alpha.zip`
 - **Platform compatibility:** EspoCRM `>=7.4.0`; PHP `>=8.1`
 - **Release status:** alpha / disposable or explicitly approved CRM validation only
 
@@ -32,7 +32,7 @@ Current packaged capabilities include Prospecting workspace UI, SearchStrategy/S
 
 ## Workflow and safety
 
-Use EspoCRM-Test or an approved disposable CRM for validation. Build an extension from `crm-extension` with `scripts/build_release_package.ps1`; run connector tests from `chitu-connector` with Python's `unittest`.
+Use EspoCRM-Test or an approved disposable CRM for validation. Build an extension from `crm-extension` with `crm-extension/scripts/build_release_package.ps1`; run connector tests from `chitu-connector` with Python's `unittest`.
 
 Do not deploy, import customer data, enable outreach, or run provisioning/cleanup scripts without an approved runbook and target. No Chitu Intelligence core code belongs here.
 

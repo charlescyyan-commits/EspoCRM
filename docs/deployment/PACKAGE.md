@@ -34,7 +34,7 @@ Example:
 
 ```powershell
 cd D:\EspoCRM-Production\crm-extension
-.\scripts\build_release_package.ps1 -OutputPath ..\deployment\prospecting-extension-1.9.5-alpha.zip
+.\scripts\build_release_package.ps1 -OutputPath ..\deployment\prospecting-extension-1.9.6-alpha.zip
 ```
 
 ## Checksum
@@ -48,7 +48,7 @@ deployment/prospecting-extension-<version>.zip.sha256
 Generate manually (PowerShell):
 
 ```powershell
-Get-FileHash ..\deployment\prospecting-extension-1.9.5-alpha.zip -Algorithm SHA256
+Get-FileHash ..\deployment\prospecting-extension-1.9.6-alpha.zip -Algorithm SHA256
 ```
 
 ## Validation
@@ -67,9 +67,9 @@ python -m unittest crm-extension.tests.test_extension_skeleton.ExtensionSkeleton
 | `prospecting-extension-1.8.0-alpha.zip` | Historical package |
 | `prospecting-extension-1.9.0-alpha.zip` | Historical package |
 | `prospecting-extension-1.9.1-alpha.zip` | Historical package |
-| `prospecting-extension-1.9.5-alpha.zip` | Current package; matches `manifest.json` |
+| `prospecting-extension-1.9.6-alpha.zip` | Current package; matches `manifest.json` |
 
-The current `1.9.5-alpha` ZIP has no committed `.sha256` sidecar. Generate and retain one before any freeze or external distribution; do not infer that a sidecar exists from the naming convention.
+The current `1.9.6-alpha` ZIP has a committed `.sha256` sidecar at `deployment/prospecting-extension-1.9.6-alpha.zip.sha256`.
 
 ## Related Documents
 

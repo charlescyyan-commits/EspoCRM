@@ -4,7 +4,7 @@
 
 ## Version Authority
 
-Current packaged extension version: **`1.9.5-alpha`** (`crm-extension/manifest.json`).
+Current packaged extension version: **`1.9.6-alpha`** (`crm-extension/manifest.json`).
 
 Installed CRM version may lag repository HEAD if parallel work is unstaged. Always verify:
 

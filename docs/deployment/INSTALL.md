@@ -1,7 +1,7 @@
 # Install
 
 **Status:** Documented from deployment assets and phase reports  
-**Current packaged extension version:** `1.9.5-alpha` (see `crm-extension/manifest.json`)
+**Current packaged extension version:** `1.9.6-alpha` (see `crm-extension/manifest.json`)
 
 ## Prerequisites
 
@@ -23,7 +23,7 @@
 
 ```powershell
 cd D:\EspoCRM-Production\crm-extension
-.\scripts\build_release_package.ps1 -OutputPath ..\deployment\prospecting-extension-1.9.5-alpha.zip
+.\scripts\build_release_package.ps1 -OutputPath ..\deployment\prospecting-extension-1.9.6-alpha.zip
 ```
 
 ZIP contains only `manifest.json` and `files/` (forward-slash entries). Do not include `Resources/`, `tests/`, or `custom/` placeholders.

@@ -65,7 +65,7 @@ class SearchStrategyFoundationTests(unittest.TestCase):
         self.assertTrue((MODULE / "Controllers" / "SearchStrategy.php").is_file())
 
         manifest = _load_json(EXT / "manifest.json")
-        self.assertEqual(manifest["version"], "1.9.5-alpha")
+        self.assertEqual(manifest["version"], "1.9.6-alpha")
 
 
 if __name__ == "__main__":

@@ -5,7 +5,7 @@
 ## Extension Versioning
 
 - **Format:** `MAJOR.MINOR.PATCH[-prerelease]`
-- **Current packaged release:** `1.9.5-alpha`
+- **Current packaged release:** `1.9.6-alpha`
 - **Authority:** `crm-extension/manifest.json`
 
 ### Prerelease Tags
