@@ -1,95 +1,95 @@
 # Phase3S01 Release Integrity Stabilization Report
 
-## 1. Baseline and repository state
+## Scope and commits
 
-- Initial and final uncommitted `HEAD`: `76c165b6a3ed633b4a5c5ad9a3f786922ff28f2c` on `master`.
-- Initial `git status --short` contained 21 staged Phase3S01 paths; no unrelated paths were present (Git emitted a non-repository warning that `C:\Users\98624\.config\git\ignore` was inaccessible).
-- `master` and its local `origin/master` tracking reference were aligned (`0` ahead, `0` behind).
-- Audit baseline `fd671e56e8af222c5a77049401761b9c1509d490` is an ancestor of `HEAD`; no reset, rebase, amendment, or history rewrite was performed.
+Phase3S01 restores release-package integrity without changing CRM business behavior, Queue, Worker, Provider, retry semantics, CRM schema/entities, C14.3 frozen contracts, or `ESPOCRM_SYNC_CONTRACT_V1.json`.
 
-`fd671e5` has historical message `111` and its actual scope includes the C11–C14 CRM/connector send-boundary work. Phase3S01 does not extend or modify that frozen send core. The non-descriptive historical message remains a governance risk; any history rewrite is an owner decision outside this phase.
+- S01 baseline commit: `2434de4a262ba487a6c4fd0d62c18e0155bad7f2` (`phase3s01: restore release integrity and rebuild 1.9.6-alpha`).
+- S01.1 reproducibility commit: `21585f91f758f5ca0ec532ff12ce8db14112e66a` (`phase3s01: make release artifact reproducible across checkouts`).
+- This report records the subsequent S01.2 clean-clone verification before its evidence-only commit.
 
-## 2. Issue verification and resolution
+No reset, rebase, amend, force push, tag, Freeze, or Phase3S02 work was performed.
 
-| Issue | Initial state and evidence | Phase3S01 action | Final state |
-| --- | --- | --- | --- |
-| B1 version/artifact identity | Manifest, deployment ZIP, and sidecar already named `1.9.6-alpha`; 19 historical ZIP checksums already matched `SHA256SUMS.txt`. No extra deployment ZIP was present. | Added permanent checks for canonical name, singleton deployment artifact, sidecar, historical checksum coverage, and source/artifact bytes. Rebuilt the canonical ZIP from source. | Fixed/gated. |
-| B2 cross-platform builder | Only `build_release_package.ps1` existed. | Added an anchored, deterministic Python builder with fixed metadata, normal build, strict name policy, explicit temporary-output override, and `--check`. Preserved PowerShell and verified entry/content parity on Windows. | Fixed. |
-| B3 S01 evidence | A tracked S01 report existed, but it declared `PASS`/S02 readiness without this run's required current gate evidence or the required C14-history disclosure. | Replaced it with this report from observed commands only. | Fixed/gated. |
-| B4 release-document drift | Installation instructions used a hard-coded `D:\` path and invalid hyphenated Python module paths; release index still called `1.9.5-alpha` current. | Corrected root-relative commands, current artifact/version references, and release index. | Fixed. |
-| B5 history scope disclosure | No 1.9.6-alpha notes disclosed the historical scope. | Added release notes with `fd671e5 ("111")` scope/governance disclosure and no-send-core-change statement. | Fixed. |
-| B6 CWD/version/gate accuracy | Relevant tests were already `__file__`-anchored and the Job Runner test passed from root and `chitu-connector`; extension tests repeated literal version assertions. | Kept functional tests, consolidated each extension test file to a single `RELEASE_VERSION`, made package verification Python-first, and added CWD-independent builder coverage. | Fixed. |
+## Cross-platform defect and remediation
 
-First new-gate result: the initial Phase3S01 regression run failed six `Resources/layouts` semantic parity checks (Lead, ResearchEvidence, SalesFeedback). The corresponding non-packaged design mirrors were synchronized to the already-packaged module layout JSON. The final S01 gate passed all 10 checks.
+An independent Linux clean-clone review rejected the original S01 artifact because nine Windows working-tree source files had CRLF bytes while Git's canonical clean-clone sources had LF bytes. The original Python builder read raw working-tree bytes, so Windows `--check` could pass while the canonical ZIP differed from an LF checkout. The PowerShell builder had the same raw-copy behavior.
 
-## 3. Files changed
+S01.1 resolves this with all of the following:
 
-- `crm-extension/scripts/build_release_package.py` — deterministic cross-platform build and verification boundary.
-- `tests/regression/test_extension_package_baseline.py` — Python package gate, determinism, and PowerShell/Python content-parity coverage.
-- `tests/regression/test_phase3s01_release_integrity.py` — permanent S01 release-integrity regression gate.
-- `crm-extension/Resources/layouts/{Lead,ResearchEvidence,SalesFeedback}/*.json` — synchronized six non-installed design mirrors to package sources.
-- `crm-extension/tests/test_extension_skeleton.py`, `crm-extension/tests/test_phase3c02_search_strategy_foundation.py` — one version constant per test file.
-- `deployment/prospecting-extension-1.9.6-alpha.zip` and `.sha256` — rebuilt canonical artifact and matching sidecar.
-- `README.md`, `docs/deployment/INSTALL.md`, `docs/deployment/VERSIONING.md`, `docs/release/VERSION_POLICY.md`, `docs/release/README.md` — current version, artifact, and root-command consistency.
-- `docs/release/RELEASE_NOTES_1.9.6-alpha.md` — release scope and integrity notes.
-- `.gitignore` — added the repo-local test virtualenv `.venv-s01/` (test environment only; never committed).
-- This report.
+- Root `.gitattributes` defines LF for known package text extensions and preserves known binary formats; PowerShell/CMD/BAT files retain CRLF policy.
+- Both builders canonicalize only explicit text-source extensions (`.php`, `.py`, `.js`, `.json`, `.tpl`, `.md`, `.css`, `.html`, `.xml`, `.yml`, `.yaml`, `.txt`) to LF at the byte level. Other files are never decoded or transformed.
+- The S01 regression gate independently compares ZIP entries against canonical text bytes, rejects CRLF in packaged text, and verifies normalization is binary-safe.
+- `docs/deployment/PACKAGE.md` now documents root-relative Python build/check commands and canonical line-ending behavior.
 
-Untouched boundaries include `chitu-connector/chitu_connector/espocrm_sync/**`, the acquisition runner and repository, all Worker/Queue/Provider/retry behavior, CRM schema/entities, `docs/PHASE3C14_*`, `docs/PHASE_G03_*`, and `ESPOCRM_SYNC_CONTRACT_V1.json`.
+The canonical package SHA changed from the Windows-working-tree result `D79FD97CD5868652D031FC9B0C081A00365A8B13D9E6E79A61E5BCB344216146` to the reproducible source result recorded below.
 
-## 4. Test runtime and prior-number clarification
+## Pytest exit diagnosis
 
-The previous revision of this report recorded that every mandated `pytest` command failed at collection with `No module named pytest`, while a separate set of `unittest` discoveries passed. Those earlier "137 root / 4 runtime / 279 connector passed" figures were produced by `python -m unittest`, **not** by pytest, so they could not stand as the mandated pytest evidence.
+The first S01.1 temporary-clone attempt displayed pytest progress at 100% but the direct execution harness did not return a final summary or observable exit code. S01.2 recreated the clone with `git clone --no-local` and a new `.venv-audit` containing only pytest 9.1.1 and its direct dependencies.
 
-This run resolves that runtime blocker with a repository-local isolated virtual environment. No global or system Python package was installed, and no system Python was modified.
+`python -s` reported `ENABLE_USER_SITE=False`; the environment contained no third-party pytest plugins. `pytest --trace-config` listed only pytest's built-in `_pytest.*` modules. Under `PYTHONNOUSERSITE=1` and `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1`, a temporary external wrapper ran each child command with explicit `wait()` and exit-code capture. Extension pytest exited 0 with 75 passed; connector pytest exited 0 with 279 passed. Therefore there was no repository test thread, child process, fixture, or plugin cleanup defect to fix. The earlier apparent hang was an execution-harness process-result collection issue, not a release-gate failure.
 
-- Python executable: `D:\EspoCRM-Production\.venv-s01\Scripts\python.exe`
-- Python version: 3.12.13
-- pip version: 25.0.1
-- pytest version: 9.1.1
-- Dependency source: the repository declares no pinned test-requirements file (only `chitu-connector/pyproject.toml`, a build definition with no test extras). Per the fallback policy, `pytest` alone is present inside the local venv.
-- Isolation: the broken prior `.venv-s01/` (which referenced a removed Python 3.12 executable) was replaced with this repo-local environment; it is git-ignored and is not committed.
+The two environment variables were used only to make this audit self-contained. They are verification conditions, not a repository runtime requirement; no test code or pytest configuration was changed in S01.2.
 
-## 5. Mandated gate evidence
+## Verification environments
 
-All commands used the same pytest-capable venv above.
+| Environment | Python | pytest | Isolation |
+| --- | --- | --- |
+| Main worktree | `D:\EspoCRM-Production\.venv-s01\Scripts\python.exe`, Python 3.12.13 | 9.1.1 | repository-local, ignored |
+| Clean clone | Python 3.12.13, `.venv-audit` | 9.1.1 | created from `21585f9` using `git clone --no-local`; user site and plugin autoload disabled for audit |
 
-| Command | Passed | Failed | Skipped | Exit |
-| --- | ---: | ---: | ---: | ---: |
-| `D:\EspoCRM-Production\.venv-s01\Scripts\python.exe -m pytest crm-extension/tests -q` | 75 (+22 subtests) | 0 | 0 | 0 |
-| from `chitu-connector`: `D:\EspoCRM-Production\.venv-s01\Scripts\python.exe -m pytest tests -q` | 279 (+92 subtests) | 0 | 0 | 0 |
-| `D:\EspoCRM-Production\.venv-s01\Scripts\python.exe -m pytest tests scripts/runtime -q` | 160 (+808 subtests) | 0 | 0 | 0 |
-| `D:\EspoCRM-Production\.venv-s01\Scripts\python.exe -m pytest tests/regression/test_phase3s01_release_integrity.py -q` | 10 (+63 subtests) | 0 | 0 | 0 |
-| `D:\EspoCRM-Production\.venv-s01\Scripts\python.exe -m pytest tests/regression/test_extension_package_baseline.py -q` | 5 (+535 subtests) | 0 | 0 | 0 |
-| `D:\EspoCRM-Production\.venv-s01\Scripts\python.exe -m unittest discover -s crm-extension/tests` | 75 | 0 | 0 | 0 |
-| `D:\EspoCRM-Production\.venv-s01\Scripts\python.exe crm-extension/scripts/build_release_package.py` | build complete | 0 | 0 | 0 |
-| `D:\EspoCRM-Production\.venv-s01\Scripts\python.exe crm-extension/scripts/build_release_package.py --check` | check complete | 0 | 0 | 0 |
+## Main-worktree Gate results
 
-The connector suite emitted 10 pre-existing `DeprecationWarning`s from legacy `EmailLifecycleSyncService.sync` / `CampaignProjectionAdapter.project` paths. Pytest additionally emitted one ignored-cache write warning because pre-existing `.pytest_cache` directories are inaccessible. These are informational, not failures. No assertion was lowered, deleted, or converted to a skip. Gate 5 executed the Windows PowerShell/Python builder parity check with zero skips (`-rs` reported no skip reasons).
+All commands used `D:\EspoCRM-Production\.venv-s01\Scripts\python.exe` and exited 0.
 
-## 6. Artifact evidence
+| Gate | Command | Passed | Failed | Skipped | Exit |
+| --- | --- | ---: | ---: | ---: | ---: |
+| Extension | `python -m pytest crm-extension/tests -q` | 75 (+22 subtests) | 0 | 0 | 0 |
+| Connector | from `chitu-connector`: `python -m pytest tests -q` | 279 (+92 subtests) | 0 | 0 | 0 |
+| Root/runtime | `python -m pytest tests scripts/runtime -q` | 162 (+1042 subtests) | 0 | 0 | 0 |
+| S01 integrity | `python -m pytest tests/regression/test_phase3s01_release_integrity.py -q` | 12 (+297 subtests) | 0 | 0 | 0 |
+| Package baseline | `python -m pytest tests/regression/test_extension_package_baseline.py -q` | 5 (+535 subtests) | 0 | 0 | 0 |
+| Unittest | `python -m unittest discover -s crm-extension/tests` | 75 | 0 | 0 | 0 |
+| Builder check | `python crm-extension/scripts/build_release_package.py --check` | n/a | 0 | 0 | 0 |
+
+The connector suite emitted ten pre-existing deprecation warnings. The main checkout may also report one ignored-cache write warning; neither is a failure. PowerShell/Python package-content parity executed inside the package baseline with no skip.
+
+## Clean-clone Gate results
+
+The clean clone was at `21585f91f758f5ca0ec532ff12ce8db14112e66a`. Each command used the one isolated Python executable with `-s`, `PYTHONNOUSERSITE=1`, and `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1`; the temporary wrapper recorded normal child-process exit.
+
+| Gate | Effective child command | Passed | Failed | Skipped | Exit |
+| --- | --- | ---: | ---: | ---: | ---: |
+| Extension | `python -s -m pytest crm-extension/tests -q` | 75 (+22 subtests) | 0 | 0 | 0 |
+| Connector | from `chitu-connector`: `python -s -m pytest tests -q` | 279 (+92 subtests) | 0 | 0 | 0 |
+| Root/runtime | `python -s -m pytest tests scripts/runtime -q` | 162 (+1042 subtests) | 0 | 0 | 0 |
+| S01 integrity | `python -s -m pytest tests/regression/test_phase3s01_release_integrity.py -q` | 12 (+297 subtests) | 0 | 0 | 0 |
+| Package baseline | `python -s -m pytest tests/regression/test_extension_package_baseline.py -q` | 5 (+535 subtests) | 0 | 0 | 0 |
+| Unittest | `python -s -m unittest discover -s crm-extension/tests` | 75 | 0 | 0 | 0 |
+| Builder check | `python -s crm-extension/scripts/build_release_package.py --check` | n/a | 0 | 0 | 0 |
+| SHA sidecar | recompute ZIP SHA-256 and compare sidecar | n/a | 0 | 0 | 0 |
+| Determinism | two consecutive canonical builds | n/a | 0 | 0 | 0 |
+| Final check | `python -s crm-extension/scripts/build_release_package.py --check` | n/a | 0 | 0 | 0 |
+
+## Canonical artifact evidence
 
 - Artifact: `deployment/prospecting-extension-1.9.6-alpha.zip`
-- Size: 141,621 bytes.
-- Package entries: 234 regular entries.
-- Packaged source entity definitions: 12.
-- SHA-256: `D79FD97CD5868652D031FC9B0C081A00365A8B13D9E6E79A61E5BCB344216146`
-- Sidecar `deployment/prospecting-extension-1.9.6-alpha.zip.sha256`: matches the archive hash and filename exactly (case-insensitive hex).
-- Determinism: two consecutive isolated builds in this environment produced the identical SHA-256 above (byte-identical). The rebuilt artifact also equals the already-staged working-tree ZIP and its sidecar, so this run introduced no unexpected artifact change. The old committed artifact differed only in the prior S01 rebuild; the current source tree deterministically yields the hash above.
-- Python `--check`: passed.
-- Windows PowerShell/Python builder parity: verified via Gate 5 (no skip).
+- Size: 141,563 bytes
+- Regular ZIP entries: 234
+- Packaged entity definitions: 12
+- SHA-256: `2A3A1D88B2D7F01229801FD44F2AF73B84128445A86637564EF49F8D714B86DF`
+- Sidecar: exact hash and archive filename match
+- ZIP corruption check: `None`
+- Text-entry CRLF scan: 0
+- Source byte parity: PASS
+- PowerShell/Python source-content parity: PASS
+- First/second deterministic SHA-256: both `2A3A1D88B2D7F01229801FD44F2AF73B84128445A86637564EF49F8D714B86DF`
 
-## 7. Boundary verification and residual risk
+## Boundary and delivery status
 
-`git diff --stat` for the three forbidden ranges (`chitu-connector/chitu_connector/espocrm_sync`, `chitu-connector/chitu_connector/acquisition/runner.py`, `chitu-connector/chitu_connector/acquisition/espo_repository.py`) produced no output. No test was deleted and no assertion was weakened. No test-environment files (`.venv-s01/`, `__pycache__/`, `.pytest_cache/`, `*.pyc`) are staged or committed. The only `.gitignore` change is the added `.venv-s01/` entry.
+The forbidden connector synchronization, acquisition runner/repository, and frozen contract paths have no S01 changes. No environment, cache, temporary clone, temporary ZIP, or diagnostic wrapper is tracked. A common-secret-pattern scan found no secrets in the S01.1 diff.
 
-The pytest runtime blocker recorded in the prior revision is resolved; the four mandated pytest commands plus the S01 and baseline gates now execute and pass. No CRM write, external CRM call, real send, or release tag was performed.
-
-## 8. Git delivery
-
-- Initial and pre-commit `HEAD`: `76c165b6a3ed633b4a5c5ad9a3f786922ff28f2c` on `master`; its local `origin/master` tracking reference was aligned before commit (`0` ahead, `0` behind).
-- This report is updated before the single intended normal commit: `phase3s01: restore release integrity and rebuild 1.9.6-alpha`.
-- The post-commit execution summary records the actual commit hash, ordinary `origin/master` push result, and local/remote equality. No tag, amend, rebase, reset, or Freeze is permitted.
+The next ordinary commit records this clean-clone evidence. It must be pushed normally to `origin/master` only after the final main-worktree focused check succeeds. No tag will be created, and S01 remains ready for remote re-review rather than Freeze.
 
 ## Verdict
 
