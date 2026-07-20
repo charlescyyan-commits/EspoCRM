@@ -86,7 +86,7 @@
 |-------|--------|
 | **Severity** | **LOW** |
 | **Location** | `crm-extension/tests/test_extension_skeleton.py:239`, `test_phase3c02_search_strategy_foundation.py:68` |
-| **Description** | Multiple tests assert `manifest["version"] == "1.9.5-alpha"`. This must be manually updated on every version bump, or tests will fail. |
+| **Description** | Multiple tests assert `manifest["version"] == "1.9.6-alpha"`. This must be manually updated on every version bump, or tests will fail. |
 | **Risk** | False negative on version bump — easy to forget. Not a safety issue (test correctly fails), but a maintenance friction point. |
 | **Recommendation** | Acceptable as-is for a version-locked project. Consider extracting to a shared constant or reading from manifest and validating against a pattern (`r"\d+\.\d+\.\d+-alpha"`) instead of exact string. Do not skip the version test — it serves as a deliberate release checkpoint. |
 

@@ -42,6 +42,18 @@
 
 ## Commands
 
+### Unified Gate (S02.1 — recommended)
+
+```powershell
+# All offline tests (8 gates)
+powershell -ExecutionPolicy Bypass -File scripts/testing/run-unified-gate.ps1 -Profile offline -PythonExecutable .venv-s01\Scripts\python.exe
+
+# Pre-release profile (7 gates, no deployment validation)
+powershell -ExecutionPolicy Bypass -File scripts/testing/run-unified-gate.ps1 -Profile release -PythonExecutable .venv-s01\Scripts\python.exe
+```
+
+### Individual suites (manual)
+
 ```powershell
 # Extension (full)
 python -m unittest crm-extension.tests.test_extension_skeleton -v

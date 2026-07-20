@@ -1,7 +1,9 @@
 # CI/CD Current State
 
-**Status:** Phase CI01 Audit — 2026-07-13
+**Status:** Phase CI01 Audit — 2026-07-13  
 **CI/CD Maturity:** Manual (no automated pipelines)
+
+> **Note (Phase3S02.2):** This document was authored against the `1.9.5-alpha` baseline. The current release is `1.9.6-alpha` (Phase3S01 freeze). Version-dependent examples (build commands, artifact names) below reflect the snapshot at time of audit. See `docs/developer/TESTING.md` for the current unified test gate commands (S02.1).
 
 ---
 

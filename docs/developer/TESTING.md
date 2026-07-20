@@ -1,32 +1,42 @@
 # Developer Testing
 
-**Status:** Static Verified from test file inventory
+**Status:** Static Verified from test file inventory; **updated for Phase3S02.1 unified gate**
 
-## Extension Tests
+## Unified Test Entrypoint (S02.1)
+
+All offline tests can be run from the repository root with a single command:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/testing/run-unified-gate.ps1 -Profile offline -PythonExecutable .venv-s01\Scripts\python.exe
+```
+
+Two profiles are available:
+
+| Profile | Gates | Use case |
+|---------|-------|----------|
+| `release` | extension, connector, root-runtime, S01 integrity, package baseline, extension-unittest, artifact-check | Pre-release validation |
+| `offline` | release gates + deployment validation | Complete offline suite |
+
+Per-gate logs are written to `temp/test-results/unified-{name}-{timestamp}.log`.
+
+## Extension Tests (offline)
 
 **Location:** `crm-extension/tests/`
 
-```powershell
-cd D:\EspoCRM-Production
-python -m unittest crm-extension.tests.test_extension_skeleton -v
-python -m unittest crm-extension.tests.test_phase3c02_search_strategy_foundation -v
-```
+Runs via: `python -m pytest crm-extension/tests -q` (pytest) or `python -m unittest discover -s crm-extension/tests` (unittest)
 
 | Module | Approx. tests | Scope |
 |--------|---------------|-------|
-| `test_extension_skeleton.py` | 40 | Manifest, entities, routes, ACL metadata, hooks, phase regressions |
+| `test_extension_skeleton.py` | 26 methods | Manifest, entities, routes, ACL metadata, hooks, phase regressions |
 | `test_phase3c02_search_strategy_foundation.py` | 2 | SearchStrategy entity/UI registration |
 
 Counts from static scan at Phase D01; run tests for current totals.
 
-## Connector Tests
+## Connector Tests (offline)
 
 **Location:** `chitu-connector/tests/`
 
-```powershell
-cd D:\EspoCRM-Production
-python -m unittest discover -s chitu-connector/tests -p "test_*.py" -v
-```
+Runs via: `python -m pytest tests -q` (from `chitu-connector/` directory)
 
 | Module | Approx. tests | Scope |
 |--------|---------------|-------|
@@ -43,17 +53,15 @@ python -m unittest discover -s chitu-connector/tests -p "test_*.py" -v
 
 **Location:** `deployment/validation/`
 
-```powershell
-python -m unittest deployment.validation.test_phase3c02_1a_search_strategy_detail -v
-```
+Runs via: `python -m pytest deployment/validation -q` (included in `offline` profile)
 
-Requires browser/CRM context — **TBD — requires runtime verification**.
+Requires browser/CRM context for live tests — **TBD — requires runtime verification**.
 
 `deployment/validation/phase3c02_1_api_acl_acceptance.py` — API ACL acceptance (live CRM).
 
 ## PYTHONPATH
 
-If imports fail:
+The unified gate configures PYTHONPATH automatically. For manual runs:
 
 ```powershell
 $env:PYTHONPATH = "D:\EspoCRM-Production\chitu-connector"
@@ -71,3 +79,4 @@ Default test suites must pass without:
 
 - [../testing/TEST_PLAN.md](../testing/TEST_PLAN.md)
 - [../testing/REGRESSION.md](../testing/REGRESSION.md)
+- [../testing/PHASE3S02_1_TEST_SYSTEM_UNIFICATION_REPORT.md](../testing/PHASE3S02_1_TEST_SYSTEM_UNIFICATION_REPORT.md)

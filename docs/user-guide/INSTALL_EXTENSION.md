@@ -11,7 +11,7 @@ EspoCRM administrators installing **Chitu Prospecting Integration** on a test or
 - Confirm EspoCRM version `>=7.4.0`
 - Confirm PHP `>=8.1` on server
 - Use a **backup** on any non-disposable instance
-- Obtain extension ZIP matching target version (currently `1.9.5-alpha`)
+- Obtain extension ZIP matching target version (currently `1.9.6-alpha`)
 
 ## Steps
 

@@ -17,7 +17,7 @@ See also [../architecture/DIRECTORY_STRUCTURE.md](../architecture/DIRECTORY_STRU
 
 | Path | Installed? | Notes |
 |------|------------|-------|
-| `manifest.json` | Yes | Version `1.9.5-alpha` (version authority) |
+| `manifest.json` | Yes | Version `1.9.6-alpha` (version authority) |
 | `files/custom/Espo/Modules/Prospecting/` | Yes | Module API/controllers/entities/services plus native metadata, layouts, and i18n |
 | `files/client/custom/src/` | Yes | Native Prospecting controllers, handlers, and views |
 | `Resources/` | No | Design mirror; parity-tested |

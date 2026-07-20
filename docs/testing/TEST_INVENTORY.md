@@ -23,7 +23,7 @@
 | **Entry command** | `python -m unittest crm-extension.tests.test_extension_skeleton -v` |
 | **Approx. tests** | 26 test methods (Phase D01 verified: 40 individual assertions) |
 | **Scope** | Extension skeleton static validation: manifest, directory structure, entity definitions (ResearchEvidence, Lead, Opportunity, SearchJob, ProspectPool, SalesFeedback, LearningSignal, EmailEvent), field models, layout sections, formula metadata, workflow hooks, connector routes, feedback loop, email workflow, prospecting workspace UI, operations filters, acquisition workspace, SearchStrategy discovery jobs, ACL provisioning scripts |
-| **Main assertions** | Manifest version 1.9.5-alpha; 41 required directories exist; entityDefs surface/module parity for all entities; field type/default/option validations; contract field mapping consistency; PHP shell file inventory; forbidden entity access patterns (no `getEntity('Opportunity')` in sync service); formula rule presence; route endpoint parity; provisioning script content checks |
+| **Main assertions** | Manifest version 1.9.6-alpha; 41 required directories exist; entityDefs surface/module parity for all entities; field type/default/option validations; contract field mapping consistency; PHP shell file inventory; forbidden entity access patterns (no `getEntity('Opportunity')` in sync service); formula rule presence; route endpoint parity; provisioning script content checks |
 | **Dependencies** | Python 3 stdlib only; reads `manifest.json`, entityDefs, layouts, ACLs, PHP sources, routes, i18n, provisioning scripts, sync contract |
 | **Runtime required** | None — fully static, no EspoCRM, no database, no network |
 | **External system required** | None |

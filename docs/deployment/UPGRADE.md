@@ -45,4 +45,4 @@ Alpha versions (`*-alpha`) may include metadata changes without migration script
 
 - [VERSIONING.md](VERSIONING.md)
 - [ROLLBACK.md](ROLLBACK.md)
-- [../release/RELEASE_NOTES_1.9.5-alpha.md](../release/RELEASE_NOTES_1.9.5-alpha.md) (current package notes)
+- [../release/RELEASE_NOTES_1.9.6-alpha.md](../release/RELEASE_NOTES_1.9.6-alpha.md) (current package notes)

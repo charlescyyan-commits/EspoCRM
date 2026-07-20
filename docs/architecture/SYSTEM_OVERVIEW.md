@@ -1,7 +1,7 @@
 # System Overview
 
 **Status:** Static Verified (structure and modules); partial Runtime Verified per phase reports  
-**Packaged extension version:** `1.9.5-alpha` (version authority: `crm-extension/manifest.json`)
+**Packaged extension version:** `1.9.6-alpha` (version authority: `crm-extension/manifest.json`)
 
 ## Purpose
 
@@ -68,7 +68,7 @@ flowchart LR
 - **SearchJob → ProspectPool** — **Implemented** in connector (`EspoAcquisitionRepository` + fake provider CLI). **Runtime Verified** against live CRM deferred.
 - **ProspectPool → Lead** — **Not Implemented** — no bridge to `ChituSyncService`
 
-## Packaged capability boundary (v1.9.5-alpha)
+## Packaged capability boundary (v1.9.6-alpha)
 
 | Area | State |
 |------|-------|
@@ -78,7 +78,7 @@ flowchart LR
 | Phase 3C02.2B — Worker Core | **Implemented** (connector package) |
 | Phase 3C02.2C — Job runner + EspoCRM repository adapter | **Implemented** (fake provider; offline tests) |
 
-The current `1.9.5-alpha` package baseline does not include later C10.6 development work.
+The current `1.9.6-alpha` package baseline does not include later C10.6 development work.
 
 ## What This Workspace Does Not Include
 
