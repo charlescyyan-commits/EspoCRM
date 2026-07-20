@@ -8,7 +8,7 @@ Phase3S01 restores release-package integrity without changing CRM business behav
 - S01.1 reproducibility commit: `21585f91f758f5ca0ec532ff12ce8db14112e66a` (`phase3s01: make release artifact reproducible across checkouts`).
 - This report records the subsequent S01.2 clean-clone verification before its evidence-only commit.
 
-No reset, rebase, amend, force push, tag, Freeze, or Phase3S02 work was performed.
+No reset, rebase, amend, or force push was performed. The approved annotated release tag was created only after independent review and full S01 gate verification. Phase3S02 has not started.
 
 ## Cross-platform defect and remediation
 
@@ -89,7 +89,18 @@ The clean clone was at `21585f91f758f5ca0ec532ff12ce8db14112e66a`. Each command 
 
 The forbidden connector synchronization, acquisition runner/repository, and frozen contract paths have no S01 changes. No environment, cache, temporary clone, temporary ZIP, or diagnostic wrapper is tracked. A common-secret-pattern scan found no secrets in the S01.1 diff.
 
-The next ordinary commit records this clean-clone evidence. It must be pushed normally to `origin/master` only after the final main-worktree focused check succeeds. No tag will be created, and S01 remains ready for remote re-review rather than Freeze.
+The clean-clone evidence commit was pushed normally to `origin/master`. The approved release tag below freezes the validated release commit; this status update is documentation only.
+
+## Phase3S01 Status
+
+| Field | Value |
+| --- | --- |
+| Status | PASS |
+| Freeze date | 2026-07-20 |
+| Tag | `v1.9.6-alpha` |
+| Release HEAD | `1ce4cda2af00267ae769ab67b0062991fddcff30` |
+| Independent remote review | PASS |
+| Phase3S02 | NOT STARTED |
 
 ## Verdict
 
