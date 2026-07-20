@@ -26,6 +26,7 @@ DEPLOYMENT_ROOT = REPOSITORY_ROOT / "deployment"
 ZIP_COMPRESSION = zipfile.ZIP_DEFLATED
 ZIP_COMPRESSLEVEL = 9
 ZIP_FILE_MODE = 0o100644
+TEXT_SOURCE_SUFFIXES = frozenset({".php", ".py", ".js", ".json", ".tpl", ".md", ".css", ".html", ".xml", ".yml", ".yaml", ".txt"})
 
 
 class ReleaseIntegrityError(ValueError):
@@ -76,6 +77,14 @@ def source_entries() -> dict[str, Path]:
     return entries
 
 
+def canonical_source_bytes(path: Path) -> bytes:
+    """Return reproducible package bytes without applying text transforms to binaries."""
+    source = path.read_bytes()
+    if path.suffix.lower() not in TEXT_SOURCE_SUFFIXES:
+        return source
+    return source.replace(b"\r\n", b"\n").replace(b"\r", b"\n")
+
+
 def validate_archive_name(archive_path: Path, manifest: dict[str, object], allow_noncanonical_output: bool) -> None:
     expected = canonical_archive_path(manifest).name
     if not allow_noncanonical_output and archive_path.name != expected:
@@ -117,7 +126,12 @@ def build(archive_path: Path, *, allow_noncanonical_output: bool = False) -> str
             info.compress_type = ZIP_COMPRESSION
             info.external_attr = ZIP_FILE_MODE << 16
             info.create_system = 3
-            archive.writestr(info, entries[entry_name].read_bytes(), compress_type=ZIP_COMPRESSION, compresslevel=ZIP_COMPRESSLEVEL)
+            archive.writestr(
+                info,
+                canonical_source_bytes(entries[entry_name]),
+                compress_type=ZIP_COMPRESSION,
+                compresslevel=ZIP_COMPRESSLEVEL,
+            )
     return write_sidecar(archive_path)
 
 
@@ -153,7 +167,7 @@ def check(archive_path: Path, *, allow_noncanonical_output: bool = False) -> str
                 extras = sorted(actual_set - expected_set)
                 raise ReleaseIntegrityError(f"Release archive entries differ; missing={missing}, extras={extras}")
             for entry_name, source_path in expected_entries.items():
-                if archive.read(entry_name) != source_path.read_bytes():
+                if archive.read(entry_name) != canonical_source_bytes(source_path):
                     raise ReleaseIntegrityError(f"Release archive bytes differ for {entry_name}")
             if json.loads(archive.read("manifest.json")) != manifest:
                 raise ReleaseIntegrityError("Release archive manifest does not match source manifest")

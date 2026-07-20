@@ -21,6 +21,7 @@ DEPLOYMENT = ROOT / "deployment"
 HISTORICAL = ROOT / "archive" / "deployment" / "historical-packages"
 RELEASE_VERSION = "1.9.6-alpha"
 CANONICAL_ARCHIVE = DEPLOYMENT / f"prospecting-extension-{RELEASE_VERSION}.zip"
+TEXT_SOURCE_SUFFIXES = frozenset({".php", ".py", ".js", ".json", ".tpl", ".md", ".css", ".html", ".xml", ".yml", ".yaml", ".txt"})
 
 
 def load_builder():
@@ -37,6 +38,13 @@ BUILDER = load_builder()
 
 def digest(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest().upper()
+
+
+def canonical_text_bytes(path: Path) -> bytes:
+    source = path.read_bytes()
+    if path.suffix.lower() not in TEXT_SOURCE_SUFFIXES:
+        return source
+    return source.replace(b"\r\n", b"\n").replace(b"\r", b"\n")
 
 
 class ReleaseIntegrityTests(unittest.TestCase):
@@ -66,6 +74,26 @@ class ReleaseIntegrityTests(unittest.TestCase):
 
     def test_archive_bytes_and_sidecar_match_source(self) -> None:
         self.assertEqual(BUILDER.check(CANONICAL_ARCHIVE), digest(CANONICAL_ARCHIVE))
+
+    def test_archive_uses_canonical_text_bytes_without_crlf_drift(self) -> None:
+        expected_entries = BUILDER.source_entries()
+        with zipfile.ZipFile(CANONICAL_ARCHIVE) as archive:
+            for entry_name, source_path in expected_entries.items():
+                packaged = archive.read(entry_name)
+                with self.subTest(entry=entry_name):
+                    self.assertEqual(packaged, canonical_text_bytes(source_path))
+                    if source_path.suffix.lower() in TEXT_SOURCE_SUFFIXES:
+                        self.assertNotIn(b"\r\n", packaged)
+
+    def test_builder_text_normalization_is_explicit_and_binary_safe(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            temporary_root = Path(temporary_directory)
+            text_source = temporary_root / "source.json"
+            binary_source = temporary_root / "source.bin"
+            text_source.write_bytes(b"first\r\nsecond\rthird\n")
+            binary_source.write_bytes(b"\x00\r\n\xff")
+            self.assertEqual(BUILDER.canonical_source_bytes(text_source), b"first\nsecond\nthird\n")
+            self.assertEqual(BUILDER.canonical_source_bytes(binary_source), b"\x00\r\n\xff")
 
     def test_release_documents_describe_the_current_artifact_and_root_commands(self) -> None:
         install = (ROOT / "docs" / "deployment" / "INSTALL.md").read_text(encoding="utf-8")

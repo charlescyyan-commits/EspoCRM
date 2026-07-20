@@ -17,24 +17,26 @@ files/
 
 ## Build Script
 
-**Path:** `crm-extension/scripts/build_release_package.ps1`
+**Primary path:** `crm-extension/scripts/build_release_package.py`
 
-```powershell
-param([string]$OutputPath)  # Mandatory
+```text
+python crm-extension/scripts/build_release_package.py
+python crm-extension/scripts/build_release_package.py --check
 ```
 
 Behavior:
 
-1. Resolves output path; creates parent directory if missing.
-2. Removes existing output file.
-3. Adds `manifest.json` and all files under `files/` recursively.
-4. Uses forward-slash ZIP entry names (required for EspoCRM on Linux).
+1. Resolves the repository root independently of the current directory.
+2. Packages `manifest.json` and all files under `files/` with forward-slash ZIP entry names.
+3. Canonicalizes only known text-source line endings to LF before packaging; binary sources remain byte-for-byte unchanged.
+4. Writes a SHA-256 sidecar and verifies artifact/source byte parity with `--check`.
 
 Example:
 
-```powershell
-cd D:\EspoCRM-Production\crm-extension
-.\scripts\build_release_package.ps1 -OutputPath ..\deployment\prospecting-extension-1.9.6-alpha.zip
+```text
+# Run from the repository root.
+python crm-extension/scripts/build_release_package.py
+python crm-extension/scripts/build_release_package.py --check
 ```
 
 ## Checksum
@@ -48,14 +50,13 @@ deployment/prospecting-extension-<version>.zip.sha256
 Generate manually (PowerShell):
 
 ```powershell
-Get-FileHash ..\deployment\prospecting-extension-1.9.6-alpha.zip -Algorithm SHA256
+Get-FileHash deployment\prospecting-extension-1.9.6-alpha.zip -Algorithm SHA256
 ```
 
 ## Validation
 
-```powershell
-cd D:\EspoCRM-Production
-python -m unittest crm-extension.tests.test_extension_skeleton.ExtensionSkeletonTests.test_manifest_json_valid -v
+```text
+python -m unittest discover -s crm-extension/tests
 ```
 
 `test_extension_skeleton.py` also asserts directory structure, route parity, and entity metadata.
