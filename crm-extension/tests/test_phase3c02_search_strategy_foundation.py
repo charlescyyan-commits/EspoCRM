@@ -7,6 +7,7 @@ ROOT = Path(__file__).resolve().parents[2]
 EXT = ROOT / "crm-extension"
 SURFACE = EXT / "Resources"
 MODULE = EXT / "files" / "custom" / "Espo" / "Modules" / "Prospecting"
+RELEASE_VERSION = "1.9.6-alpha"
 
 
 def _load_json(path: Path) -> dict | list:
@@ -65,7 +66,7 @@ class SearchStrategyFoundationTests(unittest.TestCase):
         self.assertTrue((MODULE / "Controllers" / "SearchStrategy.php").is_file())
 
         manifest = _load_json(EXT / "manifest.json")
-        self.assertEqual(manifest["version"], "1.9.6-alpha")
+        self.assertEqual(manifest["version"], RELEASE_VERSION)
 
 
 if __name__ == "__main__":

@@ -5,6 +5,8 @@
   {"name": "peScoreTier", "width": 8},
   {"name": "peBestFirstProduct", "width": 14},
   {"name": "peResearchStatus", "width": 12},
+  {"name": "outreachStatus", "width": 14},
+  {"name": "nextFollowUpAt", "width": 14},
   {"name": "peEmailStatus", "width": 12},
   {"name": "pePriorityLevel", "width": 10}
 ]

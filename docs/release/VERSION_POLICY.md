@@ -26,6 +26,15 @@ deployment/prospecting-extension-<version>.zip.sha256
 
 Version in filename must match `manifest.json`.
 
+Build and validate the current canonical artifact from the repository root:
+
+```text
+python crm-extension/scripts/build_release_package.py
+python crm-extension/scripts/build_release_package.py --check
+```
+
+The Python builder is CWD-independent and produces deterministic ZIP entries from `manifest.json` plus `files/`. On Windows, `py` may be substituted for `python`.
+
 ## Platform Compatibility
 
 Declared in manifest:

@@ -32,7 +32,7 @@ Current packaged capabilities include Prospecting workspace UI, SearchStrategy/S
 
 ## Workflow and safety
 
-Use EspoCRM-Test or an approved disposable CRM for validation. Build an extension from `crm-extension` with `crm-extension/scripts/build_release_package.ps1`; run connector tests from `chitu-connector` with Python's `unittest`.
+Use EspoCRM-Test or an approved disposable CRM for validation. From the repository root, build and verify the canonical extension artifact with `python crm-extension/scripts/build_release_package.py` and `python crm-extension/scripts/build_release_package.py --check`. The PowerShell builder remains available on Windows for compatibility; its package content is checked against the Python builder when PowerShell is installed. Run connector tests from either the repository root or `chitu-connector` with Python's `unittest`.
 
 Do not deploy, import customer data, enable outreach, or run provisioning/cleanup scripts without an approved runbook and target. No Chitu Intelligence core code belongs here.
 

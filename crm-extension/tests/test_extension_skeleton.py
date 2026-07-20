@@ -14,6 +14,7 @@ MODULE = EXT / "files" / "custom" / "Espo" / "Modules" / "Prospecting"
 MODULE_ENTITY_DEFS = MODULE / "Resources" / "metadata" / "entityDefs"
 MODULE_LAYOUTS = MODULE / "Resources" / "layouts"
 SURFACE_ENTITY_DEFS = EXT / "Resources" / "entityDefs"
+RELEASE_VERSION = "1.9.6-alpha"
 
 REQUIRED_DIRS = [
     EXT / "Resources" / "metadata",
@@ -252,7 +253,7 @@ class ExtensionSkeletonTests(unittest.TestCase):
         manifest = _load_json(EXT / "manifest.json")
         self.assertEqual(manifest["extensionName"], "Chitu Prospecting Integration")
         self.assertEqual(manifest["name"], "Chitu Prospecting Integration")
-        self.assertEqual(manifest["version"], "1.9.6-alpha")
+        self.assertEqual(manifest["version"], RELEASE_VERSION)
         self.assertIn("author", manifest)
         self.assertEqual(
             manifest["description"],
@@ -1045,7 +1046,7 @@ class ExtensionSkeletonTests(unittest.TestCase):
         self.assertEqual(lead_i18n["labels"]["researchEvidences"], "AI Research Evidence")
 
         manifest = _load_json(EXT / "manifest.json")
-        self.assertEqual(manifest["version"], "1.9.6-alpha")
+        self.assertEqual(manifest["version"], RELEASE_VERSION)
 
     def test_phase3b07_operations_metadata(self) -> None:
         lead_filters = _load_json(MODULE / "Resources" / "metadata" / "selectDefs" / "Lead.json")["primaryFilterClassNameMap"]
@@ -1133,7 +1134,7 @@ class ExtensionSkeletonTests(unittest.TestCase):
         self.assertTrue((provisioning / "phase3b07_provision_synthetic_records.php").is_file())
 
         manifest = _load_json(EXT / "manifest.json")
-        self.assertEqual(manifest["version"], "1.9.6-alpha")
+        self.assertEqual(manifest["version"], RELEASE_VERSION)
 
     def test_phase3c01_acquisition_workspace_foundation(self) -> None:
         for name in ("SearchJob", "ProspectPool"):
@@ -1261,7 +1262,7 @@ class ExtensionSkeletonTests(unittest.TestCase):
         self.assertTrue((EXT / "files" / "client" / "custom" / "res" / "templates" / "dashlets" / "prospecting-summary.tpl").is_file())
 
         manifest = _load_json(EXT / "manifest.json")
-        self.assertEqual(manifest["version"], "1.9.6-alpha")
+        self.assertEqual(manifest["version"], RELEASE_VERSION)
 
     def test_phase3c02_search_strategy_discovery_jobs(self) -> None:
         search_job = _load_json(MODULE_ENTITY_DEFS / "SearchJob.json")
@@ -1337,7 +1338,7 @@ class ExtensionSkeletonTests(unittest.TestCase):
         self.assertNotIn("'Opportunity' =>", script)
 
         manifest = _load_json(EXT / "manifest.json")
-        self.assertEqual(manifest["version"], "1.9.6-alpha")
+        self.assertEqual(manifest["version"], RELEASE_VERSION)
 
 
 if __name__ == "__main__":

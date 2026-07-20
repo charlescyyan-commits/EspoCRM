@@ -14,7 +14,7 @@
   {
     "label": "Pipeline",
     "rows": [
-      [{"name": "outreachStatus"}, {"name": "pePriorityLevel"}],
+      [{"name": "outreachStatus"}, false],
       [{"name": "nextFollowUpAt"}, {"name": "lastContactAt"}]
     ]
   },

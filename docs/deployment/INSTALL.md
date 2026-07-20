@@ -16,17 +16,20 @@
 
 | Step | Tool | Status |
 |------|------|--------|
-| Build extension ZIP | `crm-extension/scripts/build_release_package.ps1` | **Implemented** |
-| Verify package contents | `crm-extension/tests/test_extension_skeleton.py` | **Static Verified** |
+| Build extension ZIP | `crm-extension/scripts/build_release_package.py` | **Implemented** |
+| Verify package contents and SHA-256 sidecar | `crm-extension/scripts/build_release_package.py --check` | **Static Verified** |
 
 ### Build Package
 
-```powershell
-cd D:\EspoCRM-Production\crm-extension
-.\scripts\build_release_package.ps1 -OutputPath ..\deployment\prospecting-extension-1.9.6-alpha.zip
+```text
+# Run from the repository root on every platform.
+python crm-extension/scripts/build_release_package.py
+python crm-extension/scripts/build_release_package.py --check
 ```
 
-ZIP contains only `manifest.json` and `files/` (forward-slash entries). Do not include `Resources/`, `tests/`, or `custom/` placeholders.
+On Windows where the launcher is named `py`, replace `python` with `py`. The compatible PowerShell builder is `crm-extension/scripts/build_release_package.ps1`; the release gate verifies its source-content parity with the Python artifact when PowerShell is available.
+
+The canonical release artifact is `deployment/prospecting-extension-1.9.6-alpha.zip`, with sidecar `deployment/prospecting-extension-1.9.6-alpha.zip.sha256`. The ZIP contains only `manifest.json` and `files/` (forward-slash entries). Do not include `Resources/`, `tests/`, or `custom/` placeholders.
 
 ## Manual Steps (CRM Host)
 
@@ -49,10 +52,11 @@ Scripts under `deployment/provisioning/` are **not packaged** into the extension
 
 ## Offline Verification (No CRM)
 
-```powershell
-cd D:\EspoCRM-Production
-python -m unittest crm-extension.tests.test_extension_skeleton -v
-python -m unittest crm-extension.tests.test_phase3c02_search_strategy_foundation -v
+```text
+# Run from the repository root.
+python -m unittest discover -s crm-extension/tests
+python -m unittest tests.regression.test_extension_package_baseline
+python -m unittest tests.regression.test_phase3s01_release_integrity
 ```
 
 ## Runtime Verification

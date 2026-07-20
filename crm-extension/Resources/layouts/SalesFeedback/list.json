@@ -1,9 +1,9 @@
 [
   {"name": "name", "width": 24, "link": true},
+  {"name": "lead", "width": 20},
   {"name": "feedbackType", "width": 16},
   {"name": "outcome", "width": 12},
-  {"name": "currentStage", "width": 14},
-  {"name": "product", "width": 16},
-  {"name": "lead", "width": 20},
-  {"name": "feedbackAt", "width": 16}
+  {"name": "reason", "width": 20},
+  {"name": "createdAt", "width": 16},
+  {"name": "createdBy", "width": 16}
 ]

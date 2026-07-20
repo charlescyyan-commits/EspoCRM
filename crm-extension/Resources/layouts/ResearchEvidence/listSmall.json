@@ -1,7 +1,8 @@
 [
   {"name": "name", "width": 22, "link": true},
+  {"name": "peEvidenceType", "width": 14},
+  {"name": "peClaim", "width": 24},
   {"name": "peSourceUrl", "width": 22},
-  {"name": "peContentSummary", "width": 28},
   {"name": "peConfidence", "width": 12},
-  {"name": "peCapturedAt", "width": 14}
+  {"name": "createdAt", "width": 14}
 ]

@@ -37,7 +37,7 @@ These must match at release time:
 3. `test_extension_skeleton.py` expected version assertion
 4. Release notes document (when published)
 
-For the current package, the ZIP and manifest are aligned at `1.9.6-alpha` with a committed SHA-256 sidecar.
+For the current package, the ZIP and manifest are aligned at `1.9.6-alpha` with committed sidecar `deployment/prospecting-extension-1.9.6-alpha.zip.sha256`. Build and verify from the repository root with `python crm-extension/scripts/build_release_package.py` and `python crm-extension/scripts/build_release_package.py --check` (use `py` in place of `python` on Windows when applicable).
 
 ## Connector Versioning
 
