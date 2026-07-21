@@ -71,7 +71,9 @@ class ApprovalService
                     'quoteId' => $quoteId,
                     'requestedById' => (string) $requester->getId(),
                 ]);
-                $this->entityManager->saveEntity($approval);
+                $this->entityManager->saveEntity($approval, [
+                    StatusMutationSaveOption::APPROVAL_STATUS_MUTATION_AUTHORIZED => true,
+                ]);
 
                 return $approval;
             }
@@ -106,7 +108,9 @@ class ApprovalService
                     'decidedAt' => date('Y-m-d H:i:s'),
                     'reason' => $this->normalizeOptionalReason($reason),
                 ]);
-                $this->entityManager->saveEntity($locked);
+                $this->entityManager->saveEntity($locked, [
+                    StatusMutationSaveOption::APPROVAL_STATUS_MUTATION_AUTHORIZED => true,
+                ]);
 
                 return $locked;
             }
@@ -141,7 +145,9 @@ class ApprovalService
                     'decidedAt' => date('Y-m-d H:i:s'),
                     'reason' => $normalizedReason,
                 ]);
-                $this->entityManager->saveEntity($locked);
+                $this->entityManager->saveEntity($locked, [
+                    StatusMutationSaveOption::APPROVAL_STATUS_MUTATION_AUTHORIZED => true,
+                ]);
 
                 return $locked;
             }

@@ -69,7 +69,8 @@ class C16QuoteWorkflowCoreTests(unittest.TestCase):
         source = read(QUOTE_TRANSITION_SERVICE)
 
         self.assertIn("$quote->set('status', $targetStatus);", source)
-        self.assertIn("$this->entityManager->saveEntity($quote);", source)
+        self.assertIn("StatusMutationSaveOption::QUOTE_STATUS_MUTATION_AUTHORIZED => true", source)
+        self.assertIn("$this->entityManager->saveEntity($quote, [", source)
         self.assertIn("protected function afterTransition(Entity $quote, string $fromStatus, string $toStatus): void", source)
         self.assertIn("getTransactionManager()->run", source)
         self.assertNotIn("getEntity('Approval')", source)
@@ -101,7 +102,7 @@ class C16QuoteWorkflowCoreTests(unittest.TestCase):
         transaction_body = source.split("getTransactionManager()->run(")[1].split("});")[0]
         self.assertIn("$this->afterTransition($quote, $currentStatus, $targetStatus);", transaction_body)
         self.assertIn("$quote->set('status', $targetStatus);", transaction_body)
-        self.assertIn("$this->entityManager->saveEntity($quote);", transaction_body)
+        self.assertIn("$this->entityManager->saveEntity($quote, [", transaction_body)
 
     def test_numbering_boundary_is_interface_only(self) -> None:
         service = read(QUOTE_TRANSITION_SERVICE)

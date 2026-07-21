@@ -73,7 +73,9 @@ class QuoteTransitionService
                 }
 
                 $quote->set('status', $targetStatus);
-                $this->entityManager->saveEntity($quote);
+                $this->entityManager->saveEntity($quote, [
+                    StatusMutationSaveOption::QUOTE_STATUS_MUTATION_AUTHORIZED => true,
+                ]);
                 $this->afterTransition($quote, $currentStatus, $targetStatus);
 
                 return $quote;

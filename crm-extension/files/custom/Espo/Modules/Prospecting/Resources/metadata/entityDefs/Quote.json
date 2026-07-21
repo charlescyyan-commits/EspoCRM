@@ -2,7 +2,7 @@
   "fields": {
     "name": {"type": "varchar", "maxLength": 255, "required": true, "trim": true},
     "quoteNumber": {"type": "varchar", "maxLength": 32, "required": false, "notNull": false, "trim": true},
-    "status": {"type": "enum", "required": true, "options": ["DRAFT", "IN_REVIEW", "APPROVED", "SENT", "ACCEPTED", "REJECTED", "EXPIRED"], "default": "DRAFT", "displayAsLabel": true, "style": {"DRAFT": "default", "IN_REVIEW": "warning", "APPROVED": "info", "SENT": "primary", "ACCEPTED": "success", "REJECTED": "danger", "EXPIRED": "default"}},
+    "status": {"type": "enum", "required": true, "readOnly": true, "options": ["DRAFT", "IN_REVIEW", "APPROVED", "SENT", "ACCEPTED", "REJECTED", "EXPIRED"], "default": "DRAFT", "displayAsLabel": true, "style": {"DRAFT": "default", "IN_REVIEW": "warning", "APPROVED": "info", "SENT": "primary", "ACCEPTED": "success", "REJECTED": "danger", "EXPIRED": "default"}},
     "validUntil": {"type": "date", "required": false, "notNull": false},
     "amount": {"type": "currency", "required": false, "notNull": false},
     "opportunity": {"type": "link", "required": false, "notNull": false},

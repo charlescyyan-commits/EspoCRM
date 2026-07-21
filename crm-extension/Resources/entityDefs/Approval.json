@@ -1,7 +1,7 @@
 {
   "fields": {
     "name": {"type": "varchar", "maxLength": 255, "required": true, "trim": true},
-    "status": {"type": "enum", "required": true, "options": ["PENDING", "APPROVED", "REJECTED"], "default": "PENDING", "displayAsLabel": true, "style": {"PENDING": "warning", "APPROVED": "success", "REJECTED": "danger"}},
+    "status": {"type": "enum", "required": true, "readOnly": true, "options": ["PENDING", "APPROVED", "REJECTED"], "default": "PENDING", "displayAsLabel": true, "style": {"PENDING": "warning", "APPROVED": "success", "REJECTED": "danger"}},
     "approvalLevel": {"type": "int", "required": true, "default": 1, "min": 1},
     "targetType": {"type": "enum", "required": true, "options": ["Quote", "ProformaInvoice"], "displayAsLabel": true},
     "targetId": {"type": "varchar", "maxLength": 36, "required": true, "trim": true},
