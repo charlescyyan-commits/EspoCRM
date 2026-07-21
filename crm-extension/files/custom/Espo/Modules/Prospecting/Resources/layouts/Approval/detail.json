@@ -5,7 +5,10 @@
       [{"name": "name"}, {"name": "status"}],
       [{"name": "approvalLevel"}, {"name": "targetType"}],
       [{"name": "targetId", "fullWidth": true}],
-      [{"name": "quote"}, {"name": "proformaInvoice"}]
+      [{"name": "quote"}, {"name": "proformaInvoice"}],
+      [{"name": "requestedBy"}, {"name": "approver"}],
+      [{"name": "decision"}, {"name": "decidedAt"}],
+      [{"name": "reason", "fullWidth": true}]
     ]
   }
 ]

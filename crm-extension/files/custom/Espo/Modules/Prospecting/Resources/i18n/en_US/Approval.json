@@ -1,6 +1,41 @@
 {
-  "fields": {"name": "Title", "status": "Approval Status", "approvalLevel": "Approval Level", "targetType": "Target Type", "targetId": "Target ID", "quote": "Quote", "proformaInvoice": "Proforma Invoice"},
-  "links": {"quote": "Quote", "proformaInvoice": "Proforma Invoice"},
-  "labels": {"Create Approval": "Create Approval", "Approvals": "Approvals"},
-  "options": {"status": {"PENDING": "Pending", "APPROVED": "Approved", "REJECTED": "Rejected"}, "targetType": {"Quote": "Quote", "ProformaInvoice": "Proforma Invoice"}}
+  "fields": {
+    "name": "Title",
+    "status": "Approval Status",
+    "approvalLevel": "Approval Level",
+    "targetType": "Target Type",
+    "targetId": "Target ID",
+    "requestedBy": "Requested By",
+    "approver": "Approver",
+    "decision": "Decision",
+    "reason": "Reason",
+    "decidedAt": "Decided At",
+    "quote": "Quote",
+    "proformaInvoice": "Proforma Invoice"
+  },
+  "links": {
+    "quote": "Quote",
+    "proformaInvoice": "Proforma Invoice",
+    "requestedBy": "Requested By",
+    "approver": "Approver"
+  },
+  "labels": {
+    "Create Approval": "Create Approval",
+    "Approvals": "Approvals"
+  },
+  "options": {
+    "status": {
+      "PENDING": "Pending",
+      "APPROVED": "Approved",
+      "REJECTED": "Rejected"
+    },
+    "targetType": {
+      "Quote": "Quote",
+      "ProformaInvoice": "Proforma Invoice"
+    },
+    "decision": {
+      "APPROVED": "Approved",
+      "REJECTED": "Rejected"
+    }
+  }
 }

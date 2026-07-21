@@ -5,6 +5,11 @@
     "approvalLevel": {"type": "int", "required": true, "default": 1, "min": 1},
     "targetType": {"type": "enum", "required": true, "options": ["Quote", "ProformaInvoice"], "displayAsLabel": true},
     "targetId": {"type": "varchar", "maxLength": 36, "required": true, "trim": true},
+    "requestedBy": {"type": "link", "required": true},
+    "approver": {"type": "link", "required": false, "notNull": false},
+    "decision": {"type": "enum", "required": false, "notNull": false, "options": ["APPROVED", "REJECTED"], "displayAsLabel": true, "style": {"APPROVED": "success", "REJECTED": "danger"}},
+    "reason": {"type": "text", "required": false, "notNull": false},
+    "decidedAt": {"type": "datetime", "required": false, "notNull": false},
     "quote": {"type": "link", "required": false, "notNull": false},
     "proformaInvoice": {"type": "link", "required": false, "notNull": false},
     "createdAt": {"type": "datetime", "readOnly": true},
@@ -12,13 +17,17 @@
   },
   "links": {
     "quote": {"type": "belongsTo", "entity": "Quote", "foreign": "approvals"},
-    "proformaInvoice": {"type": "belongsTo", "entity": "ProformaInvoice", "foreign": "approvals"}
+    "proformaInvoice": {"type": "belongsTo", "entity": "ProformaInvoice", "foreign": "approvals"},
+    "requestedBy": {"type": "belongsTo", "entity": "User"},
+    "approver": {"type": "belongsTo", "entity": "User"}
   },
-  "collection": {"orderBy": "modifiedAt", "order": "desc", "textFilterFields": ["name", "status", "targetType", "targetId"]},
+  "collection": {"orderBy": "modifiedAt", "order": "desc", "textFilterFields": ["name", "status", "targetType", "targetId", "decision"]},
   "deleteId": true,
   "indexes": {
     "quoteIdStatus": {"columns": ["quoteId", "status"]},
     "proformaInvoiceIdStatus": {"columns": ["proformaInvoiceId", "status"]},
-    "target": {"columns": ["targetType", "targetId"]}
+    "target": {"columns": ["targetType", "targetId"]},
+    "requestedById": {"columns": ["requestedById"]},
+    "approverId": {"columns": ["approverId"]}
   }
 }

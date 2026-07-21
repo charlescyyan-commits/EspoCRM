@@ -42,7 +42,18 @@ class C16EntityContractTests(unittest.TestCase):
             "Quote": {"name", "status", "quoteNumber", "validUntil", "amount", "opportunity", "lead"},
             "QuoteItem": {"name", "quantity", "unitPrice", "amount", "quote"},
             "ProformaInvoice": {"name", "piNumber", "status", "paymentStatus", "quote"},
-            "Approval": {"name", "status", "approvalLevel", "targetType", "targetId"},
+            "Approval": {
+                "name",
+                "status",
+                "approvalLevel",
+                "targetType",
+                "targetId",
+                "requestedBy",
+                "approver",
+                "decision",
+                "reason",
+                "decidedAt",
+            },
         }
         for entity, required_fields in contracts.items():
             fields = load_json(MODULE_ENTITY_DEFS / f"{entity}.json")["fields"]
@@ -84,6 +95,8 @@ class C16EntityContractTests(unittest.TestCase):
         approval_links = load_json(MODULE_ENTITY_DEFS / "Approval.json")["links"]
         self.assertEqual(approval_links["quote"], {"type": "belongsTo", "entity": "Quote", "foreign": "approvals"})
         self.assertEqual(approval_links["proformaInvoice"], {"type": "belongsTo", "entity": "ProformaInvoice", "foreign": "approvals"})
+        self.assertEqual(approval_links["requestedBy"], {"type": "belongsTo", "entity": "User"})
+        self.assertEqual(approval_links["approver"], {"type": "belongsTo", "entity": "User"})
 
     def test_quote_item_relationship_integrity(self) -> None:
         quote = load_json(MODULE_ENTITY_DEFS / "Quote.json")
@@ -123,6 +136,44 @@ class C16EntityContractTests(unittest.TestCase):
         self.assertEqual(approval["targetType"]["options"], ["Quote", "ProformaInvoice"])
         self.assertTrue(approval["targetType"]["required"])
         self.assertTrue(approval["targetId"]["required"])
+
+    def test_approval_audit_metadata_contract(self) -> None:
+        fields = load_json(MODULE_ENTITY_DEFS / "Approval.json")["fields"]
+        links = load_json(MODULE_ENTITY_DEFS / "Approval.json")["links"]
+        indexes = load_json(MODULE_ENTITY_DEFS / "Approval.json")["indexes"]
+
+        self.assertEqual(fields["requestedBy"], {"type": "link", "required": True})
+        self.assertEqual(fields["approver"], {"type": "link", "required": False, "notNull": False})
+        self.assertEqual(
+            fields["decision"],
+            {
+                "type": "enum",
+                "required": False,
+                "notNull": False,
+                "options": ["APPROVED", "REJECTED"],
+                "displayAsLabel": True,
+                "style": {"APPROVED": "success", "REJECTED": "danger"},
+            },
+        )
+        self.assertEqual(fields["reason"], {"type": "text", "required": False, "notNull": False})
+        self.assertEqual(fields["decidedAt"], {"type": "datetime", "required": False, "notNull": False})
+
+        self.assertEqual(links["requestedBy"], {"type": "belongsTo", "entity": "User"})
+        self.assertEqual(links["approver"], {"type": "belongsTo", "entity": "User"})
+        self.assertEqual(indexes["requestedById"], {"columns": ["requestedById"]})
+        self.assertEqual(indexes["approverId"], {"columns": ["approverId"]})
+
+    def test_approval_audit_fields_are_state_compatible(self) -> None:
+        fields = load_json(MODULE_ENTITY_DEFS / "Approval.json")["fields"]
+
+        self.assertEqual(fields["status"]["options"], ["PENDING", "APPROVED", "REJECTED"])
+        self.assertEqual(fields["status"]["default"], "PENDING")
+        self.assertEqual(fields["decision"]["options"], ["APPROVED", "REJECTED"])
+        self.assertNotIn("PENDING", fields["decision"]["options"])
+        self.assertEqual(set(fields["decision"]["options"]), set(fields["status"]["options"]) - {"PENDING"})
+        self.assertEqual(fields["approvalLevel"], {"type": "int", "required": True, "default": 1, "min": 1})
+        self.assertEqual(fields["targetType"]["options"], ["Quote", "ProformaInvoice"])
+        self.assertTrue(fields["targetId"]["required"])
 
     def test_pi_payment_status_is_separate_from_workflow_status(self) -> None:
         fields = load_json(MODULE_ENTITY_DEFS / "ProformaInvoice.json")["fields"]
@@ -199,7 +250,17 @@ class C16EntityContractTests(unittest.TestCase):
             "Quote": {"name", "status", "quoteNumber", "validUntil", "amount", "opportunity", "lead"},
             "QuoteItem": {"name", "quantity", "unitPrice", "amount"},
             "ProformaInvoice": {"name", "piNumber", "status", "paymentStatus", "quote"},
-            "Approval": {"name", "status", "approvalLevel", "targetType"},
+            "Approval": {
+                "name",
+                "status",
+                "approvalLevel",
+                "targetType",
+                "requestedBy",
+                "approver",
+                "decision",
+                "reason",
+                "decidedAt",
+            },
         }
         for entity, fields in expected_fields.items():
             english = load_json(MODULE_I18N / "en_US" / f"{entity}.json")
@@ -216,6 +277,8 @@ class C16EntityContractTests(unittest.TestCase):
         self.assertEqual(set(invoice_options["paymentStatus"]), {"UNPAID", "PARTIAL", "PAID", "OVERDUE"})
         approval_options = load_json(MODULE_I18N / "en_US" / "Approval.json")["options"]["status"]
         self.assertEqual(set(approval_options), {"PENDING", "APPROVED", "REJECTED"})
+        approval_decisions = load_json(MODULE_I18N / "en_US" / "Approval.json")["options"]["decision"]
+        self.assertEqual(set(approval_decisions), {"APPROVED", "REJECTED"})
 
     def test_quote_and_approval_do_not_reuse_draft_approval(self) -> None:
         draft_approval_path = MODULE_ENTITY_DEFS / "DraftApproval.json"
