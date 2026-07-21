@@ -80,7 +80,8 @@ class C16QuoteWorkflowCoreTests(unittest.TestCase):
         interface = read(QUOTE_NUMBERING_INTERFACE)
 
         self.assertIn("interface QuoteNumberingServiceInterface", interface)
-        self.assertIn("public function assignQuoteNumber(Entity $quote): string;", interface)
+        self.assertIn("public function generateQuoteNumber(int|string $year): string;", interface)
+        self.assertIn("public function assignQuoteNumber(Entity $quote, int|string|null $year = null): string;", interface)
         self.assertIn("?QuoteNumberingServiceInterface $numberingService = null", service)
         self.assertIn("assignQuoteNumber($quote)", service)
         self.assertNotIn("numbering_sequence", service + interface)

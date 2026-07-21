@@ -561,6 +561,7 @@ class ExtensionSkeletonTests(unittest.TestCase):
             MODULE / "Services" / "SendExecutionBridgeResult.php",
             MODULE / "Services" / "SendExecutionBridgeAdapterService.php",
             MODULE / "Services" / "SendExecutionResultAdapterService.php",
+            MODULE / "Services" / "QuoteNumberingService.php",
             MODULE / "Services" / "QuoteNumberingServiceInterface.php",
             MODULE / "Services" / "QuoteTransitionService.php",
             EXT / "files" / "custom" / "Espo" / "Custom" / "Hooks" / "SalesFeedback" / "SalesFeedbackLearningSignalHook.php",
