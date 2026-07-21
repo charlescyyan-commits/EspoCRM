@@ -233,7 +233,15 @@ class C16EntityContractTests(unittest.TestCase):
         self.assertEqual(quote_actions[0], "__APPEND__")
         self.assertEqual(
             {item["name"] for item in quote_actions[1:]},
-            {"submitForReview", "approveQuote", "rejectQuote", "sendQuote", "expireQuote"},
+            {
+                "submitForReview",
+                "approveQuote",
+                "rejectReviewQuote",
+                "markCustomerRejectedQuote",
+                "rejectQuote",
+                "sendQuote",
+                "expireQuote",
+            },
         )
 
         expected_layouts = {
