@@ -58,7 +58,8 @@ try {
     )
     try {
         $sourceFiles = @(
-            (Join-Path $extensionRoot 'manifest.json')
+            (Join-Path $extensionRoot 'manifest.json'),
+            (Join-Path $extensionRoot 'scripts\AfterInstall.php')
         ) + @(
             Get-ChildItem -LiteralPath (Join-Path $extensionRoot 'files') -File -Recurse |
                 Select-Object -ExpandProperty FullName

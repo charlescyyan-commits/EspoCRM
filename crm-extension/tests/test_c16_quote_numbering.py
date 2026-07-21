@@ -13,6 +13,7 @@ SERVICES = MODULE / "Services"
 QUOTE_NUMBERING_SERVICE = SERVICES / "QuoteNumberingService.php"
 QUOTE_NUMBERING_INTERFACE = SERVICES / "QuoteNumberingServiceInterface.php"
 QUOTE_TRANSITION_SERVICE = SERVICES / "QuoteTransitionService.php"
+AFTER_INSTALL = ROOT / "crm-extension" / "scripts" / "AfterInstall.php"
 
 
 def read(path: Path) -> str:
@@ -43,8 +44,9 @@ class C16QuoteNumberingTests(unittest.TestCase):
 
     def test_first_number_and_sequential_increment_use_atomic_table_value(self) -> None:
         source = read(QUOTE_NUMBERING_SERVICE)
+        installer = read(AFTER_INSTALL)
 
-        self.assertIn("current_value INT UNSIGNED NOT NULL DEFAULT 0", source)
+        self.assertIn("current_value INT UNSIGNED NOT NULL DEFAULT 0", installer)
         self.assertIn("VALUES (:sequenceKey, 0)", source)
         self.assertIn("LAST_INSERT_ID(current_value + 1)", source)
         self.assertIn("SELECT LAST_INSERT_ID()", source)
@@ -60,10 +62,13 @@ class C16QuoteNumberingTests(unittest.TestCase):
 
     def test_storage_has_primary_key_for_concurrent_safety(self) -> None:
         source = read(QUOTE_NUMBERING_SERVICE)
+        installer = read(AFTER_INSTALL)
 
-        self.assertIn("CREATE TABLE IF NOT EXISTS", source)
-        self.assertIn("sequence_key VARCHAR(64) NOT NULL PRIMARY KEY", source)
-        self.assertIn("ENGINE=InnoDB", source)
+        self.assertNotIn("CREATE TABLE", source)
+        self.assertNotIn("ALTER TABLE", source)
+        self.assertIn("CREATE TABLE IF NOT EXISTS numbering_sequence", installer)
+        self.assertIn("sequence_key VARCHAR(64) NOT NULL PRIMARY KEY", installer)
+        self.assertIn("ENGINE=InnoDB", installer)
         self.assertRegex(
             source,
             re.compile(r"UPDATE\s+'\s*\.\s*self::TABLE\s*\.\s*'\s+SET current_value = LAST_INSERT_ID", re.S),

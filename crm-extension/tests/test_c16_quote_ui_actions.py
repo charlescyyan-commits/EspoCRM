@@ -103,7 +103,13 @@ class C16QuoteUiActionTests(unittest.TestCase):
         source = read(API)
 
         self.assertIn("getParsedBody()", source)
-        self.assertIn("'reason'", source)
+        self.assertIn("private function extractReason(mixed $body): ?string", source)
+        self.assertIn("is_array($body)", source)
+        self.assertIn("$body instanceof \\stdClass", source)
+        self.assertIn("$body['reason'] ?? null", source)
+        self.assertIn("$body->reason ?? null", source)
+        self.assertIn("is_string($value)", source)
+        self.assertIn("trim($value)", source)
         self.assertIn("$this->service->execute($quoteId, $action, $reason)", source)
 
     # ------------------------------------------------------------------

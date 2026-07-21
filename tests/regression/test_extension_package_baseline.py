@@ -21,7 +21,7 @@ FILES_ROOT = EXTENSION / "files"
 
 
 def source_package_paths() -> set[str]:
-    return {"manifest.json"} | {
+    return {"manifest.json", "scripts/AfterInstall.php"} | {
         path.relative_to(EXTENSION).as_posix()
         for path in FILES_ROOT.rglob("*")
         if path.is_file()

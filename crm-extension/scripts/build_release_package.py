@@ -22,6 +22,7 @@ EXTENSION_ROOT = SCRIPT_ROOT.parent
 REPOSITORY_ROOT = EXTENSION_ROOT.parent
 MANIFEST_PATH = EXTENSION_ROOT / "manifest.json"
 FILES_ROOT = EXTENSION_ROOT / "files"
+AFTER_INSTALL_PATH = SCRIPT_ROOT / "AfterInstall.php"
 DEPLOYMENT_ROOT = REPOSITORY_ROOT / "deployment"
 ZIP_COMPRESSION = zipfile.ZIP_DEFLATED
 ZIP_COMPRESSLEVEL = 9
@@ -70,7 +71,12 @@ def source_entries() -> dict[str, Path]:
     if not FILES_ROOT.is_dir():
         raise ReleaseIntegrityError(f"Missing package source directory: {FILES_ROOT}")
 
-    entries = {"manifest.json": MANIFEST_PATH}
+    if not AFTER_INSTALL_PATH.is_file():
+        raise ReleaseIntegrityError(f"Missing extension install script: {AFTER_INSTALL_PATH}")
+    entries = {
+        "manifest.json": MANIFEST_PATH,
+        "scripts/AfterInstall.php": AFTER_INSTALL_PATH,
+    }
     for path in sorted(FILES_ROOT.rglob("*"), key=lambda item: item.as_posix()):
         if path.is_file():
             entries[path.relative_to(EXTENSION_ROOT).as_posix()] = path

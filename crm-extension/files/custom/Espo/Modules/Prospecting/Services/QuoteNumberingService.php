@@ -45,7 +45,6 @@ class QuoteNumberingService implements QuoteNumberingServiceInterface
 
     private function nextSequenceValue(int $year): int
     {
-        $this->ensureStorage();
         $sequenceKey = $this->sequenceKey($year);
         $pdo = $this->pdo();
 
@@ -67,17 +66,6 @@ class QuoteNumberingService implements QuoteNumberingServiceInterface
         }
 
         return (int) $value;
-    }
-
-    private function ensureStorage(): void
-    {
-        $this->pdo()->exec(
-            'CREATE TABLE IF NOT EXISTS ' . self::TABLE . ' (' .
-            'sequence_key VARCHAR(64) NOT NULL PRIMARY KEY, ' .
-            'current_value INT UNSIGNED NOT NULL DEFAULT 0, ' .
-            'updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP' .
-            ') ENGINE=InnoDB'
-        );
     }
 
     private function pdo(): PDO

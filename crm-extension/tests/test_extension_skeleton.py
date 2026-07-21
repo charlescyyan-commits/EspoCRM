@@ -521,6 +521,7 @@ class ExtensionSkeletonTests(unittest.TestCase):
         php_files = list(EXT.rglob("*.php"))
         # Module entity/controller shells + native Select primary filters + Phase3B02 workflow hook.
         expected = {
+            EXT / "scripts" / "AfterInstall.php",
             MODULE / "Entities" / "ResearchEvidence.php",
             MODULE / "Controllers" / "ResearchEvidence.php",
             MODULE / "Classes" / "Select" / "Lead" / "PrimaryFilters" / "PeTierA.php",
