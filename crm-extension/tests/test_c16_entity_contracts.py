@@ -13,8 +13,12 @@ MODULE = EXTENSION / "files" / "custom" / "Espo" / "Modules" / "Prospecting"
 MODULE_ENTITY_DEFS = MODULE / "Resources" / "metadata" / "entityDefs"
 MODULE_SCOPES = MODULE / "Resources" / "metadata" / "scopes"
 MODULE_ACL_DEFS = MODULE / "Resources" / "metadata" / "aclDefs"
+MODULE_CLIENT_DEFS = MODULE / "Resources" / "metadata" / "clientDefs"
+MODULE_LAYOUTS = MODULE / "Resources" / "layouts"
+MODULE_I18N = MODULE / "Resources" / "i18n"
 SURFACE_ENTITY_DEFS = EXTENSION / "Resources" / "entityDefs"
 SURFACE_ACL_DEFS = EXTENSION / "Resources" / "acl"
+SURFACE_LAYOUTS = EXTENSION / "Resources" / "layouts"
 
 C16_ENTITIES = ("Quote", "QuoteItem", "ProformaInvoice", "Approval")
 
@@ -159,6 +163,59 @@ class C16EntityContractTests(unittest.TestCase):
             definition = (MODULE_ENTITY_DEFS / f"{entity}.json").read_text(encoding="utf-8")
             for forbidden in forbidden_references:
                 self.assertNotIn(forbidden, definition, msg=f"{entity} must not reuse or depend on {forbidden}")
+
+    def test_ui_metadata_contract(self) -> None:
+        icons = {
+            "Quote": "fas fa-file-signature",
+            "QuoteItem": "fas fa-list",
+            "ProformaInvoice": "fas fa-file-invoice",
+            "Approval": "fas fa-user-check",
+        }
+        for entity, icon in icons.items():
+            self.assertEqual(
+                load_json(MODULE_CLIENT_DEFS / f"{entity}.json"),
+                {"controller": "controllers/record", "iconClass": icon},
+            )
+
+        expected_layouts = {
+            "Quote": {"list", "detail"},
+            "QuoteItem": {"detail"},
+            "ProformaInvoice": {"list", "detail"},
+            "Approval": {"list", "detail"},
+        }
+        for entity, layout_names in expected_layouts.items():
+            for layout_name in layout_names:
+                module_layout = MODULE_LAYOUTS / entity / f"{layout_name}.json"
+                surface_layout = SURFACE_LAYOUTS / entity / f"{layout_name}.json"
+                self.assertTrue(module_layout.is_file(), msg=f"Missing module layout: {module_layout}")
+                self.assertTrue(surface_layout.is_file(), msg=f"Missing surface layout: {surface_layout}")
+                self.assertEqual(load_json(module_layout), load_json(surface_layout))
+
+        self.assertFalse((MODULE_LAYOUTS / "QuoteItem" / "list.json").exists())
+        self.assertFalse(load_json(MODULE_SCOPES / "QuoteItem.json")["tab"])
+
+    def test_i18n_contract_has_language_key_parity_and_state_options(self) -> None:
+        expected_fields = {
+            "Quote": {"name", "status", "quoteNumber", "validUntil", "amount", "opportunity", "lead"},
+            "QuoteItem": {"name", "quantity", "unitPrice", "amount"},
+            "ProformaInvoice": {"name", "piNumber", "status", "paymentStatus", "quote"},
+            "Approval": {"name", "status", "approvalLevel", "targetType"},
+        }
+        for entity, fields in expected_fields.items():
+            english = load_json(MODULE_I18N / "en_US" / f"{entity}.json")
+            chinese = load_json(MODULE_I18N / "zh_CN" / f"{entity}.json")
+            self.assertEqual(set(english), set(chinese))
+            for section in english:
+                self.assertEqual(set(english[section]), set(chinese[section]), msg=f"{entity}.{section}")
+            self.assertTrue(fields.issubset(english["fields"]))
+
+        quote_options = load_json(MODULE_I18N / "en_US" / "Quote.json")["options"]["status"]
+        self.assertEqual(set(quote_options), {"DRAFT", "IN_REVIEW", "APPROVED", "SENT", "ACCEPTED", "REJECTED", "EXPIRED"})
+        invoice_options = load_json(MODULE_I18N / "en_US" / "ProformaInvoice.json")["options"]
+        self.assertEqual(set(invoice_options["status"]), {"DRAFT", "ISSUED", "SENT", "VOID"})
+        self.assertEqual(set(invoice_options["paymentStatus"]), {"UNPAID", "PARTIAL", "PAID", "OVERDUE"})
+        approval_options = load_json(MODULE_I18N / "en_US" / "Approval.json")["options"]["status"]
+        self.assertEqual(set(approval_options), {"PENDING", "APPROVED", "REJECTED"})
 
     def test_quote_and_approval_do_not_reuse_draft_approval(self) -> None:
         draft_approval_path = MODULE_ENTITY_DEFS / "DraftApproval.json"

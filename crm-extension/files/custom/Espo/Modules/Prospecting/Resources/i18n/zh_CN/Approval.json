@@ -1,0 +1,6 @@
+{
+  "fields": {"name": "标题", "status": "审批状态", "approvalLevel": "审批级别", "targetType": "目标类型", "targetId": "目标 ID", "quote": "报价", "proformaInvoice": "形式发票"},
+  "links": {"quote": "报价", "proformaInvoice": "形式发票"},
+  "labels": {"Create Approval": "创建审批", "Approvals": "审批"},
+  "options": {"status": {"PENDING": "待审批", "APPROVED": "已批准", "REJECTED": "已拒绝"}, "targetType": {"Quote": "报价", "ProformaInvoice": "形式发票"}}
+}

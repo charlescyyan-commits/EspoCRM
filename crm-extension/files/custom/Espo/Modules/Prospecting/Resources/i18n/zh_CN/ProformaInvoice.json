@@ -1,0 +1,6 @@
+{
+  "fields": {"name": "标题", "piNumber": "形式发票编号", "status": "形式发票状态", "paymentStatus": "付款状态", "quote": "报价"},
+  "links": {"quote": "报价", "approvals": "审批"},
+  "labels": {"Create ProformaInvoice": "创建形式发票", "ProformaInvoices": "形式发票"},
+  "options": {"status": {"DRAFT": "草稿", "ISSUED": "已签发", "SENT": "已发送", "VOID": "已作废"}, "paymentStatus": {"UNPAID": "未付款", "PARTIAL": "部分付款", "PAID": "已付款", "OVERDUE": "已逾期"}}
+}

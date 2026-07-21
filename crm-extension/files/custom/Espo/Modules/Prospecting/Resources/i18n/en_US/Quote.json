@@ -1,0 +1,6 @@
+{
+  "fields": {"name": "Title", "status": "Quote Status", "quoteNumber": "Quote Number", "validUntil": "Valid Until", "amount": "Amount", "opportunity": "Opportunity", "lead": "Lead"},
+  "links": {"opportunity": "Opportunity", "lead": "Lead", "quoteItems": "Quote Items", "approvals": "Approvals", "proformaInvoices": "Proforma Invoices"},
+  "labels": {"Create Quote": "Create Quote", "Quotes": "Quotes"},
+  "options": {"status": {"DRAFT": "Draft", "IN_REVIEW": "In Review", "APPROVED": "Approved", "SENT": "Sent", "ACCEPTED": "Accepted", "REJECTED": "Rejected", "EXPIRED": "Expired"}}
+}

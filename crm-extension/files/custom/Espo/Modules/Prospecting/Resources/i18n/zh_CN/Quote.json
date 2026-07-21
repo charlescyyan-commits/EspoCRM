@@ -1,0 +1,6 @@
+{
+  "fields": {"name": "标题", "status": "报价状态", "quoteNumber": "报价编号", "validUntil": "有效期至", "amount": "金额", "opportunity": "商机", "lead": "线索"},
+  "links": {"opportunity": "商机", "lead": "线索", "quoteItems": "报价明细", "approvals": "审批", "proformaInvoices": "形式发票"},
+  "labels": {"Create Quote": "创建报价", "Quotes": "报价"},
+  "options": {"status": {"DRAFT": "草稿", "IN_REVIEW": "审核中", "APPROVED": "已批准", "SENT": "已发送", "ACCEPTED": "已接受", "REJECTED": "已拒绝", "EXPIRED": "已过期"}}
+}

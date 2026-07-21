@@ -1,0 +1,10 @@
+[
+  {
+    "label": "Quote Item",
+    "rows": [
+      [{"name": "name"}, {"name": "quote"}],
+      [{"name": "quantity"}, {"name": "unitPrice"}],
+      [{"name": "amount", "fullWidth": true}]
+    ]
+  }
+]

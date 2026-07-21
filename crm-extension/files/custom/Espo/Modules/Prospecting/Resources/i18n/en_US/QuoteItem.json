@@ -1,0 +1,6 @@
+{
+  "fields": {"name": "Title", "quantity": "Quantity", "unitPrice": "Unit Price", "amount": "Amount", "quote": "Quote"},
+  "links": {"quote": "Quote"},
+  "labels": {"Create QuoteItem": "Create Quote Item", "QuoteItems": "Quote Items"},
+  "options": {}
+}

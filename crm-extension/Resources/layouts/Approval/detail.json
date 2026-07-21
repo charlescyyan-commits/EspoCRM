@@ -1,0 +1,11 @@
+[
+  {
+    "label": "Approval",
+    "rows": [
+      [{"name": "name"}, {"name": "status"}],
+      [{"name": "approvalLevel"}, {"name": "targetType"}],
+      [{"name": "targetId", "fullWidth": true}],
+      [{"name": "quote"}, {"name": "proformaInvoice"}]
+    ]
+  }
+]

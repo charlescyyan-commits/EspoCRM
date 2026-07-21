@@ -1,0 +1,6 @@
+{
+  "fields": {"name": "标题", "quantity": "数量", "unitPrice": "单价", "amount": "金额", "quote": "报价"},
+  "links": {"quote": "报价"},
+  "labels": {"Create QuoteItem": "创建报价明细", "QuoteItems": "报价明细"},
+  "options": {}
+}

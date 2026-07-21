@@ -1,0 +1,9 @@
+[
+  {"name": "name", "width": 22, "link": true},
+  {"name": "status", "width": 14},
+  {"name": "quoteNumber", "width": 16},
+  {"name": "validUntil", "width": 14},
+  {"name": "amount", "width": 14},
+  {"name": "opportunity", "width": 16},
+  {"name": "lead", "width": 16}
+]

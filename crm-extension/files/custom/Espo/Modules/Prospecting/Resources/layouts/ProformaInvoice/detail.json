@@ -1,0 +1,11 @@
+[
+  {
+    "label": "Proforma Invoice",
+    "rows": [
+      [{"name": "name"}, {"name": "status"}],
+      [{"name": "piNumber"}, {"name": "paymentStatus"}],
+      [{"name": "quote"}, {"name": "assignedUser"}],
+      [{"name": "teams", "fullWidth": true}]
+    ]
+  }
+]

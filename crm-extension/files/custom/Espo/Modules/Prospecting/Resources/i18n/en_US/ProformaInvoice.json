@@ -1,0 +1,6 @@
+{
+  "fields": {"name": "Title", "piNumber": "PI Number", "status": "PI Status", "paymentStatus": "Payment Status", "quote": "Quote"},
+  "links": {"quote": "Quote", "approvals": "Approvals"},
+  "labels": {"Create ProformaInvoice": "Create Proforma Invoice", "ProformaInvoices": "Proforma Invoices"},
+  "options": {"status": {"DRAFT": "Draft", "ISSUED": "Issued", "SENT": "Sent", "VOID": "Void"}, "paymentStatus": {"UNPAID": "Unpaid", "PARTIAL": "Partial", "PAID": "Paid", "OVERDUE": "Overdue"}}
+}

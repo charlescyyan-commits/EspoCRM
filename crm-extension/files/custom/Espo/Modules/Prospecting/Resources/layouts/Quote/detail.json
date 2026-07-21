@@ -1,0 +1,12 @@
+[
+  {
+    "label": "Quote",
+    "rows": [
+      [{"name": "name"}, {"name": "status"}],
+      [{"name": "quoteNumber"}, {"name": "validUntil"}],
+      [{"name": "amount"}, {"name": "opportunity"}],
+      [{"name": "lead"}, {"name": "assignedUser"}],
+      [{"name": "teams", "fullWidth": true}]
+    ]
+  }
+]

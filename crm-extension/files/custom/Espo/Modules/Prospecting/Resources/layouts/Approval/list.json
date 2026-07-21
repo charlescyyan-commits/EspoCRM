@@ -1,0 +1,7 @@
+[
+  {"name": "name", "width": 22, "link": true},
+  {"name": "status", "width": 14},
+  {"name": "approvalLevel", "width": 14},
+  {"name": "targetType", "width": 18},
+  {"name": "targetId", "width": 22}
+]
