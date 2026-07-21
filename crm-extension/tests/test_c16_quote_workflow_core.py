@@ -33,6 +33,7 @@ class C16QuoteWorkflowCoreTests(unittest.TestCase):
         expected_edges = {
             ("STATUS_DRAFT", "STATUS_IN_REVIEW"),
             ("STATUS_IN_REVIEW", "STATUS_APPROVED"),
+            ("STATUS_IN_REVIEW", "STATUS_DRAFT"),
             ("STATUS_APPROVED", "STATUS_SENT"),
             ("STATUS_APPROVED", "STATUS_EXPIRED"),
             ("STATUS_SENT", "STATUS_ACCEPTED"),
@@ -64,16 +65,43 @@ class C16QuoteWorkflowCoreTests(unittest.TestCase):
         self.assertIn("$quote->get('validUntil')", source)
         self.assertIn("new DateTimeImmutable($validUntil) <= $now", source)
 
-    def test_transition_persists_status_without_writing_other_workflows(self) -> None:
+    def test_transition_persists_status_and_uses_transaction(self) -> None:
         source = read(QUOTE_TRANSITION_SERVICE)
 
         self.assertIn("$quote->set('status', $targetStatus);", source)
         self.assertIn("$this->entityManager->saveEntity($quote);", source)
         self.assertIn("protected function afterTransition(Entity $quote, string $fromStatus, string $toStatus): void", source)
+        self.assertIn("getTransactionManager()->run", source)
         self.assertNotIn("getEntity('Approval')", source)
         self.assertNotIn('getEntity("Approval")', source)
         self.assertNotIn("getEntity('EmailEvent')", source)
         self.assertNotIn("getEntity('DraftApproval')", source)
+
+    def test_after_transition_creates_approval_on_draft_to_review(self) -> None:
+        source = read(QUOTE_TRANSITION_SERVICE)
+
+        self.assertIn("use Espo\\Entities\\User;", source)
+        self.assertIn("private User $user", source)
+        self.assertIn("private ApprovalService $approvalService", source)
+        self.assertIn("$this->approvalService->createForQuote($quote, $this->user)", source)
+        self.assertIn("$fromStatus === self::STATUS_DRAFT && $toStatus === self::STATUS_IN_REVIEW", source)
+        # Guard: no approval creation for other transitions
+        self.assertEqual(
+            1,
+            source.count("$this->approvalService->createForQuote"),
+            msg="Approval creation must only happen once — in the DRAFT→IN_REVIEW guard",
+        )
+
+    def test_transaction_wraps_transition_and_after_transition(self) -> None:
+        source = read(QUOTE_TRANSITION_SERVICE)
+
+        self.assertIn("$this->entityManager->getTransactionManager()->run(", source)
+        self.assertEqual(source.count("getTransactionManager()->run"), 1)
+        # afterTransition must be called INSIDE the transaction closure
+        transaction_body = source.split("getTransactionManager()->run(")[1].split("});")[0]
+        self.assertIn("$this->afterTransition($quote, $currentStatus, $targetStatus);", transaction_body)
+        self.assertIn("$quote->set('status', $targetStatus);", transaction_body)
+        self.assertIn("$this->entityManager->saveEntity($quote);", transaction_body)
 
     def test_numbering_boundary_is_interface_only(self) -> None:
         service = read(QUOTE_TRANSITION_SERVICE)
@@ -117,7 +145,6 @@ class C16QuoteWorkflowCoreTests(unittest.TestCase):
             "Provider",
             "Pdf",
             "ProformaInvoiceService",
-            "ApprovalService",
         )
 
         for token in forbidden:
@@ -125,10 +152,12 @@ class C16QuoteWorkflowCoreTests(unittest.TestCase):
 
     def test_service_does_not_expose_ui_or_controller_surface(self) -> None:
         source = read(QUOTE_TRANSITION_SERVICE)
+        source_lower = source.lower()
 
         self.assertNotIn("Controller", source)
-        self.assertNotIn("action", source.lower())
-        self.assertNotIn("button", source.lower())
+        self.assertNotIn("actionClassName", source)
+        self.assertNotIn("detailaction", source_lower)
+        self.assertNotIn("button", source_lower)
 
 
 if __name__ == "__main__":

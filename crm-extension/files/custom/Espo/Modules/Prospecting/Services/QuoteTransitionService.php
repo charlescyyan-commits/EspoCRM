@@ -8,6 +8,7 @@ use DateTimeImmutable;
 use Espo\Core\Acl;
 use Espo\Core\Exceptions\BadRequest;
 use Espo\Core\Exceptions\Forbidden;
+use Espo\Entities\User;
 use Espo\ORM\Entity;
 use Espo\ORM\EntityManager;
 
@@ -23,7 +24,7 @@ class QuoteTransitionService
 
     private const VALID_TRANSITIONS = [
         self::STATUS_DRAFT => [self::STATUS_IN_REVIEW],
-        self::STATUS_IN_REVIEW => [self::STATUS_APPROVED],
+        self::STATUS_IN_REVIEW => [self::STATUS_APPROVED, self::STATUS_DRAFT],
         self::STATUS_APPROVED => [self::STATUS_SENT, self::STATUS_EXPIRED],
         self::STATUS_SENT => [self::STATUS_ACCEPTED, self::STATUS_REJECTED],
         self::STATUS_ACCEPTED => [],
@@ -35,6 +36,8 @@ class QuoteTransitionService
         private EntityManager $entityManager,
         private Acl $acl,
         private QuoteNumberingServiceInterface $numberingService,
+        private User $user,
+        private ApprovalService $approvalService,
     ) {}
 
     public function validateTransition(string $currentStatus, string $targetStatus): bool
@@ -63,23 +66,32 @@ class QuoteTransitionService
             throw new BadRequest('Quote cannot expire before validUntil unless an admin override is supplied.');
         }
 
-        if ($currentStatus === self::STATUS_DRAFT && $targetStatus === self::STATUS_IN_REVIEW) {
-            $this->assignQuoteNumberBoundary($quote);
-        }
+        return $this->entityManager->getTransactionManager()->run(
+            function () use ($quote, $currentStatus, $targetStatus): Entity {
+                if ($currentStatus === self::STATUS_DRAFT && $targetStatus === self::STATUS_IN_REVIEW) {
+                    $this->assignQuoteNumberBoundary($quote);
+                }
 
-        $quote->set('status', $targetStatus);
-        $this->entityManager->saveEntity($quote);
-        $this->afterTransition($quote, $currentStatus, $targetStatus);
+                $quote->set('status', $targetStatus);
+                $this->entityManager->saveEntity($quote);
+                $this->afterTransition($quote, $currentStatus, $targetStatus);
 
-        return $quote;
+                return $quote;
+            }
+        );
     }
 
     /**
-     * Future audit extension point. C16.2A deliberately does not write any
-     * separate audit, approval, email, connector, worker, or notification record.
+     * Side-effect hook invoked inside the transition transaction.
+     *
+     * Creates a PENDING Approval when a Quote is submitted for review.
+     * Approval creation failure rolls back the Quote transition.
      */
     protected function afterTransition(Entity $quote, string $fromStatus, string $toStatus): void
     {
+        if ($fromStatus === self::STATUS_DRAFT && $toStatus === self::STATUS_IN_REVIEW) {
+            $this->approvalService->createForQuote($quote, $this->user);
+        }
     }
 
     private function assignQuoteNumberBoundary(Entity $quote): void

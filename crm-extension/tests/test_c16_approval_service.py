@@ -125,11 +125,16 @@ class C16ApprovalServiceCoreTests(unittest.TestCase):
         self.assertIn("STATUS_APPROVED", self.hook)
         self.assertIn("STATUS_REJECTED", self.hook)
 
-    def test_quote_workflow_core_untouched_by_approval_service(self) -> None:
+    def test_quote_workflow_core_integration_boundaries(self) -> None:
         transition = read(QUOTE_TRANSITION)
         workflow = read(QUOTE_WORKFLOW)
-        self.assertNotIn("ApprovalService", transition)
+        # QuoteTransitionService delegates Approval creation to ApprovalService.
+        self.assertIn("ApprovalService", transition)
+        self.assertIn("$this->approvalService->createForQuote", transition)
+        # QuoteWorkflowActionService still routes without direct Approval knowledge.
         self.assertNotIn("ApprovalService", workflow)
+        # ApprovalService still never writes Quote.status (verified above).
+        # QuoteTransitionService still owns Quote.status exclusively.
 
     def _method_body(self, method_name: str) -> str:
         pattern = rf"public function {method_name}\(.*?\n    \}}\n"
