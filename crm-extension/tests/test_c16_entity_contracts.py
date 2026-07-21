@@ -65,6 +65,10 @@ class C16EntityContractTests(unittest.TestCase):
         self.assertEqual(quote_links["lead"], {"type": "belongsTo", "entity": "Lead"})
         self.assertEqual(quote_links["quoteItems"], {"type": "hasMany", "entity": "QuoteItem", "foreign": "quote"})
         self.assertEqual(quote_links["approvals"], {"type": "hasMany", "entity": "Approval", "foreign": "quote"})
+        self.assertEqual(
+            quote_links["proformaInvoices"],
+            {"type": "hasMany", "entity": "ProformaInvoice", "foreign": "quote"},
+        )
 
         item_links = load_json(MODULE_ENTITY_DEFS / "QuoteItem.json")["links"]
         self.assertEqual(item_links["quote"], {"type": "belongsTo", "entity": "Quote", "foreign": "quoteItems"})
@@ -76,6 +80,26 @@ class C16EntityContractTests(unittest.TestCase):
         approval_links = load_json(MODULE_ENTITY_DEFS / "Approval.json")["links"]
         self.assertEqual(approval_links["quote"], {"type": "belongsTo", "entity": "Quote", "foreign": "approvals"})
         self.assertEqual(approval_links["proformaInvoice"], {"type": "belongsTo", "entity": "ProformaInvoice", "foreign": "approvals"})
+
+    def test_quote_item_relationship_integrity(self) -> None:
+        quote = load_json(MODULE_ENTITY_DEFS / "Quote.json")
+        item = load_json(MODULE_ENTITY_DEFS / "QuoteItem.json")
+
+        self.assertEqual(quote["links"]["quoteItems"]["foreign"], "quote")
+        self.assertEqual(item["links"]["quote"]["foreign"], "quoteItems")
+        self.assertEqual(quote["links"]["quoteItems"]["entity"], "QuoteItem")
+        self.assertEqual(item["links"]["quote"]["entity"], "Quote")
+
+        self.assertTrue(item["fields"]["quote"]["required"])
+        self.assertEqual(item["fields"]["quote"]["type"], "link")
+        self.assertEqual(set(item["links"]), {"quote"})
+        self.assertNotIn("opportunity", item["links"])
+        self.assertNotIn("lead", item["links"])
+        self.assertNotIn("proformaInvoice", item["links"])
+        self.assertNotIn("approvals", item["links"])
+
+        self.assertIn("quoteId", item["indexes"])
+        self.assertEqual(item["indexes"]["quoteId"]["columns"], ["quoteId"])
 
     def test_state_contract(self) -> None:
         quote = load_json(MODULE_ENTITY_DEFS / "Quote.json")["fields"]["status"]
@@ -92,6 +116,27 @@ class C16EntityContractTests(unittest.TestCase):
         self.assertEqual(approval["status"]["options"], ["PENDING", "APPROVED", "REJECTED"])
         self.assertEqual(approval["status"]["default"], "PENDING")
         self.assertEqual(approval["approvalLevel"], {"type": "int", "required": True, "default": 1, "min": 1})
+        self.assertEqual(approval["targetType"]["options"], ["Quote", "ProformaInvoice"])
+        self.assertTrue(approval["targetType"]["required"])
+        self.assertTrue(approval["targetId"]["required"])
+
+    def test_pi_payment_status_is_separate_from_workflow_status(self) -> None:
+        fields = load_json(MODULE_ENTITY_DEFS / "ProformaInvoice.json")["fields"]
+        workflow = fields["status"]
+        payment = fields["paymentStatus"]
+
+        self.assertIsNot(workflow, payment)
+        self.assertEqual(workflow["type"], "enum")
+        self.assertEqual(payment["type"], "enum")
+        self.assertNotEqual(workflow["options"], payment["options"])
+        self.assertTrue(set(workflow["options"]).isdisjoint(set(payment["options"])))
+        self.assertNotEqual(workflow["default"], payment["default"])
+        self.assertIn("SENT", workflow["options"])
+        self.assertNotIn("SENT", payment["options"])
+        self.assertIn("PAID", payment["options"])
+        self.assertNotIn("PAID", workflow["options"])
+        self.assertNotIn("paymentStatus", workflow)
+        self.assertNotIn("status", payment)
 
     def test_scope_and_acl_contract(self) -> None:
         for entity in C16_ENTITIES:
@@ -114,6 +159,35 @@ class C16EntityContractTests(unittest.TestCase):
             definition = (MODULE_ENTITY_DEFS / f"{entity}.json").read_text(encoding="utf-8")
             for forbidden in forbidden_references:
                 self.assertNotIn(forbidden, definition, msg=f"{entity} must not reuse or depend on {forbidden}")
+
+    def test_quote_and_approval_do_not_reuse_draft_approval(self) -> None:
+        draft_approval_path = MODULE_ENTITY_DEFS / "DraftApproval.json"
+        approval_path = MODULE_ENTITY_DEFS / "Approval.json"
+        self.assertTrue(draft_approval_path.is_file(), msg="C11 DraftApproval must remain an independent entity")
+        self.assertTrue(approval_path.is_file(), msg="C16 Approval must exist as its own entity")
+        self.assertNotEqual(load_json(draft_approval_path), load_json(approval_path))
+
+        approval = load_json(approval_path)
+        draft_approval = load_json(draft_approval_path)
+        approval_fields = set(approval["fields"])
+        draft_only_fields = {"draftId", "contentHash", "evidenceReference", "scoreSnapshot", "decisionReason"}
+        self.assertTrue(draft_only_fields.issubset(draft_approval["fields"]))
+        self.assertTrue(draft_only_fields.isdisjoint(approval_fields))
+        self.assertIn("lead", draft_approval["links"])
+        self.assertIn("sendExecutions", draft_approval["links"])
+        self.assertNotIn("lead", approval["links"])
+        self.assertNotIn("sendExecutions", approval["links"])
+        self.assertIn("quote", approval["links"])
+        self.assertIn("proformaInvoice", approval["links"])
+        self.assertNotIn("quote", draft_approval["links"])
+        self.assertNotIn("proformaInvoice", draft_approval["links"])
+
+        quote_links = load_json(MODULE_ENTITY_DEFS / "Quote.json")["links"]
+        self.assertIn("approvals", quote_links)
+        self.assertEqual(quote_links["approvals"]["entity"], "Approval")
+        self.assertNotIn("draftApprovals", quote_links)
+        self.assertNotIn("sendExecutions", quote_links)
+        self.assertNotEqual(quote_links["approvals"]["entity"], "DraftApproval")
 
 
 if __name__ == "__main__":
