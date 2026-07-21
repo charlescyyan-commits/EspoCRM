@@ -133,8 +133,11 @@ class C16ApprovalServiceCoreTests(unittest.TestCase):
         # QuoteTransitionService delegates Approval creation to ApprovalService.
         self.assertIn("ApprovalService", transition)
         self.assertIn("$this->approvalService->createForQuote", transition)
-        # QuoteWorkflowActionService still routes without direct Approval knowledge.
-        self.assertNotIn("ApprovalService", workflow)
+        # QuoteWorkflowActionService routes through ApprovalDecisionService
+        # and may reference ApprovalService constants; it must not call
+        # ApprovalService methods directly.
+        self.assertIn("ApprovalDecisionService", workflow)
+        self.assertNotIn("$this->approvalService->", workflow)
         # ApprovalService still never writes Quote.status (verified above).
         # QuoteTransitionService still owns Quote.status exclusively.
         # ApprovalDecisionService is the ONLY orchestrator.

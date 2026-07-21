@@ -23,6 +23,12 @@ class PostQuoteWorkflowAction implements Action
             throw new BadRequest('Quote workflow route is incomplete.');
         }
 
-        return ResponseComposer::json($this->service->execute($quoteId, $action));
+        $body = $request->getParsedBody();
+        $reason = null;
+        if (is_array($body) && isset($body['reason']) && is_string($body['reason'])) {
+            $reason = $body['reason'];
+        }
+
+        return ResponseComposer::json($this->service->execute($quoteId, $action, $reason));
     }
 }

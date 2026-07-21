@@ -13,36 +13,60 @@ use Espo\ORM\Entity;
 use Espo\ORM\EntityManager;
 
 /**
- * Routes UI-only Quote commands to the workflow core.  It never writes the
- * status field itself; QuoteTransitionService remains the sole mutator.
+ * Routes UI Quote workflow commands to the appropriate domain or
+ * orchestration service.  It never writes Quote.status or Approval.status
+ * itself; it delegates exclusively.
+ *
+ * C16.3B-3: approve and reject-review actions now route through
+ * ApprovalDecisionService instead of calling QuoteTransitionService
+ * directly.
  */
 class QuoteWorkflowActionService
 {
     public const ACTION_SUBMIT_FOR_REVIEW = 'submit-for-review';
     public const ACTION_APPROVE = 'approve';
+    public const ACTION_REJECT_REVIEW = 'reject-review';
+    public const ACTION_MARK_CUSTOMER_REJECTED = 'mark-customer-rejected';
+    /** @deprecated Backward-compat alias for mark-customer-rejected. */
     public const ACTION_REJECT = 'reject';
     public const ACTION_SEND = 'send';
     public const ACTION_EXPIRE = 'expire';
 
-    /** @var array<string, array{targetStatus: string, roles: list<string>}> */
+    private const TYPE_QUOTE = 'quote';
+    private const TYPE_APPROVAL = 'approval';
+
+    /** @var array<string, array{type: string, targetStatus?: string, roles: list<string>}> */
     private const ACTIONS = [
         self::ACTION_SUBMIT_FOR_REVIEW => [
+            'type' => self::TYPE_QUOTE,
             'targetStatus' => QuoteTransitionService::STATUS_IN_REVIEW,
             'roles' => ['Sales', 'Sales Representative', 'Sales User'],
         ],
         self::ACTION_APPROVE => [
-            'targetStatus' => QuoteTransitionService::STATUS_APPROVED,
+            'type' => self::TYPE_APPROVAL,
             'roles' => ['Manager', 'Sales Manager'],
+        ],
+        self::ACTION_REJECT_REVIEW => [
+            'type' => self::TYPE_APPROVAL,
+            'roles' => ['Manager', 'Sales Manager'],
+        ],
+        self::ACTION_MARK_CUSTOMER_REJECTED => [
+            'type' => self::TYPE_QUOTE,
+            'targetStatus' => QuoteTransitionService::STATUS_REJECTED,
+            'roles' => ['Sales', 'Sales Representative', 'Sales User', 'Manager', 'Sales Manager'],
         ],
         self::ACTION_REJECT => [
+            'type' => self::TYPE_QUOTE,
             'targetStatus' => QuoteTransitionService::STATUS_REJECTED,
-            'roles' => ['Manager', 'Sales Manager'],
+            'roles' => ['Sales', 'Sales Representative', 'Sales User', 'Manager', 'Sales Manager'],
         ],
         self::ACTION_SEND => [
+            'type' => self::TYPE_QUOTE,
             'targetStatus' => QuoteTransitionService::STATUS_SENT,
             'roles' => ['Sales', 'Sales Representative', 'Sales User'],
         ],
         self::ACTION_EXPIRE => [
+            'type' => self::TYPE_QUOTE,
             'targetStatus' => QuoteTransitionService::STATUS_EXPIRED,
             'roles' => [],
         ],
@@ -53,10 +77,13 @@ class QuoteWorkflowActionService
         private Acl $acl,
         private User $user,
         private QuoteTransitionService $transitionService,
+        private ApprovalDecisionService $decisionService,
     ) {}
 
-    /** @return array{success: true, id: string, status: string, quoteNumber: string|null} */
-    public function execute(string $quoteId, string $action): array
+    /**
+     * @return array{success: true, id: string, status: string, quoteNumber: string|null}
+     */
+    public function execute(string $quoteId, string $action, ?string $reason = null): array
     {
         $definition = self::ACTIONS[$action] ?? null;
         if ($definition === null) {
@@ -72,14 +99,86 @@ class QuoteWorkflowActionService
         }
 
         $this->assertActionPermission($action, $definition['roles']);
-        $options = $action === self::ACTION_EXPIRE ? ['adminOverride' => true] : [];
-        $quote = $this->transitionService->transition($quote, $definition['targetStatus'], $options);
+
+        if ($definition['type'] === self::TYPE_APPROVAL) {
+            return $this->executeApprovalAction($quote, $action, $reason);
+        }
+
+        return $this->executeQuoteAction($quote, $definition['targetStatus']);
+    }
+
+    // ----------------------------------------------------------------
+    // Approval-driven actions
+    // ----------------------------------------------------------------
+
+    /** @return array{success: true, id: string, status: string, quoteNumber: string|null} */
+    private function executeApprovalAction(Entity $quote, string $action, ?string $reason): array
+    {
+        $approval = $this->findPendingApprovalForQuote((string) $quote->getId());
+        if (!$approval instanceof Entity) {
+            throw new NotFound('No PENDING Approval found for this Quote.');
+        }
+
+        if ($action === self::ACTION_APPROVE) {
+            $this->decisionService->approveApproval($approval, $this->user, $reason);
+        } elseif ($action === self::ACTION_REJECT_REVIEW) {
+            $normalized = trim((string) $reason);
+            if ($normalized === '') {
+                throw new BadRequest('A rejection reason is required.');
+            }
+            $this->decisionService->rejectApproval($approval, $this->user, $normalized);
+        } else {
+            throw new BadRequest('Unsupported approval action.');
+        }
+
+        return $this->buildResult($quote);
+    }
+
+    // ----------------------------------------------------------------
+    // Quote-level actions
+    // ----------------------------------------------------------------
+
+    /** @return array{success: true, id: string, status: string, quoteNumber: string|null} */
+    private function executeQuoteAction(Entity $quote, string $targetStatus): array
+    {
+        $options = $targetStatus === QuoteTransitionService::STATUS_EXPIRED
+            ? ['adminOverride' => true]
+            : [];
+
+        $quote = $this->transitionService->transition($quote, $targetStatus, $options);
+
+        return $this->buildResult($quote);
+    }
+
+    // ----------------------------------------------------------------
+    // Helpers
+    // ----------------------------------------------------------------
+
+    private function findPendingApprovalForQuote(string $quoteId): ?Entity
+    {
+        $approval = $this->entityManager
+            ->getRDBRepository(ApprovalService::ENTITY_TYPE)
+            ->where([
+                'targetType' => ApprovalService::TARGET_TYPE_QUOTE,
+                'targetId' => $quoteId,
+                'status' => ApprovalService::STATUS_PENDING,
+            ])
+            ->findOne();
+
+        return $approval instanceof Entity ? $approval : null;
+    }
+
+    /** @return array{success: true, id: string, status: string, quoteNumber: string|null} */
+    private function buildResult(Entity $quote): array
+    {
+        // Reload to reflect any cross-domain propagation.
+        $quote = $this->entityManager->getEntityById('Quote', (string) $quote->getId());
 
         return [
             'success' => true,
-            'id' => (string) $quote->getId(),
-            'status' => (string) $quote->get('status'),
-            'quoteNumber' => ($quote->get('quoteNumber') ?: null),
+            'id' => (string) ($quote instanceof Entity ? $quote->getId() : ''),
+            'status' => (string) ($quote instanceof Entity ? $quote->get('status') : ''),
+            'quoteNumber' => ($quote instanceof Entity ? ($quote->get('quoteNumber') ?: null) : null),
         ];
     }
 

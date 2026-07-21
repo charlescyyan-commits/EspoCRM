@@ -8,6 +8,22 @@ define(['action-handler'], (Dep) => {
             await this.transition('approve', 'Quote approved.');
         }
 
+        async rejectReview() {
+            const reason = prompt('Rejection reason (required):');
+            if (!reason || !reason.trim()) {
+                Espo.Ui.warning('A rejection reason is required.');
+                return;
+            }
+            await this.transition('reject-review', 'Quote returned to draft.', {reason: reason.trim()});
+        }
+
+        async markCustomerRejected() {
+            await this.transition('mark-customer-rejected', 'Quote rejected by customer.');
+        }
+
+        /**
+         * @deprecated Backward-compat alias for markCustomerRejected.
+         */
         async reject() {
             await this.transition('reject', 'Quote rejected.');
         }
@@ -20,6 +36,10 @@ define(['action-handler'], (Dep) => {
             await this.transition('expire', 'Quote expired.');
         }
 
+        // ----------------------------------------------------------
+        // Visibility
+        // ----------------------------------------------------------
+
         isSubmitForReviewVisible() {
             return this.isStatus('DRAFT');
         }
@@ -28,8 +48,16 @@ define(['action-handler'], (Dep) => {
             return this.isStatus('IN_REVIEW');
         }
 
-        isRejectVisible() {
+        isRejectReviewVisible() {
             return this.isStatus('IN_REVIEW');
+        }
+
+        isMarkCustomerRejectedVisible() {
+            return this.isStatus('SENT');
+        }
+
+        isRejectVisible() {
+            return this.isStatus('SENT');
         }
 
         isSendQuoteVisible() {
@@ -40,16 +68,21 @@ define(['action-handler'], (Dep) => {
             return this.isStatus('APPROVED');
         }
 
+        // ----------------------------------------------------------
+        // Helpers
+        // ----------------------------------------------------------
+
         isStatus(status) {
             return this.view.model.get('status') === status;
         }
 
-        async transition(action, successMessage) {
+        async transition(action, successMessage, extraData) {
             this.view.disableMenuItem(this.menuItemName(action));
 
             try {
                 await Espo.Ajax.postRequest(
-                    'Prospecting/quote/' + encodeURIComponent(this.view.model.id) + '/workflow/' + action
+                    'Prospecting/quote/' + encodeURIComponent(this.view.model.id) + '/workflow/' + action,
+                    extraData || {}
                 );
                 await this.view.model.fetch();
                 Espo.Ui.success(successMessage);
@@ -64,6 +97,8 @@ define(['action-handler'], (Dep) => {
             return {
                 'submit-for-review': 'submitForReview',
                 approve: 'approveQuote',
+                'reject-review': 'rejectReviewQuote',
+                'mark-customer-rejected': 'markCustomerRejectedQuote',
                 reject: 'rejectQuote',
                 send: 'sendQuote',
                 expire: 'expireQuote',
