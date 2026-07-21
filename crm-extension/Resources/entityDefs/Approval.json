@@ -1,0 +1,24 @@
+{
+  "fields": {
+    "name": {"type": "varchar", "maxLength": 255, "required": true, "trim": true},
+    "status": {"type": "enum", "required": true, "options": ["PENDING", "APPROVED", "REJECTED"], "default": "PENDING", "displayAsLabel": true, "style": {"PENDING": "warning", "APPROVED": "success", "REJECTED": "danger"}},
+    "approvalLevel": {"type": "int", "required": true, "default": 1, "min": 1},
+    "targetType": {"type": "enum", "required": true, "options": ["Quote", "ProformaInvoice"], "displayAsLabel": true},
+    "targetId": {"type": "varchar", "maxLength": 36, "required": true, "trim": true},
+    "quote": {"type": "link", "required": false, "notNull": false},
+    "proformaInvoice": {"type": "link", "required": false, "notNull": false},
+    "createdAt": {"type": "datetime", "readOnly": true},
+    "modifiedAt": {"type": "datetime", "readOnly": true}
+  },
+  "links": {
+    "quote": {"type": "belongsTo", "entity": "Quote", "foreign": "approvals"},
+    "proformaInvoice": {"type": "belongsTo", "entity": "ProformaInvoice", "foreign": "approvals"}
+  },
+  "collection": {"orderBy": "modifiedAt", "order": "desc", "textFilterFields": ["name", "status", "targetType", "targetId"]},
+  "deleteId": true,
+  "indexes": {
+    "quoteIdStatus": {"columns": ["quoteId", "status"]},
+    "proformaInvoiceIdStatus": {"columns": ["proformaInvoiceId", "status"]},
+    "target": {"columns": ["targetType", "targetId"]}
+  }
+}

@@ -8,9 +8,9 @@
 |-----------|-------|
 | **Path** | `crm-extension/` |
 | **Package name** | Chitu Prospecting Integration |
-| **Version** | `1.9.6-alpha` (`manifest.json`) |
+| **Version** | `1.9.7-alpha` (`manifest.json`) |
 | **Runtime** | EspoCRM PHP module `Prospecting` |
-| **Packaged baseline** | `1.9.6-alpha`; later C10.6 work remains in development |
+| **Packaged baseline** | `1.9.7-alpha`; C16.1A entity skeleton is packaged, while C16 workflows remain in development |
 
 ### Inputs
 

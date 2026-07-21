@@ -4,7 +4,7 @@
 
 ## Extension Install Smoke
 
-1. Install `prospecting-extension-1.9.6-alpha.zip` on disposable CRM.
+1. Install `prospecting-extension-1.9.7-alpha.zip` on disposable CRM.
 2. Rebuild cache.
 3. Confirm scopes: Lead (extended layout), ResearchEvidence, SearchStrategy, SearchJob, ProspectPool.
 4. Uninstall and confirm module files removed.

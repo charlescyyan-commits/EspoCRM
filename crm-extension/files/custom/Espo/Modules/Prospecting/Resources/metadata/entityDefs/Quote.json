@@ -1,0 +1,36 @@
+{
+  "fields": {
+    "name": {"type": "varchar", "maxLength": 255, "required": true, "trim": true},
+    "quoteNumber": {"type": "varchar", "maxLength": 32, "required": false, "notNull": false, "trim": true},
+    "status": {"type": "enum", "required": true, "options": ["DRAFT", "IN_REVIEW", "APPROVED", "SENT", "ACCEPTED", "REJECTED", "EXPIRED"], "default": "DRAFT", "displayAsLabel": true, "style": {"DRAFT": "default", "IN_REVIEW": "warning", "APPROVED": "info", "SENT": "primary", "ACCEPTED": "success", "REJECTED": "danger", "EXPIRED": "default"}},
+    "validUntil": {"type": "date", "required": false, "notNull": false},
+    "amount": {"type": "currency", "required": false, "notNull": false},
+    "opportunity": {"type": "link", "required": false, "notNull": false},
+    "lead": {"type": "link", "required": false, "notNull": false},
+    "createdAt": {"type": "datetime", "readOnly": true},
+    "modifiedAt": {"type": "datetime", "readOnly": true},
+    "createdBy": {"type": "link", "readOnly": true},
+    "modifiedBy": {"type": "link", "readOnly": true},
+    "assignedUser": {"type": "link"},
+    "teams": {"type": "linkMultiple"}
+  },
+  "links": {
+    "opportunity": {"type": "belongsTo", "entity": "Opportunity"},
+    "lead": {"type": "belongsTo", "entity": "Lead"},
+    "quoteItems": {"type": "hasMany", "entity": "QuoteItem", "foreign": "quote"},
+    "approvals": {"type": "hasMany", "entity": "Approval", "foreign": "quote"},
+    "proformaInvoices": {"type": "hasMany", "entity": "ProformaInvoice", "foreign": "quote"},
+    "createdBy": {"type": "belongsTo", "entity": "User"},
+    "modifiedBy": {"type": "belongsTo", "entity": "User"},
+    "assignedUser": {"type": "belongsTo", "entity": "User"},
+    "teams": {"type": "hasMany", "entity": "Team", "relationName": "entityTeam", "layoutRelationshipsDisabled": true}
+  },
+  "collection": {"orderBy": "modifiedAt", "order": "desc", "textFilterFields": ["name", "quoteNumber", "status"]},
+  "deleteId": true,
+  "indexes": {
+    "quoteNumber": {"type": "unique", "columns": ["quoteNumber", "deleteId"]},
+    "status": {"columns": ["status"]},
+    "opportunityId": {"columns": ["opportunityId"]},
+    "leadId": {"columns": ["leadId"]}
+  }
+}

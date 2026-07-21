@@ -19,7 +19,7 @@ MANIFEST = EXTENSION / "manifest.json"
 BUILDER_PATH = EXTENSION / "scripts" / "build_release_package.py"
 DEPLOYMENT = ROOT / "deployment"
 HISTORICAL = ROOT / "archive" / "deployment" / "historical-packages"
-RELEASE_VERSION = "1.9.6-alpha"
+RELEASE_VERSION = "1.9.7-alpha"
 CANONICAL_ARCHIVE = DEPLOYMENT / f"prospecting-extension-{RELEASE_VERSION}.zip"
 TEXT_SOURCE_SUFFIXES = frozenset({".php", ".py", ".js", ".json", ".tpl", ".md", ".css", ".html", ".xml", ".yml", ".yaml", ".txt"})
 
@@ -54,10 +54,19 @@ class ReleaseIntegrityTests(unittest.TestCase):
         self.assertIn(f"**Current packaged release:** `{RELEASE_VERSION}`", (ROOT / "docs" / "release" / "VERSION_POLICY.md").read_text(encoding="utf-8"))
         self.assertIn(f"| `version` | `{RELEASE_VERSION}` |", (ROOT / "docs" / "deployment" / "VERSIONING.md").read_text(encoding="utf-8"))
 
-    def test_deployment_has_only_the_canonical_release_archive_and_sidecar(self) -> None:
-        self.assertEqual(sorted(path.name for path in DEPLOYMENT.glob("prospecting-extension-*.zip")), [CANONICAL_ARCHIVE.name])
+    def test_deployment_preserves_current_and_historical_release_archives_with_sidecars(self) -> None:
+        archives = sorted(DEPLOYMENT.glob("prospecting-extension-*.zip"))
         self.assertTrue(CANONICAL_ARCHIVE.is_file())
-        self.assertTrue(BUILDER.sidecar_path(CANONICAL_ARCHIVE).is_file())
+        self.assertIn(CANONICAL_ARCHIVE, archives)
+        self.assertGreaterEqual(len(archives), 1)
+        for archive in archives:
+            sidecar = BUILDER.sidecar_path(archive)
+            with self.subTest(archive=archive.name):
+                self.assertTrue(sidecar.is_file())
+                self.assertEqual(
+                    sidecar.read_text(encoding="ascii"),
+                    f"{digest(archive)}  {archive.name}\n",
+                )
 
     def test_archive_name_matches_manifest_contract(self) -> None:
         self.assertEqual(CANONICAL_ARCHIVE, BUILDER.canonical_archive_path(BUILDER.load_manifest()))

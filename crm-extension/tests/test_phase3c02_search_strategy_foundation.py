@@ -7,7 +7,7 @@ ROOT = Path(__file__).resolve().parents[2]
 EXT = ROOT / "crm-extension"
 SURFACE = EXT / "Resources"
 MODULE = EXT / "files" / "custom" / "Espo" / "Modules" / "Prospecting"
-RELEASE_VERSION = "1.9.6-alpha"
+RELEASE_VERSION = "1.9.7-alpha"
 
 
 def _load_json(path: Path) -> dict | list:

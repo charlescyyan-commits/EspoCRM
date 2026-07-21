@@ -45,7 +45,7 @@ python crm-extension/scripts/build_release_package.py --check
 
 # PowerShell builder (Windows)
 cd D:\EspoCRM-Production\crm-extension
-.\scripts\build_release_package.ps1 -OutputPath ..\deployment\prospecting-extension-1.9.6-alpha.zip
+.\scripts\build_release_package.ps1 -OutputPath ..\deployment\prospecting-extension-1.9.7-alpha.zip
 ```
 
 ## Disposable CRM Setup (Manual)

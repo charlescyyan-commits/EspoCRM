@@ -1,0 +1,30 @@
+{
+  "fields": {
+    "name": {"type": "varchar", "maxLength": 255, "required": true, "trim": true},
+    "piNumber": {"type": "varchar", "maxLength": 32, "required": false, "notNull": false, "trim": true},
+    "status": {"type": "enum", "required": true, "options": ["DRAFT", "ISSUED", "SENT", "VOID"], "default": "DRAFT", "displayAsLabel": true, "style": {"DRAFT": "default", "ISSUED": "info", "SENT": "primary", "VOID": "danger"}},
+    "paymentStatus": {"type": "enum", "required": true, "options": ["UNPAID", "PARTIAL", "PAID", "OVERDUE"], "default": "UNPAID", "displayAsLabel": true, "style": {"UNPAID": "default", "PARTIAL": "warning", "PAID": "success", "OVERDUE": "danger"}},
+    "quote": {"type": "link", "required": true},
+    "createdAt": {"type": "datetime", "readOnly": true},
+    "modifiedAt": {"type": "datetime", "readOnly": true},
+    "createdBy": {"type": "link", "readOnly": true},
+    "modifiedBy": {"type": "link", "readOnly": true},
+    "assignedUser": {"type": "link"},
+    "teams": {"type": "linkMultiple"}
+  },
+  "links": {
+    "quote": {"type": "belongsTo", "entity": "Quote", "foreign": "proformaInvoices"},
+    "approvals": {"type": "hasMany", "entity": "Approval", "foreign": "proformaInvoice"},
+    "createdBy": {"type": "belongsTo", "entity": "User"},
+    "modifiedBy": {"type": "belongsTo", "entity": "User"},
+    "assignedUser": {"type": "belongsTo", "entity": "User"},
+    "teams": {"type": "hasMany", "entity": "Team", "relationName": "entityTeam", "layoutRelationshipsDisabled": true}
+  },
+  "collection": {"orderBy": "modifiedAt", "order": "desc", "textFilterFields": ["name", "piNumber", "status", "paymentStatus"]},
+  "deleteId": true,
+  "indexes": {
+    "piNumber": {"type": "unique", "columns": ["piNumber", "deleteId"]},
+    "quoteId": {"columns": ["quoteId"]},
+    "status": {"columns": ["status"]}
+  }
+}

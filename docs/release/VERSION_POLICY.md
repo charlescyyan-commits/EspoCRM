@@ -5,7 +5,7 @@
 ## Extension Versioning
 
 - **Format:** `MAJOR.MINOR.PATCH[-prerelease]`
-- **Current packaged release:** `1.9.6-alpha`
+- **Current packaged release:** `1.9.7-alpha`
 - **Authority:** `crm-extension/manifest.json`
 
 ### Prerelease Tags
@@ -25,6 +25,8 @@ deployment/prospecting-extension-<version>.zip.sha256
 ```
 
 Version in filename must match `manifest.json`.
+
+The artifact whose filename matches `manifest.json` is the current canonical release. Earlier frozen artifacts may remain in `deployment/` as historical evidence; each retained ZIP must have an exact matching `.sha256` sidecar. The release-integrity gate validates every retained sidecar and performs source-byte parity validation for the current canonical artifact.
 
 Build and validate the current canonical artifact from the repository root:
 

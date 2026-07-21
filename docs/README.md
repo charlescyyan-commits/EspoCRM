@@ -10,10 +10,10 @@ Central index for the **Chitu Prospecting Integration** workspace. All content i
 
 | Item | Value | Evidence |
 |------|-------|----------|
-| Extension version | `1.9.6-alpha` | `crm-extension/manifest.json` |
+| Extension version | `1.9.7-alpha` | `crm-extension/manifest.json` |
 | EspoCRM compatibility | `>=7.4.0` | `crm-extension/manifest.json` |
 | PHP compatibility | `>=8.1` | `crm-extension/manifest.json` |
-| Latest packaged artifact | `deployment/prospecting-extension-1.9.6-alpha.zip` | `deployment/` |
+| Latest packaged artifact | `deployment/prospecting-extension-1.9.7-alpha.zip` | `deployment/` |
 | Connector sync contract | `1.0` | `docs/sync-contracts/ESPOCRM_SYNC_CONTRACT_V1.json` |
 | Acquisition worker core | **Implemented** (in-memory / fake provider tests) | `chitu-connector/chitu_connector/acquisition/worker.py` |
 | Job runner (EspoCRM adapter) | **Implemented** (fake provider only; offline tests) | `chitu-connector/chitu_connector/acquisition/runner.py`, [PHASE3C02_2C_JOB_RUNNER_REPORT.md](PHASE3C02_2C_JOB_RUNNER_REPORT.md) |
@@ -76,7 +76,7 @@ Central index for the **Chitu Prospecting Integration** workspace. All content i
 - [Version Policy](release/VERSION_POLICY.md)
 - [Release Process](release/RELEASE_PROCESS.md)
 - [Release Notes Index](release/README.md)
-- Current release: [v1.9.6-alpha](release/RELEASE_NOTES_1.9.6-alpha.md)
+- Current release: [v1.9.7-alpha](release/RELEASE_NOTES_1.9.7-alpha.md)
 
 ### Reports
 
@@ -120,7 +120,7 @@ Documents use these labels for important claims:
 4. **Relative links** — All internal links use paths relative to `docs/`.
 5. **Secrets** — Never commit API keys, passwords, or `.env` contents to documentation.
 6. **Parallel worktrees** — If `crm-extension/` or `chitu-connector/` have uncommitted changes, treat `manifest.json` and tests as the version authority over stale prose.
-7. **Release baseline** — `1.9.6-alpha` is the current packaged release. Keep historical phase reports factual; update current operational documentation and add a release note for each packaged version.
+7. **Release baseline** — `1.9.7-alpha` is the current packaged release. Keep historical phase reports factual; update current operational documentation and add a release note for each packaged version.
 
 ## Per-Phase Documentation Update Rules
 
