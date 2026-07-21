@@ -264,6 +264,32 @@ SalesFeedback → LearningSignal (C10 feedback loop)
 
 **Constraint:** `entityType` + `entityId` form a logical foreign key. EspoCRM does not natively support polymorphic relations; implement as two optional link fields (`quoteId`, `proformaInvoiceId`) with exactly one required at the Service layer.
 
+**Implementation-Level Targeting Mechanism:**
+
+The implementation uses `targetType` + `targetId` as the concrete storage fields for polymorphic targeting. These fields:
+
+- **Are an implementation detail** — they provide the database-level indirection needed because EspoCRM does not natively support polymorphic foreign keys. They map to the conceptual `entityType`/`entityId` pair described above.
+- **Are NOT a replacement for business ownership** — the business-level links (`quoteId`, `proformaInvoiceId`) remain the canonical relationship path. `targetType`/`targetId` exist solely to satisfy the ORM constraint that each link field must target exactly one entity type at the schema level.
+- **Must be consistent with link fields** — the Service layer enforces that `targetType` and the non-null link field agree (e.g., if `quoteId` is set, `targetType` must be `"Quote"`).
+
+This two-layer approach (business links + implementation target) follows the same pattern used elsewhere in the Prospecting module for entities that need to reference multiple parent types.
+
+**Audit Requirements (C16.2/C16.3 Implementation):**
+
+The following approval audit fields are defined in the entity schema above and will be implemented in C16.2 (Quote workflow) and C16.3 (Approval workflow):
+
+| Audit Field | Populated When | Purpose |
+|-------------|---------------|---------|
+| `requestedBy` | Approval record created | Identifies who requested the approval; set automatically to the current user |
+| `approver` | `approve()` or `reject()` called | Identifies who made the decision |
+| `decision` | `approve()` or `reject()` called | Records the outcome: `APPROVED` or `REJECTED` |
+| `reason` | `reject()` called (required); `approve()` called (optional) | Captures the decision rationale for audit trail |
+| `decidedAt` | `approve()` or `reject()` called | Timestamp of the decision for SLA tracking and audit |
+
+These fields provide a complete audit trail for every approval decision. No additional audit entity is required — EspoCRM's `ActionHistoryRecord` stream captures state transitions, while these fields capture the decision context. All five fields are read-only after the decision is recorded.
+
+**Note on `approvalLevel`:** The `approvalLevel` field (integer, default `1`) is included in the C16.1 entity schema as a forward-compatibility measure for multi-level approval chains (see §11 Q2). C16.2/C16.3 implement single-level approval only; the field value is validated to be `1` and multi-level logic is deferred to a post-C16 enhancement.
+
 #### 3.1.5 PDF Artifact (Design Concept — Not a Database Entity)
 
 The PDF artifact is a **filesystem artifact** (see §5 and §6), not an EspoCRM entity. Its lifecycle is tracked via fields on Quote and ProformaInvoice:
