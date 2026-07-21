@@ -63,6 +63,8 @@ class C16QuoteUiActionTests(unittest.TestCase):
         self.assertIn("$this->acl->checkEntityEdit($quote)", source)
         self.assertIn("$this->user->isAdmin()", source)
         self.assertIn("getLinkMultipleIdList('roles')", source)
+        self.assertIn("getLinkMultipleIdList('teams')", source)
+        self.assertIn("getEntityById('Team', $teamId)", source)
         self.assertIn("'Sales User'", source)
         self.assertIn("'Sales Manager'", source)
         self.assertIn("Only administrators can expire", source)

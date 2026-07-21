@@ -103,7 +103,7 @@ class QuoteWorkflowActionService
     private function roleNames(): array
     {
         $names = [];
-        foreach ($this->user->getLinkMultipleIdList('roles') as $roleId) {
+        foreach ($this->effectiveRoleIds() as $roleId) {
             $role = $this->entityManager->getEntityById('Role', $roleId);
             if ($role instanceof Entity && trim((string) $role->get('name')) !== '') {
                 $names[] = (string) $role->get('name');
@@ -111,5 +111,19 @@ class QuoteWorkflowActionService
         }
 
         return array_values(array_unique($names));
+    }
+
+    /** @return list<string> */
+    private function effectiveRoleIds(): array
+    {
+        $roleIds = $this->user->getLinkMultipleIdList('roles');
+        foreach ($this->user->getLinkMultipleIdList('teams') as $teamId) {
+            $team = $this->entityManager->getEntityById('Team', $teamId);
+            if ($team instanceof Entity) {
+                $roleIds = array_merge($roleIds, $team->getLinkMultipleIdList('roles'));
+            }
+        }
+
+        return array_values(array_unique($roleIds));
     }
 }

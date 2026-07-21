@@ -25,7 +25,7 @@ All actions route to `QuoteWorkflowActionService`, which checks native record ed
 | Finance | No | No | No | No | No |
 | Admin | Yes | Yes | Yes | Yes | Yes |
 
-`*` A user explicitly assigned more than one role receives the union of those roles, consistent with EspoCRM ACL semantics.  Native record-level edit ACL is required for every action and is checked before role authorization.
+`*` A user assigned more than one role receives the union of those roles, consistent with EspoCRM ACL semantics.  The action service resolves both roles assigned directly to the user and roles inherited from the user's teams. Native record-level edit ACL is required for every action and is checked before role authorization.
 
 ## Validation
 
