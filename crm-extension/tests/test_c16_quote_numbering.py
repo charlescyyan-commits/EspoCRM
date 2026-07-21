@@ -25,7 +25,9 @@ class C16QuoteNumberingTests(unittest.TestCase):
         interface = read(QUOTE_NUMBERING_INTERFACE)
 
         self.assertIn("class QuoteNumberingService implements QuoteNumberingServiceInterface", source)
-        self.assertIn("private PDO $pdo", source)
+        self.assertIn("private EntityManager $entityManager", source)
+        self.assertIn("return $this->entityManager->getPDO();", source)
+        self.assertNotIn("__construct(private PDO $pdo)", source)
         self.assertIn("public function generateQuoteNumber(int|string $year): string", source)
         self.assertIn("public function assignQuoteNumber(Entity $quote, int|string|null $year = null): string", source)
         self.assertIn("public function generateQuoteNumber(int|string $year): string;", interface)

@@ -568,6 +568,7 @@ class ExtensionSkeletonTests(unittest.TestCase):
             MODULE / "Services" / "QuoteWorkflowActionService.php",
             MODULE / "Services" / "ApprovalService.php",
             MODULE / "Entities" / "Approval.php",
+            MODULE / "Binding.php",
             EXT / "files" / "custom" / "Espo" / "Custom" / "Hooks" / "Approval" / "AuditFieldProtectionHook.php",
             EXT / "files" / "custom" / "Espo" / "Custom" / "Hooks" / "SalesFeedback" / "SalesFeedbackLearningSignalHook.php",
             EXT / "files" / "custom" / "Espo" / "Custom" / "Hooks" / "EmailEvent" / "EmailEventWorkflowHook.php",

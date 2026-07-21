@@ -6,6 +6,7 @@ namespace Espo\Modules\Prospecting\Services;
 
 use Espo\Core\Exceptions\BadRequest;
 use Espo\ORM\Entity;
+use Espo\ORM\EntityManager;
 use PDO;
 
 class QuoteNumberingService implements QuoteNumberingServiceInterface
@@ -15,7 +16,7 @@ class QuoteNumberingService implements QuoteNumberingServiceInterface
     private const NUMBER_PREFIX = 'QT';
     private const MAX_SEQUENCE_VALUE = 9999;
 
-    public function __construct(private PDO $pdo) {}
+    public function __construct(private EntityManager $entityManager) {}
 
     public function generateQuoteNumber(int|string $year): string
     {
@@ -46,20 +47,21 @@ class QuoteNumberingService implements QuoteNumberingServiceInterface
     {
         $this->ensureStorage();
         $sequenceKey = $this->sequenceKey($year);
+        $pdo = $this->pdo();
 
-        $insert = $this->pdo->prepare(
+        $insert = $pdo->prepare(
             'INSERT IGNORE INTO ' . self::TABLE . ' (sequence_key, current_value) VALUES (:sequenceKey, 0)'
         );
         $insert->execute(['sequenceKey' => $sequenceKey]);
 
-        $update = $this->pdo->prepare(
+        $update = $pdo->prepare(
             'UPDATE ' . self::TABLE .
             ' SET current_value = LAST_INSERT_ID(current_value + 1)' .
             ' WHERE sequence_key = :sequenceKey'
         );
         $update->execute(['sequenceKey' => $sequenceKey]);
 
-        $value = $this->pdo->query('SELECT LAST_INSERT_ID()')->fetchColumn();
+        $value = $pdo->query('SELECT LAST_INSERT_ID()')->fetchColumn();
         if (!is_numeric($value)) {
             throw new BadRequest('Quote number sequence did not return a numeric value.');
         }
@@ -69,13 +71,18 @@ class QuoteNumberingService implements QuoteNumberingServiceInterface
 
     private function ensureStorage(): void
     {
-        $this->pdo->exec(
+        $this->pdo()->exec(
             'CREATE TABLE IF NOT EXISTS ' . self::TABLE . ' (' .
             'sequence_key VARCHAR(64) NOT NULL PRIMARY KEY, ' .
             'current_value INT UNSIGNED NOT NULL DEFAULT 0, ' .
             'updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP' .
             ') ENGINE=InnoDB'
         );
+    }
+
+    private function pdo(): PDO
+    {
+        return $this->entityManager->getPDO();
     }
 
     private function sequenceKey(int $year): string
