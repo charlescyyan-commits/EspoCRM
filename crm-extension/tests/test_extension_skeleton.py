@@ -550,6 +550,7 @@ class ExtensionSkeletonTests(unittest.TestCase):
             MODULE / "Entities" / "ReplyEvent.php",
             MODULE / "Controllers" / "SearchStrategy.php",
             MODULE / "Api" / "PostGenerateSearchStrategyJobs.php",
+            MODULE / "Api" / "PostQuoteWorkflowAction.php",
             MODULE / "Services" / "SearchStrategyService.php",
             MODULE / "Services" / "SearchStrategyTemplates.php",
             MODULE / "Api" / "PostSyncBrevoEmailEvent.php",
@@ -564,6 +565,7 @@ class ExtensionSkeletonTests(unittest.TestCase):
             MODULE / "Services" / "QuoteNumberingService.php",
             MODULE / "Services" / "QuoteNumberingServiceInterface.php",
             MODULE / "Services" / "QuoteTransitionService.php",
+            MODULE / "Services" / "QuoteWorkflowActionService.php",
             EXT / "files" / "custom" / "Espo" / "Custom" / "Hooks" / "SalesFeedback" / "SalesFeedbackLearningSignalHook.php",
             EXT / "files" / "custom" / "Espo" / "Custom" / "Hooks" / "EmailEvent" / "EmailEventWorkflowHook.php",
             EXT / "files" / "custom" / "Espo" / "Custom" / "Hooks" / "EmailEvent" / "EmailEventSalesFeedbackHook.php",
@@ -749,6 +751,7 @@ class ExtensionSkeletonTests(unittest.TestCase):
                 ("post", "/Prospecting/feedback/sync", "Espo\\Modules\\Prospecting\\Api\\PostSyncFeedback"),
                 ("post", "/Prospecting/brevo/email-event", "Espo\\Modules\\Prospecting\\Api\\PostSyncBrevoEmailEvent"),
                 ("post", "/Prospecting/search-strategy/generate-jobs", "Espo\\Modules\\Prospecting\\Api\\PostGenerateSearchStrategyJobs"),
+                ("post", "/Prospecting/quote/:id/workflow/:action", "Espo\\Modules\\Prospecting\\Api\\PostQuoteWorkflowAction"),
             },
         )
 

@@ -223,10 +223,18 @@ class C16EntityContractTests(unittest.TestCase):
             "Approval": "fas fa-user-check",
         }
         for entity, icon in icons.items():
-            self.assertEqual(
-                load_json(MODULE_CLIENT_DEFS / f"{entity}.json"),
-                {"controller": "controllers/record", "iconClass": icon},
-            )
+            client_def = load_json(MODULE_CLIENT_DEFS / f"{entity}.json")
+            self.assertEqual(client_def["controller"], "controllers/record")
+            self.assertEqual(client_def["iconClass"], icon)
+            if entity != "Quote":
+                self.assertEqual(client_def, {"controller": "controllers/record", "iconClass": icon})
+
+        quote_actions = load_json(MODULE_CLIENT_DEFS / "Quote.json")["detailActionList"]
+        self.assertEqual(quote_actions[0], "__APPEND__")
+        self.assertEqual(
+            {item["name"] for item in quote_actions[1:]},
+            {"submitForReview", "approveQuote", "rejectQuote", "sendQuote", "expireQuote"},
+        )
 
         expected_layouts = {
             "Quote": {"list", "detail"},

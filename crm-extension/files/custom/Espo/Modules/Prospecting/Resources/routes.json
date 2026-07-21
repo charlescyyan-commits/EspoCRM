@@ -28,5 +28,10 @@
     "route": "/Prospecting/search-strategy/generate-jobs",
     "method": "post",
     "actionClassName": "Espo\\Modules\\Prospecting\\Api\\PostGenerateSearchStrategyJobs"
+  },
+  {
+    "route": "/Prospecting/quote/:id/workflow/:action",
+    "method": "post",
+    "actionClassName": "Espo\\Modules\\Prospecting\\Api\\PostQuoteWorkflowAction"
   }
 ]
