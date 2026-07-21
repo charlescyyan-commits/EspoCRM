@@ -3,7 +3,9 @@ param(
     [ValidateSet("release", "offline", "help")]
     [string]$Profile = "release",
 
-    [string]$PythonExecutable
+    [string]$PythonExecutable,
+
+    [string]$PhpExecutable
 )
 
 $ErrorActionPreference = "Stop"
@@ -13,7 +15,7 @@ $ResultsRoot = Join-Path $RepoRoot "temp\test-results"
 function Write-Usage {
     @"
 Usage:
-  powershell -ExecutionPolicy Bypass -File scripts/testing/run-unified-gate.ps1 [-Profile release|offline] -PythonExecutable <path>
+  powershell -ExecutionPolicy Bypass -File scripts/testing/run-unified-gate.ps1 [-Profile release|offline] -PythonExecutable <path> [-PhpExecutable <path>]
 
 Profiles:
   release  S01 release-integrity pytest, unittest, and artifact gates.
@@ -43,6 +45,19 @@ function Resolve-PythonExecutable {
     throw "Python was not found on PATH. Pass -PythonExecutable explicitly."
 }
 
+function Resolve-PhpExecutable {
+    if ($PhpExecutable) {
+        if (-not (Test-Path -LiteralPath $PhpExecutable -PathType Leaf)) {
+            throw "Requested PHP executable was not found: $PhpExecutable"
+        }
+        return (Resolve-Path -LiteralPath $PhpExecutable).Path
+    }
+
+    $php = Get-Command php -CommandType Application -ErrorAction SilentlyContinue
+    if ($php) { return $php.Source }
+    throw "PHP was not found on PATH. Install PHP or pass -PhpExecutable explicitly; PHP syntax lint is required and is not skipped."
+}
+
 function Get-Counts {
     param([string]$Output)
 
@@ -61,6 +76,71 @@ function Get-Counts {
         if ($Output -match "FAILED") { $failed = 1; $passed = 0 }
     }
     return [pscustomobject]@{ Passed = $passed; Failed = $failed; Skipped = $skipped }
+}
+
+function Get-PhpFiles {
+    $extensionRoot = Join-Path $RepoRoot "crm-extension"
+    if (-not (Test-Path -LiteralPath $extensionRoot -PathType Container)) {
+        return @()
+    }
+
+    return @(Get-ChildItem -LiteralPath $extensionRoot -Recurse -File -Filter "*.php" | ForEach-Object { $_.FullName })
+}
+
+function Invoke-PhpLintGate {
+    $phpFiles = Get-PhpFiles
+    $startTime = Get-Date
+    $outputLines = New-Object System.Collections.Generic.List[string]
+    $failed = 0
+
+    New-Item -ItemType Directory -Force -Path $ResultsRoot | Out-Null
+    $logPath = Join-Path $ResultsRoot ("unified-php-lint-{0}.log" -f (Get-Date -Format "yyyyMMdd-HHmmss-fff"))
+    $outputLines.Add(("PHP executable: {0}" -f $script:Php))
+    $outputLines.Add(("Scanned path: {0}" -f (Join-Path $RepoRoot "crm-extension")))
+    $outputLines.Add(("PHP files discovered: {0}" -f $phpFiles.Count))
+
+    foreach ($file in $phpFiles) {
+        $relativePath = $file.Substring($RepoRoot.Length).TrimStart("\", "/")
+        $startInfo = [System.Diagnostics.ProcessStartInfo]::new()
+        $startInfo.FileName = $script:Php
+        $startInfo.Arguments = '-l "{0}"' -f ($file -replace '"', '\"')
+        $startInfo.WorkingDirectory = $RepoRoot
+        $startInfo.UseShellExecute = $false
+        $startInfo.RedirectStandardOutput = $true
+        $startInfo.RedirectStandardError = $true
+        $process = [System.Diagnostics.Process]::new()
+        $process.StartInfo = $startInfo
+        [void]$process.Start()
+        $stdout = $process.StandardOutput.ReadToEndAsync()
+        $stderr = $process.StandardError.ReadToEndAsync()
+        $process.WaitForExit()
+        $fileOutput = ($stdout.GetAwaiter().GetResult() + $stderr.GetAwaiter().GetResult()).Trim()
+        if ($process.ExitCode -ne 0) {
+            $failed += 1
+            $outputLines.Add(("FAIL {0}" -f $relativePath))
+            if ($fileOutput) { $outputLines.Add($fileOutput) }
+        }
+        else {
+            $outputLines.Add(("PASS {0}" -f $relativePath))
+        }
+    }
+
+    $duration = [Math]::Round(((Get-Date) - $startTime).TotalSeconds, 3)
+    $status = if ($failed -eq 0) { "PASS" } else { "FAIL" }
+    $outputLines.Add(("Duration seconds: {0}" -f $duration))
+    $output = ($outputLines -join [Environment]::NewLine)
+    $output | Out-File -LiteralPath $logPath -Encoding utf8
+    Write-Host $output
+    Write-Host ("GATE php-lint: {0} (passed={1}, failed={2}, skipped=0, exit={3})" -f $status, ($phpFiles.Count - $failed), $failed, $(if ($failed -eq 0) { 0 } else { 1 }))
+
+    return [pscustomobject]@{
+        Name = "php-lint"
+        Status = $status
+        ExitCode = $(if ($failed -eq 0) { 0 } else { 1 })
+        Counts = [pscustomobject]@{ Passed = ($phpFiles.Count - $failed); Failed = $failed; Skipped = 0 }
+        Command = ('"{0}" -l crm-extension/**/*.php' -f $script:Php)
+        LogPath = $logPath
+    }
 }
 
 function Invoke-Gate {
@@ -104,6 +184,9 @@ if ($Profile -eq "help") { Write-Usage; exit 0 }
 try { $script:Python = Resolve-PythonExecutable }
 catch { [Console]::Error.WriteLine($_.Exception.Message); exit 3 }
 
+try { $script:Php = Resolve-PhpExecutable }
+catch { [Console]::Error.WriteLine($_.Exception.Message); exit 3 }
+
 $extensionTests = Join-Path $RepoRoot "crm-extension\tests"
 $connectorTests = Join-Path $RepoRoot "chitu-connector\tests"
 $rootTests = Join-Path $RepoRoot "tests"
@@ -126,7 +209,9 @@ if ($Profile -eq "offline") {
     $gates += @{ Name = "deployment-validation-pytest"; WorkingDirectory = $RepoRoot; Arguments = @("-m", "pytest", "deployment/validation", "-q"); RequiredPaths = @($deploymentValidation); AllowZeroTests = $false }
 }
 
-$results = @($gates | ForEach-Object { Invoke-Gate $_ })
+$results = @()
+$results += Invoke-PhpLintGate
+$results += @($gates | ForEach-Object { Invoke-Gate $_ })
 Write-Host ""
 Write-Host "UNIFIED GATE SUMMARY"
 $results | ForEach-Object { Write-Host ("{0}: {1}" -f $_.Name, $_.Status) }
