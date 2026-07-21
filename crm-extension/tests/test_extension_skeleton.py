@@ -567,6 +567,7 @@ class ExtensionSkeletonTests(unittest.TestCase):
             MODULE / "Services" / "QuoteTransitionService.php",
             MODULE / "Services" / "QuoteWorkflowActionService.php",
             MODULE / "Services" / "ApprovalService.php",
+            MODULE / "Services" / "ApprovalDecisionService.php",
             MODULE / "Entities" / "Approval.php",
             MODULE / "Binding.php",
             EXT / "files" / "custom" / "Espo" / "Custom" / "Hooks" / "Approval" / "AuditFieldProtectionHook.php",

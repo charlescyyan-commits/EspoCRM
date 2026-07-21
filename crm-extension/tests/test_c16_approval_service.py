@@ -24,6 +24,7 @@ HOOK = (
 )
 QUOTE_TRANSITION = MODULE / "Services" / "QuoteTransitionService.php"
 QUOTE_WORKFLOW = MODULE / "Services" / "QuoteWorkflowActionService.php"
+DECISION_SERVICE = MODULE / "Services" / "ApprovalDecisionService.php"
 
 
 def read(path: Path) -> str:
@@ -128,6 +129,7 @@ class C16ApprovalServiceCoreTests(unittest.TestCase):
     def test_quote_workflow_core_integration_boundaries(self) -> None:
         transition = read(QUOTE_TRANSITION)
         workflow = read(QUOTE_WORKFLOW)
+        decision = read(DECISION_SERVICE) if DECISION_SERVICE.is_file() else ""
         # QuoteTransitionService delegates Approval creation to ApprovalService.
         self.assertIn("ApprovalService", transition)
         self.assertIn("$this->approvalService->createForQuote", transition)
@@ -135,6 +137,14 @@ class C16ApprovalServiceCoreTests(unittest.TestCase):
         self.assertNotIn("ApprovalService", workflow)
         # ApprovalService still never writes Quote.status (verified above).
         # QuoteTransitionService still owns Quote.status exclusively.
+        # ApprovalDecisionService is the ONLY orchestrator.
+        if decision:
+            self.assertIn("ApprovalDecisionService", decision)
+            self.assertIn("class ApprovalDecisionService", decision)
+
+    def test_approval_service_never_depends_on_decision_service(self) -> None:
+        # ApprovalService remains a pure domain service.
+        self.assertNotIn("ApprovalDecisionService", self.service)
 
     def _method_body(self, method_name: str) -> str:
         pattern = rf"public function {method_name}\(.*?\n    \}}\n"
