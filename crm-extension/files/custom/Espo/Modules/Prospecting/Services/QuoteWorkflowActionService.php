@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Espo\Modules\Prospecting\Services;
 
 use Espo\Core\Acl;
-use Espo\CoreExceptions\BadRequest;
-use Espo\CoreExceptions\Forbidden;
-use Espo\CoreExceptions\NotFound;
+use Espo\Core\Exceptions\BadRequest;
+use Espo\Core\Exceptions\Forbidden;
+use Espo\Core\Exceptions\NotFound;
 use Espo\Entities\User;
 use Espo\ORM\Entity;
 use Espo\ORM\EntityManager;
