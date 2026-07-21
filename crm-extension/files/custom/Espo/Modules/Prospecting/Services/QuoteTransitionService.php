@@ -34,7 +34,7 @@ class QuoteTransitionService
     public function __construct(
         private EntityManager $entityManager,
         private Acl $acl,
-        private ?QuoteNumberingServiceInterface $numberingService = null,
+        private QuoteNumberingServiceInterface $numberingService,
     ) {}
 
     public function validateTransition(string $currentStatus, string $targetStatus): bool
@@ -84,7 +84,7 @@ class QuoteTransitionService
 
     private function assignQuoteNumberBoundary(Entity $quote): void
     {
-        if ($this->numberingService === null || (string) $quote->get('quoteNumber') !== '') {
+        if ((string) $quote->get('quoteNumber') !== '') {
             return;
         }
 

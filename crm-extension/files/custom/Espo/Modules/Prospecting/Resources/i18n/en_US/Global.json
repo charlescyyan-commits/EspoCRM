@@ -5,7 +5,11 @@
     "ProspectPool": "Prospect Pool",
     "ProspectingDashboard": "Prospecting Operations",
     "ProspectingSearch": "Search",
-    "ResearchEvidence": "Research Center"
+    "ResearchEvidence": "Research Center",
+    "Quote": "Quote",
+    "QuoteItem": "Quote Item",
+    "ProformaInvoice": "Proforma Invoice",
+    "Approval": "Approval"
   },
   "scopeNamesPlural": {
     "SearchStrategy": "Search Strategies",
@@ -13,7 +17,11 @@
     "ProspectPool": "Prospect Pool",
     "ProspectingDashboard": "Prospecting Operations",
     "ProspectingSearch": "Search",
-    "ResearchEvidence": "Research Center"
+    "ResearchEvidence": "Research Center",
+    "Quote": "Quotes",
+    "QuoteItem": "Quote Items",
+    "ProformaInvoice": "Proforma Invoices",
+    "Approval": "Approvals"
   },
   "dashlets": {
     "ProspectingIntelligence": "Prospecting Intelligence",

@@ -82,11 +82,27 @@ class C16QuoteWorkflowCoreTests(unittest.TestCase):
         self.assertIn("interface QuoteNumberingServiceInterface", interface)
         self.assertIn("public function generateQuoteNumber(int|string $year): string;", interface)
         self.assertIn("public function assignQuoteNumber(Entity $quote, int|string|null $year = null): string;", interface)
-        self.assertIn("?QuoteNumberingServiceInterface $numberingService = null", service)
+        self.assertIn("private QuoteNumberingServiceInterface $numberingService", service)
+        self.assertNotIn("?QuoteNumberingServiceInterface $numberingService = null", service)
+        self.assertNotIn("$this->numberingService === null", service)
         self.assertIn("assignQuoteNumber($quote)", service)
         self.assertNotIn("numbering_sequence", service + interface)
         self.assertNotIn("LAST_INSERT_ID", service + interface)
         self.assertNotIn("SELECT FOR UPDATE", service + interface)
+
+    def test_numbering_dependency_is_mandatory_fail_fast(self) -> None:
+        service = read(QUOTE_TRANSITION_SERVICE)
+
+        self.assertRegex(
+            service,
+            r"private QuoteNumberingServiceInterface \$numberingService[,)]",
+            msg="QuoteNumberingServiceInterface must be a mandatory constructor dependency",
+        )
+        self.assertNotRegex(
+            service,
+            r"\?QuoteNumberingServiceInterface \$numberingService\s*=\s*null",
+            msg="Nullable numbering DI silently disables quote numbering and is forbidden",
+        )
 
     def test_quote_workflow_core_has_no_forbidden_dependencies(self) -> None:
         combined = "\n".join(read(path) for path in (QUOTE_TRANSITION_SERVICE, QUOTE_NUMBERING_INTERFACE))

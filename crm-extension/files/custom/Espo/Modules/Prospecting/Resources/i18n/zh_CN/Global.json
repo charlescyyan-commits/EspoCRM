@@ -5,7 +5,11 @@
     "ProspectPool": "潜客池",
     "ProspectingDashboard": "潜客运营",
     "ProspectingSearch": "搜索",
-    "ResearchEvidence": "研究中心"
+    "ResearchEvidence": "研究中心",
+    "Quote": "报价",
+    "QuoteItem": "报价明细",
+    "ProformaInvoice": "形式发票",
+    "Approval": "审批"
   },
   "scopeNamesPlural": {
     "SearchStrategy": "搜索策略",
@@ -13,7 +17,11 @@
     "ProspectPool": "潜客池",
     "ProspectingDashboard": "潜客运营",
     "ProspectingSearch": "搜索",
-    "ResearchEvidence": "研究中心"
+    "ResearchEvidence": "研究中心",
+    "Quote": "报价",
+    "QuoteItem": "报价明细",
+    "ProformaInvoice": "形式发票",
+    "Approval": "审批"
   },
   "dashlets": {
     "ProspectingIntelligence": "潜客智能",
