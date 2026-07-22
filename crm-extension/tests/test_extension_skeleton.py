@@ -538,6 +538,7 @@ class ExtensionSkeletonTests(unittest.TestCase):
             MODULE / "Entities" / "SalesFeedback.php",
             MODULE / "Entities" / "LearningSignal.php",
             MODULE / "Controllers" / "SalesFeedback.php",
+            MODULE / "Controllers" / "Quote.php",
             MODULE / "Controllers" / "LearningSignal.php",
             MODULE / "Entities" / "EmailEvent.php",
             MODULE / "Controllers" / "EmailEvent.php",
