@@ -327,3 +327,42 @@ All requirements met:
 - Artifact/runtime parity PASS
 - Credential rotated
 - No remaining blocker
+
+---
+
+## 14. Superseding Verdict — Final
+
+### 14.1 Resolution of §12 vs §13.16
+
+This report contains two verdict sections:
+
+| Section | Verdict | Context |
+|---------|---------|---------|
+| §12 | `BLOCKED_BY_ENVIRONMENT` | Original R5 result: environment denied Docker write; runtime deployment and re-smoke could not execute |
+| §13 (R5C) | `READY_FOR_FINAL_FREEZE_SIGNOFF` | R5C runtime continuation: environment became available; all blocked steps completed successfully |
+
+**§13 (R5C Runtime Continuation) is the final and superseding verdict.**
+
+### 14.2 Why §12 Is Superseded, Not Contradicted
+
+Section 12 was correct at the time of writing: the environment usage limit blocked runtime operations, and per safety requirements, deployment was not attempted without a verified backup. The verdict `BLOCKED_BY_ENVIRONMENT` was accurate for the R5-as-originally-written timeframe.
+
+Section 13 (R5C) documents a continuation session in which:
+- The environment became available.
+- A verified runtime backup was created (`temp/backups/phase3c16_3b_4r5c-20260721-231520/`).
+- The canonical artifact was deployed and verified (SHA-256 parity).
+- AfterInstall.php executed successfully; `numbering_sequence` table created.
+- Rebuild and cache clear completed without errors.
+- All 11 workflow scenarios re-smoked and passed.
+- D1 and D2 runtime verification passed.
+- Transaction rollback and mutation guard verification passed.
+- Smoke fixtures cleaned up.
+- Credential rotated.
+
+The `BLOCKED_BY_ENVIRONMENT` condition was transient and was resolved by the R5C continuation session. The final state after R5C is unambiguously `READY_FOR_FINAL_FREEZE_SIGNOFF`.
+
+### 14.3 Final Verdict
+
+**READY_FOR_FINAL_FREEZE_SIGNOFF**
+
+This is the single authoritative verdict for Phase3C16.3B-4R5. The `BLOCKED_BY_ENVIRONMENT` verdict in §12 is acknowledged as a transient state that was fully resolved by the R5C runtime continuation (§13). No ambiguity remains.
