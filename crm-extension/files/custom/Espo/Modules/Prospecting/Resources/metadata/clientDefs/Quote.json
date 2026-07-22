@@ -9,6 +9,7 @@
     {"label": "Mark Customer Rejected", "name": "markCustomerRejectedQuote", "acl": "edit", "handler": "custom:handlers/quote/workflow-transition", "checkVisibilityFunction": "isMarkCustomerRejectedVisible", "actionFunction": "markCustomerRejected"},
     {"label": "Reject", "name": "rejectQuote", "acl": "edit", "handler": "custom:handlers/quote/workflow-transition", "checkVisibilityFunction": "isRejectVisible", "actionFunction": "reject"},
     {"label": "Send Quote", "name": "sendQuote", "acl": "edit", "handler": "custom:handlers/quote/workflow-transition", "checkVisibilityFunction": "isSendQuoteVisible", "actionFunction": "sendQuote"},
+    {"label": "Mark Accepted", "name": "markAcceptedQuote", "acl": "edit", "handler": "custom:handlers/quote/workflow-transition", "checkVisibilityFunction": "isMarkAcceptedVisible", "actionFunction": "markAccepted"},
     {"label": "Expire", "name": "expireQuote", "acl": "edit", "handler": "custom:handlers/quote/workflow-transition", "checkVisibilityFunction": "isExpireVisible", "actionFunction": "expire"}
   ]
 }

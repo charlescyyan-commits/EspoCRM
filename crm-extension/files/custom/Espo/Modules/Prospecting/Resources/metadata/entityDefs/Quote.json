@@ -11,6 +11,8 @@
     "modifiedAt": {"type": "datetime", "readOnly": true},
     "createdBy": {"type": "link", "readOnly": true},
     "modifiedBy": {"type": "link", "readOnly": true},
+    "acceptedAt": {"type": "datetime", "readOnly": true, "notNull": false},
+    "acceptedBy": {"type": "link", "readOnly": true},
     "assignedUser": {"type": "link"},
     "teams": {"type": "linkMultiple"}
   },
@@ -22,6 +24,7 @@
     "proformaInvoices": {"type": "hasMany", "entity": "ProformaInvoice", "foreign": "quote"},
     "createdBy": {"type": "belongsTo", "entity": "User"},
     "modifiedBy": {"type": "belongsTo", "entity": "User"},
+    "acceptedBy": {"type": "belongsTo", "entity": "User"},
     "assignedUser": {"type": "belongsTo", "entity": "User"},
     "teams": {"type": "hasMany", "entity": "Team", "relationName": "entityTeam", "layoutRelationshipsDisabled": true}
   },

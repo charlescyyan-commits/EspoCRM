@@ -72,6 +72,12 @@ class QuoteTransitionService
                     $this->assignQuoteNumberBoundary($quote);
                 }
 
+                if ($targetStatus === self::STATUS_ACCEPTED) {
+                    $quote->set('acceptedAt', (new DateTimeImmutable())->format('Y-m-d H:i:s'));
+                    $quote->set('acceptedById', $this->user->getId());
+                    $quote->set('acceptedByName', $this->user->get('name'));
+                }
+
                 $quote->set('status', $targetStatus);
                 $this->entityManager->saveEntity($quote, [
                     StatusMutationSaveOption::QUOTE_STATUS_MUTATION_AUTHORIZED => true,

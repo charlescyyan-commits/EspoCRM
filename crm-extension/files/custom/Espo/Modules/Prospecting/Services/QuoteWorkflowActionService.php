@@ -44,6 +44,10 @@ class QuoteWorkflowActionService
             'type' => self::TYPE_QUOTE,
             'targetStatus' => QuoteTransitionService::STATUS_SENT,
         ],
+        WorkflowAuthorizationService::ACTION_MARK_ACCEPTED => [
+            'type' => self::TYPE_QUOTE,
+            'targetStatus' => QuoteTransitionService::STATUS_ACCEPTED,
+        ],
         WorkflowAuthorizationService::ACTION_EXPIRE => [
             'type' => self::TYPE_QUOTE,
             'targetStatus' => QuoteTransitionService::STATUS_EXPIRED,

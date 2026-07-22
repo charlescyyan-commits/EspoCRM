@@ -40,6 +40,7 @@ class C16QuoteUiActionTests(unittest.TestCase):
             "markCustomerRejectedQuote": "mark-customer-rejected",
             "rejectQuote": "reject",
             "sendQuote": "send",
+            "markAcceptedQuote": "mark-accepted",
             "expireQuote": "expire",
         }
         self.assertEqual(set(actions), set(expected))

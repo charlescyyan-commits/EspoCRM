@@ -25,6 +25,7 @@ class WorkflowAuthorizationService
     public const ACTION_REJECT_REVIEW = 'quote.rejectReview';
     public const ACTION_SEND = 'quote.send';
     public const ACTION_MARK_CUSTOMER_REJECTED = 'quote.markCustomerRejected';
+    public const ACTION_MARK_ACCEPTED = 'quote.markAccepted';
     public const ACTION_EXPIRE = 'quote.expire';
 
     /** @var array<string, string> */
@@ -34,6 +35,7 @@ class WorkflowAuthorizationService
         'reject-review' => self::ACTION_REJECT_REVIEW,
         'send' => self::ACTION_SEND,
         'mark-customer-rejected' => self::ACTION_MARK_CUSTOMER_REJECTED,
+        'mark-accepted' => self::ACTION_MARK_ACCEPTED,
         // Backward-compatible route action retained by the UI command service.
         'reject' => self::ACTION_MARK_CUSTOMER_REJECTED,
     ];
@@ -53,6 +55,9 @@ class WorkflowAuthorizationService
             'roles' => ['Sales', 'Sales Representative', 'Sales User'],
         ],
         self::ACTION_MARK_CUSTOMER_REJECTED => [
+            'roles' => ['Sales', 'Sales Representative', 'Sales User', 'Manager', 'Sales Manager'],
+        ],
+        self::ACTION_MARK_ACCEPTED => [
             'roles' => ['Sales', 'Sales Representative', 'Sales User', 'Manager', 'Sales Manager'],
         ],
         self::ACTION_EXPIRE => [

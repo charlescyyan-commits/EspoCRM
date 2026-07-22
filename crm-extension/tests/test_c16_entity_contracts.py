@@ -240,6 +240,7 @@ class C16EntityContractTests(unittest.TestCase):
                 "markCustomerRejectedQuote",
                 "rejectQuote",
                 "sendQuote",
+                "markAcceptedQuote",
                 "expireQuote",
             },
         )

@@ -32,6 +32,13 @@ define(['action-handler'], (Dep) => {
             await this.transition('send', 'Quote sent.');
         }
 
+        async markAccepted() {
+            if (!confirm('Are you sure you want to mark this quote as accepted?')) {
+                return;
+            }
+            await this.transition('mark-accepted', 'Quote accepted.');
+        }
+
         async expire() {
             await this.transition('expire', 'Quote expired.');
         }
@@ -68,6 +75,10 @@ define(['action-handler'], (Dep) => {
             return this.isStatus('APPROVED');
         }
 
+        isMarkAcceptedVisible() {
+            return this.isStatus('SENT');
+        }
+
         // ----------------------------------------------------------
         // Helpers
         // ----------------------------------------------------------
@@ -101,6 +112,7 @@ define(['action-handler'], (Dep) => {
                 'mark-customer-rejected': 'markCustomerRejectedQuote',
                 reject: 'rejectQuote',
                 send: 'sendQuote',
+                'mark-accepted': 'markAcceptedQuote',
                 expire: 'expireQuote',
             }[action];
         }
