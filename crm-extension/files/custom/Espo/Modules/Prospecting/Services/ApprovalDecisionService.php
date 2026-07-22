@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Espo\Modules\Prospecting\Services;
 
 use Espo\Core\Exceptions\BadRequest;
-use Espo\Core\Exceptions\Forbidden;
 use Espo\Core\Exceptions\NotFound;
 use Espo\Entities\User;
 use Espo\ORM\Entity;
@@ -22,11 +21,9 @@ use Espo\ORM\EntityManager;
  */
 class ApprovalDecisionService
 {
-    /** @var list<string> */
-    private const MANAGER_ROLES = ['Manager', 'Sales Manager'];
-
     public function __construct(
         private EntityManager $entityManager,
+        private WorkflowAuthorizationService $authorizationService,
         private ApprovalService $approvalService,
         private QuoteTransitionService $transitionService,
     ) {}
@@ -42,7 +39,10 @@ class ApprovalDecisionService
     {
         $this->assertTargetTypeQuote($approval);
         $this->assertTargetExists($approval);
-        $this->assertManagerRole($actor);
+        $this->authorizationService->authorizeApprovalDecision(
+            $actor,
+            WorkflowAuthorizationService::ACTION_APPROVE,
+        );
 
         return $this->entityManager->getTransactionManager()->run(
             function () use ($approval, $actor, $reason): Entity {
@@ -64,7 +64,10 @@ class ApprovalDecisionService
     {
         $this->assertTargetTypeQuote($approval);
         $this->assertTargetExists($approval);
-        $this->assertManagerRole($actor);
+        $this->authorizationService->authorizeApprovalDecision(
+            $actor,
+            WorkflowAuthorizationService::ACTION_REJECT_REVIEW,
+        );
 
         return $this->entityManager->getTransactionManager()->run(
             function () use ($approval, $actor, $reason): Entity {
@@ -111,49 +114,6 @@ class ApprovalDecisionService
         if ($targetId === '') {
             throw new BadRequest('Approval has no targetId.');
         }
-    }
-
-    /**
-     * @throws Forbidden when the actor lacks Manager / Sales Manager role and is not admin.
-     */
-    private function assertManagerRole(User $actor): void
-    {
-        if ($actor->isAdmin()) {
-            return;
-        }
-
-        $roleNames = $this->effectiveRoleNames($actor);
-        if (array_intersect(self::MANAGER_ROLES, $roleNames) === []) {
-            throw new Forbidden(
-                'Manager role required for approval decisions.'
-            );
-        }
-    }
-
-    /**
-     * @return list<string>
-     */
-    private function effectiveRoleNames(User $user): array
-    {
-        $roleIds = $user->getLinkMultipleIdList('roles');
-        foreach ($user->getLinkMultipleIdList('teams') as $teamId) {
-            $team = $this->entityManager->getEntityById('Team', $teamId);
-            if ($team instanceof Entity) {
-                $roleIds = array_merge($roleIds, $team->getLinkMultipleIdList('roles'));
-            }
-        }
-
-        $roleIds = array_values(array_unique($roleIds));
-
-        $names = [];
-        foreach ($roleIds as $roleId) {
-            $role = $this->entityManager->getEntityById('Role', $roleId);
-            if ($role instanceof Entity && trim((string) $role->get('name')) !== '') {
-                $names[] = (string) $role->get('name');
-            }
-        }
-
-        return array_values(array_unique($names));
     }
 
     private function loadTargetQuote(Entity $approval): Entity

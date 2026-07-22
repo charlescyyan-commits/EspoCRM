@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace Espo\Modules\Prospecting\Services;
 
-use Espo\Core\Acl;
 use Espo\Core\Exceptions\BadRequest;
-use Espo\Core\Exceptions\Forbidden;
 use Espo\Core\Exceptions\NotFound;
 use Espo\Entities\User;
 use Espo\ORM\Entity;
@@ -23,59 +21,39 @@ use Espo\ORM\EntityManager;
  */
 class QuoteWorkflowActionService
 {
-    public const ACTION_SUBMIT_FOR_REVIEW = 'submit-for-review';
-    public const ACTION_APPROVE = 'approve';
-    public const ACTION_REJECT_REVIEW = 'reject-review';
-    public const ACTION_MARK_CUSTOMER_REJECTED = 'mark-customer-rejected';
-    /** @deprecated Backward-compat alias for mark-customer-rejected. */
-    public const ACTION_REJECT = 'reject';
-    public const ACTION_SEND = 'send';
-    public const ACTION_EXPIRE = 'expire';
-
     private const TYPE_QUOTE = 'quote';
     private const TYPE_APPROVAL = 'approval';
 
-    /** @var array<string, array{type: string, targetStatus?: string, roles: list<string>}> */
+    /** @var array<string, array{type: string, targetStatus?: string}> */
     private const ACTIONS = [
-        self::ACTION_SUBMIT_FOR_REVIEW => [
+        WorkflowAuthorizationService::ACTION_SUBMIT_FOR_REVIEW => [
             'type' => self::TYPE_QUOTE,
             'targetStatus' => QuoteTransitionService::STATUS_IN_REVIEW,
-            'roles' => ['Sales', 'Sales Representative', 'Sales User'],
         ],
-        self::ACTION_APPROVE => [
+        WorkflowAuthorizationService::ACTION_APPROVE => [
             'type' => self::TYPE_APPROVAL,
-            'roles' => ['Manager', 'Sales Manager'],
         ],
-        self::ACTION_REJECT_REVIEW => [
+        WorkflowAuthorizationService::ACTION_REJECT_REVIEW => [
             'type' => self::TYPE_APPROVAL,
-            'roles' => ['Manager', 'Sales Manager'],
         ],
-        self::ACTION_MARK_CUSTOMER_REJECTED => [
+        WorkflowAuthorizationService::ACTION_MARK_CUSTOMER_REJECTED => [
             'type' => self::TYPE_QUOTE,
             'targetStatus' => QuoteTransitionService::STATUS_REJECTED,
-            'roles' => ['Sales', 'Sales Representative', 'Sales User', 'Manager', 'Sales Manager'],
         ],
-        self::ACTION_REJECT => [
-            'type' => self::TYPE_QUOTE,
-            'targetStatus' => QuoteTransitionService::STATUS_REJECTED,
-            'roles' => ['Sales', 'Sales Representative', 'Sales User', 'Manager', 'Sales Manager'],
-        ],
-        self::ACTION_SEND => [
+        WorkflowAuthorizationService::ACTION_SEND => [
             'type' => self::TYPE_QUOTE,
             'targetStatus' => QuoteTransitionService::STATUS_SENT,
-            'roles' => ['Sales', 'Sales Representative', 'Sales User'],
         ],
-        self::ACTION_EXPIRE => [
+        WorkflowAuthorizationService::ACTION_EXPIRE => [
             'type' => self::TYPE_QUOTE,
             'targetStatus' => QuoteTransitionService::STATUS_EXPIRED,
-            'roles' => [],
         ],
     ];
 
     public function __construct(
         private EntityManager $entityManager,
-        private Acl $acl,
         private User $user,
+        private WorkflowAuthorizationService $authorizationService,
         private QuoteTransitionService $transitionService,
         private ApprovalDecisionService $decisionService,
     ) {}
@@ -85,20 +63,13 @@ class QuoteWorkflowActionService
      */
     public function execute(string $quoteId, string $action, ?string $reason = null): array
     {
-        $definition = self::ACTIONS[$action] ?? null;
-        if ($definition === null) {
-            throw new BadRequest('Unsupported Quote workflow action.');
-        }
-
         $quote = $this->entityManager->getEntityById('Quote', $quoteId);
         if (!$quote instanceof Entity) {
             throw new NotFound('Quote was not found.');
         }
-        if (!$this->acl->checkEntityEdit($quote)) {
-            throw new Forbidden();
-        }
 
-        $this->assertActionPermission($action, $definition['roles']);
+        $action = $this->authorizationService->authorizeQuoteAction($quote, $this->user, $action);
+        $definition = self::ACTIONS[$action];
 
         if ($definition['type'] === self::TYPE_APPROVAL) {
             return $this->executeApprovalAction($quote, $action, $reason);
@@ -119,9 +90,9 @@ class QuoteWorkflowActionService
             throw new NotFound('No PENDING Approval found for this Quote.');
         }
 
-        if ($action === self::ACTION_APPROVE) {
+        if ($action === WorkflowAuthorizationService::ACTION_APPROVE) {
             $this->decisionService->approveApproval($approval, $this->user, $reason);
-        } elseif ($action === self::ACTION_REJECT_REVIEW) {
+        } elseif ($action === WorkflowAuthorizationService::ACTION_REJECT_REVIEW) {
             $normalized = trim((string) $reason);
             if ($normalized === '') {
                 throw new BadRequest('A rejection reason is required.');
@@ -182,47 +153,4 @@ class QuoteWorkflowActionService
         ];
     }
 
-    /** @param list<string> $allowedRoles */
-    private function assertActionPermission(string $action, array $allowedRoles): void
-    {
-        if ($this->user->isAdmin()) {
-            return;
-        }
-        if ($action === self::ACTION_EXPIRE) {
-            throw new Forbidden('Only administrators can expire an approved Quote manually.');
-        }
-
-        $roleNames = $this->roleNames();
-        if (array_intersect($allowedRoles, $roleNames) === []) {
-            throw new Forbidden('Current role cannot perform this Quote workflow action.');
-        }
-    }
-
-    /** @return list<string> */
-    private function roleNames(): array
-    {
-        $names = [];
-        foreach ($this->effectiveRoleIds() as $roleId) {
-            $role = $this->entityManager->getEntityById('Role', $roleId);
-            if ($role instanceof Entity && trim((string) $role->get('name')) !== '') {
-                $names[] = (string) $role->get('name');
-            }
-        }
-
-        return array_values(array_unique($names));
-    }
-
-    /** @return list<string> */
-    private function effectiveRoleIds(): array
-    {
-        $roleIds = $this->user->getLinkMultipleIdList('roles');
-        foreach ($this->user->getLinkMultipleIdList('teams') as $teamId) {
-            $team = $this->entityManager->getEntityById('Team', $teamId);
-            if ($team instanceof Entity) {
-                $roleIds = array_merge($roleIds, $team->getLinkMultipleIdList('roles'));
-            }
-        }
-
-        return array_values(array_unique($roleIds));
-    }
 }

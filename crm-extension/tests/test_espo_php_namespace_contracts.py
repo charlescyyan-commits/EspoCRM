@@ -62,8 +62,8 @@ class EspoPhpNamespaceContractTests(unittest.TestCase):
                 unknown.append(f"{relative}: unrecognized Espo namespace {reference}")
         self.assertEqual(unknown, [], msg="\n".join(unknown))
 
-    def test_quote_workflow_action_service_imports_core_exceptions_correctly(self) -> None:
-        path = (
+    def test_workflow_authorization_services_import_core_exceptions_correctly(self) -> None:
+        workflow_path = (
             PHP_ROOT
             / "custom"
             / "Espo"
@@ -72,11 +72,16 @@ class EspoPhpNamespaceContractTests(unittest.TestCase):
             / "Services"
             / "QuoteWorkflowActionService.php"
         )
-        source = path.read_text(encoding="utf-8")
-        self.assertNotIn("Espo\\CoreExceptions\\", source)
-        self.assertIn("use Espo\\Core\\Exceptions\\BadRequest;", source)
-        self.assertIn("use Espo\\Core\\Exceptions\\Forbidden;", source)
-        self.assertIn("use Espo\\Core\\Exceptions\\NotFound;", source)
+        authorizer_path = workflow_path.with_name("WorkflowAuthorizationService.php")
+        workflow_source = workflow_path.read_text(encoding="utf-8")
+        authorizer_source = authorizer_path.read_text(encoding="utf-8")
+
+        self.assertNotIn("Espo\\CoreExceptions\\", workflow_source)
+        self.assertNotIn("Espo\\CoreExceptions\\", authorizer_source)
+        self.assertIn("use Espo\\Core\\Exceptions\\BadRequest;", workflow_source)
+        self.assertIn("use Espo\\Core\\Exceptions\\NotFound;", workflow_source)
+        self.assertIn("use Espo\\Core\\Exceptions\\BadRequest;", authorizer_source)
+        self.assertIn("use Espo\\Core\\Exceptions\\Forbidden;", authorizer_source)
 
 
 if __name__ == "__main__":

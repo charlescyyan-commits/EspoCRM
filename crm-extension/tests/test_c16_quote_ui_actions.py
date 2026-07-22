@@ -16,6 +16,7 @@ API = MODULE / "Api" / "PostQuoteWorkflowAction.php"
 SERVICE = MODULE / "Services" / "QuoteWorkflowActionService.php"
 TRANSITION_SERVICE = MODULE / "Services" / "QuoteTransitionService.php"
 DECISION_SERVICE = MODULE / "Services" / "ApprovalDecisionService.php"
+AUTHORIZER = MODULE / "Services" / "WorkflowAuthorizationService.php"
 HANDLER = CLIENT / "handlers" / "quote" / "workflow-transition.js"
 
 
@@ -68,9 +69,10 @@ class C16QuoteUiActionTests(unittest.TestCase):
         self.assertIn("ACTION_SEND", source)
         self.assertIn("ACTION_EXPIRE", source)
 
-        # Backward-compat alias
-        self.assertIn("ACTION_REJECT", source)
-        self.assertIn("deprecated", source.lower())
+        # Backward-compat alias is resolved by the centralized authorizer.
+        authorizer = read(AUTHORIZER)
+        self.assertIn("'reject' => self::ACTION_MARK_CUSTOMER_REJECTED", authorizer)
+        self.assertIn("Backward-compatible", authorizer)
 
     # ------------------------------------------------------------------
     # Approval-driven routing
@@ -116,17 +118,20 @@ class C16QuoteUiActionTests(unittest.TestCase):
     # ACL and role authorization
     # ------------------------------------------------------------------
 
-    def test_acl_restricts_record_and_role_before_action(self) -> None:
+    def test_shared_authorizer_restricts_record_and_role_before_action(self) -> None:
         source = read(SERVICE)
+        authorizer = read(AUTHORIZER)
 
-        self.assertIn("$this->acl->checkEntityEdit($quote)", source)
-        self.assertIn("$this->user->isAdmin()", source)
-        self.assertIn("getLinkMultipleIdList('roles')", source)
-        self.assertIn("getLinkMultipleIdList('teams')", source)
-        self.assertIn("getEntityById('Team', $teamId)", source)
-        self.assertIn("'Sales User'", source)
-        self.assertIn("'Sales Manager'", source)
-        self.assertIn("Only administrators can expire", source)
+        self.assertIn("private WorkflowAuthorizationService $authorizationService", source)
+        self.assertIn("$this->authorizationService->authorizeQuoteAction($quote, $this->user, $action)", source)
+        self.assertNotIn("checkEntityEdit", source)
+        self.assertIn("$this->acl->checkEntityEdit($quote)", authorizer)
+        self.assertIn("$actor->isAdmin()", authorizer)
+        self.assertIn("getLinkMultipleIdList('roles')", authorizer)
+        self.assertIn("getLinkMultipleIdList('teams')", authorizer)
+        self.assertIn("'Sales User'", authorizer)
+        self.assertIn("'Sales Manager'", authorizer)
+        self.assertIn("Only administrators can expire", authorizer)
 
     # ------------------------------------------------------------------
     # Status mutation ownership

@@ -14,6 +14,7 @@ DECISION_SERVICE = SERVICES / "ApprovalDecisionService.php"
 APPROVAL_SERVICE = SERVICES / "ApprovalService.php"
 QUOTE_TRANSITION = SERVICES / "QuoteTransitionService.php"
 QUOTE_WORKFLOW = SERVICES / "QuoteWorkflowActionService.php"
+AUTHORIZER = SERVICES / "WorkflowAuthorizationService.php"
 
 
 def read(path: Path) -> str:
@@ -26,6 +27,7 @@ class C16ApprovalDecisionServiceTests(unittest.TestCase):
         cls.source = read(DECISION_SERVICE)
         cls.approval_src = read(APPROVAL_SERVICE)
         cls.transition_src = read(QUOTE_TRANSITION)
+        cls.authorizer_src = read(AUTHORIZER)
 
     # ------------------------------------------------------------------
     # Existence and basic structure
@@ -39,6 +41,7 @@ class C16ApprovalDecisionServiceTests(unittest.TestCase):
 
     def test_mandatory_constructor_dependencies(self) -> None:
         self.assertIn("private EntityManager $entityManager", self.source)
+        self.assertIn("private WorkflowAuthorizationService $authorizationService", self.source)
         self.assertIn("private ApprovalService $approvalService", self.source)
         self.assertIn("private QuoteTransitionService $transitionService", self.source)
         # All deps are non-nullable (fail-fast DI)
@@ -78,9 +81,10 @@ class C16ApprovalDecisionServiceTests(unittest.TestCase):
         # Target validation must happen outside/before the transaction
         self.assertIn("$this->assertTargetTypeQuote($approval);", body)
         self.assertIn("$this->assertTargetExists($approval);", body)
-        self.assertIn("$this->assertManagerRole($actor);", body)
+        self.assertIn("$this->authorizationService->authorizeApprovalDecision(", body)
+        self.assertIn("WorkflowAuthorizationService::ACTION_APPROVE", body)
         target_idx = body.index("$this->assertTargetTypeQuote")
-        role_idx = body.index("$this->assertManagerRole")
+        role_idx = body.index("$this->authorizationService->authorizeApprovalDecision")
         self.assertLess(target_idx, transaction_idx)
         self.assertLess(role_idx, transaction_idx)
 
@@ -113,7 +117,8 @@ class C16ApprovalDecisionServiceTests(unittest.TestCase):
     def test_reject_approval_validates_target_and_role_before_transaction(self) -> None:
         body = self._method_body("rejectApproval")
         transaction_idx = body.index("getTransactionManager()->run")
-        role_idx = body.index("$this->assertManagerRole")
+        self.assertIn("WorkflowAuthorizationService::ACTION_REJECT_REVIEW", body)
+        role_idx = body.index("$this->authorizationService->authorizeApprovalDecision")
         self.assertLess(role_idx, transaction_idx)
 
     # ------------------------------------------------------------------
@@ -171,19 +176,19 @@ class C16ApprovalDecisionServiceTests(unittest.TestCase):
     # Role authorization
     # ------------------------------------------------------------------
 
-    def test_assert_manager_role_checks_admin_and_roles(self) -> None:
-        self.assertIn("private function assertManagerRole(User $actor): void", self.source)
-        self.assertIn("$actor->isAdmin()", self.source)
-        self.assertIn("'Manager', 'Sales Manager'", self.source)
-        self.assertIn("Manager role required for approval decisions.", self.source)
-        self.assertIn("throw new Forbidden(", self.source)
+    def test_approval_role_check_is_delegated_to_shared_authorizer(self) -> None:
+        self.assertNotIn("assertManagerRole", self.source)
+        self.assertNotIn("effectiveRoleNames", self.source)
+        self.assertIn("WorkflowAuthorizationService::ACTION_APPROVE", self.source)
+        self.assertIn("WorkflowAuthorizationService::ACTION_REJECT_REVIEW", self.source)
+        self.assertIn("'Manager', 'Sales Manager'", self.authorizer_src)
 
-    def test_effective_role_names_includes_team_roles(self) -> None:
-        self.assertIn("private function effectiveRoleNames(User $user): array", self.source)
-        self.assertIn("getLinkMultipleIdList('roles')", self.source)
-        self.assertIn("getLinkMultipleIdList('teams')", self.source)
-        self.assertIn("getEntityById('Team', $teamId)", self.source)
-        self.assertIn("getEntityById('Role', $roleId)", self.source)
+    def test_effective_role_names_is_owned_by_shared_authorizer(self) -> None:
+        self.assertIn("private function effectiveRoleNames(User $user): array", self.authorizer_src)
+        self.assertIn("getLinkMultipleIdList('roles')", self.authorizer_src)
+        self.assertIn("getLinkMultipleIdList('teams')", self.authorizer_src)
+        self.assertIn("getEntityById('Team', $teamId)", self.authorizer_src)
+        self.assertIn("getEntityById('Role', $roleId)", self.authorizer_src)
 
     # ------------------------------------------------------------------
     # Target validation

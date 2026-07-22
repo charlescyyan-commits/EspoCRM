@@ -567,6 +567,7 @@ class ExtensionSkeletonTests(unittest.TestCase):
             MODULE / "Services" / "QuoteNumberingService.php",
             MODULE / "Services" / "QuoteNumberingServiceInterface.php",
             MODULE / "Services" / "QuoteTransitionService.php",
+            MODULE / "Services" / "WorkflowAuthorizationService.php",
             MODULE / "Services" / "QuoteWorkflowActionService.php",
             MODULE / "Services" / "ApprovalService.php",
             MODULE / "Services" / "ApprovalDecisionService.php",
