@@ -22,8 +22,20 @@ ROOT = Path(__file__).resolve().parents[2]
 MANIFEST_PATH = ROOT / "crm-extension" / "manifest.json"
 CONTRACT_PATH = ROOT / "docs" / "sync-contracts" / "ESPOCRM_SYNC_CONTRACT_V1.json"
 CONNECTOR_CONTRACT_PATH = ROOT / "chitu-connector" / "chitu_connector" / "espocrm_sync" / "contract.py"
-LEAD_DEF_PATH = ROOT / "crm-extension" / "Resources" / "entityDefs" / "Lead.json"
-EVIDENCE_DEF_PATH = ROOT / "crm-extension" / "Resources" / "entityDefs" / "ResearchEvidence.json"
+MODULE_ENTITY_DEFS = (
+    ROOT
+    / "crm-extension"
+    / "files"
+    / "custom"
+    / "Espo"
+    / "Modules"
+    / "Prospecting"
+    / "Resources"
+    / "metadata"
+    / "entityDefs"
+)
+LEAD_DEF_PATH = MODULE_ENTITY_DEFS / "Lead.json"
+EVIDENCE_DEF_PATH = MODULE_ENTITY_DEFS / "ResearchEvidence.json"
 
 EXIT_PASS = 0
 EXIT_FAILURE = 1

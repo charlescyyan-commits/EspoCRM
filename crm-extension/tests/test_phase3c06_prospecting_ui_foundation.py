@@ -37,8 +37,8 @@ class ProspectingUiFoundationTests(unittest.TestCase):
                 for name in ("ProspectingDashboard", "ProspectingSearch")
             },
             {
-                "ProspectingDashboard": "Prospecting Operations",
-                "ProspectingSearch": "Search",
+                "ProspectingDashboard": "Dashboard",
+                "ProspectingSearch": "Search Center",
             },
         )
 
@@ -55,21 +55,22 @@ class ProspectingUiFoundationTests(unittest.TestCase):
 
     def test_navigation_and_dashboard_template_expose_requested_surfaces(self) -> None:
         source = (CLIENT / "res" / "templates" / "prospecting" / "dashboard.tpl").read_text(encoding="utf-8")
+        dashboard_js = (CLIENT / "src" / "views" / "prospecting" / "dashboard.js").read_text(encoding="utf-8")
+        navigation_surface = source + dashboard_js
         for route in ("#ProspectingDashboard", "#ProspectingSearch", "#SearchJob", "#ProspectPool", "#SearchStrategy"):
-            self.assertIn(route, source)
+            self.assertIn(route, navigation_surface)
         # Phase3U03 dashboard productization: overview + summary + recent discovery empty states
         for label in (
-            "Prospecting Operations",
+            "Operational Centers",
             "Prospecting Summary",
             "Recent Discovery Activity",
             "No data available",
         ):
             self.assertIn(label, source)
         for label in ("Search Jobs", "Prospect Pool"):
-            self.assertIn(label, source)
+            self.assertIn(label, navigation_surface)
         self.assertIn('data-action="open-search"', source)
 
-        dashboard_js = (CLIENT / "src" / "views" / "prospecting" / "dashboard.js").read_text(encoding="utf-8")
         for label in (
             "Total Prospects",
             "New This Week",

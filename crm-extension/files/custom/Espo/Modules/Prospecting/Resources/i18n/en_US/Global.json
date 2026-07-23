@@ -3,25 +3,27 @@
     "SearchStrategy": "Search Strategy",
     "SearchJob": "Search Job",
     "ProspectPool": "Prospect Pool",
-    "ProspectingDashboard": "Prospecting Operations",
-    "ProspectingSearch": "Search",
-    "ResearchEvidence": "Research Center",
-    "Quote": "Quote",
+    "ProspectingDashboard": "Dashboard",
+    "ProspectingSearch": "Search Center",
+    "ResearchEvidence": "Research Evidence",
+    "DraftApproval": "Outreach Center",
+    "Quote": "Quote Center",
     "QuoteItem": "Quote Item",
     "ProformaInvoice": "Proforma Invoice",
-    "Approval": "Approval"
+    "Approval": "Quote Approval"
   },
   "scopeNamesPlural": {
     "SearchStrategy": "Search Strategies",
     "SearchJob": "Search Jobs",
     "ProspectPool": "Prospect Pool",
-    "ProspectingDashboard": "Prospecting Operations",
-    "ProspectingSearch": "Search",
-    "ResearchEvidence": "Research Center",
-    "Quote": "Quotes",
+    "ProspectingDashboard": "Dashboard",
+    "ProspectingSearch": "Search Center",
+    "ResearchEvidence": "Research Evidence",
+    "DraftApproval": "Outreach Center",
+    "Quote": "Quote Center",
     "QuoteItem": "Quote Items",
     "ProformaInvoice": "Proforma Invoices",
-    "Approval": "Approvals"
+    "Approval": "Quote Approvals"
   },
   "dashlets": {
     "ProspectingIntelligence": "Prospecting Intelligence",

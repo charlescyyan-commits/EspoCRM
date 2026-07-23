@@ -20,8 +20,8 @@
     "approver": "Approver"
   },
   "labels": {
-    "Create Approval": "Create Approval",
-    "Approvals": "Approvals"
+    "Create Approval": "Create Quote Approval",
+    "Approvals": "Quote Approvals"
   },
   "options": {
     "status": {

@@ -4,32 +4,29 @@
             <div class="panel-heading"><strong>Prospecting</strong></div>
             <div class="list-group list-group-panel">
                 <a class="list-group-item active" href="#ProspectingDashboard">
-                    <span class="fas fa-binoculars"></span> Prospecting Operations
+                    <span class="fas fa-binoculars"></span> Dashboard
                 </a>
                 <a class="list-group-item" data-action="open-search" href="#ProspectingSearch">
-                    <span class="fas fa-search"></span> Search
+                    <span class="fas fa-search"></span> Search Center
                 </a>
-                <a class="list-group-item" href="#SearchJob">
-                    <span class="fas fa-list"></span> Search Jobs
+                <a class="list-group-item" href="#Lead">
+                    <span class="fas fa-user-tag"></span> Research Center
                 </a>
-                <a class="list-group-item" href="#ProspectPool">
-                    <span class="fas fa-address-book"></span> Prospect Pool
+                <a class="list-group-item" href="#DraftApproval">
+                    <span class="fas fa-paper-plane"></span> Outreach Center
                 </a>
-                <a class="list-group-item" href="#ResearchEvidence">
-                    <span class="fas fa-flask"></span> Research Evidence
-                </a>
-                <a class="list-group-item" href="#SearchStrategy">
-                    <span class="fas fa-sitemap"></span> Search Strategies
+                <a class="list-group-item" href="#Quote">
+                    <span class="fas fa-file-signature"></span> Quote Center
                 </a>
             </div>
         </div>
         <div class="panel panel-default">
             <div class="panel-heading">Workflow</div>
             <div class="panel-body" style="font-size:12px;line-height:1.5;">
-                <div>1. Plan a Search Strategy</div>
-                <div>2. Run Search Jobs</div>
-                <div>3. Review Prospect Pool</div>
-                <div>4. Review Research Evidence</div>
+                <div>1. Discover prospects</div>
+                <div>2. Research Leads</div>
+                <div>3. Review outreach</div>
+                <div>4. Manage quotes</div>
             </div>
         </div>
     </div>
@@ -39,6 +36,30 @@
             <p class="text-muted" style="margin-bottom:16px;">
                 Discover customers, review candidates, and check research status.
             </p>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading"><strong>Operational Centers</strong></div>
+            <div class="panel-body">
+                <div class="row">
+                    {{#each centers}}
+                        <div class="col-sm-6" style="margin-bottom:16px;">
+                            <h4 style="margin-top:0;"><a href="{{href}}">{{name}}</a></h4>
+                            <p class="text-muted">{{description}}</p>
+                            {{#if hasEntries}}
+                                <div class="list-group" style="margin-bottom:0;">
+                                    {{#each entries}}
+                                        <a class="list-group-item" href="{{href}}">{{label}}</a>
+                                    {{/each}}
+                                </div>
+                            {{/if}}
+                        </div>
+                    {{/each}}
+                </div>
+                <p class="text-muted" style="margin-bottom:0;">
+                    Analytics: deferred — Dashboard aggregation first.
+                </p>
+            </div>
         </div>
 
         <div class="panel panel-default">

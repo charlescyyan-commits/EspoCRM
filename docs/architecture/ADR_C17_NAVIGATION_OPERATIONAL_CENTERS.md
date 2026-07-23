@@ -2,35 +2,29 @@
 
 ## Status
 
-**Proposed**
+**Accepted**
 
-Creation of this ADR does not constitute architecture approval. This ADR does not
-self-declare acceptance: no repository governance document grants the authoring task
-authority to approve ADRs. The repository's only documented status rule is
-`docs/adr/README.md:31-40` ("Proposed … Accepted — Decision active in codebase …
-Do not mark Accepted without code or manifest evidence"), and the C16-era ADRs were
-accepted only as part of a phase release freeze, not by any documented review process.
+The independent WP0 exit audit reported no remaining blockers, classified the
+implementation risk as LOW, and granted `READY_FOR_C17_IMPLEMENTATION`. The authorized
+WP1.2–WP1.4 implementation task accepts this amended ADR together with its
+version-controlled desired-state artifact, single materializer, focused contracts, and
+development-runtime evidence.
 
-**Amendment record (2026-07-22):** this ADR was amended in WP1.2A to resolve findings
-from the independent architecture review (verdict: `PASS WITH REQUIRED AMENDMENTS —
-ADR NOT YET APPROVABLE`; 1 BLOCKER, 2 HIGH, 4 MEDIUM, 3 LOW). This amendment resolves
-findings from the independent architecture review. **Resolution of findings does not
-itself change the ADR to Accepted. The amended ADR requires independent re-review.
-WP1.3 remains unauthorized until formal acceptance.**
+**Amendment record:** WP1.2A review findings A–J remain incorporated. The 2026-07-23
+acceptance amendment additionally aligns the Research Center with the authorized frozen
+classification (`Lead` as the global native operational record source;
+`ResearchEvidence` as a supporting object), converges navigation governance, and
+authorizes WP1 implementation.
 
 ## Date
 
-2026-07-22 (authored WP1.2; amended WP1.2A, same date)
+2026-07-23 (authored WP1.2; amended WP1.2A; accepted for WP1 implementation)
 
 ## Decision Owners
 
-- Principal Software Architect, EspoCRM Prospecting module (architecture authoring role).
-- Approval owner: the repository phase-governance process that accepted the C16 ADRs
-  (phase release freeze sign-off). No personal approval is invented or implied by this
-  document; formal acceptance requires the independent review defined in
-  [Approval Requirements](#approval-requirements).
-- Independent architecture review (WP1.2A findings source): verdict `PASS WITH
-  REQUIRED AMENDMENTS`; amendments A–J of WP1.2A applied by this revision.
+- Principal Software Architect, EspoCRM Prospecting module.
+- Phase3C17 Release Approval Board / implementation authorization.
+- Independent WP0 exit audit and WP1.2A architecture review.
 
 ## Amends
 
@@ -58,18 +52,11 @@ release `v1.9.7-alpha` (tag at commit `d0b9a8077abff804c5f0d231707e83ab3a71d263`
 - WP0.4 — Shared workflow authorizer (`docs/PHASE3C17_WP0_4_AUTHORIZER_IMPLEMENTATION.md`).
 
 The expected WP1 Navigation IA Audit input (`docs/PHASE3C17_WP1_NAVIGATION_IA_AUDIT.md`)
-**does not exist in the repository** (verified by glob of `docs/**/*C17*` and full-repo
-search for WP1-navigation / Operational-Center terms; zero matches). This ADR therefore
-independently performs the required evidence review and derives its decisions directly
-from verified repository evidence instead of repeating an audit conclusion. The absence
-of the WP1 audit document is recorded as a baseline discrepancy.
-
-**WP1 audit evidence-gap condition (frozen):** the missing WP1 audit artifact does not
-prevent completion of this repository-evidence-based Proposed ADR. However, the
-implementation evidence chain must be closed before WP1.3 changes navigation state:
-**a formal WP1 evidence-closure report must be created and independently reviewed
-before or at the WP1.3 implementation gate.** That report is a subsequent work item;
-it is not created by this ADR and is not claimed to exist.
+does not exist in the repository. The accepted ADR and the WP1 implementation report
+close that evidence gap from repository evidence, the frozen classifications supplied
+by the authorized implementation brief, focused contracts, and real development-runtime
+validation. The missing historical filename is retained as a baseline observation, not
+as an implementation blocker.
 
 ## Problem
 
@@ -400,63 +387,26 @@ the owner of entity persistence, entity lifecycle, ACL, or record security.
 
 ### Research Center
 
-- **Purpose:** Lead-centric research work — review researched Leads, inspect evidence,
-  capture feedback.
-- **Primary users:** Sales Manager, Sales User (own records), Admin.
-- **Primary entry surface (frozen):** **the `ResearchEvidence` native entity list is
-  the Phase3C17 Research Center primary entry surface** (Class A — Primary Center
-  Entry; top-level allowed). The list provides both Center entry and bulk
-  evidence-working capability. Its single primary visibility classification is
-  **Class A**; its list/queue behavior does **not** create a second Class B
-  classification. The list already ships under the "Research Center" navigation label
-  (`i18n/en_US/Global.json:8`, `zh_CN/Global.json`; runtime membership verified
-  2026-07-14, `PHASE_U04...:45-56`). **No new Research Center custom page is created
-  or promised in Phase3C17.** WP1.3 must not replace the primary entry with a new
-  custom surface without a future ADR amendment. `ResearchEvidence` remains evidence
-  supporting Lead research; making its list the Center entry is a navigation
-  composition decision, not entity ownership — the entity does not become a Center.
-- **Physical boundary (frozen):** `ResearchEvidence` native list = Phase3C17 physical
-  primary Research Center entry. Permitted WP1.3 composition enhancements are limited
-  to native additions around that entry:
-  - predefined Lead research filters;
-  - `ResearchEvidence` filters;
-  - links to supporting `SalesFeedback`;
-  - relationship panels;
-  - dashlets;
-  - explanatory navigation labels;
-  - direct links to supporting records.
-
-  Not permitted without a future ADR amendment:
-  - replacing `ResearchEvidence` with a new primary custom page;
-  - creating a new Research entity;
-  - moving Lead ownership into the Center;
-  - creating duplicate research persistence.
-- **Owned workflow area:** research review composition (navigation only).
-- **Entry entities:** `ResearchEvidence` (primary entry list). **Supporting
-  entities:** `Lead` (research queues), `SalesFeedback`, `LearningSignal`.
-- **Required direct queues:** the primary entry list itself provides the evidence
-  working/queue capability through native filters and list links; no separate queue
-  classification exists for `ResearchEvidence`. Lead research queues are reached via
-  the 26 Prospecting `filterList` entries on the native Lead scope
-  (`clientDefs/Lead.json:2-81`).
-- **Lead governance (frozen):** `Lead` remains a **Global Native CRM Scope (Class E)**.
-  Lead does **not** become owned by the Research Center; the extension does not define
-  or modify Lead's `tab` flag (verified: no `Resources/metadata/scopes/Lead.json`
-  exists; Lead is extended by overlay — `entityDefs/Lead.json`, `clientDefs/Lead.json`,
-  `selectDefs/Lead.json`). Lead is simultaneously: (a) globally available in wider
-  EspoCRM navigation, and (b) a participant in Research Center composition through
-  Prospecting-specific filters and bottom panels (`clientDefs/Lead.json:82-131`).
-  **No new Research entity is introduced.**
-- **Supporting-object classifications (frozen):**
-  - `SalesFeedback` — Class D, supporting relationship data (operational feedback
-    captured on Leads; Lead bottom panel `entityDefs/Lead.json:397`; `RecentSalesFeedback`
-    dashlet). It is not a secondary navigation destination.
-  - `LearningSignal` — Class F, internal/administrative object (auto-generated,
-    machine-consumed; `ADR_C16...:317-324`); no operational navigation.
-- **Fallback access paths:** Lead detail bottom panels (`researchEvidences`,
-  `salesFeedbacks`, `learningSignals`); direct URLs; global search.
-- **Prohibited mutation paths:** no research-logic or scoring changes (workspace
-  boundary, `AGENTS.md`); no Center-owned persistence.
+- **Purpose:** Lead-centric research work — review Leads, inspect evidence, and capture
+  feedback without creating a second research record owner.
+- **Primary users:** Sales Manager, Sales User (ACL-scoped records), Admin.
+- **Primary operational record source:** the native global `Lead` scope. `Lead`
+  remains a **Global Native CRM Scope (Class E)** and is not renamed internally,
+  duplicated in `config.tabList`, or owned by Prospecting.
+- **Physical composition (frozen):** when a native global `Lead` tab already exists,
+  the C17 materializer preserves it in place and does not insert a duplicate beneath
+  the Prospecting divider. The Prospecting Dashboard and Search Center provide a
+  clearly labeled **Research Center** link to the native Lead list. This is the
+  authorized fallback for EspoCRM's flat tab model.
+- **Supporting objects:** `ResearchEvidence`, `SalesFeedback`, `LearningSignal`, and
+  `EmailEvent` remain accessible through existing Lead relationship panels, ACL-safe
+  direct links, filtered lists, and Dashboard navigation. `ResearchEvidence` is not
+  labeled as the Research Center and is not a global Prospecting top-level entry.
+- **Existing native capability:** Lead retains 26 Prospecting filters
+  (`clientDefs/Lead.json`) and bottom panels for research evidence, sales feedback,
+  learning signals, and email events.
+- **Prohibited changes:** no new Research entity, no duplicate persistence, no Lead
+  ownership transfer, no scoring or AI-research logic changes, and no ACL changes.
 
 ### Outreach Center
 
@@ -614,8 +564,8 @@ not reopen any conceptual visibility class without a new ADR amendment.
 | `SearchStrategy` | Search Center | C | No | Search Center → strategy list; direct URL; global search; links from `SearchJob` records | Planning/management list, not a queue; bulk/exception work does not require top-level placement |
 | `SearchJob` | Search Center | B | No | Search Center queues via 5 existing status filters; `SearchStrategy` detail → jobs; direct URL; global search | Execution monitoring and exception (failed-job) queue requires direct filtered list access |
 | `ProspectPool` | Search Center | B | No | Search Center queues via 4 existing pipeline filters; `SearchJob` detail panel; direct URL; global search | Bulk curation across DISCOVERY→QUALIFICATION→RESEARCH→CRM queues requires direct list access |
-| `Lead` | Research Center (composition participant) | E | **Yes (global native)** | Global native tab (core-controlled; extension does not touch Lead's `tab` flag); 26 Prospecting `filterList` entries; direct URL; global search | Native CRM scope not exclusively owned by Prospecting; also composes Research Center research queues |
-| `ResearchEvidence` | Research Center | **A** | **Yes** | Native entity list **is** the Research Center primary entry surface (ships under the "Research Center" label); native filters and list links; Lead bottom panel `researchEvidences`; direct URL; global search | Primary Center Entry whose native list also provides bulk evidence-working capability; single primary classification Class A — no separate Class B classification |
+| `Lead` | Research Center (composition participant) | E | **Yes (global native)** | Preserve the single global native tab; Dashboard/Search Center "Research Center" link; 26 Prospecting `filterList` entries; direct URL; global search | Native CRM scope is the operational record source and is not exclusively owned by Prospecting; duplication under the Prospecting divider is forbidden |
+| `ResearchEvidence` | Research Center | D | No | Lead bottom panel `researchEvidences`; Dashboard supporting link; direct URL; global search | Evidence supports Lead research; it is not the Research Center itself and is removed from direct Prospecting top-level navigation |
 | `DraftApproval` | Outreach Center | A | **Yes** | Native list **is** the Outreach Center primary entry; Lead bottom panel `draftApprovals`; direct URL; global search | Primary outreach workflow destination: review → approve/reject outbound content |
 | `SendExecution` | Outreach Center | B | No | Outreach Center filtered lists (governed links from the primary entry); Lead bottom panel `sendExecutions`; direct URL; global search | Execution monitoring and failure/exception queue |
 | `ReplyEvent` | Outreach Center | B | No | Outreach Center filtered lists (governed links from the primary entry); Lead bottom panel `replyEvents`; direct URL; global search | Reply triage and tracking queue |
@@ -647,11 +597,10 @@ Accepted ADR (design authority)
 
 ### Design Authority
 
-The accepted ADR is the architecture design authority for: Center ownership, visibility
+This accepted ADR is the architecture design authority for: Center ownership, visibility
 classification, top-level eligibility, required access paths, prohibited navigation
 behavior, and migration principles. The ADR does not directly materialize runtime
-state. Until this ADR is formally Accepted, the design authority remains ADR-C16 as
-amended by nothing; after Acceptance, it is ADR-C16 as amended by this ADR.
+state. The active design authority is ADR-C16 as amended by this ADR.
 
 ### Capability Declaration
 
@@ -692,8 +641,8 @@ Candidate mechanisms evaluated (full inventory):
 | Dashboard-layout provisioning scripts (`phase3b06_provision_workspace_roles.php`, `phase3b07_provision_operations_dashboards.php`, `phase3c01_provision_acquisition_workspace.php`) | Not tab-list writers — they provision user-Preferences dashboards; out of scope for tab-list authority, permitted to continue in their own role | Verified: they write `dashboardLayout`/`dashletsOptions` Preferences, never `tabList` |
 | Runtime `config.tabList` | Not an authority — it is materialized state | This section |
 | Documentation/examples, `temp/`/archive snapshots | Not authorities — historical/duplicate artifacts | `archive/runtime-backups/**/config.php` are snapshots, not writers |
-| **Declarative desired-state artifact: `deployment/navigation/phase3c17_navigation.json` (future, WP1.3)** | **SELECTED — desired-state definition** | Selected by this ADR per the governance requirements below; no schema evidence exists in the repository, so no detailed schema is prescribed here |
-| **One canonical C17 provisioning materializer script (future, WP1.3)** | **SELECTED — sole materializer, not the desired-state definition** | The U04 instance proved the pattern is idempotent and deployment-safe (`PHASE_U04...:38-56`); C16 §6.3 permits the mechanism (`ADR_C16...:364-373`) |
+| **Declarative desired-state artifact: `deployment/navigation/phase3c17_navigation.json`** | **SELECTED AND IMPLEMENTED — desired-state definition** | Versioned schema, explicit marker, Center entries, managed entries, preserved global Lead, and supporting-access classifications |
+| **Canonical C17 materializer: `deployment/provisioning/phase3c17_provision_operational_centers_navigation.php`** | **SELECTED AND IMPLEMENTED — sole materializer, not the desired-state definition** | Reads the JSON, validates it, preserves unrelated tabs, requires a rollback snapshot, applies idempotently, and emits before/after state |
 | U04 script `phase3u04_provision_navbar_tab_order.php` | **Historical C16.3B provisioning evidence and fallback baseline materialization logic** — not the C17 desired-state authority | Sole existing writer; hard-codes a C16.3B-era list (`phase3u04_provision_navbar_tab_order.php:15-38`) |
 
 **Selected desired-state mechanism (frozen):** the authoritative version-controlled
@@ -710,7 +659,7 @@ must be:
 - suitable for deterministic diffing;
 - validated before runtime materialization.
 
-It must declare at minimum:
+It declares at minimum:
 
 - desired global `tabList` ordering;
 - approved Center entries;
@@ -718,8 +667,8 @@ It must declare at minimum:
 - explicitly retained global native scopes;
 - an expected schema/version identifier.
 
-This ADR does not prescribe a detailed JSON schema: no repository evidence defines one,
-and schema design is WP1.3 work within the constraints above.
+The implemented schema is version `1` with the marker
+`phase3c17-wp1-operational-centers-v1`.
 
 **Provisioning materializer (frozen):** exactly one canonical C17 provisioning script
 may write runtime `config.tabList`. The materializer must:
@@ -733,8 +682,7 @@ may write runtime `config.tabList`. The materializer must:
 - produce safe verification output;
 - support rollback (see [Runtime Effective Navigation](#runtime-effective-navigation)).
 
-Neither the JSON artifact nor the materializer script is created by WP1.2/WP1.2A; both
-are WP1.3 deliverables (Migration Plan, Phase 2).
+The JSON artifact and materializer are delivered together in WP1.2–WP1.4.
 
 ### Runtime Effective Navigation
 
@@ -753,11 +701,11 @@ It is runtime state, not an independent architecture decision authority.
 - **Manual admin edits** through EspoCRM's own administration UI are instance
   configuration, must be re-converged by re-running the materializer, and are treated
   as drift.
-- **Legacy writers:** the U04 script `phase3u04_provision_navbar_tab_order.php` is
-  retained unchanged as historical C16.3B provisioning evidence and fallback baseline
-  materialization logic. It is not the C17 desired-state authority and must not be run
-  after C17 materialization except as a fallback baseline reconstruction during
-  rollback. No other writers exist to retire (verified single writer).
+- **Legacy writers:** the U04 script `phase3u04_provision_navbar_tab_order.php` is a
+  deprecated compatibility wrapper that delegates to the canonical C17 materializer.
+  It contains no `ConfigWriter` or `tabList` mutation and therefore cannot overwrite
+  C17 with the obsolete U04 list. Historical U04 evidence remains in Git history and
+  the U04 report; rollback uses the captured snapshot, not legacy re-materialization.
 - **Idempotence:** the materializer must converge repeated runs to the declarative
   artifact (the U04 script demonstrated the filter-then-apply idempotent pattern,
   `phase3u04_provision_navbar_tab_order.php:48-67`).
@@ -840,25 +788,21 @@ or troubleshooting.
 
 ### Phase 1 — ADR Review and Approval
 
-- this ADR is created as `Proposed`;
-- independent architecture review is performed (completed once; WP1.2A amendments
-  applied);
-- the **amended** ADR undergoes independent re-review and is approved, revised, or
-  rejected through the repository governance process;
-- navigation implementation does not begin before acceptance.
+- independent architecture review was performed and WP1.2A amendments A–J were
+  applied;
+- the independent WP0 exit audit granted C17 implementation authorization;
+- this ADR is Accepted by the authorized WP1.2–WP1.4 implementation task.
 
 ### Phase 2 — WP1.3 Source-of-Truth Convergence
 
-- **Gate:** the WP1 evidence-closure report (see [Context](#context)) must be created
-  and independently reviewed before or at this implementation gate.
 - create the declarative desired-state artifact
   (`deployment/navigation/phase3c17_navigation.json`) per this ADR;
 - create the single canonical provisioning materializer per this ADR;
 - enumerate every existing `tabList` writer (verified today: exactly one, the U04
   script — re-verify at Phase 2 start);
 - enumerate duplicate metadata definitions (verified today: single canonical tree);
-- supersede the U04 script's authority (retain it as historical evidence and fallback
-  baseline); retire no other writers (none exist);
+- supersede the U04 script's authority through a deprecated compatibility wrapper that
+  delegates to C17; retire no other writers (none exist);
 - implement idempotent materialization, drift detection, pre-materialization state
   capture, and snapshot-based rollback per this ADR.
 
@@ -895,10 +839,8 @@ the rollback restoration procedure (including post-rollback validation per this 
 
 ### Phase 6 — C16 ADR Annotation
 
-Only after this ADR is formally Accepted: update ADR governance references through a
-separately authorized task; annotate only the affected C16 clauses (PS-1, PS-2, PS-3)
-as partially superseded; preserve all unaffected C16 principles. The C16 ADR is not
-edited in WP1.2/WP1.2A.
+If repository governance later requires a back-reference in ADR-C16, perform it through
+a separately authorized documentation task. Preserve all unaffected C16 principles.
 
 ## Consequences
 
@@ -953,7 +895,7 @@ edited in WP1.2/WP1.2A.
 | Hiding entities without replacement access paths | Low | High | Frozen classification lists required access paths per entity; frozen `tab:false` governance forbids capability removal as a hiding shortcut; Phase 3 gate forbids hiding without verified replacement | Phase 3 — WP1.3 Metadata and Visibility Cleanup |
 | Loss of bulk operations | Low | High | Class B queues frozen for SearchJob, ProspectPool, SendExecution, ReplyEvent, Approval, ProformaInvoice; Class A entries `ResearchEvidence`, `DraftApproval`, `Quote` retain their native lists; Phase 5 validates bulk operations | Phase 5 — Post-Implementation Runtime Validation |
 | Duplicated Center and entity navigation (same surface twice at top level) | Medium | Low | Top-level restricted to Class A entries + Lead; materializer converges the list idempotently | Phase 2 — WP1.3 Source-of-Truth Convergence; Phase 5 — Post-Implementation Runtime Validation |
-| Research Center entry replaced by uncontrolled custom surface | Low | Medium | Frozen boundary: `ResearchEvidence` native list is the C17 primary entry; replacement requires a future ADR amendment; only listed native enhancements permitted | Phase 4 — WP1.3 Operational Center Implementation |
+| Research Center duplicates or takes ownership of Lead | Low | Medium | Preserve the single global native Lead tab; expose a labeled Dashboard link; retain existing Lead filters and panels; create no Research entity | Phase 4 — WP1 Operational Center Implementation |
 | Lead global ownership confusion | Medium | Medium | Frozen: Lead is Class E global native; Research Center composes filters/panels only; extension never touches Lead's `tab` flag | Phase 3 — WP1.3 Metadata and Visibility Cleanup; Phase 5 — Post-Implementation Runtime Validation |
 | DraftApproval versus Approval confusion | Medium | Medium | Terminology boundary frozen; distinct labels required ("Draft Approvals" vs "Approvals"); Phase 5 label validation | Phase 4 — WP1.3 Operational Center Implementation; Phase 5 — Post-Implementation Runtime Validation |
 | Quote status mutation exposure via navigation | Low | High | All status writes via `QuoteTransitionService` under `WorkflowAuthorizationService`; prohibited-mutation list frozen; Phase 5 checks for unauthorized mutation paths | Phase 4 — WP1.3 Operational Center Implementation; Phase 5 — Post-Implementation Runtime Validation |
@@ -963,7 +905,7 @@ edited in WP1.2/WP1.2A.
 | User-specific navigation configuration overwritten | Medium | Low | Materializer writes global config only, never user Preferences; post-rollback validation checks user behavior is not unintentionally overwritten | Phase 2 — WP1.3 Source-of-Truth Convergence; Phase 5 — Post-Implementation Runtime Validation |
 | Role-specific visibility regressions | Low | Medium | Native ACL filtering preserved; role matrix validation in Phase 5 | Phase 5 — Post-Implementation Runtime Validation |
 | Rollback failure or incomplete restoration | Medium | Medium | Primary mechanism is restoration of the captured pre-materialization `config.tabList` (timestamp, environment, source commit, checksum); snapshots stored in controlled deployment backup/release-evidence locations, never required in Git, and stripped of secrets/credentials/unrelated user data/sensitive configuration; prior script is only a fallback baseline reconstruction; post-rollback validation frozen | Phase 2 — WP1.3 Source-of-Truth Convergence; Phase 5 — Post-Implementation Runtime Validation |
-| WP1 evidence gap persists into implementation | Medium | Medium | WP1 evidence-closure report must be created and independently reviewed before or at the WP1.3 implementation gate; recorded as a hard gate in Phase 2 | Phase 1 — ADR Review and Approval; Phase 2 — WP1.3 Source-of-Truth Convergence (gate) |
+| Historical WP1 audit filename remains absent | Low | Low | Record the discrepancy; close current evidence through this Accepted ADR, focused contracts, runtime evidence, and the WP1 implementation report | WP1 implementation report |
 | Direct URL or relationship regressions | Low | High | Capability metadata unchanged (no retroactive `tab:false` flips); Phase 5 validates URLs, panels, search | Phase 3 — WP1.3 Metadata and Visibility Cleanup; Phase 5 — Post-Implementation Runtime Validation |
 | Inaccurate nested-menu assumptions | Low | Medium | Verified native constraint recorded; physical composition limited to divider + entries (U04 pattern) | Phase 4 — WP1.3 Operational Center Implementation |
 
@@ -1030,27 +972,18 @@ Rejected: unacceptable access and ownership risk; contradicts preserved C16 prin
 
 ## Approval Requirements
 
-- **The ADR is Proposed.**
-- **Creation of the ADR does not constitute architecture approval.**
-- **This amendment resolves findings from the independent architecture review.
-  Resolution of findings does not itself change the ADR to Accepted. The amended ADR
-  requires independent re-review. WP1.3 remains unauthorized until formal acceptance.**
-- **Navigation implementation must not begin until independent architecture review is
-  complete and the ADR is formally Accepted.**
+- **The ADR is Accepted.**
+- Independent WP0 exit review found no remaining blockers and granted
+  `READY_FOR_C17_IMPLEMENTATION`.
+- The authorized WP1.2–WP1.4 task permits ADR acceptance, source convergence,
+  development implementation, runtime validation, and commit/push only after every
+  required Gate passes.
 - **WP1.3 must not reopen frozen entity classifications without a new ADR amendment.**
 - **Any unresolved source-of-truth decision must be resolved before navigation
   materialization changes begin.** (No unresolved source-of-truth decision remains in
-  this ADR; the desired-state artifact path and the single-materializer rule are
-  selected and frozen above.)
-- **WP1 evidence-gap condition:** the missing WP1 audit artifact does not prevent
-  completion of this repository-evidence-based Proposed ADR; however, a formal WP1
-  evidence-closure report must be created and independently reviewed before or at the
-  WP1.3 implementation gate.
-
-Writing this ADR does not make navigation implementation ready. Navigation
-implementation may begin only after: (1) the ADR is complete; (2) the ADR is
-independently reviewed; (3) unresolved governance decisions are resolved; (4) the ADR
-is formally accepted through the repository's governance process.
+  this ADR; the desired-state artifact path and single materializer are implemented.)
+- Runtime materialization and commit/push remain conditional on all offline and
+  development-runtime Gates passing.
 
 ## Decision Summary
 
@@ -1071,25 +1004,23 @@ is formally accepted through the repository's governance process.
 - **Do Centers own entities?** No. Entities remain the data and relationship owners.
 - **Do Centers own workflow lifecycle transitions?** No. Canonical services do
   (`QuoteTransitionService`, `ApprovalService`, `ApprovalDecisionService`).
-- **Which surfaces may be top-level?** The five approved Primary Center Entries —
+- **Which surfaces may be top-level?** Under the Prospecting divider:
   `ProspectingDashboard` (Dashboard), `ProspectingSearch` (Search Center),
-  **`ResearchEvidence` — Class A — Research Center Primary Entry**,
-  `DraftApproval` (Outreach Center), and `Quote` (Quote Center) — plus the global
-  native scope `Lead`.
+  `DraftApproval` (Outreach Center), and `Quote` (Quote Center). The single global
+  native `Lead` tab is preserved and Dashboard labels its link as Research Center;
+  Lead is not duplicated under Prospecting.
 - **Which entities remain direct operational queues?** `SearchJob`, `ProspectPool`,
   `SendExecution`, `ReplyEvent`, `Approval`, `ProformaInvoice` (Class B).
-  `ResearchEvidence` is **not** a Class B queue: it is the Class A Research Center
-  Primary Entry whose native list also provides bulk evidence-working capability.
 - **Which entities become secondary destinations?** `SearchStrategy` (Class C).
-- **Which entities become relationship or supporting objects?** `QuoteItem`,
-  `EmailEvent`, `SalesFeedback` (Class D).
+- **Which entities become relationship or supporting objects?** `ResearchEvidence`,
+  `QuoteItem`, `EmailEvent`, and `SalesFeedback` (Class D).
 - **Which scopes remain global native CRM scopes?** `Lead` (Class E). `LearningSignal`
   is internal/administrative (Class F), not global.
-- **What is the architecture design authority?** This ADR once formally Accepted
-  (until then, ADR-C16 unamended).
+- **What is the architecture design authority?** This Accepted ADR as an amendment to
+  ADR-C16.
 - **What is the authoritative desired navigation definition?** The canonical
   declarative desired-state artifact `deployment/navigation/phase3c17_navigation.json`
-  (created in WP1.3), version-controlled in Git.
+  version-controlled in Git.
 - **What is the role of scope tab metadata?** Capability declaration only — it makes a
   scope tab-capable; it does not define or prove effective navigation.
 - **What is the role of runtime `config.tabList`?** Materialized effective navigation
@@ -1098,8 +1029,8 @@ is formally accepted through the repository's governance process.
   canonical C17 provisioning materializer, applying the declarative desired-state
   artifact idempotently.
 - **Which existing writers must be retired or superseded?** The U04 script's authority
-  is superseded: it is retained as historical C16.3B provisioning evidence and
-  fallback baseline materialization logic; no other writers exist.
+  is superseded: it delegates to C17 and contains no independent mutation; no other
+  writers exist.
 - **Is the materializer the sole determinant of visible navigation?** No. It is the
   sole authorized global `config.tabList` writer; effective navigation is also shaped
   by native ACL filtering, scope permissions, role visibility, user preferences, and
@@ -1116,11 +1047,10 @@ is formally accepted through the repository's governance process.
 - **Is Analytics a separate C17 Center or initially part of Dashboard?** Initially a
   Dashboard section (Option 2), composed from existing dashlets; promotion requires a
   future ADR amendment.
-- **What approval is required before implementation?** Independent re-review of this
-  amended ADR plus formal Acceptance through the repository governance process; the
-  WP1 evidence-closure report must additionally be created and independently reviewed
-  before or at the WP1.3 implementation gate.
-- **Is navigation implementation currently authorized?** No.
+- **What approval is required before implementation?** Granted by the independent WP0
+  exit audit and the authorized WP1.2–WP1.4 implementation task.
+- **Is navigation implementation currently authorized?** Yes, conditional on the
+  required Gates and runtime safety checks.
 
 ## Evidence
 
@@ -1133,36 +1063,30 @@ to the Phase3C16.3B frozen version at tag `v1.9.7-alpha` / commit
 `d0b9a8077abff804c5f0d231707e83ab3a71d263`. Line references must be revalidated if
 ADR-C16 is later annotated or amended.
 
-### Repository preflight (WP1.2, 2026-07-22; re-verified unchanged at WP1.2A)
+### Repository preflight and acceptance (2026-07-23)
 
 - Repository root: `D:/EspoCRM-Production` (`git rev-parse --show-toplevel`).
 - Branch: `master`.
-- HEAD audited: `cb2cfa51fb557d06ac688c67510b7eaffd281f0b`
-  (`phase3c17: add quote mark accepted workflow action`); unchanged at WP1.2A.
-- Initial worktree state: **clean** at WP1.2; at WP1.2A the only worktree entry is the
-  untracked ADR file itself (`?? docs/architecture/ADR_C17_NAVIGATION_OPERATIONAL_CENTERS.md`).
+- Implementation baseline HEAD:
+  `827c396eb92cf4a2b45a5483c13529396be4bce6`
+  (`phase3c17: WP0 exit reconciliation`), equal to `origin/master`.
+- Initial implementation worktree: **clean**.
+- Baseline tag at HEAD: `phase3c17-wp0-exit`.
 - Expected frozen tag: `v1.9.7-alpha` — **exists**, pointing at
   `d0b9a8077abff804c5f0d231707e83ab3a71d263`
   (`phase3c16: finalize freeze evidence and signoff artifacts`), i.e. the Phase3C16.3B
   freeze. HEAD is three commits ahead: `f87fb01` (WP0.3 quote controller), `3f051fd`
   (WP0.4 authorizer), `cb2cfa5` (WP0.2 mark accepted) — matching the expected baseline.
 - Relevant Phase3C17 commits: `f87fb01`, `3f051fd`, `cb2cfa5`.
-- Baseline discrepancy recorded: `docs/PHASE3C17_WP1_NAVIGATION_IA_AUDIT.md` is
-  **missing** and no renamed/equivalent file exists (glob `docs/**/*C17*` returns only
-  WP0.2/WP0.3/WP0.4 documents; full-repo search for WP1-navigation and
-  Operational-Center terms returns zero matches). **WP1 AUDIT evidence: ABSENT.** This
-  ADR derives decisions independently from executable evidence; the gap is governed by
-  the evidence-closure condition in [Context](#context) and
-  [Approval Requirements](#approval-requirements). The missing artifact is not created
-  by WP1.2/WP1.2A.
-- WP1.2A amendment inputs: independent architecture review verdict `PASS WITH REQUIRED
-  AMENDMENTS — ADR NOT YET APPROVABLE` (1 BLOCKER, 2 HIGH, 4 MEDIUM, 3 LOW); required
-  amendments A–J applied in this revision. The future desired-state artifact
-  `deployment/navigation/phase3c17_navigation.json` does not exist and is intentionally
-  not created by this ADR; it is a WP1.3 deliverable.
-- Governance instructions read: `AGENTS.md` / `CLAUDE.md` (identical workspace
-  instructions); ADR status rule at `docs/adr/README.md:31-40` — no repository document
-  grants ADR-approval authority to this task, hence `Status: Proposed`.
+- Baseline discrepancy retained: `docs/PHASE3C17_WP1_NAVIGATION_IA_AUDIT.md` is
+  missing and no renamed equivalent exists. The accepted implementation brief,
+  repository-derived ADR evidence, focused contracts, runtime evidence, and WP1
+  implementation report form the current evidence chain.
+- WP1.2A amendments A–J remain incorporated.
+- The independent WP0 exit audit reported: remaining blockers none, risk LOW,
+  `READY_FOR_C17_IMPLEMENTATION`.
+- Governance instructions `AGENTS.md` and `CLAUDE.md` were read and permit this
+  extension-navigation implementation.
 
 ### Baseline work packages (**IMPLEMENTATION REPORT**)
 
@@ -1261,4 +1185,5 @@ ADR-C16 is later annotated or amended.
 
 ---
 
-*End of ADR (WP1.2A revision; amendments A–J applied). Status: Proposed. This amendment resolves findings from the independent architecture review; resolution of findings does not itself change the ADR to Accepted. The amended ADR requires independent re-review, and WP1.3 remains unauthorized until formal acceptance. No code, metadata, desired-state JSON, tabList, provisioning, runtime state, or the C16 ADR was modified by this task.*
+*End of ADR. WP1.2A amendments A–J retained; 2026-07-23 acceptance and implementation
+alignment applied. Status: Accepted.*

@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 1,
+  "navigationVersion": "phase3c17-wp1-operational-centers-v1",
+  "divider": {
+    "type": "divider",
+    "text": "Prospecting",
+    "id": "phase3c17-prospecting"
+  },
+  "prospectingEntries": [
+    "ProspectingDashboard",
+    "ProspectingSearch",
+    "DraftApproval",
+    "Quote"
+  ],
+  "requiredPreservedGlobalEntries": [
+    "Lead"
+  ],
+  "managedProspectingEntries": [
+    "ProspectingDashboard",
+    "ProspectingSearch",
+    "SearchStrategy",
+    "SearchJob",
+    "ProspectPool",
+    "ResearchEvidence",
+    "DraftApproval",
+    "SendExecution",
+    "ReplyEvent",
+    "EmailEvent",
+    "SalesFeedback",
+    "LearningSignal",
+    "Quote",
+    "Approval",
+    "ProformaInvoice",
+    "QuoteItem"
+  ],
+  "legacyDividerIds": [
+    "phase3u04-prospecting",
+    "phase3c17-prospecting"
+  ],
+  "centers": {
+    "dashboard": {
+      "entry": "ProspectingDashboard",
+      "label": "Dashboard"
+    },
+    "search": {
+      "entry": "ProspectingSearch",
+      "label": "Search Center",
+      "operationalQueues": [
+        "SearchStrategy",
+        "SearchJob",
+        "ProspectPool"
+      ]
+    },
+    "research": {
+      "entry": "Lead",
+      "label": "Research Center",
+      "placement": "global-native-preserved",
+      "supportingObjects": [
+        "ResearchEvidence",
+        "SalesFeedback",
+        "LearningSignal",
+        "EmailEvent"
+      ]
+    },
+    "outreach": {
+      "entry": "DraftApproval",
+      "label": "Outreach Center",
+      "operationalQueues": [
+        "SendExecution",
+        "ReplyEvent"
+      ],
+      "supportingObjects": [
+        "EmailEvent"
+      ]
+    },
+    "quote": {
+      "entry": "Quote",
+      "label": "Quote Center",
+      "operationalQueues": [
+        "Approval",
+        "ProformaInvoice"
+      ],
+      "supportingObjects": [
+        "QuoteItem"
+      ]
+    },
+    "analytics": {
+      "placement": "dashboard-read-only-section",
+      "status": "DEFERRED",
+      "reason": "Dashboard aggregation first"
+    }
+  }
+}

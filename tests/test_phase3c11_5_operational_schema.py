@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 import unittest
+import zipfile
 
 from chitu_connector.espocrm_sync.failure_classification import (
     FailureCategory,
@@ -16,8 +17,8 @@ from tests.test_phase3c11_2_persistence_entities import C10_FROZEN_HASHES, C10_T
 
 ROOT = Path(__file__).resolve().parents[1]
 EXT = ROOT / "crm-extension"
-SURFACE = EXT / "Resources" / "entityDefs" / "SendExecution.json"
 MODULE = EXT / "files" / "custom" / "Espo" / "Modules" / "Prospecting" / "Resources" / "metadata" / "entityDefs" / "SendExecution.json"
+CANONICAL_ARCHIVE = ROOT / "deployment" / "prospecting-extension-1.9.7-alpha.zip"
 PROJECTION = EXT / "files" / "custom" / "Espo" / "Modules" / "Prospecting" / "Services" / "EmailLifecycleProjectionService.php"
 FAILURE_SOURCE = ROOT / "chitu-connector" / "chitu_connector" / "espocrm_sync" / "failure_classification.py"
 
@@ -40,7 +41,15 @@ class OperationalReadinessSchemaTests(unittest.TestCase):
         self.assertFalse(fields["lastError"]["required"])
 
     def test_failure_category_schema_accepts_only_reserved_values(self) -> None:
-        self.assertEqual(load_json(SURFACE), load_json(MODULE))
+        with zipfile.ZipFile(CANONICAL_ARCHIVE) as archive:
+            packaged = json.loads(
+                archive.read(
+                    "files/custom/Espo/Modules/Prospecting/Resources/"
+                    "metadata/entityDefs/SendExecution.json"
+                )
+            )
+        self.assertEqual(packaged, load_json(MODULE))
+        self.assertFalse(EXT.joinpath("Resources").exists())
         field = load_json(MODULE)["fields"]["failureCategory"]
         self.assertEqual(field["type"], "enum")
         self.assertFalse(field["required"])

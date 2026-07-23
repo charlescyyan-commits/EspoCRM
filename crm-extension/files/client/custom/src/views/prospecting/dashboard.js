@@ -13,6 +13,7 @@ Espo.define('custom:views/prospecting/dashboard', 'view', function (Dep) {
                 hasMetrics: this.hasMetrics,
                 recentJobs: this.recentJobs || [],
                 hasRecentJobs: this.hasRecentJobs,
+                centers: this.centers || [],
             };
         },
 
@@ -22,11 +23,70 @@ Espo.define('custom:views/prospecting/dashboard', 'view', function (Dep) {
             this.hasRecentJobs = false;
             this.metrics = this.buildEmptyMetrics();
             this.recentJobs = [];
+            this.centers = this.buildCenters();
             this.wait(this.loadDashboardData());
         },
 
         actionOpenSearch: function () {
             this.getRouter().navigate('ProspectingSearch', {trigger: true});
+        },
+
+        buildCenters: function () {
+            var acl = this.getAcl();
+            var filterEntries = function (entries) {
+                return entries.filter(function (entry) {
+                    return !entry.scope || acl.check(entry.scope, 'read');
+                });
+            };
+            var centers = [
+                {
+                    name: 'Search Center',
+                    href: '#ProspectingSearch',
+                    description: 'Plan searches, monitor jobs, and curate the prospect pool.',
+                    entries: filterEntries([
+                        {label: 'Search Strategies', href: '#SearchStrategy', scope: 'SearchStrategy'},
+                        {label: 'Search Jobs', href: '#SearchJob', scope: 'SearchJob'},
+                        {label: 'Prospect Pool', href: '#ProspectPool', scope: 'ProspectPool'},
+                    ]),
+                },
+                {
+                    name: 'Research Center',
+                    href: '#Lead',
+                    description: 'Use native Leads as the research record source.',
+                    entries: filterEntries([
+                        {label: 'Leads', href: '#Lead', scope: 'Lead'},
+                        {label: 'Research Evidence', href: '#ResearchEvidence', scope: 'ResearchEvidence'},
+                        {label: 'Sales Feedback', href: '#SalesFeedback', scope: 'SalesFeedback'},
+                        {label: 'Learning Signals', href: '#LearningSignal', scope: 'LearningSignal'},
+                    ]),
+                },
+                {
+                    name: 'Outreach Center',
+                    href: '#DraftApproval',
+                    description: 'Review outreach drafts, delivery execution, and replies.',
+                    entries: filterEntries([
+                        {label: 'Draft Approvals', href: '#DraftApproval', scope: 'DraftApproval'},
+                        {label: 'Send Executions', href: '#SendExecution', scope: 'SendExecution'},
+                        {label: 'Reply Events', href: '#ReplyEvent', scope: 'ReplyEvent'},
+                        {label: 'Email Events', href: '#EmailEvent', scope: 'EmailEvent'},
+                    ]),
+                },
+                {
+                    name: 'Quote Center',
+                    href: '#Quote',
+                    description: 'Manage quotes, commercial approvals, and proforma invoices.',
+                    entries: filterEntries([
+                        {label: 'Quotes', href: '#Quote', scope: 'Quote'},
+                        {label: 'Quote Approvals', href: '#Approval', scope: 'Approval'},
+                        {label: 'Proforma Invoices', href: '#ProformaInvoice', scope: 'ProformaInvoice'},
+                    ]),
+                },
+            ];
+
+            return centers.map(function (center) {
+                center.hasEntries = center.entries.length > 0;
+                return center;
+            });
         },
 
         buildEmptyMetrics: function () {

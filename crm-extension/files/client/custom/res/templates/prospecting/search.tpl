@@ -1,19 +1,21 @@
 <div class="row">
     <div class="col-sm-3">
         <div class="panel panel-default">
-            <div class="panel-heading"><strong>Prospecting</strong></div>
+            <div class="panel-heading"><strong>Operational Centers</strong></div>
             <div class="list-group">
-                <a class="list-group-item" href="#ProspectingDashboard"><span class="fas fa-binoculars"></span> Prospecting Operations</a>
-                <a class="list-group-item active" href="#ProspectingSearch"><span class="fas fa-search"></span> Search</a>
+                <a class="list-group-item" href="#ProspectingDashboard"><span class="fas fa-binoculars"></span> Dashboard</a>
+                <a class="list-group-item active" href="#ProspectingSearch"><span class="fas fa-search"></span> Search Center</a>
+                <a class="list-group-item" href="#SearchStrategy"><span class="fas fa-sitemap"></span> Search Strategies</a>
                 <a class="list-group-item" href="#SearchJob"><span class="fas fa-list"></span> Search Jobs</a>
                 <a class="list-group-item" href="#ProspectPool"><span class="fas fa-layer-group"></span> Prospect Pool</a>
-                <a class="list-group-item" href="#ResearchEvidence"><span class="fas fa-flask"></span> Research Evidence</a>
-                <a class="list-group-item" href="#SearchStrategy"><span class="fas fa-sitemap"></span> Search Strategy</a>
+                <a class="list-group-item" href="#Lead"><span class="fas fa-user-tag"></span> Research Center</a>
+                <a class="list-group-item" href="#DraftApproval"><span class="fas fa-paper-plane"></span> Outreach Center</a>
+                <a class="list-group-item" href="#Quote"><span class="fas fa-file-signature"></span> Quote Center</a>
             </div>
         </div>
     </div>
     <div class="col-sm-9">
-        <div class="page-header"><h3>Search</h3></div>
+        <div class="page-header"><h3>Search Center</h3></div>
         <div class="panel panel-default">
             <div class="panel-heading">Create Search Job</div>
             <div class="panel-body">

@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import json
 import unittest
+import zipfile
 from pathlib import Path
 
 
@@ -12,7 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 EXT = ROOT / "crm-extension"
 MODULE = EXT / "files" / "custom" / "Espo" / "Modules" / "Prospecting"
 MODULE_ENTITY_DEFS = MODULE / "Resources" / "metadata" / "entityDefs"
-SURFACE_ENTITY_DEFS = EXT / "Resources" / "entityDefs"
+CANONICAL_ARCHIVE = ROOT / "deployment" / "prospecting-extension-1.9.7-alpha.zip"
 ENTITY_NAMES = ("DraftApproval", "SendExecution", "ReplyEvent")
 
 C10_FROZEN_HASHES = {
@@ -45,22 +46,34 @@ def sha256(path: Path) -> str:
 
 class PersistenceEntitiesTests(unittest.TestCase):
     def test_all_native_entity_surfaces_exist_and_match(self) -> None:
-        for entity_name in ENTITY_NAMES:
-            with self.subTest(entity=entity_name):
-                surface = SURFACE_ENTITY_DEFS / f"{entity_name}.json"
-                module = MODULE_ENTITY_DEFS / f"{entity_name}.json"
-                self.assertTrue(surface.is_file())
-                self.assertTrue(module.is_file())
-                self.assertEqual(load_json(surface), load_json(module))
-                self.assertTrue((MODULE / "Resources" / "metadata" / "scopes" / f"{entity_name}.json").is_file())
-                self.assertTrue((MODULE / "Resources" / "metadata" / "clientDefs" / f"{entity_name}.json").is_file())
-                self.assertTrue((MODULE / "Resources" / "metadata" / "aclDefs" / f"{entity_name}.json").is_file())
-                self.assertTrue((MODULE / "Entities" / f"{entity_name}.php").is_file())
-                for layout_name in ("detail", "list"):
-                    self.assertEqual(
-                        load_json(EXT / "Resources" / "layouts" / entity_name / f"{layout_name}.json"),
-                        load_json(MODULE / "Resources" / "layouts" / entity_name / f"{layout_name}.json"),
+        self.assertFalse(EXT.joinpath("Resources").exists())
+        with zipfile.ZipFile(CANONICAL_ARCHIVE) as archive:
+            for entity_name in ENTITY_NAMES:
+                with self.subTest(entity=entity_name):
+                    module = MODULE_ENTITY_DEFS / f"{entity_name}.json"
+                    self.assertTrue(module.is_file())
+                    entity_entry = (
+                        "files/custom/Espo/Modules/Prospecting/Resources/"
+                        f"metadata/entityDefs/{entity_name}.json"
                     )
+                    self.assertEqual(
+                        json.loads(archive.read(entity_entry)),
+                        load_json(module),
+                    )
+                    self.assertTrue((MODULE / "Resources" / "metadata" / "scopes" / f"{entity_name}.json").is_file())
+                    self.assertTrue((MODULE / "Resources" / "metadata" / "clientDefs" / f"{entity_name}.json").is_file())
+                    self.assertTrue((MODULE / "Resources" / "metadata" / "aclDefs" / f"{entity_name}.json").is_file())
+                    self.assertTrue((MODULE / "Entities" / f"{entity_name}.php").is_file())
+                    for layout_name in ("detail", "list"):
+                        layout = MODULE / "Resources" / "layouts" / entity_name / f"{layout_name}.json"
+                        layout_entry = (
+                            "files/custom/Espo/Modules/Prospecting/Resources/"
+                            f"layouts/{entity_name}/{layout_name}.json"
+                        )
+                        self.assertEqual(
+                            json.loads(archive.read(layout_entry)),
+                            load_json(layout),
+                        )
 
     def test_draft_approval_contract(self) -> None:
         definition = load_json(MODULE_ENTITY_DEFS / "DraftApproval.json")

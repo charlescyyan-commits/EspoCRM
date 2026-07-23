@@ -3,25 +3,27 @@
     "SearchStrategy": "搜索策略",
     "SearchJob": "搜索任务",
     "ProspectPool": "潜客池",
-    "ProspectingDashboard": "潜客运营",
-    "ProspectingSearch": "搜索",
-    "ResearchEvidence": "研究中心",
-    "Quote": "报价",
+    "ProspectingDashboard": "仪表板",
+    "ProspectingSearch": "搜索中心",
+    "ResearchEvidence": "研究证据",
+    "DraftApproval": "触达中心",
+    "Quote": "报价中心",
     "QuoteItem": "报价明细",
     "ProformaInvoice": "形式发票",
-    "Approval": "审批"
+    "Approval": "报价审批"
   },
   "scopeNamesPlural": {
     "SearchStrategy": "搜索策略",
     "SearchJob": "搜索任务",
     "ProspectPool": "潜客池",
-    "ProspectingDashboard": "潜客运营",
-    "ProspectingSearch": "搜索",
-    "ResearchEvidence": "研究中心",
-    "Quote": "报价",
+    "ProspectingDashboard": "仪表板",
+    "ProspectingSearch": "搜索中心",
+    "ResearchEvidence": "研究证据",
+    "DraftApproval": "触达中心",
+    "Quote": "报价中心",
     "QuoteItem": "报价明细",
     "ProformaInvoice": "形式发票",
-    "Approval": "审批"
+    "Approval": "报价审批"
   },
   "dashlets": {
     "ProspectingIntelligence": "潜客智能",

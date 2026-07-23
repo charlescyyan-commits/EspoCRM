@@ -20,8 +20,8 @@
     "approver": "审批人"
   },
   "labels": {
-    "Create Approval": "创建审批",
-    "Approvals": "审批"
+    "Create Approval": "创建报价审批",
+    "Approvals": "报价审批"
   },
   "options": {
     "status": {
