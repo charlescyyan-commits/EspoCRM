@@ -14,6 +14,7 @@ CLIENT = ROOT / "crm-extension" / "files" / "client" / "custom" / "src"
 ENTITY_DEFS = MODULE / "Resources" / "metadata" / "entityDefs" / "Quote.json"
 CLIENT_DEF = MODULE / "Resources" / "metadata" / "clientDefs" / "Quote.json"
 AUTHORIZER = SERVICES / "WorkflowAuthorizationService.php"
+POLICY = MODULE / "Resources" / "metadata" / "app" / "prospectingWorkflow.json"
 WORKFLOW_ACTION = SERVICES / "QuoteWorkflowActionService.php"
 TRANSITION = SERVICES / "QuoteTransitionService.php"
 HANDLER = CLIENT / "handlers" / "quote" / "workflow-transition.js"
@@ -47,6 +48,15 @@ class Phase3C17WP02MarkAcceptedTests(unittest.TestCase):
         # Not admin-only — extract the MARK_ACCEPTED policy block precisely
         block = source.split("self::ACTION_MARK_ACCEPTED => [")[1].split("self::ACTION_EXPIRE => [")[0]
         self.assertNotIn("'adminOnly' => true", block)
+
+    def test_mark_accepted_metadata_binding_preserves_default_roles(self) -> None:
+        policy = json.loads(read(POLICY))
+        binding = policy["actionRoleBindings"]["quote.markAccepted"]
+        self.assertEqual(binding["roleIds"], [])
+        self.assertEqual(
+            binding["roleNames"],
+            ["Sales", "Sales Representative", "Sales User", "Manager", "Sales Manager"],
+        )
 
     def test_administrator_bypass_applies_to_mark_accepted(self) -> None:
         source = read(AUTHORIZER)

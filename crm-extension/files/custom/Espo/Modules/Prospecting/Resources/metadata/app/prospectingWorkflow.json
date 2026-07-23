@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "actionRoleBindings": {
+    "quote.submitForReview": {
+      "roleIds": [],
+      "roleNames": ["Sales", "Sales Representative", "Sales User"]
+    },
+    "quote.approve": {
+      "roleIds": [],
+      "roleNames": ["Manager", "Sales Manager"]
+    },
+    "quote.rejectReview": {
+      "roleIds": [],
+      "roleNames": ["Manager", "Sales Manager"]
+    },
+    "quote.send": {
+      "roleIds": [],
+      "roleNames": ["Sales", "Sales Representative", "Sales User"]
+    },
+    "quote.markCustomerRejected": {
+      "roleIds": [],
+      "roleNames": ["Sales", "Sales Representative", "Sales User", "Manager", "Sales Manager"]
+    },
+    "quote.markAccepted": {
+      "roleIds": [],
+      "roleNames": ["Sales", "Sales Representative", "Sales User", "Manager", "Sales Manager"]
+    },
+    "quote.expire": {
+      "roleIds": [],
+      "roleNames": []
+    }
+  }
+}
