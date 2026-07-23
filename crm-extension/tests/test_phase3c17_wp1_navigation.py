@@ -34,16 +34,33 @@ def load_json(path: Path) -> dict:
 
 
 def materialize(existing: list[object], desired: dict) -> list[object]:
-    managed = set(desired["managedProspectingEntries"])
+    managed = set(desired["managedTopLevelEntries"])
     legacy_dividers = set(desired["legacyDividerIds"])
+    legacy_texts = set(desired["legacyDividerTexts"])
     preserved: list[object] = []
     for item in existing:
         if isinstance(item, str) and item in managed:
             continue
-        if isinstance(item, dict) and item.get("id") in legacy_dividers:
+        if item == "_delimiter_":
+            continue
+        if isinstance(item, dict) and (
+            item.get("id") in legacy_dividers
+            or item.get("text") in legacy_texts
+            or item.get("text") is None
+        ):
             continue
         preserved.append(item)
-    return preserved + [desired["divider"]] + desired["prospectingEntries"]
+    compacted: list[object] = []
+    pending: object | None = None
+    for item in preserved:
+        if isinstance(item, dict) and item.get("type") == "divider":
+            pending = item
+            continue
+        if pending is not None:
+            compacted.append(pending)
+            pending = None
+        compacted.append(item)
+    return [item for item in desired["topLevelOrder"] if item != "Home"] + compacted
 
 
 class Phase3C17WP1NavigationTests(unittest.TestCase):
@@ -62,7 +79,7 @@ class Phase3C17WP1NavigationTests(unittest.TestCase):
         self.assertEqual(self.desired["schemaVersion"], 1)
         self.assertEqual(
             self.desired["navigationVersion"],
-            "phase3c17-wp1-operational-centers-v1",
+            "phase3c17-wp1-4-product-polish-v1",
         )
         adr = ADR.read_text(encoding="utf-8")
         self.assertIn("## Status\n\n**Accepted**", adr)
@@ -95,7 +112,6 @@ class Phase3C17WP1NavigationTests(unittest.TestCase):
 
     def test_materialization_is_idempotent(self) -> None:
         initial = [
-            "Home",
             "Lead",
             {"type": "divider", "text": "Prospecting", "id": "phase3u04-prospecting"},
             "ProspectingSearch",
@@ -109,7 +125,7 @@ class Phase3C17WP1NavigationTests(unittest.TestCase):
     def test_unrelated_tabs_and_single_global_lead_are_preserved(self) -> None:
         initial = ["Home", "Account", "Lead", "Opportunity", "SearchJob"]
         result = materialize(initial, self.desired)
-        for entry in ("Home", "Account", "Lead", "Opportunity"):
+        for entry in ("Account", "Lead", "Opportunity"):
             self.assertIn(entry, result)
         self.assertEqual(result.count("Lead"), 1)
         self.assertIn("requiredPreservedGlobalEntries", self.materializer)
@@ -129,6 +145,24 @@ class Phase3C17WP1NavigationTests(unittest.TestCase):
             "global-native-preserved",
         )
         self.assertEqual(self.desired["centers"]["research"]["entry"], "Lead")
+
+    def test_product_polish_physical_order_is_chinese_first_and_lead_is_unique(self) -> None:
+        order = self.desired["topLevelOrder"]
+        self.assertEqual(order[0], "Home")
+        self.assertEqual(
+            order[1:],
+            [
+                {"type": "divider", "text": "潜客开发", "id": "phase3c17-prospecting"},
+                "ProspectingDashboard", "ProspectingSearch", "DraftApproval", "Quote",
+                {"type": "divider", "text": "客户管理", "id": "phase3c17-customer-management"},
+                "Account", "Contact", "Lead", "Opportunity",
+                {"type": "divider", "text": "活动", "id": "phase3c17-activities"},
+                "Email",
+                {"type": "divider", "text": "更多", "id": "phase3c17-more"},
+                "Task", "Calendar", "KnowledgeBaseArticle",
+            ],
+        )
+        self.assertEqual(order.count("Lead"), 1)
 
     def test_supporting_objects_are_not_top_level_prospecting_entries(self) -> None:
         hidden = {
@@ -227,6 +261,31 @@ class Phase3C17WP1NavigationTests(unittest.TestCase):
         self.assertEqual(global_en["scopeNames"]["Approval"], "Quote Approval")
         self.assertEqual(draft_en["labels"]["DraftApprovals"], "Draft Approvals")
         self.assertEqual(approval_en["labels"]["Approvals"], "Quote Approvals")
+
+    def test_global_i18n_has_en_zh_key_parity_and_c17_product_names(self) -> None:
+        global_en = load_json(RESOURCES / "i18n" / "en_US" / "Global.json")
+        global_zh = load_json(RESOURCES / "i18n" / "zh_CN" / "Global.json")
+        for section in ("scopeNames", "scopeNamesPlural", "scopeNamesSingular", "dashlets", "labels"):
+            self.assertEqual(set(global_en[section]), set(global_zh[section]), msg=section)
+        self.assertEqual(global_zh["scopeNames"]["ProspectingDashboard"], "潜客运营")
+        self.assertEqual(global_zh["scopeNamesSingular"], {
+            "DraftApproval": "触达审批", "Quote": "报价", "Approval": "报价审批",
+        })
+        self.assertEqual(global_zh["scopeNames"]["SendExecution"], "发送执行")
+        self.assertEqual(global_zh["scopeNames"]["ReplyEvent"], "客户回复")
+        self.assertEqual(global_zh["scopeNames"]["EmailEvent"], "邮件事件")
+        self.assertEqual(global_zh["scopeNames"]["SalesFeedback"], "销售反馈")
+        self.assertEqual(global_zh["scopeNames"]["LearningSignal"], "学习信号")
+
+    def test_dashboard_center_labels_are_i18n_backed(self) -> None:
+        self.assertIn("getLanguage().translate(key, 'labels', 'Global')", self.dashboard_js)
+        for literal in (
+            "name: 'Search Center'",
+            "name: 'Research Center'",
+            "name: 'Outreach Center'",
+            "name: 'Quote Center'",
+        ):
+            self.assertNotIn(literal, self.dashboard_js)
 
     def test_canonical_metadata_tree_remains_singular(self) -> None:
         authoritative = (

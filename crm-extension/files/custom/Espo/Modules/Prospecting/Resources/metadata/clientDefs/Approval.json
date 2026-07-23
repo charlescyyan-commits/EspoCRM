@@ -1,1 +1,13 @@
-{"controller": "controllers/record", "iconClass": "fas fa-user-check"}
+{
+  "controller": "controllers/record",
+  "iconClass": "fas fa-user-check",
+  "filterList": [
+    {
+      "name": "c17Pending",
+      "label": "Pending Quote Approval",
+      "where": [
+        {"type": "equals", "attribute": "status", "value": "PENDING"}
+      ]
+    }
+  ]
+}

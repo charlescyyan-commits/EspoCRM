@@ -1,7 +1,7 @@
 # Install
 
 **Status:** Documented from deployment assets and phase reports  
-**Current packaged extension version:** `1.9.7-alpha` (see `crm-extension/manifest.json`)
+**Current packaged extension version:** `1.9.8-alpha` (see `crm-extension/manifest.json`)
 
 ## Prerequisites
 
@@ -29,7 +29,7 @@ python crm-extension/scripts/build_release_package.py --check
 
 On Windows where the launcher is named `py`, replace `python` with `py`. The compatible PowerShell builder is `crm-extension/scripts/build_release_package.ps1`; the release gate verifies its source-content parity with the Python artifact when PowerShell is available.
 
-The canonical release artifact is `deployment/prospecting-extension-1.9.7-alpha.zip`, with sidecar `deployment/prospecting-extension-1.9.7-alpha.zip.sha256`. The ZIP contains only `manifest.json` and `files/` (forward-slash entries). Do not include `Resources/`, `tests/`, or `custom/` placeholders.
+The canonical release artifact is `deployment/prospecting-extension-1.9.8-alpha.zip`, with sidecar `deployment/prospecting-extension-1.9.8-alpha.zip.sha256`. The ZIP contains only `manifest.json` and `files/` (forward-slash entries). Do not include `Resources/`, `tests/`, or `custom/` placeholders.
 
 ## Manual Steps (CRM Host)
 
@@ -47,6 +47,8 @@ Scripts under `deployment/provisioning/` are **not packaged** into the extension
 | `phase3b06_provision_workspace_roles.php` | Prospecting workspace roles |
 | `phase3c01_provision_acquisition_workspace.php` | Acquisition dashboards |
 | `phase3c02_1_provision_acquisition_acl.php` | SearchStrategy / SearchJob / ProspectPool ACL |
+| `phase3c17_provision_operational_centers_navigation.php` | Canonical C17 global navigation materializer; requires a snapshot path |
+| `phase3c17_provision_sales_development_command_center.php` | One primary Sales Development Command Center dashboard for local test users |
 
 **Warning:** `deployment/README.md` states scripts must not run without an approved target.
 

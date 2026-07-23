@@ -1,5 +1,12 @@
 <?php
 
+// Compatibility wrapper. Acquisition dashlets are consolidated by the
+// canonical C17 Sales Development Command Center script.
+$legacyUserName = $argv[1] ?? 'admin';
+$argv = [$argv[0], '--user=' . $legacyUserName];
+require __DIR__ . '/phase3c17_provision_sales_development_command_center.php';
+return;
+
 require '/var/www/html/bootstrap.php';
 
 $userName = $argv[1] ?? 'admin';

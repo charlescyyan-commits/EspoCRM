@@ -1,5 +1,10 @@
 <?php
 
+// Compatibility wrapper. ProspectingSummary remains provisioned by the
+// canonical C17 Sales Development Command Center script.
+require __DIR__ . '/phase3c17_provision_sales_development_command_center.php';
+return;
+
 require '/var/www/html/bootstrap.php';
 
 $app = new \Espo\Core\Application();

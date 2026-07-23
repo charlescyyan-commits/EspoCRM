@@ -1,44 +1,45 @@
 {
   "scopeNames": {
-    "SearchStrategy": "搜索策略",
-    "SearchJob": "搜索任务",
-    "ProspectPool": "潜客池",
-    "ProspectingDashboard": "仪表板",
-    "ProspectingSearch": "搜索中心",
-    "ResearchEvidence": "研究证据",
-    "DraftApproval": "触达中心",
-    "Quote": "报价中心",
-    "QuoteItem": "报价明细",
-    "ProformaInvoice": "形式发票",
-    "Approval": "报价审批"
+    "SearchStrategy": "搜索策略", "SearchJob": "搜索任务", "ProspectPool": "潜客池",
+    "ProspectingDashboard": "潜客运营", "ProspectingSearch": "搜索中心",
+    "ResearchEvidence": "研究证据", "DraftApproval": "触达中心",
+    "SendExecution": "发送执行", "ReplyEvent": "客户回复", "EmailEvent": "邮件事件",
+    "SalesFeedback": "销售反馈", "LearningSignal": "学习信号", "Quote": "报价中心",
+    "QuoteItem": "报价明细", "ProformaInvoice": "形式发票", "Approval": "报价审批"
   },
   "scopeNamesPlural": {
-    "SearchStrategy": "搜索策略",
-    "SearchJob": "搜索任务",
-    "ProspectPool": "潜客池",
-    "ProspectingDashboard": "仪表板",
-    "ProspectingSearch": "搜索中心",
-    "ResearchEvidence": "研究证据",
-    "DraftApproval": "触达中心",
-    "Quote": "报价中心",
-    "QuoteItem": "报价明细",
-    "ProformaInvoice": "形式发票",
-    "Approval": "报价审批"
+    "SearchStrategy": "搜索策略", "SearchJob": "搜索任务", "ProspectPool": "潜客池",
+    "ProspectingDashboard": "潜客运营", "ProspectingSearch": "搜索中心",
+    "ResearchEvidence": "研究证据", "DraftApproval": "触达中心",
+    "SendExecution": "发送执行", "ReplyEvent": "客户回复", "EmailEvent": "邮件事件",
+    "SalesFeedback": "销售反馈", "LearningSignal": "学习信号", "Quote": "报价中心",
+    "QuoteItem": "报价明细", "ProformaInvoice": "形式发票", "Approval": "报价审批"
+  },
+  "scopeNamesSingular": {
+    "DraftApproval": "触达审批", "Quote": "报价", "Approval": "报价审批"
   },
   "dashlets": {
-    "ProspectingIntelligence": "潜客智能",
-    "ProspectingSummary": "潜客概览",
-    "ProspectingRecentDiscovery": "最近发现活动",
-    "RecentResearchEvidence": "最近研究证据",
-    "RecentSalesFeedback": "最近销售反馈",
-    "AcquisitionOverview": "获客概览",
-    "AcquisitionSearchStrategies": "搜索策略",
-    "AcquisitionDiscoveryJobs": "发现任务",
-    "AcquisitionJobsRunning": "运行中的任务",
-    "AcquisitionJobsWaiting": "排队中的任务",
-    "AcquisitionJobsCompleted": "已完成任务",
-    "AcquisitionJobsFailed": "失败任务",
-    "AcquisitionLeadPool": "潜客池",
-    "AcquisitionResearchQueue": "研究队列"
+    "ProspectingIntelligence": "潜客智能", "ProspectingSummary": "潜客概览",
+    "ProspectingRecentDiscovery": "最近发现活动", "RecentResearchEvidence": "最近研究证据",
+    "RecentSalesFeedback": "最近销售反馈", "AcquisitionOverview": "获客概览",
+    "AcquisitionSearchStrategies": "搜索策略", "AcquisitionDiscoveryJobs": "发现任务",
+    "AcquisitionJobsRunning": "运行中的任务", "AcquisitionJobsWaiting": "排队中的任务",
+    "AcquisitionJobsCompleted": "已完成任务", "AcquisitionJobsFailed": "失败任务",
+    "AcquisitionLeadPool": "潜客池", "AcquisitionResearchQueue": "研究队列"
+  },
+  "labels": {
+    "C17DashboardSearchCenter": "搜索中心", "C17DashboardResearchCenter": "情报中心",
+    "C17DashboardOutreachCenter": "触达中心", "C17DashboardQuoteCenter": "报价中心",
+    "C17DashboardSearchDescription": "规划搜索、监控任务并整理潜客池。",
+    "C17DashboardResearchDescription": "使用原生线索作为研究记录来源。",
+    "C17DashboardOutreachDescription": "审核触达草稿、发送执行和客户回复。",
+    "C17DashboardQuoteDescription": "管理报价、商业审批和形式发票。",
+    "C17DashboardSearchStrategies": "搜索策略", "C17DashboardSearchJobs": "搜索任务",
+    "C17DashboardProspectPool": "潜客池", "C17DashboardLeads": "线索",
+    "C17DashboardResearchEvidence": "研究证据", "C17DashboardSalesFeedback": "销售反馈",
+    "C17DashboardLearningSignals": "学习信号", "C17DashboardDraftApprovals": "触达审批",
+    "C17DashboardSendExecutions": "发送执行", "C17DashboardReplyEvents": "客户回复",
+    "C17DashboardEmailEvents": "邮件事件", "C17DashboardQuotes": "报价",
+    "C17DashboardQuoteApprovals": "报价审批", "C17DashboardProformaInvoices": "形式发票"
   }
 }

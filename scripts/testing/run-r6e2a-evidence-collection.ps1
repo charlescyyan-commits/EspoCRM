@@ -823,7 +823,8 @@ Invoke-Curl -Method "DELETE" -Path "/api/v1/Quote/$abProbeId" -ApiKey $AdminKey 
 Write-Host "`n--- STEP 6: Artifact/Runtime Parity ---" -ForegroundColor Yellow
 $apDir = $dirPaths["06_artifact_parity"]
 
-$artifactPath = Join-Path $RepoRoot "deployment\prospecting-extension-1.9.7-alpha.zip"
+$manifest = Get-Content -LiteralPath (Join-Path $RepoRoot "crm-extension\manifest.json") -Raw | ConvertFrom-Json
+$artifactPath = Join-Path $RepoRoot ("deployment\prospecting-extension-{0}.zip" -f $manifest.version)
 $artifactShaFile = "$artifactPath.sha256"
 
 # Get artifact SHA-256

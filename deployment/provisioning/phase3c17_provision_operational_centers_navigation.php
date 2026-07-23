@@ -16,7 +16,7 @@ declare(strict_types=1);
  *     --restore=/safe/path/pre-c17-navigation.json
  */
 
-const PHASE3C17_NAVIGATION_MARKER = 'phase3c17-wp1-operational-centers-v1';
+const PHASE3C17_NAVIGATION_MARKER = 'phase3c17-wp1-4-product-polish-v1';
 const PHASE3C17_SNAPSHOT_SCHEMA_VERSION = 1;
 
 /**
@@ -80,22 +80,14 @@ function phase3c17ValidateDesiredState(array $desired): void
         throw new \RuntimeException('Navigation version marker mismatch.');
     }
 
-    $divider = $desired['divider'] ?? null;
-    if (
-        !is_array($divider)
-        || ($divider['type'] ?? null) !== 'divider'
-        || !is_string($divider['text'] ?? null)
-        || !is_string($divider['id'] ?? null)
-    ) {
-        throw new \RuntimeException('Desired state requires a valid divider.');
-    }
-
     foreach (
         [
             'prospectingEntries',
             'requiredPreservedGlobalEntries',
             'managedProspectingEntries',
+            'managedTopLevelEntries',
             'legacyDividerIds',
+            'legacyDividerTexts',
         ] as $field
     ) {
         $value = $desired[$field] ?? null;
@@ -112,6 +104,86 @@ function phase3c17ValidateDesiredState(array $desired): void
             throw new \RuntimeException('Prospecting entry is not governed: ' . $entry);
         }
     }
+
+    foreach ($desired['managedProspectingEntries'] as $entry) {
+        if (!in_array($entry, $desired['managedTopLevelEntries'], true)) {
+            throw new \RuntimeException('Prospecting entry is not managed at the top level: ' . $entry);
+        }
+    }
+
+    $topLevelOrder = $desired['topLevelOrder'] ?? null;
+    if (!is_array($topLevelOrder) || $topLevelOrder === []) {
+        throw new \RuntimeException('Desired state requires a non-empty topLevelOrder.');
+    }
+
+    foreach ($topLevelOrder as $item) {
+        if (is_string($item)) {
+            continue;
+        }
+        if (
+            !is_array($item)
+            || ($item['type'] ?? null) !== 'divider'
+            || !is_string($item['text'] ?? null)
+            || !is_string($item['id'] ?? null)
+        ) {
+            throw new \RuntimeException('topLevelOrder requires only strings or valid dividers.');
+        }
+    }
+
+    if (($topLevelOrder[0] ?? null) !== 'Home') {
+        throw new \RuntimeException('The native Home entry must remain first in the product IA.');
+    }
+}
+
+function phase3c17DividerId(mixed $item): ?string
+{
+    $dividerId = is_array($item)
+        ? ($item['id'] ?? null)
+        : (is_object($item) ? ($item->id ?? null) : null);
+
+    return is_string($dividerId) ? $dividerId : null;
+}
+
+function phase3c17DividerText(mixed $item): ?string
+{
+    $text = is_array($item)
+        ? ($item['text'] ?? null)
+        : (is_object($item) ? ($item->text ?? null) : null);
+
+    return is_string($text) ? $text : null;
+}
+
+function phase3c17IsDivider(mixed $item): bool
+{
+    return is_array($item) && ($item['type'] ?? null) === 'divider';
+}
+
+/**
+ * Remove divider-only gaps left by relocating governed native entries while
+ * retaining any non-governed native administration sections in their order.
+ *
+ * @param array<int, mixed> $items
+ * @return array<int, mixed>
+ */
+function phase3c17CompactPreservedNavigation(array $items): array
+{
+    $compacted = [];
+    $pendingDivider = null;
+
+    foreach ($items as $item) {
+        if (phase3c17IsDivider($item)) {
+            $pendingDivider = $item;
+            continue;
+        }
+
+        if ($pendingDivider !== null) {
+            $compacted[] = $pendingDivider;
+            $pendingDivider = null;
+        }
+        $compacted[] = $item;
+    }
+
+    return $compacted;
 }
 
 /**
@@ -133,28 +205,44 @@ function phase3c17Materialize(array $tabList, array $desired): array
         }
     }
 
-    $managedEntries = $desired['managedProspectingEntries'];
+    $managedEntries = $desired['managedTopLevelEntries'];
     $legacyDividerIds = $desired['legacyDividerIds'];
+    $legacyDividerTexts = $desired['legacyDividerTexts'];
 
-    $preserved = array_values(array_filter(
+    $preserved = phase3c17CompactPreservedNavigation(array_values(array_filter(
         $tabList,
-        static function (mixed $item) use ($managedEntries, $legacyDividerIds): bool {
+        static function (mixed $item) use (
+            $managedEntries,
+            $legacyDividerIds,
+            $legacyDividerTexts
+        ): bool {
             if (is_string($item)) {
-                return !in_array($item, $managedEntries, true);
+                return $item !== '_delimiter_' && !in_array($item, $managedEntries, true);
             }
 
-            $dividerId = is_array($item)
-                ? ($item['id'] ?? null)
-                : (is_object($item) ? ($item->id ?? null) : null);
+            if (!phase3c17IsDivider($item)) {
+                return true;
+            }
 
-            return !is_string($dividerId) || !in_array($dividerId, $legacyDividerIds, true);
+            $dividerId = phase3c17DividerId($item);
+            $dividerText = phase3c17DividerText($item);
+
+            return (
+                ($dividerId === null || !in_array($dividerId, $legacyDividerIds, true))
+                && $dividerText !== null
+                && !in_array($dividerText, $legacyDividerTexts, true)
+            );
         }
+    )));
+
+    $governedOrder = array_values(array_filter(
+        $desired['topLevelOrder'],
+        static fn (mixed $item): bool => $item !== 'Home'
     ));
 
     return array_merge(
-        $preserved,
-        [$desired['divider']],
-        $desired['prospectingEntries']
+        $governedOrder,
+        $preserved
     );
 }
 

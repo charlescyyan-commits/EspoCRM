@@ -14,7 +14,7 @@ MODULE = EXT / "files" / "custom" / "Espo" / "Modules" / "Prospecting"
 MODULE_ENTITY_DEFS = MODULE / "Resources" / "metadata" / "entityDefs"
 MODULE_LAYOUTS = MODULE / "Resources" / "layouts"
 SURFACE_ENTITY_DEFS = MODULE_ENTITY_DEFS
-RELEASE_VERSION = "1.9.7-alpha"
+RELEASE_VERSION = "1.9.8-alpha"
 
 REQUIRED_DIRS = [
     EXT / "files" / "custom" / "Espo" / "Modules" / "Prospecting",

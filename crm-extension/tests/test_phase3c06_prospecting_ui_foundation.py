@@ -37,7 +37,7 @@ class ProspectingUiFoundationTests(unittest.TestCase):
                 for name in ("ProspectingDashboard", "ProspectingSearch")
             },
             {
-                "ProspectingDashboard": "Dashboard",
+                "ProspectingDashboard": "Prospecting Operations",
                 "ProspectingSearch": "Search Center",
             },
         )
@@ -67,18 +67,19 @@ class ProspectingUiFoundationTests(unittest.TestCase):
             "No data available",
         ):
             self.assertIn(label, source)
-        for label in ("Search Jobs", "Prospect Pool"):
-            self.assertIn(label, navigation_surface)
+        labels = load_json(MODULE / "Resources" / "i18n" / "en_US" / "Global.json")["labels"]
+        self.assertEqual(labels["C17DashboardSearchJobs"], "Search Jobs")
+        self.assertEqual(labels["C17DashboardProspectPool"], "Prospect Pool")
+        self.assertIn("getLanguage().translate(key, 'labels', 'Global')", dashboard_js)
         self.assertIn('data-action="open-search"', source)
 
-        for label in (
-            "Total Prospects",
-            "New This Week",
-            "Need Research",
-            "Research Completed",
-            "High Priority",
+        for key in (
+            "C17DashboardSearchCenter",
+            "C17DashboardResearchCenter",
+            "C17DashboardOutreachCenter",
+            "C17DashboardQuoteCenter",
         ):
-            self.assertIn(label, dashboard_js)
+            self.assertIn(key, dashboard_js)
         self.assertIn("countRecords", dashboard_js)
         self.assertIn("loadRecentJobs", dashboard_js)
         self.assertIn("ProspectPool", dashboard_js)

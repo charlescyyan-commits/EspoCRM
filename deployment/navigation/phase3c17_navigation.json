@@ -1,11 +1,41 @@
 {
   "schemaVersion": 1,
-  "navigationVersion": "phase3c17-wp1-operational-centers-v1",
-  "divider": {
-    "type": "divider",
-    "text": "Prospecting",
-    "id": "phase3c17-prospecting"
-  },
+  "navigationVersion": "phase3c17-wp1-4-product-polish-v1",
+  "topLevelOrder": [
+    "Home",
+    {
+      "type": "divider",
+      "text": "\u6f5c\u5ba2\u5f00\u53d1",
+      "id": "phase3c17-prospecting"
+    },
+    "ProspectingDashboard",
+    "ProspectingSearch",
+    "DraftApproval",
+    "Quote",
+    {
+      "type": "divider",
+      "text": "\u5ba2\u6237\u7ba1\u7406",
+      "id": "phase3c17-customer-management"
+    },
+    "Account",
+    "Contact",
+    "Lead",
+    "Opportunity",
+    {
+      "type": "divider",
+      "text": "\u6d3b\u52a8",
+      "id": "phase3c17-activities"
+    },
+    "Email",
+    {
+      "type": "divider",
+      "text": "\u66f4\u591a",
+      "id": "phase3c17-more"
+    },
+    "Task",
+    "Calendar",
+    "KnowledgeBaseArticle"
+  ],
   "prospectingEntries": [
     "ProspectingDashboard",
     "ProspectingSearch",
@@ -33,18 +63,52 @@
     "ProformaInvoice",
     "QuoteItem"
   ],
+  "managedTopLevelEntries": [
+    "ProspectingDashboard",
+    "ProspectingSearch",
+    "SearchStrategy",
+    "SearchJob",
+    "ProspectPool",
+    "ResearchEvidence",
+    "DraftApproval",
+    "SendExecution",
+    "ReplyEvent",
+    "EmailEvent",
+    "SalesFeedback",
+    "LearningSignal",
+    "Quote",
+    "Approval",
+    "ProformaInvoice",
+    "QuoteItem",
+    "Account",
+    "Contact",
+    "Lead",
+    "Opportunity",
+    "Email",
+    "Task",
+    "Calendar",
+    "KnowledgeBaseArticle"
+  ],
   "legacyDividerIds": [
     "phase3u04-prospecting",
-    "phase3c17-prospecting"
+    "phase3c17-prospecting",
+    "phase3c17-customer-management",
+    "phase3c17-activities",
+    "phase3c17-more"
+  ],
+  "legacyDividerTexts": [
+    "$CRM",
+    "$Activities",
+    "$Support"
   ],
   "centers": {
     "dashboard": {
       "entry": "ProspectingDashboard",
-      "label": "Dashboard"
+      "label": "\u6f5c\u5ba2\u8fd0\u8425"
     },
     "search": {
       "entry": "ProspectingSearch",
-      "label": "Search Center",
+      "label": "\u641c\u7d22\u4e2d\u5fc3",
       "operationalQueues": [
         "SearchStrategy",
         "SearchJob",
@@ -53,7 +117,7 @@
     },
     "research": {
       "entry": "Lead",
-      "label": "Research Center",
+      "label": "\u60c5\u62a5\u4e2d\u5fc3",
       "placement": "global-native-preserved",
       "supportingObjects": [
         "ResearchEvidence",
@@ -64,7 +128,7 @@
     },
     "outreach": {
       "entry": "DraftApproval",
-      "label": "Outreach Center",
+      "label": "\u89e6\u8fbe\u4e2d\u5fc3",
       "operationalQueues": [
         "SendExecution",
         "ReplyEvent"
@@ -75,7 +139,7 @@
     },
     "quote": {
       "entry": "Quote",
-      "label": "Quote Center",
+      "label": "\u62a5\u4ef7\u4e2d\u5fc3",
       "operationalQueues": [
         "Approval",
         "ProformaInvoice"

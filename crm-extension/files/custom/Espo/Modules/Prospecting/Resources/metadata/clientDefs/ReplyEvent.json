@@ -1,1 +1,13 @@
-{"controller": "controllers/record", "iconClass": "fas fa-reply"}
+{
+  "controller": "controllers/record",
+  "iconClass": "fas fa-reply",
+  "filterList": [
+    {
+      "name": "c17AwaitingReply",
+      "label": "Awaiting Reply",
+      "where": [
+        {"type": "equals", "attribute": "replyStatus", "value": "SENT"}
+      ]
+    }
+  ]
+}

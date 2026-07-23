@@ -1,44 +1,45 @@
 {
   "scopeNames": {
-    "SearchStrategy": "Search Strategy",
-    "SearchJob": "Search Job",
-    "ProspectPool": "Prospect Pool",
-    "ProspectingDashboard": "Dashboard",
-    "ProspectingSearch": "Search Center",
-    "ResearchEvidence": "Research Evidence",
-    "DraftApproval": "Outreach Center",
-    "Quote": "Quote Center",
-    "QuoteItem": "Quote Item",
-    "ProformaInvoice": "Proforma Invoice",
-    "Approval": "Quote Approval"
+    "SearchStrategy": "Search Strategy", "SearchJob": "Search Job", "ProspectPool": "Prospect Pool",
+    "ProspectingDashboard": "Prospecting Operations", "ProspectingSearch": "Search Center",
+    "ResearchEvidence": "Research Evidence", "DraftApproval": "Outreach Center",
+    "SendExecution": "Send Execution", "ReplyEvent": "Customer Reply", "EmailEvent": "Email Event",
+    "SalesFeedback": "Sales Feedback", "LearningSignal": "Learning Signal", "Quote": "Quote Center",
+    "QuoteItem": "Quote Item", "ProformaInvoice": "Proforma Invoice", "Approval": "Quote Approval"
   },
   "scopeNamesPlural": {
-    "SearchStrategy": "Search Strategies",
-    "SearchJob": "Search Jobs",
-    "ProspectPool": "Prospect Pool",
-    "ProspectingDashboard": "Dashboard",
-    "ProspectingSearch": "Search Center",
-    "ResearchEvidence": "Research Evidence",
-    "DraftApproval": "Outreach Center",
-    "Quote": "Quote Center",
-    "QuoteItem": "Quote Items",
-    "ProformaInvoice": "Proforma Invoices",
-    "Approval": "Quote Approvals"
+    "SearchStrategy": "Search Strategies", "SearchJob": "Search Jobs", "ProspectPool": "Prospect Pool",
+    "ProspectingDashboard": "Prospecting Operations", "ProspectingSearch": "Search Center",
+    "ResearchEvidence": "Research Evidence", "DraftApproval": "Outreach Center",
+    "SendExecution": "Send Executions", "ReplyEvent": "Customer Replies", "EmailEvent": "Email Events",
+    "SalesFeedback": "Sales Feedback", "LearningSignal": "Learning Signals", "Quote": "Quote Center",
+    "QuoteItem": "Quote Items", "ProformaInvoice": "Proforma Invoices", "Approval": "Quote Approvals"
+  },
+  "scopeNamesSingular": {
+    "DraftApproval": "Outreach Approval", "Quote": "Quote", "Approval": "Quote Approval"
   },
   "dashlets": {
-    "ProspectingIntelligence": "Prospecting Intelligence",
-    "ProspectingSummary": "Prospecting Summary",
-    "ProspectingRecentDiscovery": "Recent Discovery Activity",
-    "RecentResearchEvidence": "Recent Research Evidence",
-    "RecentSalesFeedback": "Recent Sales Feedback",
-    "AcquisitionOverview": "Acquisition Overview",
-    "AcquisitionSearchStrategies": "Search Strategies",
-    "AcquisitionDiscoveryJobs": "Search Jobs",
-    "AcquisitionJobsRunning": "Running Jobs",
-    "AcquisitionJobsWaiting": "Queued Jobs",
-    "AcquisitionJobsCompleted": "Completed Jobs",
-    "AcquisitionJobsFailed": "Failed Jobs",
-    "AcquisitionLeadPool": "Prospect Pool",
-    "AcquisitionResearchQueue": "Research Queue"
+    "ProspectingIntelligence": "Prospecting Intelligence", "ProspectingSummary": "Prospecting Summary",
+    "ProspectingRecentDiscovery": "Recent Discovery Activity", "RecentResearchEvidence": "Recent Research Evidence",
+    "RecentSalesFeedback": "Recent Sales Feedback", "AcquisitionOverview": "Acquisition Overview",
+    "AcquisitionSearchStrategies": "Search Strategies", "AcquisitionDiscoveryJobs": "Search Jobs",
+    "AcquisitionJobsRunning": "Running Jobs", "AcquisitionJobsWaiting": "Queued Jobs",
+    "AcquisitionJobsCompleted": "Completed Jobs", "AcquisitionJobsFailed": "Failed Jobs",
+    "AcquisitionLeadPool": "Prospect Pool", "AcquisitionResearchQueue": "Research Queue"
+  },
+  "labels": {
+    "C17DashboardSearchCenter": "Search Center", "C17DashboardResearchCenter": "Research Center",
+    "C17DashboardOutreachCenter": "Outreach Center", "C17DashboardQuoteCenter": "Quote Center",
+    "C17DashboardSearchDescription": "Plan searches, monitor jobs, and curate the prospect pool.",
+    "C17DashboardResearchDescription": "Use native Leads as the research record source.",
+    "C17DashboardOutreachDescription": "Review outreach drafts, delivery execution, and replies.",
+    "C17DashboardQuoteDescription": "Manage quotes, commercial approvals, and proforma invoices.",
+    "C17DashboardSearchStrategies": "Search Strategies", "C17DashboardSearchJobs": "Search Jobs",
+    "C17DashboardProspectPool": "Prospect Pool", "C17DashboardLeads": "Leads",
+    "C17DashboardResearchEvidence": "Research Evidence", "C17DashboardSalesFeedback": "Sales Feedback",
+    "C17DashboardLearningSignals": "Learning Signals", "C17DashboardDraftApprovals": "Draft Approvals",
+    "C17DashboardSendExecutions": "Send Executions", "C17DashboardReplyEvents": "Reply Events",
+    "C17DashboardEmailEvents": "Email Events", "C17DashboardQuotes": "Quotes",
+    "C17DashboardQuoteApprovals": "Quote Approvals", "C17DashboardProformaInvoices": "Proforma Invoices"
   }
 }

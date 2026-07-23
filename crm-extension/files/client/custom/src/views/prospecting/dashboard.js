@@ -23,12 +23,44 @@ Espo.define('custom:views/prospecting/dashboard', 'view', function (Dep) {
             this.hasRecentJobs = false;
             this.metrics = this.buildEmptyMetrics();
             this.recentJobs = [];
+            this.labels = this.buildLabels();
             this.centers = this.buildCenters();
             this.wait(this.loadDashboardData());
         },
 
         actionOpenSearch: function () {
             this.getRouter().navigate('ProspectingSearch', {trigger: true});
+        },
+
+        buildLabels: function () {
+            var translate = function (key) {
+                return this.getLanguage().translate(key, 'labels', 'Global');
+            }.bind(this);
+
+            return {
+                searchCenter: translate('C17DashboardSearchCenter'),
+                researchCenter: translate('C17DashboardResearchCenter'),
+                outreachCenter: translate('C17DashboardOutreachCenter'),
+                quoteCenter: translate('C17DashboardQuoteCenter'),
+                searchDescription: translate('C17DashboardSearchDescription'),
+                researchDescription: translate('C17DashboardResearchDescription'),
+                outreachDescription: translate('C17DashboardOutreachDescription'),
+                quoteDescription: translate('C17DashboardQuoteDescription'),
+                searchStrategies: translate('C17DashboardSearchStrategies'),
+                searchJobs: translate('C17DashboardSearchJobs'),
+                prospectPool: translate('C17DashboardProspectPool'),
+                leads: translate('C17DashboardLeads'),
+                researchEvidence: translate('C17DashboardResearchEvidence'),
+                salesFeedback: translate('C17DashboardSalesFeedback'),
+                learningSignals: translate('C17DashboardLearningSignals'),
+                draftApprovals: translate('C17DashboardDraftApprovals'),
+                sendExecutions: translate('C17DashboardSendExecutions'),
+                replyEvents: translate('C17DashboardReplyEvents'),
+                emailEvents: translate('C17DashboardEmailEvents'),
+                quotes: translate('C17DashboardQuotes'),
+                quoteApprovals: translate('C17DashboardQuoteApprovals'),
+                proformaInvoices: translate('C17DashboardProformaInvoices'),
+            };
         },
 
         buildCenters: function () {
@@ -40,45 +72,45 @@ Espo.define('custom:views/prospecting/dashboard', 'view', function (Dep) {
             };
             var centers = [
                 {
-                    name: 'Search Center',
+                    name: this.labels.searchCenter,
                     href: '#ProspectingSearch',
-                    description: 'Plan searches, monitor jobs, and curate the prospect pool.',
+                    description: this.labels.searchDescription,
                     entries: filterEntries([
-                        {label: 'Search Strategies', href: '#SearchStrategy', scope: 'SearchStrategy'},
-                        {label: 'Search Jobs', href: '#SearchJob', scope: 'SearchJob'},
-                        {label: 'Prospect Pool', href: '#ProspectPool', scope: 'ProspectPool'},
+                        {label: this.labels.searchStrategies, href: '#SearchStrategy', scope: 'SearchStrategy'},
+                        {label: this.labels.searchJobs, href: '#SearchJob', scope: 'SearchJob'},
+                        {label: this.labels.prospectPool, href: '#ProspectPool', scope: 'ProspectPool'},
                     ]),
                 },
                 {
-                    name: 'Research Center',
+                    name: this.labels.researchCenter,
                     href: '#Lead',
-                    description: 'Use native Leads as the research record source.',
+                    description: this.labels.researchDescription,
                     entries: filterEntries([
-                        {label: 'Leads', href: '#Lead', scope: 'Lead'},
-                        {label: 'Research Evidence', href: '#ResearchEvidence', scope: 'ResearchEvidence'},
-                        {label: 'Sales Feedback', href: '#SalesFeedback', scope: 'SalesFeedback'},
-                        {label: 'Learning Signals', href: '#LearningSignal', scope: 'LearningSignal'},
+                        {label: this.labels.leads, href: '#Lead', scope: 'Lead'},
+                        {label: this.labels.researchEvidence, href: '#ResearchEvidence', scope: 'ResearchEvidence'},
+                        {label: this.labels.salesFeedback, href: '#SalesFeedback', scope: 'SalesFeedback'},
+                        {label: this.labels.learningSignals, href: '#LearningSignal', scope: 'LearningSignal'},
                     ]),
                 },
                 {
-                    name: 'Outreach Center',
+                    name: this.labels.outreachCenter,
                     href: '#DraftApproval',
-                    description: 'Review outreach drafts, delivery execution, and replies.',
+                    description: this.labels.outreachDescription,
                     entries: filterEntries([
-                        {label: 'Draft Approvals', href: '#DraftApproval', scope: 'DraftApproval'},
-                        {label: 'Send Executions', href: '#SendExecution', scope: 'SendExecution'},
-                        {label: 'Reply Events', href: '#ReplyEvent', scope: 'ReplyEvent'},
-                        {label: 'Email Events', href: '#EmailEvent', scope: 'EmailEvent'},
+                        {label: this.labels.draftApprovals, href: '#DraftApproval', scope: 'DraftApproval'},
+                        {label: this.labels.sendExecutions, href: '#SendExecution', scope: 'SendExecution'},
+                        {label: this.labels.replyEvents, href: '#ReplyEvent', scope: 'ReplyEvent'},
+                        {label: this.labels.emailEvents, href: '#EmailEvent', scope: 'EmailEvent'},
                     ]),
                 },
                 {
-                    name: 'Quote Center',
+                    name: this.labels.quoteCenter,
                     href: '#Quote',
-                    description: 'Manage quotes, commercial approvals, and proforma invoices.',
+                    description: this.labels.quoteDescription,
                     entries: filterEntries([
-                        {label: 'Quotes', href: '#Quote', scope: 'Quote'},
-                        {label: 'Quote Approvals', href: '#Approval', scope: 'Approval'},
-                        {label: 'Proforma Invoices', href: '#ProformaInvoice', scope: 'ProformaInvoice'},
+                        {label: this.labels.quotes, href: '#Quote', scope: 'Quote'},
+                        {label: this.labels.quoteApprovals, href: '#Approval', scope: 'Approval'},
+                        {label: this.labels.proformaInvoices, href: '#ProformaInvoice', scope: 'ProformaInvoice'},
                     ]),
                 },
             ];

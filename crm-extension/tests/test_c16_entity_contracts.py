@@ -218,8 +218,20 @@ class C16EntityContractTests(unittest.TestCase):
             client_def = load_json(MODULE_CLIENT_DEFS / f"{entity}.json")
             self.assertEqual(client_def["controller"], "controllers/record")
             self.assertEqual(client_def["iconClass"], icon)
-            if entity != "Quote":
+            if entity not in {"Quote", "Approval"}:
                 self.assertEqual(client_def, {"controller": "controllers/record", "iconClass": icon})
+
+        approval_filter = load_json(MODULE_CLIENT_DEFS / "Approval.json")["filterList"]
+        self.assertEqual(
+            approval_filter,
+            [
+                {
+                    "name": "c17Pending",
+                    "label": "Pending Quote Approval",
+                    "where": [{"type": "equals", "attribute": "status", "value": "PENDING"}],
+                }
+            ],
+        )
 
         quote_actions = load_json(MODULE_CLIENT_DEFS / "Quote.json")["detailActionList"]
         self.assertEqual(quote_actions[0], "__APPEND__")
