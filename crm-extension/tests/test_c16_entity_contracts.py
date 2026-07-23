@@ -16,10 +16,6 @@ MODULE_ACL_DEFS = MODULE / "Resources" / "metadata" / "aclDefs"
 MODULE_CLIENT_DEFS = MODULE / "Resources" / "metadata" / "clientDefs"
 MODULE_LAYOUTS = MODULE / "Resources" / "layouts"
 MODULE_I18N = MODULE / "Resources" / "i18n"
-SURFACE_ENTITY_DEFS = EXTENSION / "Resources" / "entityDefs"
-SURFACE_ACL_DEFS = EXTENSION / "Resources" / "acl"
-SURFACE_LAYOUTS = EXTENSION / "Resources" / "layouts"
-
 C16_ENTITIES = ("Quote", "QuoteItem", "ProformaInvoice", "Approval")
 
 
@@ -29,13 +25,10 @@ def load_json(path: Path) -> dict:
 
 
 class C16EntityContractTests(unittest.TestCase):
-    def test_all_c16_entities_are_registered_and_surface_mirrored(self) -> None:
+    def test_all_c16_entities_are_registered_in_packaged_metadata(self) -> None:
         for entity in C16_ENTITIES:
             module_path = MODULE_ENTITY_DEFS / f"{entity}.json"
-            surface_path = SURFACE_ENTITY_DEFS / f"{entity}.json"
             self.assertTrue(module_path.is_file(), msg=f"Missing entity definition: {module_path}")
-            self.assertTrue(surface_path.is_file(), msg=f"Missing surface mirror: {surface_path}")
-            self.assertEqual(load_json(module_path), load_json(surface_path), msg=f"Parity mismatch: {entity}")
 
     def test_field_contract(self) -> None:
         contracts = {
@@ -202,7 +195,6 @@ class C16EntityContractTests(unittest.TestCase):
             self.assertEqual(scope["module"], "Prospecting")
             self.assertEqual(scope["type"], "Base")
             self.assertEqual(load_json(MODULE_ACL_DEFS / f"{entity}.json"), {"Prospecting": {entity: True}})
-            self.assertEqual(load_json(SURFACE_ACL_DEFS / f"{entity}.json"), {"Prospecting": {entity: True}})
 
         self.assertFalse(load_json(MODULE_SCOPES / "QuoteItem.json")["tab"])
         for entity in ("Quote", "ProformaInvoice", "Approval"):
@@ -254,10 +246,7 @@ class C16EntityContractTests(unittest.TestCase):
         for entity, layout_names in expected_layouts.items():
             for layout_name in layout_names:
                 module_layout = MODULE_LAYOUTS / entity / f"{layout_name}.json"
-                surface_layout = SURFACE_LAYOUTS / entity / f"{layout_name}.json"
                 self.assertTrue(module_layout.is_file(), msg=f"Missing module layout: {module_layout}")
-                self.assertTrue(surface_layout.is_file(), msg=f"Missing surface layout: {surface_layout}")
-                self.assertEqual(load_json(module_layout), load_json(surface_layout))
 
         self.assertFalse((MODULE_LAYOUTS / "QuoteItem" / "list.json").exists())
         self.assertFalse(load_json(MODULE_SCOPES / "QuoteItem.json")["tab"])

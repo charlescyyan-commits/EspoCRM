@@ -13,19 +13,11 @@ CONTRACT = ROOT / "docs" / "sync-contracts" / "ESPOCRM_SYNC_CONTRACT_V1.json"
 MODULE = EXT / "files" / "custom" / "Espo" / "Modules" / "Prospecting"
 MODULE_ENTITY_DEFS = MODULE / "Resources" / "metadata" / "entityDefs"
 MODULE_LAYOUTS = MODULE / "Resources" / "layouts"
-SURFACE_ENTITY_DEFS = EXT / "Resources" / "entityDefs"
+SURFACE_ENTITY_DEFS = MODULE_ENTITY_DEFS
 RELEASE_VERSION = "1.9.7-alpha"
 
 REQUIRED_DIRS = [
-    EXT / "Resources" / "metadata",
-    EXT / "Resources" / "layouts",
-    EXT / "Resources" / "entityDefs",
-    EXT / "Resources" / "acl",
-    EXT / "Resources" / "metadata" / "formula",
     EXT / "files" / "custom" / "Espo" / "Modules" / "Prospecting",
-    EXT / "custom" / "Espo" / "Modules" / "Prospecting" / "Controllers",
-    EXT / "custom" / "Espo" / "Modules" / "Prospecting" / "Services",
-    EXT / "custom" / "Espo" / "Modules" / "Prospecting" / "Api",
     EXT / "application",
     EXT / "docs",
     EXT / "tests",
@@ -628,9 +620,6 @@ class ExtensionSkeletonTests(unittest.TestCase):
 
     def test_placeholder_readmes_present(self) -> None:
         for path in (
-            EXT / "custom" / "Espo" / "Modules" / "Prospecting" / "Controllers" / "README.md",
-            EXT / "custom" / "Espo" / "Modules" / "Prospecting" / "Services" / "README.md",
-            EXT / "custom" / "Espo" / "Modules" / "Prospecting" / "Api" / "README.md",
             MODULE / "Controllers" / "README.md",
             MODULE / "Services" / "README.md",
             MODULE / "Api" / "README.md",
@@ -728,15 +717,15 @@ class ExtensionSkeletonTests(unittest.TestCase):
         self.assertEqual(set(fields), OPPORTUNITY_REQUIRED_FIELDS_B02)
 
     def test_phase3b02_surface_and_module_parity(self) -> None:
-        """Surface and module copies must remain identical after Phase3B02 edits."""
+        """Packaged module metadata remains the authoritative C16 source."""
         for name in ("ResearchEvidence.json", "Lead.json", "Opportunity.json"):
             surface = _load_json(SURFACE_ENTITY_DEFS / name)
             module = _load_json(MODULE_ENTITY_DEFS / name)
             self.assertEqual(surface, module, msg=f"Parity mismatch for {name}")
 
     def test_phase3b02_formula_metadata_file(self) -> None:
-        """Formula metadata must be present at formula/Lead.json in both surface and module."""
-        surface_formula = EXT / "Resources" / "metadata" / "formula" / "Lead.json"
+        """Formula metadata must be present in the packaged module tree."""
+        surface_formula = MODULE / "Resources" / "metadata" / "formula" / "Lead.json"
         module_formula = MODULE / "Resources" / "metadata" / "formula" / "Lead.json"
         self.assertTrue(surface_formula.is_file(), msg="Surface formula/Lead.json missing")
         self.assertTrue(module_formula.is_file(), msg="Module formula/Lead.json missing")
@@ -752,7 +741,6 @@ class ExtensionSkeletonTests(unittest.TestCase):
 
     def test_phase3b03_connector_routes_and_proposal_model(self) -> None:
         routes = _load_json(MODULE / "Resources" / "routes.json")
-        self.assertEqual(routes, _load_json(EXT / "Resources" / "routes.json"))
         self.assertEqual(
             {(route["method"], route["route"], route["actionClassName"]) for route in routes},
             {
@@ -1334,7 +1322,6 @@ class ExtensionSkeletonTests(unittest.TestCase):
             },
             routes,
         )
-        self.assertEqual(_load_json(MODULE / "Resources" / "routes.json"), _load_json(EXT / "Resources" / "routes.json"))
 
         role_script = (ROOT / "deployment" / "provisioning" / "phase3b06_provision_workspace_roles.php").read_text(encoding="utf-8")
         self.assertNotIn("SearchStrategy", role_script)

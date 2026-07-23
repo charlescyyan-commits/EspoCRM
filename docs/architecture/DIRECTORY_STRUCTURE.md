@@ -6,11 +6,9 @@
 EspoCRM-Production/
 ├── crm-extension/          # EspoCRM extension source (installable package)
 │   ├── manifest.json
-│   ├── Resources/            # Design-surface metadata (review + parity tests)
 │   ├── files/                # Content copied into EspoCRM on install
 │   │   ├── custom/Espo/Modules/Prospecting/
 │   │   └── client/custom/src/   # SearchStrategy UI handlers
-│   ├── custom/               # Placeholder READMEs (not installed)
 │   ├── scripts/              # build_release_package.ps1
 │   └── tests/                # Offline extension skeleton tests
 ├── chitu-connector/          # Python connector + worker core
@@ -44,13 +42,20 @@ EspoCRM-Production/
 
 ## `crm-extension` Detail
 
+### Authoritative metadata rule
+
+`crm-extension/files/custom/Espo/Modules/Prospecting/Resources/` is the sole
+authoritative Prospecting metadata source. Top-level `crm-extension/Resources/`
+and `crm-extension/custom/` are stale, non-packaged trees and must not be used,
+updated, or recreated. The offline WP0.5 metadata-source guard enforces this
+rule.
+
 | Path | Installed to EspoCRM? | Purpose |
 |------|----------------------|---------|
 | `manifest.json` | Yes (ZIP root) | Extension identity and version |
 | `files/custom/.../Prospecting/` | Yes | Module PHP, metadata, layouts, i18n |
 | `files/client/custom/...` | Yes | Client JS (e.g. SearchStrategy generate-jobs) |
-| `Resources/` | No | Mirror for review; must match module metadata in tests |
-| `custom/` (top-level) | No | Documentation placeholders |
+| `files/custom/Espo/Modules/Prospecting/Resources/` | Yes | **Only authoritative Prospecting metadata source** |
 | `tests/` | No | `unittest` validation |
 | `scripts/` | No | ZIP build script |
 

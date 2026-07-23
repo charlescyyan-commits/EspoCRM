@@ -5,7 +5,6 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
 EXT = ROOT / "crm-extension"
-SURFACE = EXT / "Resources"
 MODULE = EXT / "files" / "custom" / "Espo" / "Modules" / "Prospecting"
 RELEASE_VERSION = "1.9.7-alpha"
 
@@ -15,16 +14,7 @@ def _load_json(path: Path) -> dict | list:
 
 
 class SearchStrategyFoundationTests(unittest.TestCase):
-    def test_entity_metadata_is_registered_and_mirrored(self) -> None:
-        self.assertEqual(
-            _load_json(SURFACE / "entityDefs" / "SearchStrategy.json"),
-            _load_json(MODULE / "Resources" / "metadata" / "entityDefs" / "SearchStrategy.json"),
-        )
-        self.assertEqual(
-            _load_json(SURFACE / "acl" / "SearchStrategy.json"),
-            _load_json(MODULE / "Resources" / "metadata" / "aclDefs" / "SearchStrategy.json"),
-        )
-
+    def test_entity_metadata_is_registered_in_packaged_tree(self) -> None:
         strategy = _load_json(MODULE / "Resources" / "metadata" / "entityDefs" / "SearchStrategy.json")
         self.assertEqual(
             set(strategy["fields"]),
@@ -47,10 +37,7 @@ class SearchStrategyFoundationTests(unittest.TestCase):
 
     def test_entity_ui_baseline_is_present(self) -> None:
         for layout_name in ("detail.json", "list.json"):
-            self.assertEqual(
-                _load_json(SURFACE / "layouts" / "SearchStrategy" / layout_name),
-                _load_json(MODULE / "Resources" / "layouts" / "SearchStrategy" / layout_name),
-            )
+            self.assertTrue((MODULE / "Resources" / "layouts" / "SearchStrategy" / layout_name).is_file())
 
         labels = _load_json(MODULE / "Resources" / "i18n" / "en_US" / "SearchStrategy.json")
         self.assertEqual(labels["fields"]["name"], "Search Strategy")
