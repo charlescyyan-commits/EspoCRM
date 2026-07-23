@@ -26,7 +26,12 @@ class Phase3C17WP05MetadataSourceGuardTests(unittest.TestCase):
         )
 
     def test_no_unpackaged_prospecting_resources_tree_exists(self) -> None:
-        resource_trees = [path for path in EXTENSION.rglob("Resources") if path.is_dir() and path != AUTHORITATIVE]
+        packaged_root = EXTENSION / "files"
+        resource_trees = [
+            path
+            for path in EXTENSION.rglob("Resources")
+            if path.is_dir() and not path.is_relative_to(packaged_root)
+        ]
         self.assertEqual(
             resource_trees,
             [],
