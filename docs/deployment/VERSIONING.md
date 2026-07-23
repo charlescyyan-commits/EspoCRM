@@ -7,7 +7,7 @@
 | Field | Current value | Location |
 |-------|---------------|----------|
 | `version` | `1.9.7-alpha` | `crm-extension/manifest.json` |
-| `releaseDate` | `2026-07-20` | `crm-extension/manifest.json` |
+| `releaseDate` | `2026-07-23` | `crm-extension/manifest.json` |
 | `acceptableVersions` | `>=7.4.0` | EspoCRM platform |
 | `php` | `>=8.1` | PHP runtime |
 

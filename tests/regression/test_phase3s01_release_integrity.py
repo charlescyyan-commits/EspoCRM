@@ -114,29 +114,16 @@ class ReleaseIntegrityTests(unittest.TestCase):
         self.assertNotIn("D:\\EspoCRM-Production", install)
         self.assertIn("python crm-extension/scripts/build_release_package.py --check", install)
 
-    def test_resource_mirrors_match_packaged_module_sources(self) -> None:
-        surface = EXTENSION / "Resources"
-        module = EXTENSION / "files" / "custom" / "Espo" / "Modules" / "Prospecting" / "Resources"
-        mappings = (
-            (surface / "entityDefs", module / "metadata" / "entityDefs"),
-            (surface / "acl", module / "metadata" / "aclDefs"),
-            (surface / "layouts", module / "layouts"),
-            (surface / "metadata" / "formula", module / "metadata" / "formula"),
+    def test_single_authoritative_metadata_source_tree_enforced(self) -> None:
+        self.assertFalse(
+            (EXTENSION / "Resources").exists(),
+            msg="crm-extension/Resources was removed in Phase3C17 WP0.5; "
+            "files/custom/Espo/Modules/Prospecting/Resources/ is the single authoritative metadata source.",
         )
-        for source_root, target_root in mappings:
-            for source_path in source_root.rglob("*"):
-                if source_path.is_file():
-                    target_path = target_root / source_path.relative_to(source_root)
-                    with self.subTest(source=source_path.relative_to(surface).as_posix()):
-                        self.assertTrue(target_path.is_file())
-                        self.assertEqual(
-                            json.loads(source_path.read_text(encoding="utf-8")),
-                            json.loads(target_path.read_text(encoding="utf-8")),
-                        )
-        self.assertEqual(
-            json.loads((surface / "routes.json").read_text(encoding="utf-8")),
-            json.loads((module / "routes.json").read_text(encoding="utf-8")),
-        )
+        authoritative = EXTENSION / "files" / "custom" / "Espo" / "Modules" / "Prospecting" / "Resources"
+        self.assertTrue(authoritative.is_dir())
+        for subdir in ("metadata", "layouts", "i18n"):
+            self.assertTrue((authoritative / subdir).is_dir(), msg=f"Missing authoritative resource: {subdir}")
 
     def test_historical_package_checksum_manifest_is_complete_and_valid(self) -> None:
         lines = (HISTORICAL / "SHA256SUMS.txt").read_text(encoding="ascii").splitlines()

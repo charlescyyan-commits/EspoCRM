@@ -8,7 +8,7 @@
   "php": [
     ">=8.1"
   ],
-  "releaseDate": "2026-07-21",
+  "releaseDate": "2026-07-23",
   "author": "Chitu Intelligence",
   "description": "Chitu Prospecting CRM sync, native Prospecting Workspace, and deterministic Acquisition Strategy planning for EspoCRM",
   "skipBackup": false,
