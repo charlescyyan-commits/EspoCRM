@@ -1,8 +1,0 @@
-[
-  {"name": "name", "width": 24, "link": true},
-  {"name": "signalType", "width": 16},
-  {"name": "predictionScore", "width": 12},
-  {"name": "actualOutcome", "width": 12},
-  {"name": "product", "width": 16},
-  {"name": "lead", "width": 20}
-]

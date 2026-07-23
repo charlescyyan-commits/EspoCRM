@@ -1,8 +1,0 @@
-[
-  {"name": "name", "width": 22, "link": true},
-  {"name": "status", "width": 14},
-  {"name": "draftId", "width": 22},
-  {"name": "lead", "width": 18},
-  {"name": "approvedBy", "width": 16},
-  {"name": "approvedAt", "width": 16}
-]

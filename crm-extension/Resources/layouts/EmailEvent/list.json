@@ -1,8 +1,0 @@
-[
-  {"name": "name", "width": 22, "link": true},
-  {"name": "eventType", "width": 12},
-  {"name": "externalMessageId", "width": 22},
-  {"name": "campaign", "width": 16},
-  {"name": "lead", "width": 16},
-  {"name": "eventAt", "width": 14}
-]

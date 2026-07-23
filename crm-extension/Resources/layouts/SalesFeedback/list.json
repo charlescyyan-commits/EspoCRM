@@ -1,9 +1,0 @@
-[
-  {"name": "name", "width": 24, "link": true},
-  {"name": "lead", "width": 20},
-  {"name": "feedbackType", "width": 16},
-  {"name": "outcome", "width": 12},
-  {"name": "reason", "width": 20},
-  {"name": "createdAt", "width": 16},
-  {"name": "createdBy", "width": 16}
-]

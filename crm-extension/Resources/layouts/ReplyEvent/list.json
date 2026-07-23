@@ -1,8 +1,0 @@
-[
-  {"name": "name", "width": 22, "link": true},
-  {"name": "replyStatus", "width": 14},
-  {"name": "externalEventId", "width": 22},
-  {"name": "lead", "width": 18},
-  {"name": "sendExecution", "width": 18},
-  {"name": "receivedAt", "width": 16}
-]

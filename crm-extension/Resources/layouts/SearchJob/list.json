@@ -1,8 +1,0 @@
-[
-  {"name": "name", "width": 28, "link": true},
-  {"name": "source", "width": 14},
-  {"name": "strategy", "width": 18},
-  {"name": "status", "width": 12},
-  {"name": "resultCount", "width": 12},
-  {"name": "createdAt", "width": 16}
-]

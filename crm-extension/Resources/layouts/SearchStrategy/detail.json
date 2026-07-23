@@ -1,5 +1,0 @@
-[
-  {"label": "Strategy Definition", "rows": [[{"name": "name"}, {"name": "status"}], [{"name": "product"}, {"name": "country"}], [{"name": "region"}, {"name": "targetPersona"}], [{"name": "targetCompanyType"}, {"name": "sourcePlan"}]]},
-  {"label": "Query Plan", "rows": [[{"name": "keywords"}, false], [{"name": "excludedKeywords"}, false], [{"name": "generatedJobCount"}, false]]},
-  {"label": "Ownership", "rows": [[{"name": "assignedUser"}, {"name": "teams"}], [{"name": "createdAt"}, {"name": "createdBy"}]]}
-]

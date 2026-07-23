@@ -1,7 +1,0 @@
-[
-  {"name": "name", "width": 22, "link": true},
-  {"name": "piNumber", "width": 16},
-  {"name": "status", "width": 14},
-  {"name": "paymentStatus", "width": 14},
-  {"name": "quote", "width": 18}
-]
