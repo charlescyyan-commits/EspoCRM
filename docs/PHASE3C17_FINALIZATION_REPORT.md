@@ -11,7 +11,8 @@
 | --- | --- |
 | Commit (feature close) | `3837ef6` — `phase3c17: implement center composition dashboard` |
 | Prior | `8883e1c` — `phase3c17: harden command center provisioning` |
-| Remote | `origin/master` synced at `3837ef6` (`git fetch` verified; `HEAD == origin/master`) |
+| Commit (packaging) | `9293447` — `phase3c17: package 1.9.10-alpha release candidate` |
+| Remote | `origin/master` synced at `9293447` (`git fetch` verified; `HEAD == origin/master`) |
 
 Untracked pre-existing reports left unmodified (not part of this packaging commit set unless separately requested):
 
