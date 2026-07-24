@@ -19,7 +19,7 @@ MANIFEST = EXTENSION / "manifest.json"
 BUILDER_PATH = EXTENSION / "scripts" / "build_release_package.py"
 DEPLOYMENT = ROOT / "deployment"
 HISTORICAL = ROOT / "archive" / "deployment" / "historical-packages"
-RELEASE_VERSION = "1.9.9-alpha"
+RELEASE_VERSION = "1.9.10-alpha"
 CANONICAL_ARCHIVE = DEPLOYMENT / f"prospecting-extension-{RELEASE_VERSION}.zip"
 TEXT_SOURCE_SUFFIXES = frozenset({".php", ".py", ".js", ".json", ".tpl", ".md", ".css", ".html", ".xml", ".yml", ".yaml", ".txt"})
 

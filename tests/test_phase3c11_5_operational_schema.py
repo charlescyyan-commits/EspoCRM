@@ -18,7 +18,7 @@ from tests.test_phase3c11_2_persistence_entities import C10_FROZEN_HASHES, C10_T
 ROOT = Path(__file__).resolve().parents[1]
 EXT = ROOT / "crm-extension"
 MODULE = EXT / "files" / "custom" / "Espo" / "Modules" / "Prospecting" / "Resources" / "metadata" / "entityDefs" / "SendExecution.json"
-CANONICAL_ARCHIVE = ROOT / "deployment" / "prospecting-extension-1.9.9-alpha.zip"
+CANONICAL_ARCHIVE = ROOT / "deployment" / "prospecting-extension-1.9.10-alpha.zip"
 PROJECTION = EXT / "files" / "custom" / "Espo" / "Modules" / "Prospecting" / "Services" / "EmailLifecycleProjectionService.php"
 FAILURE_SOURCE = ROOT / "chitu-connector" / "chitu_connector" / "espocrm_sync" / "failure_classification.py"
 

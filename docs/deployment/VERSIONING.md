@@ -6,8 +6,8 @@
 
 | Field | Current value | Location |
 |-------|---------------|----------|
-| `version` | `1.9.9-alpha` | `crm-extension/manifest.json` |
-| `releaseDate` | `2026-07-23` | `crm-extension/manifest.json` |
+| `version` | `1.9.10-alpha` | `crm-extension/manifest.json` |
+| `releaseDate` | `2026-07-24` | `crm-extension/manifest.json` |
 | `acceptableVersions` | `>=7.4.0` | EspoCRM platform |
 | `php` | `>=8.1` | PHP runtime |
 
@@ -15,7 +15,7 @@
 
 | Artifact | Pattern | Example |
 |----------|---------|---------|
-| Extension ZIP | `prospecting-extension-<semver>.zip` | `prospecting-extension-1.9.9-alpha.zip` |
+| Extension ZIP | `prospecting-extension-<semver>.zip` | `prospecting-extension-1.9.10-alpha.zip` |
 | Checksum sidecar | `<zip>.sha256` | `prospecting-extension-<version>.zip.sha256` |
 | Phase report | `PHASE<phase>_<name>_REPORT.md` | `PHASE3C02_2C_JOB_RUNNER_REPORT.md` |
 
@@ -37,7 +37,7 @@ These must match at release time:
 3. `test_extension_skeleton.py` expected version assertion
 4. Release notes document (when published)
 
-For the current package, the ZIP and manifest are aligned at `1.9.9-alpha` with committed sidecar `deployment/prospecting-extension-1.9.9-alpha.zip.sha256`. Build and verify from the repository root with `python crm-extension/scripts/build_release_package.py` and `python crm-extension/scripts/build_release_package.py --check` (use `py` in place of `python` on Windows when applicable).
+For the current package, the ZIP and manifest are aligned at `1.9.10-alpha` with committed sidecar `deployment/prospecting-extension-1.9.10-alpha.zip.sha256`. Build and verify from the repository root with `python crm-extension/scripts/build_release_package.py` and `python crm-extension/scripts/build_release_package.py --check` (use `py` in place of `python` on Windows when applicable).
 
 ## Connector Versioning
 
