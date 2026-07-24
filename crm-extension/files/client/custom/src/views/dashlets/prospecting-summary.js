@@ -8,12 +8,14 @@ Espo.define('custom:views/dashlets/prospecting-summary', 'views/dashlets/abstrac
                 loading: this.loading,
                 metrics: this.metrics || [],
                 hasAny: this.hasAny,
+                labels: this.labels || {},
             };
         },
 
         setup: function () {
             this.loading = true;
             this.hasAny = false;
+            this.labels = this.buildLabels();
             this.metrics = this.buildEmptyMetrics();
             this.wait(this.loadMetrics());
         },
@@ -30,13 +32,30 @@ Espo.define('custom:views/dashlets/prospecting-summary', 'views/dashlets/abstrac
             }.bind(this));
         },
 
+        buildLabels: function () {
+            var translate = function (key) {
+                return this.getLanguage().translate(key, 'labels', 'ProspectingDashboard');
+            }.bind(this);
+
+            return {
+                totalProspects: translate('totalProspects'),
+                newThisWeek: translate('newThisWeek'),
+                needResearch: translate('needResearch'),
+                researchCompleted: translate('researchCompleted'),
+                highPriority: translate('highPriority'),
+                loading: translate('loading'),
+                noData: translate('noData'),
+                noActivity: translate('noActivity'),
+            };
+        },
+
         buildEmptyMetrics: function () {
             return [
-                {key: 'total', label: 'Total Prospects', value: 0, href: '#ProspectPool'},
-                {key: 'newWeek', label: 'New This Week', value: 0, href: '#ProspectPool'},
-                {key: 'needResearch', label: 'Need Research', value: 0, href: '#ProspectPool/list/primary=prospectsReadyForResearch'},
-                {key: 'researchDone', label: 'Research Completed', value: 0, href: '#ProspectPool'},
-                {key: 'highPriority', label: 'High Priority', value: 0, href: '#SearchJob'},
+                {key: 'total', label: this.labels.totalProspects, value: 0, href: '#ProspectPool'},
+                {key: 'newWeek', label: this.labels.newThisWeek, value: 0, href: '#ProspectPool'},
+                {key: 'needResearch', label: this.labels.needResearch, value: 0, href: '#ProspectPool/list/primary=prospectsReadyForResearch'},
+                {key: 'researchDone', label: this.labels.researchCompleted, value: 0, href: '#ProspectPool'},
+                {key: 'highPriority', label: this.labels.highPriority, value: 0, href: '#SearchJob'},
             ];
         },
 

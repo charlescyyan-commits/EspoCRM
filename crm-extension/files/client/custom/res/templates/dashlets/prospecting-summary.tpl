@@ -1,5 +1,5 @@
 {{#if loading}}
-    <div class="margin">Loading...</div>
+    <div class="margin">{{labels.loading}}</div>
 {{else}}
     <div class="row" style="margin:0 -5px;">
         {{#each metrics}}
@@ -11,7 +11,7 @@
                             <a href="{{href}}" style="color:inherit;text-decoration:none;">{{value}}</a>
                         </div>
                         {{#unless value}}
-                            <div class="text-muted" style="font-size:11px;margin-top:4px;">No data available</div>
+                            <div class="text-muted" style="font-size:11px;margin-top:4px;">{{../labels.noData}}</div>
                         {{/unless}}
                     </div>
                 </div>
@@ -21,7 +21,7 @@
     <div class="clearfix"></div>
     {{#unless hasAny}}
         <div class="text-muted margin-top" style="margin-top:10px;">
-            No prospecting activity yet. Start from Search Strategies or Search Jobs.
+            {{labels.noActivity}}
         </div>
     {{/unless}}
 {{/if}}

@@ -24,7 +24,9 @@ class ProspectingDashboardProductizationTests(unittest.TestCase):
         self.assertIn("countRecords", view)
         self.assertIn("ProspectPool", view)
         self.assertIn("prospectsReadyForResearch", view)
-        self.assertIn("No data available", (CLIENT / "res" / "templates" / "dashlets" / "prospecting-summary.tpl").read_text(encoding="utf-8"))
+        template = (CLIENT / "res" / "templates" / "dashlets" / "prospecting-summary.tpl").read_text(encoding="utf-8")
+        self.assertIn("{{labels.noData}}", template.replace("{{../labels.noData}}", "{{labels.noData}}"))
+        self.assertNotIn("No data available", template)
         for banned in ("PHASE3B02", "FORMULA-TEST", "fake", "mockTotal", "hardcoded"):
             self.assertNotIn(banned, view)
 

@@ -13,6 +13,14 @@ declare(strict_types=1);
  * Presentation-only: merges phase-managed dashboard tabs into one primary
  * Chinese-first dashboard tab. Preserves My Espo and non-phase dashlets.
  *
+ * CC-1 center responsibility boundary (composition only — no lifecycle logic
+ * is duplicated here; queues are read-only Records/record-list dashlets):
+ *   潜客运营 (this Command Center tab): team operational overview answering
+ *     "我今天应该做什么？" — summary cards, daily queues, operational counters.
+ *   搜索中心: search strategy/jobs ownership (SearchStrategy, SearchJob, ProspectPool).
+ *   触达中心: outreach + reply visibility (DraftApproval, SendExecution, ReplyEvent).
+ *   报价中心: quote + approval visibility (Quote, Approval, ProformaInvoice).
+ *
  * New-user strategy (no login-time hook):
  *   A. Native EspoCRM system default dashboard / Dashboard Templates apply to
  *      newly created users (Administration > User Interface / Dashboard Templates).
@@ -238,8 +246,8 @@ function phase3c17BuildDashletsOptions(array $options): array
         }
     }
 
-    $options['phase3c17-command-summary'] = ['title' => '潜客运营'];
-    $options['phase3c17-command-overview'] = ['title' => '搜索中心'];
+    $options['phase3c17-command-summary'] = ['title' => '潜客概览'];
+    $options['phase3c17-command-overview'] = ['title' => '获客概览'];
     $options['phase3c17-command-my-tasks'] = phase3c17RecordsOptions('我的任务', 'Task', 'actual', 'dateStart', 'asc', ['onlyMy']);
     $options['phase3c17-command-research'] = ['title' => '待研究客户'];
     $options['phase3c17-command-outreach'] = phase3c17RecordsOptions('待触达', 'DraftApproval', 'c17Pending', 'createdAt');
