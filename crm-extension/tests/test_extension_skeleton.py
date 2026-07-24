@@ -532,6 +532,8 @@ class ExtensionSkeletonTests(unittest.TestCase):
             MODULE / "Controllers" / "SalesFeedback.php",
             MODULE / "Controllers" / "Quote.php",
             MODULE / "Controllers" / "DraftApproval.php",
+            MODULE / "Controllers" / "Approval.php",
+            MODULE / "Controllers" / "ReplyEvent.php",
             MODULE / "Controllers" / "LearningSignal.php",
             MODULE / "Entities" / "EmailEvent.php",
             MODULE / "Controllers" / "EmailEvent.php",
