@@ -4,7 +4,7 @@
 
 ## Version Authority
 
-Current packaged extension version: **`1.9.8-alpha`** (`crm-extension/manifest.json`).
+Current packaged extension version: **`1.9.9-alpha`** (`crm-extension/manifest.json`).
 
 Installed CRM version may lag repository HEAD if parallel work is unstaged. Always verify:
 
@@ -45,4 +45,4 @@ Alpha versions (`*-alpha`) may include metadata changes without migration script
 
 - [VERSIONING.md](VERSIONING.md)
 - [ROLLBACK.md](ROLLBACK.md)
-- [../release/RELEASE_NOTES_1.9.8-alpha.md](../release/RELEASE_NOTES_1.9.8-alpha.md) (current package notes)
+- [../release/RELEASE_NOTES_1.9.9-alpha.md](../release/RELEASE_NOTES_1.9.9-alpha.md) (current package notes)

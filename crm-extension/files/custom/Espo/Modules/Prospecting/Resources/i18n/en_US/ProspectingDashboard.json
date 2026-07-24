@@ -1,6 +1,37 @@
 {
   "labels": {
     "ProspectingDashboard": "Prospecting Operations",
-    "ProspectingDashboards": "Prospecting Operations"
+    "ProspectingDashboards": "Prospecting Operations",
+    "prospecting": "Prospecting",
+    "dashboard": "Dashboard",
+    "workflow": "Workflow",
+    "workflowDiscover": "1. Discover prospects",
+    "workflowResearch": "2. Research Leads",
+    "workflowOutreach": "3. Review outreach",
+    "workflowQuotes": "4. Manage quotes",
+    "operations": "Prospecting Operations",
+    "operationsDescription": "Discover customers, review candidates, and check research status.",
+    "operationalCenters": "Operational Centers",
+    "analyticsDeferred": "Analytics: deferred — Dashboard aggregation first.",
+    "summary": "Prospecting Summary",
+    "loading": "Loading...",
+    "noData": "No data available",
+    "noActivity": "No prospecting activity yet. Create a Search Strategy or start Discover to queue a Search Job.",
+    "recentActivity": "Recent Discovery Activity",
+    "viewAll": "View all",
+    "name": "Name",
+    "status": "Status",
+    "created": "Created",
+    "count": "Count",
+    "noSearchJobs": "No data available - no Search Jobs yet.",
+    "startDiscover": "Start Discover",
+    "openSearchStrategies": "Open Search Strategies",
+    "totalProspects": "Total Prospects",
+    "newThisWeek": "New This Week",
+    "needResearch": "Need Research",
+    "researchCompleted": "Research Completed",
+    "highPriority": "High Priority",
+    "untitledJob": "Untitled job",
+    "notAvailable": "—"
   }
 }

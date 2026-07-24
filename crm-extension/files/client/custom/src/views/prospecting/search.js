@@ -6,9 +6,51 @@ Espo.define('custom:views/prospecting/search', 'view', function (Dep) {
             'click [data-action="create-search-job"]': 'actionCreateSearchJob',
         },
 
+        setup: function () {
+            this.labels = this.buildLabels();
+        },
+
+        data: function () {
+            return {
+                labels: this.labels || {},
+            };
+        },
+
+        buildLabels: function () {
+            var translate = function (key) {
+                return this.getLanguage().translate(key, 'labels', 'ProspectingSearch');
+            }.bind(this);
+
+            return {
+                permissionDenied: translate('permissionDenied'),
+                countryKeywordRequired: translate('countryKeywordRequired'),
+                created: translate('created'),
+                createFailed: translate('createFailed'),
+                operationalCenters: translate('operationalCenters'),
+                dashboard: translate('dashboard'),
+                searchCenter: translate('searchCenter'),
+                searchStrategies: translate('searchStrategies'),
+                searchJobs: translate('searchJobs'),
+                prospectPool: translate('prospectPool'),
+                centerLead: translate('centerLead'),
+                centerDraftApproval: translate('centerDraftApproval'),
+                centerQuote: translate('centerQuote'),
+                createSearchJob: translate('createSearchJob'),
+                country: translate('country'),
+                keyword: translate('keyword'),
+                provider: translate('provider'),
+                strategy: translate('strategy'),
+                optionalStrategyId: translate('optionalStrategyId'),
+                resultLimit: translate('resultLimit'),
+                resultLimitHelp: translate('resultLimitHelp'),
+                startSearch: translate('startSearch'),
+                queuedOnlyHelp: translate('queuedOnlyHelp'),
+            };
+        },
+
         actionCreateSearchJob: function () {
             if (!this.getAcl().check('SearchJob', 'create')) {
-                Espo.Ui.error('You do not have permission to create Search Jobs.');
+                Espo.Ui.error(this.labels.permissionDenied);
                 return;
             }
 
@@ -19,7 +61,7 @@ Espo.define('custom:views/prospecting/search', 'view', function (Dep) {
             var currentUser = this.getUser();
 
             if (!country || !keyword) {
-                Espo.Ui.error('Country and Keyword are required to create a Search Job.');
+                Espo.Ui.error(this.labels.countryKeywordRequired);
                 return;
             }
 
@@ -43,11 +85,11 @@ Espo.define('custom:views/prospecting/search', 'view', function (Dep) {
                 model.set(attributes);
 
                 return model.save().then(function () {
-                    Espo.Ui.success('Search Job created. No provider was started.');
+                    Espo.Ui.success(this.labels.created);
                     this.getRouter().navigate('SearchJob/view/' + model.id, {trigger: true});
                 }.bind(this));
             }.bind(this)).catch(function () {
-                Espo.Ui.error('Unable to create Search Job. Check the required Search Job fields.');
+                Espo.Ui.error(this.labels.createFailed);
             });
         },
     });

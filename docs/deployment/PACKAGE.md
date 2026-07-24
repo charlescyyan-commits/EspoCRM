@@ -50,7 +50,7 @@ deployment/prospecting-extension-<version>.zip.sha256
 Generate manually (PowerShell):
 
 ```powershell
-Get-FileHash deployment\prospecting-extension-1.9.8-alpha.zip -Algorithm SHA256
+Get-FileHash deployment\prospecting-extension-1.9.9-alpha.zip -Algorithm SHA256
 ```
 
 ## Validation
@@ -68,9 +68,9 @@ python -m unittest discover -s crm-extension/tests
 | `prospecting-extension-1.8.0-alpha.zip` | Historical package |
 | `prospecting-extension-1.9.0-alpha.zip` | Historical package |
 | `prospecting-extension-1.9.1-alpha.zip` | Historical package |
-| `prospecting-extension-1.9.8-alpha.zip` | Current package; matches `manifest.json` |
+| `prospecting-extension-1.9.9-alpha.zip` | Current package; matches `manifest.json` |
 
-The current `1.9.8-alpha` ZIP has a committed `.sha256` sidecar at `deployment/prospecting-extension-1.9.8-alpha.zip.sha256`.
+The current `1.9.9-alpha` ZIP has a committed `.sha256` sidecar at `deployment/prospecting-extension-1.9.9-alpha.zip.sha256`.
 
 ## Related Documents
 

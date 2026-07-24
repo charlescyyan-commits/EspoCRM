@@ -1,46 +1,46 @@
 define(['action-handler'], (Dep) => {
     return class extends Dep {
         async submitForReview() {
-            await this.transition('submit-for-review', 'Quote submitted for review.');
+            await this.transition('submit-for-review', this.translate('quoteSubmittedForReview'));
         }
 
         async approve() {
-            await this.transition('approve', 'Quote approved.');
+            await this.transition('approve', this.translate('quoteApproved'));
         }
 
         async rejectReview() {
-            const reason = prompt('Rejection reason (required):');
+            const reason = prompt(this.translate('rejectionReasonPrompt'));
             if (!reason || !reason.trim()) {
-                Espo.Ui.warning('A rejection reason is required.');
+                Espo.Ui.warning(this.translate('rejectionReasonRequired'));
                 return;
             }
-            await this.transition('reject-review', 'Quote returned to draft.', {reason: reason.trim()});
+            await this.transition('reject-review', this.translate('quoteReturnedToDraft'), {reason: reason.trim()});
         }
 
         async markCustomerRejected() {
-            await this.transition('mark-customer-rejected', 'Quote rejected by customer.');
+            await this.transition('mark-customer-rejected', this.translate('quoteRejectedByCustomer'));
         }
 
         /**
          * @deprecated Backward-compat alias for markCustomerRejected.
          */
         async reject() {
-            await this.transition('reject', 'Quote rejected.');
+            await this.transition('reject', this.translate('quoteRejected'));
         }
 
         async sendQuote() {
-            await this.transition('send', 'Quote sent.');
+            await this.transition('send', this.translate('quoteSent'));
         }
 
         async markAccepted() {
-            if (!confirm('Are you sure you want to mark this quote as accepted?')) {
+            if (!confirm(this.translate('markAcceptedConfirmation'))) {
                 return;
             }
-            await this.transition('mark-accepted', 'Quote accepted.');
+            await this.transition('mark-accepted', this.translate('quoteAccepted'));
         }
 
         async expire() {
-            await this.transition('expire', 'Quote expired.');
+            await this.transition('expire', this.translate('quoteExpired'));
         }
 
         // ----------------------------------------------------------
@@ -87,6 +87,10 @@ define(['action-handler'], (Dep) => {
             return this.view.model.get('status') === status;
         }
 
+        translate(key) {
+            return this.view.getLanguage().translate(key, 'labels', 'Quote');
+        }
+
         async transition(action, successMessage, extraData) {
             this.view.disableMenuItem(this.menuItemName(action));
 
@@ -98,7 +102,7 @@ define(['action-handler'], (Dep) => {
                 await this.view.model.fetch();
                 Espo.Ui.success(successMessage);
             } catch (error) {
-                Espo.Ui.error(error.message || 'Unable to change Quote status.');
+                Espo.Ui.error(error.message || this.translate('statusChangeFailed'));
             } finally {
                 this.view.enableMenuItem(this.menuItemName(action));
             }

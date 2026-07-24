@@ -1,6 +1,29 @@
 {
   "labels": {
     "ProspectingSearch": "搜索",
-    "ProspectingSearches": "搜索"
+    "ProspectingSearches": "搜索",
+    "permissionDenied": "您没有创建搜索任务的权限。",
+    "countryKeywordRequired": "创建搜索任务必须填写国家和关键词。",
+    "created": "搜索任务已创建，未启动任何提供方。",
+    "createFailed": "无法创建搜索任务，请检查必填字段。",
+    "operationalCenters": "运营中心",
+    "dashboard": "运营看板",
+    "searchCenter": "搜索中心",
+    "searchStrategies": "搜索策略",
+    "searchJobs": "搜索任务",
+    "prospectPool": "潜客池",
+    "centerLead": "调研中心",
+    "centerDraftApproval": "触达中心",
+    "centerQuote": "报价中心",
+    "createSearchJob": "创建搜索任务",
+    "country": "国家",
+    "keyword": "关键词",
+    "provider": "提供方",
+    "strategy": "策略",
+    "optionalStrategyId": "可选搜索策略 ID",
+    "resultLimit": "结果数量上限",
+    "resultLimitHelp": "结果数量上限仍由已冻结的提供方/运行时契约负责。",
+    "startSearch": "开始搜索",
+    "queuedOnlyHelp": "此界面仅创建排队中的搜索任务；不会启动提供方、工作器、队列、网站调研或 AI 流程。"
   }
 }

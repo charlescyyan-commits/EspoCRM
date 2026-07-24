@@ -1,6 +1,37 @@
 {
   "labels": {
     "ProspectingDashboard": "潜客运营",
-    "ProspectingDashboards": "潜客运营"
+    "ProspectingDashboards": "潜客运营",
+    "prospecting": "潜客开发",
+    "dashboard": "运营看板",
+    "workflow": "工作流",
+    "workflowDiscover": "1. 发现潜客",
+    "workflowResearch": "2. 调研线索",
+    "workflowOutreach": "3. 审核触达",
+    "workflowQuotes": "4. 管理报价",
+    "operations": "潜客运营",
+    "operationsDescription": "发现客户、审核候选对象并查看调研状态。",
+    "operationalCenters": "运营中心",
+    "analyticsDeferred": "分析功能：暂缓，优先完成运营看板汇总。",
+    "summary": "潜客汇总",
+    "loading": "正在加载...",
+    "noData": "暂无数据",
+    "noActivity": "尚无潜客活动。请创建搜索策略，或启动发现以排队搜索任务。",
+    "recentActivity": "最近发现活动",
+    "viewAll": "查看全部",
+    "name": "名称",
+    "status": "状态",
+    "created": "创建时间",
+    "count": "数量",
+    "noSearchJobs": "暂无数据，尚未创建搜索任务。",
+    "startDiscover": "启动发现",
+    "openSearchStrategies": "打开搜索策略",
+    "totalProspects": "潜客总数",
+    "newThisWeek": "本周新增",
+    "needResearch": "待调研",
+    "researchCompleted": "调研已完成",
+    "highPriority": "高优先级",
+    "untitledJob": "未命名任务",
+    "notAvailable": "—"
   }
 }

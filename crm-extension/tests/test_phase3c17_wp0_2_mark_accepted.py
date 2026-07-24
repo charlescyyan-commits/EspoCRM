@@ -18,6 +18,7 @@ POLICY = MODULE / "Resources" / "metadata" / "app" / "prospectingWorkflow.json"
 WORKFLOW_ACTION = SERVICES / "QuoteWorkflowActionService.php"
 TRANSITION = SERVICES / "QuoteTransitionService.php"
 HANDLER = CLIENT / "handlers" / "quote" / "workflow-transition.js"
+I18N_EN = MODULE / "Resources" / "i18n" / "en_US" / "Quote.json"
 
 
 def read(path: Path) -> str:
@@ -216,9 +217,11 @@ class Phase3C17WP02MarkAcceptedTests(unittest.TestCase):
 
     def test_mark_accepted_shows_confirmation(self) -> None:
         source = read(HANDLER)
+        labels = json.loads(read(I18N_EN))["labels"]
 
         self.assertIn("confirm(", source)
-        self.assertIn("mark this quote as accepted", source)
+        self.assertIn("this.translate('markAcceptedConfirmation')", source)
+        self.assertEqual(labels["markAcceptedConfirmation"], "Are you sure you want to mark this quote as accepted?")
 
     def test_mark_accepted_visible_only_in_sent(self) -> None:
         source = read(HANDLER)

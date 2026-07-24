@@ -59,14 +59,20 @@ class ProspectingUiFoundationTests(unittest.TestCase):
         navigation_surface = source + dashboard_js
         for route in ("#ProspectingDashboard", "#ProspectingSearch", "#SearchJob", "#ProspectPool", "#SearchStrategy"):
             self.assertIn(route, navigation_surface)
-        # Phase3U03 dashboard productization: overview + summary + recent discovery empty states
+        # Phase3U03 dashboard productization: overview + summary + recent discovery empty states.
+        # Phase3C17 WP1.4B localizes these visible labels through the dashboard scope.
         for label in (
-            "Operational Centers",
-            "Prospecting Summary",
-            "Recent Discovery Activity",
-            "No data available",
+            "operationalCenters",
+            "summary",
+            "recentActivity",
+            "noData",
         ):
             self.assertIn(label, source)
+        dashboard_i18n = load_json(MODULE / "Resources" / "i18n" / "en_US" / "ProspectingDashboard.json")
+        self.assertEqual(dashboard_i18n["labels"]["operationalCenters"], "Operational Centers")
+        self.assertEqual(dashboard_i18n["labels"]["summary"], "Prospecting Summary")
+        self.assertEqual(dashboard_i18n["labels"]["recentActivity"], "Recent Discovery Activity")
+        self.assertEqual(dashboard_i18n["labels"]["noData"], "No data available")
         labels = load_json(MODULE / "Resources" / "i18n" / "en_US" / "Global.json")["labels"]
         self.assertEqual(labels["C17DashboardSearchJobs"], "Search Jobs")
         self.assertEqual(labels["C17DashboardProspectPool"], "Prospect Pool")
@@ -92,7 +98,7 @@ class ProspectingUiFoundationTests(unittest.TestCase):
         template = (CLIENT / "res" / "templates" / "prospecting" / "search.tpl").read_text(encoding="utf-8")
         self.assertIn("getAcl().check('SearchJob', 'create')", source)
         self.assertIn("if (!country || !keyword)", source)
-        self.assertIn("Country and Keyword are required", source)
+        self.assertIn("this.labels.countryKeywordRequired", source)
         self.assertIn("getModelFactory().create('SearchJob')", source)
         self.assertIn("create('SearchJob').then(function (model)", source)
         self.assertIn("status: 'QUEUED'", source)
@@ -101,9 +107,12 @@ class ProspectingUiFoundationTests(unittest.TestCase):
         self.assertNotIn("provider/", source.lower())
         self.assertNotIn("runtime", source.lower())
         self.assertNotIn("research", source.lower())
-        for label in ("Country", "Keyword", "Provider", "Strategy", "Result Limit", "Start Search"):
-            self.assertIn(label, template)
-        self.assertIn("creates a queued Search Job only", template)
+        for label in ("country", "keyword", "provider", "strategy", "resultLimit", "startSearch"):
+            self.assertIn("labels." + label, template)
+        search_i18n = load_json(MODULE / "Resources" / "i18n" / "en_US" / "ProspectingSearch.json")
+        self.assertEqual(search_i18n["labels"]["country"], "Country")
+        self.assertEqual(search_i18n["labels"]["startSearch"], "Start Search")
+        self.assertIn("labels.queuedOnlyHelp", template)
         self.assertIn("disabled", template)
 
     def test_search_job_layout_uses_frozen_fields_only(self) -> None:

@@ -6,7 +6,7 @@ import unittest
 ROOT = Path(__file__).resolve().parents[2]
 EXT = ROOT / "crm-extension"
 MODULE = EXT / "files" / "custom" / "Espo" / "Modules" / "Prospecting"
-RELEASE_VERSION = "1.9.8-alpha"
+RELEASE_VERSION = "1.9.9-alpha"
 
 
 def _load_json(path: Path) -> dict | list:

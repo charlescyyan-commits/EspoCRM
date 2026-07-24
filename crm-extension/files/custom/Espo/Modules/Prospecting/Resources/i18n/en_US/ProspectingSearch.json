@@ -1,6 +1,29 @@
 {
   "labels": {
     "ProspectingSearch": "Search",
-    "ProspectingSearches": "Search"
+    "ProspectingSearches": "Search",
+    "permissionDenied": "You do not have permission to create Search Jobs.",
+    "countryKeywordRequired": "Country and Keyword are required to create a Search Job.",
+    "created": "Search Job created. No provider was started.",
+    "createFailed": "Unable to create Search Job. Check the required Search Job fields.",
+    "operationalCenters": "Operational Centers",
+    "dashboard": "Dashboard",
+    "searchCenter": "Search Center",
+    "searchStrategies": "Search Strategies",
+    "searchJobs": "Search Jobs",
+    "prospectPool": "Prospect Pool",
+    "centerLead": "Research Center",
+    "centerDraftApproval": "Outreach Center",
+    "centerQuote": "Quote Center",
+    "createSearchJob": "Create Search Job",
+    "country": "Country",
+    "keyword": "Keyword",
+    "provider": "Provider",
+    "strategy": "Strategy",
+    "optionalStrategyId": "Optional Search Strategy ID",
+    "resultLimit": "Result Limit",
+    "resultLimitHelp": "Result limits remain owned by the frozen Provider/Runtime contract.",
+    "startSearch": "Start Search",
+    "queuedOnlyHelp": "This UI creates a queued Search Job only. It does not start a provider, worker, queue, website research, or AI process."
   }
 }

@@ -13,7 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 EXT = ROOT / "crm-extension"
 MODULE = EXT / "files" / "custom" / "Espo" / "Modules" / "Prospecting"
 MODULE_ENTITY_DEFS = MODULE / "Resources" / "metadata" / "entityDefs"
-CANONICAL_ARCHIVE = ROOT / "deployment" / "prospecting-extension-1.9.8-alpha.zip"
+CANONICAL_ARCHIVE = ROOT / "deployment" / "prospecting-extension-1.9.9-alpha.zip"
 ENTITY_NAMES = ("DraftApproval", "SendExecution", "ReplyEvent")
 
 C10_FROZEN_HASHES = {

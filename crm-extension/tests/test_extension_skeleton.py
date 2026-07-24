@@ -14,7 +14,7 @@ MODULE = EXT / "files" / "custom" / "Espo" / "Modules" / "Prospecting"
 MODULE_ENTITY_DEFS = MODULE / "Resources" / "metadata" / "entityDefs"
 MODULE_LAYOUTS = MODULE / "Resources" / "layouts"
 SURFACE_ENTITY_DEFS = MODULE_ENTITY_DEFS
-RELEASE_VERSION = "1.9.8-alpha"
+RELEASE_VERSION = "1.9.9-alpha"
 
 REQUIRED_DIRS = [
     EXT / "files" / "custom" / "Espo" / "Modules" / "Prospecting",
@@ -531,6 +531,7 @@ class ExtensionSkeletonTests(unittest.TestCase):
             MODULE / "Entities" / "LearningSignal.php",
             MODULE / "Controllers" / "SalesFeedback.php",
             MODULE / "Controllers" / "Quote.php",
+            MODULE / "Controllers" / "DraftApproval.php",
             MODULE / "Controllers" / "LearningSignal.php",
             MODULE / "Entities" / "EmailEvent.php",
             MODULE / "Controllers" / "EmailEvent.php",

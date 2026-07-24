@@ -1,6 +1,29 @@
 {
   "fields": {"name": "标题", "status": "报价状态", "quoteNumber": "报价编号", "validUntil": "有效期至", "amount": "金额", "opportunity": "商机", "lead": "线索"},
   "links": {"opportunity": "商机", "lead": "线索", "quoteItems": "报价明细", "approvals": "审批", "proformaInvoices": "形式发票"},
-  "labels": {"Create Quote": "创建报价", "Quotes": "报价"},
+  "labels": {
+    "Create Quote": "创建报价",
+    "Quotes": "报价",
+    "Submit for Review": "提交审核",
+    "Approve": "批准",
+    "Reject Review": "驳回审核",
+    "Mark Customer Rejected": "标记为客户拒绝",
+    "Reject": "拒绝",
+    "Send Quote": "发送报价",
+    "Mark Accepted": "标记为已接受",
+    "Expire": "设为过期",
+    "quoteSubmittedForReview": "报价已提交审核。",
+    "quoteApproved": "报价已批准。",
+    "rejectionReasonPrompt": "驳回原因（必填）：",
+    "rejectionReasonRequired": "必须填写驳回原因。",
+    "quoteReturnedToDraft": "报价已退回草稿。",
+    "quoteRejectedByCustomer": "报价已被客户拒绝。",
+    "quoteRejected": "报价已拒绝。",
+    "quoteSent": "报价已发送。",
+    "markAcceptedConfirmation": "确定要将此报价标记为已接受吗？",
+    "quoteAccepted": "报价已接受。",
+    "quoteExpired": "报价已过期。",
+    "statusChangeFailed": "无法更改报价状态。"
+  },
   "options": {"status": {"DRAFT": "草稿", "IN_REVIEW": "审核中", "APPROVED": "已批准", "SENT": "已发送", "ACCEPTED": "已接受", "REJECTED": "已拒绝", "EXPIRED": "已过期"}}
 }

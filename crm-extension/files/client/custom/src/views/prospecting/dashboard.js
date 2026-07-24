@@ -14,6 +14,7 @@ Espo.define('custom:views/prospecting/dashboard', 'view', function (Dep) {
                 recentJobs: this.recentJobs || [],
                 hasRecentJobs: this.hasRecentJobs,
                 centers: this.centers || [],
+                labels: this.labels || {},
             };
         },
 
@@ -21,9 +22,9 @@ Espo.define('custom:views/prospecting/dashboard', 'view', function (Dep) {
             this.loading = true;
             this.hasMetrics = false;
             this.hasRecentJobs = false;
+            this.labels = this.buildLabels();
             this.metrics = this.buildEmptyMetrics();
             this.recentJobs = [];
-            this.labels = this.buildLabels();
             this.centers = this.buildCenters();
             this.wait(this.loadDashboardData());
         },
@@ -33,33 +34,67 @@ Espo.define('custom:views/prospecting/dashboard', 'view', function (Dep) {
         },
 
         buildLabels: function () {
-            var translate = function (key) {
+            var translateGlobal = function (key) {
                 return this.getLanguage().translate(key, 'labels', 'Global');
+            }.bind(this);
+            var translate = function (key) {
+                return this.getLanguage().translate(key, 'labels', 'ProspectingDashboard');
             }.bind(this);
 
             return {
-                searchCenter: translate('C17DashboardSearchCenter'),
-                researchCenter: translate('C17DashboardResearchCenter'),
-                outreachCenter: translate('C17DashboardOutreachCenter'),
-                quoteCenter: translate('C17DashboardQuoteCenter'),
-                searchDescription: translate('C17DashboardSearchDescription'),
-                researchDescription: translate('C17DashboardResearchDescription'),
-                outreachDescription: translate('C17DashboardOutreachDescription'),
-                quoteDescription: translate('C17DashboardQuoteDescription'),
-                searchStrategies: translate('C17DashboardSearchStrategies'),
-                searchJobs: translate('C17DashboardSearchJobs'),
-                prospectPool: translate('C17DashboardProspectPool'),
-                leads: translate('C17DashboardLeads'),
-                researchEvidence: translate('C17DashboardResearchEvidence'),
-                salesFeedback: translate('C17DashboardSalesFeedback'),
-                learningSignals: translate('C17DashboardLearningSignals'),
-                draftApprovals: translate('C17DashboardDraftApprovals'),
-                sendExecutions: translate('C17DashboardSendExecutions'),
-                replyEvents: translate('C17DashboardReplyEvents'),
-                emailEvents: translate('C17DashboardEmailEvents'),
-                quotes: translate('C17DashboardQuotes'),
-                quoteApprovals: translate('C17DashboardQuoteApprovals'),
-                proformaInvoices: translate('C17DashboardProformaInvoices'),
+                searchCenter: translateGlobal('C17DashboardSearchCenter'),
+                researchCenter: translateGlobal('C17DashboardResearchCenter'),
+                outreachCenter: translateGlobal('C17DashboardOutreachCenter'),
+                quoteCenter: translateGlobal('C17DashboardQuoteCenter'),
+                searchDescription: translateGlobal('C17DashboardSearchDescription'),
+                researchDescription: translateGlobal('C17DashboardResearchDescription'),
+                outreachDescription: translateGlobal('C17DashboardOutreachDescription'),
+                quoteDescription: translateGlobal('C17DashboardQuoteDescription'),
+                searchStrategies: translateGlobal('C17DashboardSearchStrategies'),
+                searchJobs: translateGlobal('C17DashboardSearchJobs'),
+                prospectPool: translateGlobal('C17DashboardProspectPool'),
+                leads: translateGlobal('C17DashboardLeads'),
+                researchEvidence: translateGlobal('C17DashboardResearchEvidence'),
+                salesFeedback: translateGlobal('C17DashboardSalesFeedback'),
+                learningSignals: translateGlobal('C17DashboardLearningSignals'),
+                draftApprovals: translateGlobal('C17DashboardDraftApprovals'),
+                sendExecutions: translateGlobal('C17DashboardSendExecutions'),
+                replyEvents: translateGlobal('C17DashboardReplyEvents'),
+                emailEvents: translateGlobal('C17DashboardEmailEvents'),
+                quotes: translateGlobal('C17DashboardQuotes'),
+                quoteApprovals: translateGlobal('C17DashboardQuoteApprovals'),
+                proformaInvoices: translateGlobal('C17DashboardProformaInvoices'),
+                prospecting: translate('prospecting'),
+                dashboard: translate('dashboard'),
+                workflow: translate('workflow'),
+                workflowDiscover: translate('workflowDiscover'),
+                workflowResearch: translate('workflowResearch'),
+                workflowOutreach: translate('workflowOutreach'),
+                workflowQuotes: translate('workflowQuotes'),
+                operations: translate('operations'),
+                operationsDescription: translate('operationsDescription'),
+                operationalCenters: translate('operationalCenters'),
+                analyticsDeferred: translate('analyticsDeferred'),
+                summary: translate('summary'),
+                loading: translate('loading'),
+                noData: translate('noData'),
+                noActivity: translate('noActivity'),
+                recentActivity: translate('recentActivity'),
+                viewAll: translate('viewAll'),
+                name: translate('name'),
+                status: translate('status'),
+                created: translate('created'),
+                count: translate('count'),
+                noSearchJobs: translate('noSearchJobs'),
+                startDiscover: translate('startDiscover'),
+                openSearchStrategies: translate('openSearchStrategies'),
+                totalProspects: translate('totalProspects'),
+                newThisWeek: translate('newThisWeek'),
+                needResearch: translate('needResearch'),
+                researchCompleted: translate('researchCompleted'),
+                highPriority: translate('highPriority'),
+                untitledJob: translate('untitledJob'),
+                notAvailable: translate('notAvailable'),
             };
         },
 
@@ -123,11 +158,11 @@ Espo.define('custom:views/prospecting/dashboard', 'view', function (Dep) {
 
         buildEmptyMetrics: function () {
             return [
-                {key: 'total', label: 'Total Prospects', value: 0, href: '#ProspectPool'},
-                {key: 'newWeek', label: 'New This Week', value: 0, href: '#ProspectPool'},
-                {key: 'needResearch', label: 'Need Research', value: 0, href: '#ProspectPool/list/primary=prospectsReadyForResearch'},
-                {key: 'researchDone', label: 'Research Completed', value: 0, href: '#ProspectPool'},
-                {key: 'highPriority', label: 'High Priority', value: 0, href: '#SearchJob'},
+                {key: 'total', label: this.labels.totalProspects, value: 0, href: '#ProspectPool'},
+                {key: 'newWeek', label: this.labels.newThisWeek, value: 0, href: '#ProspectPool'},
+                {key: 'needResearch', label: this.labels.needResearch, value: 0, href: '#ProspectPool/list/primary=prospectsReadyForResearch'},
+                {key: 'researchDone', label: this.labels.researchCompleted, value: 0, href: '#ProspectPool'},
+                {key: 'highPriority', label: this.labels.highPriority, value: 0, href: '#SearchJob'},
             ];
         },
 
@@ -185,9 +220,9 @@ Espo.define('custom:views/prospecting/dashboard', 'view', function (Dep) {
                             var rows = collection.models.map(function (model) {
                                 return {
                                     id: model.id,
-                                    name: model.get('name') || 'Untitled job',
-                                    status: model.get('status') || '—',
-                                    createdAt: model.get('createdAt') || '—',
+                                    name: model.get('name') || self.labels.untitledJob,
+                                    status: model.get('status') || self.labels.notAvailable,
+                                    createdAt: model.get('createdAt') || self.labels.notAvailable,
                                     count: model.get('resultCount') != null ? model.get('resultCount') : 0,
                                     href: '#SearchJob/view/' + model.id,
                                 };
