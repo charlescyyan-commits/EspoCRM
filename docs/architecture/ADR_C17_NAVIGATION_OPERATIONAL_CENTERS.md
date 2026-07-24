@@ -1185,5 +1185,98 @@ ADR-C16 is later annotated or amended.
 
 ---
 
+## ADR Amendment A1 — WP1.4 Navigation Product Polish Reconciliation
+
+### Status
+
+Accepted
+
+### Purpose
+
+WP1.4 (Navigation Product Polish) is a governed evolution within the authority of
+this Operational Centers ADR. It is not a new navigation architecture and it is not
+an overturn of this ADR. This amendment formally records the WP1.4-approved
+desired-state evolution so that the governance chain is closed:
+
+ADR → approved evolution → desired-state marker → materializer → frozen artifact.
+
+### Desired State Identity Update
+
+- Original desired-state marker recorded by this ADR:
+  `phase3c17-wp1-operational-centers-v1`
+- Implemented frozen desired-state marker:
+  `phase3c17-wp1-4-product-polish-v1`
+
+The `phase3c17-wp1-4-product-polish-v1` marker denotes the WP1.4 governed evolution
+of the same accepted desired state. The frozen implementation
+(`deployment/navigation/phase3c17_navigation.json`), the materializer constant, and
+the navigation contract tests already agree on this marker; this amendment aligns
+the ADR with that frozen reality. No runtime behavior changed.
+
+### Authority
+
+`docs/PHASE3C17_WP1_4_NAVIGATION_PRODUCT_POLISH_AUDIT.md`
+
+The WP1.4 product audit approved:
+
+- workflow-first navigation;
+- Chinese-primary labels;
+- the Sales Development Command Center presentation;
+- the governed navigation artifact carrying the
+  `phase3c17-wp1-4-product-polish-v1` marker.
+
+### Classification Confirmation
+
+WP1.4 did not violate the frozen A–F entity visibility classification of this ADR.
+Confirmed unchanged:
+
+- `Lead` remains the sole global native tab (`requiredPreservedGlobalEntries`).
+- `ResearchEvidence` is not promoted to top level.
+- `Approval` is not promoted to top level.
+- `ProformaInvoice` is not promoted to top level.
+- `EmailEvent` is not promoted to top level.
+- `SalesFeedback` is not promoted to top level.
+- `LearningSignal` is not promoted to top level.
+
+### Membership Evolution
+
+WP1.4 admitted the following pre-existing native scopes into the governed
+navigation ordering (`topLevelOrder` in the desired-state artifact):
+
+- `Home`
+- `Account`
+- `Contact`
+- `Opportunity`
+- `Email`
+- `Task`
+- `Calendar`
+- `KnowledgeBaseArticle`
+
+These are all existing Class E native scopes. Their inclusion in the governed
+ordering is not the addition of new business entries.
+
+### Implementation Reference
+
+- WP1.4 implementation: `4dfaeacc1af61412dabfa33cd23f87975bfdc8b1`
+  (`phase3c17: polish product navigation and dashboard IA`)
+- Frozen release: `37252303f677b8c8b714b1b083a2bb06dd254a3b`
+  (release `v1.9.9-alpha`, artifact SHA-256
+  `067A89E52EFB35DF7DA4D9437485381D93004063BFC0E81B67EF2C67995871C2`,
+  tags `v1.9.9-alpha` and `phase3c17-wp1-exit`)
+
+### Governance Result
+
+`phase3c17-wp1-4-product-polish-v1` is the accepted desired state of Phase3C17 WP1.
+The desired-state marker recorded in this ADR is hereby reconciled with the frozen
+implementation, materializer, and contract tests.
+
+### Revision History
+
+- A1: Reconciled WP1.4 governed navigation evolution with frozen implementation
+  desired-state marker. No runtime behavior changed.
+
+---
+
 *End of ADR. WP1.2A amendments A–J retained; 2026-07-23 acceptance and implementation
-alignment applied. Status: Accepted.*
+alignment applied; Amendment A1 (WP1.4 product-polish reconciliation) applied.
+Status: Accepted.*
