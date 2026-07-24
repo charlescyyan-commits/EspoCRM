@@ -1,0 +1,5 @@
+{
+  "primaryFilterClassNameMap": {
+    "c17AwaitingReply": "Espo\\Modules\\Prospecting\\Classes\\Select\\ReplyEvent\\PrimaryFilters\\C17AwaitingReply"
+  }
+}

@@ -1,0 +1,5 @@
+{
+  "primaryFilterClassNameMap": {
+    "c17Pending": "Espo\\Modules\\Prospecting\\Classes\\Select\\DraftApproval\\PrimaryFilters\\C17Pending"
+  }
+}

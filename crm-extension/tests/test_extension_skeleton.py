@@ -596,6 +596,22 @@ class ExtensionSkeletonTests(unittest.TestCase):
             strategy_filters,
             msg="SearchStrategy PrimaryFilters must match the approved U02 inventory exactly",
         )
+        # Phase3C17 center queue filters — exact inventory (no arbitrary future PHP)
+        c17_filters = {
+            MODULE / "Classes" / "Select" / "DraftApproval" / "PrimaryFilters" / "C17Pending.php",
+            MODULE / "Classes" / "Select" / "ReplyEvent" / "PrimaryFilters" / "C17AwaitingReply.php",
+            MODULE / "Classes" / "Select" / "Approval" / "PrimaryFilters" / "C17Pending.php",
+        }
+        for path in c17_filters:
+            self.assertTrue(path.is_file(), msg=f"Missing C17 center queue filter: {path}")
+        expected |= c17_filters
+        for entity in ("DraftApproval", "ReplyEvent", "Approval"):
+            entity_filters = {path for path in c17_filters if entity in path.parts}
+            self.assertEqual(
+                set((MODULE / "Classes" / "Select" / entity / "PrimaryFilters").glob("*.php")),
+                entity_filters,
+                msg=f"{entity} PrimaryFilters must match the approved C17 inventory exactly",
+            )
         self.assertEqual(set(php_files), expected, msg=f"Unexpected PHP files: {php_files}")
 
     def test_core_espocrm_untouched(self) -> None:
