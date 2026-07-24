@@ -7,8 +7,8 @@
 
 | Field | Value |
 | --- | --- |
-| Commit | `5ff7cc3` — `phase3c17: fix center queue runtime integrity` (plus packaging commit below) |
-| Remote | `origin/master` synced after push and packaging |
+| Commit | `5ff7cc3` feature fix; packaging `32b2027` — rebuild artifact |
+| Remote | `origin/master` @ `32b2027` (`HEAD == origin/master`) |
 | Version | `1.9.10-alpha` (unchanged; no version bump) |
 | Artifact | `deployment/prospecting-extension-1.9.10-alpha.zip` |
 | SHA-256 | `10ED255C3AB2BA043E13B767EF6CECF1CEF8CE88942499458F433008FBA5300D` |
