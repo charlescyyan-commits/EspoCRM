@@ -11,8 +11,8 @@
 | Remote | `origin/master` @ `32b2027` (`HEAD == origin/master`) |
 | Version | `1.9.10-alpha` (unchanged; no version bump) |
 | Artifact | `deployment/prospecting-extension-1.9.10-alpha.zip` |
-| SHA-256 | `10ED255C3AB2BA043E13B767EF6CECF1CEF8CE88942499458F433008FBA5300D` |
-| Prior SHA (superseded build) | `D1F190376F59AE86C64C977D1D9079B2034992AAA302772D6912D8B5117636BC` |
+| SHA-256 | `62DF8E4C576AF6C0980BC5F8B920974A69B453D1EED41A5A53471BA91A8E022B` |
+| Prior SHA (superseded build) | `10ED255C3AB2BA043E13B767EF6CECF1CEF8CE88942499458F433008FBA5300D` |
 | `1.9.9-alpha` | Immutable — `067A89E52EFB35DF7DA4D9437485381D93004063BFC0E81B67EF2C67995871C2` |
 
 ## Gates
@@ -28,6 +28,8 @@
 - Manifest version already `1.9.10-alpha` — no bump.
 - Release notes updated to document packaged `ReplyEvent` / `Approval` Record controllers.
 - No navigation, ACL, or workflow service edits in this rebuild.
+- The reconciled artifact includes
+  `Controllers/SendExecution.php`, matching the source tree at `3bff2e2`.
 
 ## Remaining risks
 
