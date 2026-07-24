@@ -11,6 +11,8 @@
   operational summaries and five daily queues: 我的任务, 待研究客户, 待触达,
   待回复, 待审批.
 - Updates ProspectingSummary dashlet presentation for center composition.
+- Adds native Record controllers for `ReplyEvent` and `Approval` so Command
+  Center queue dashlets resolve without controller-missing 404s.
 - Preserves personal dashboards (e.g. My Espo); does not change navigation,
   workflow ownership, Quote/Approval mutation paths, or ACL.
 
