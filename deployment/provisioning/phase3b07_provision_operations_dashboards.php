@@ -2,6 +2,16 @@
 
 // Compatibility wrapper. ProspectingSummary remains provisioned by the
 // canonical C17 Sales Development Command Center script.
+$hasUserSelection = false;
+foreach (array_slice($argv, 1) as $argument) {
+    if ($argument === '--dev-defaults' || str_starts_with((string) $argument, '--user=')) {
+        $hasUserSelection = true;
+        break;
+    }
+}
+if (!$hasUserSelection) {
+    $argv[] = '--user=all';
+}
 require __DIR__ . '/phase3c17_provision_sales_development_command_center.php';
 return;
 
