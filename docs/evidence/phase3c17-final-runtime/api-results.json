@@ -1,0 +1,26 @@
+﻿[
+    {
+        "scope":  "DraftApproval",
+        "status":  404,
+        "total":  null,
+        "result":  "FAIL"
+    },
+    {
+        "scope":  "Approval",
+        "status":  404,
+        "total":  null,
+        "result":  "FAIL"
+    },
+    {
+        "scope":  "ReplyEvent",
+        "status":  404,
+        "total":  null,
+        "result":  "FAIL"
+    },
+    {
+        "scope":  "SendExecution",
+        "status":  404,
+        "total":  null,
+        "result":  "FAIL"
+    }
+]
