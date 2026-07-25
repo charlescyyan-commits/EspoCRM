@@ -2,7 +2,7 @@
   "fields": {
     "name": {"type": "varchar", "maxLength": 255, "required": true, "trim": true},
     "sendRequestId": {"type": "varchar", "maxLength": 255, "required": true, "trim": true},
-    "status": {"type": "enum", "required": true, "options": ["CREATED", "READY", "SENT", "FAILED", "CANCELLED"], "default": "CREATED", "displayAsLabel": true, "style": {"CREATED": "default", "READY": "info", "SENT": "success", "FAILED": "danger", "CANCELLED": "warning"}},
+    "status": {"type": "enum", "required": true, "readOnly": true, "options": ["CREATED", "READY", "SENT", "FAILED", "CANCELLED"], "default": "CREATED", "displayAsLabel": true, "style": {"CREATED": "default", "READY": "info", "SENT": "success", "FAILED": "danger", "CANCELLED": "warning"}},
     "providerName": {"type": "varchar", "maxLength": 100, "required": false, "notNull": false, "trim": true},
     "providerMessageId": {"type": "varchar", "maxLength": 255, "required": false, "notNull": false, "trim": true},
     "retryCount": {"type": "int", "required": true, "default": 0, "min": 0},

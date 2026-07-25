@@ -579,6 +579,7 @@ class ExtensionSkeletonTests(unittest.TestCase):
             EXT / "files" / "custom" / "Espo" / "Custom" / "Hooks" / "EmailEvent" / "EmailEventSalesFeedbackHook.php",
             EXT / "files" / "custom" / "Espo" / "Custom" / "Hooks" / "DraftApproval" / "EmailLifecycleProjectionHook.php",
             EXT / "files" / "custom" / "Espo" / "Custom" / "Hooks" / "SendExecution" / "EmailLifecycleProjectionHook.php",
+            EXT / "files" / "custom" / "Espo" / "Custom" / "Hooks" / "SendExecution" / "SendExecutionStatusMutationGuard.php",
             EXT / "files" / "custom" / "Espo" / "Custom" / "Hooks" / "ReplyEvent" / "EmailLifecycleProjectionHook.php",
         }
         expected |= set((MODULE / "Classes" / "Select" / "Lead" / "PrimaryFilters").glob("*.php"))
