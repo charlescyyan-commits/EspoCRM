@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Espo\Core\Container;
+use Espo\Core\DataManager;
 use Espo\ORM\EntityManager;
 
 /**
@@ -19,5 +20,7 @@ class AfterInstall
             'updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP' .
             ') ENGINE=InnoDB'
         );
+
+        $container->getByClass(DataManager::class)->rebuild();
     }
 }
