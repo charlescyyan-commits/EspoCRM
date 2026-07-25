@@ -38,13 +38,15 @@ class BridgeAdapterContractTests(unittest.TestCase):
         self.result = RESULT.read_text(encoding="utf-8")
 
     def test_sent_result_persists_execution_then_creates_email_event_for_projection(self) -> None:
-        self.assertIn("'status' => 'SENT'", self.adapter)
+        self.assertIn("SendExecutionTransitionService", self.adapter)
+        self.assertIn("applyProviderOutcome", self.adapter)
+        self.assertIn("STATUS_SENT", self.adapter)
+        self.assertNotIn("'status' => 'SENT'", self.adapter)
         self.assertIn("'providerName' => 'Brevo'", self.adapter)
         self.assertIn("'providerMessageId' => $result->providerAttemptId()", self.adapter)
-        self.assertIn("$this->entityManager->saveEntity($execution);", self.adapter)
         self.assertIn("$this->ensureSentEmailEvent($execution, $result);", self.adapter)
         self.assertLess(
-            self.adapter.index("$this->entityManager->saveEntity($execution);"),
+            self.adapter.index("handoffProviderOutcome"),
             self.adapter.index("$this->ensureSentEmailEvent($execution, $result);"),
         )
         for field in (
@@ -59,6 +61,8 @@ class BridgeAdapterContractTests(unittest.TestCase):
 
     def test_failed_network_maps_to_network_and_increments_retry_count(self) -> None:
         self.assertIn("BridgeErrorClass::NETWORK => 'NETWORK'", self.adapter)
+        self.assertIn("STATUS_FAILED", self.adapter)
+        self.assertNotIn("'status' => 'FAILED'", self.adapter)
         self.assertIn("'failureCategory' => $this->failureCategory($result->errorClass())", self.adapter)
         self.assertIn("'lastError' => $result->errorCode()", self.adapter)
         self.assertIn("'retryCount' => ((int) ($execution->get('retryCount') ?? 0)) + 1", self.adapter)

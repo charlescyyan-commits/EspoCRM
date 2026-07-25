@@ -13,11 +13,10 @@ use Espo\ORM\Entity;
 use Espo\ORM\EntityManager;
 
 /**
- * Sole intended writer of SendExecution.status (ADR-C18 / adr-c18-sendexecution-v1).
+ * Sole writer of SendExecution.status (ADR-C18 / adr-c18-sendexecution-v1).
  *
- * Adapters are not migrated in WP1.1; they must later call this service for any
- * status transition. Provider-trace field writes remain adapter-owned until that
- * migration lands.
+ * Bridge/result adapters must hand off terminal provider outcomes via
+ * applyProviderOutcome() or transition(); they must not set status directly.
  */
 class SendExecutionTransitionService
 {
@@ -123,7 +122,61 @@ class SendExecutionTransitionService
     }
 
     /**
-     * @param array{now?: DateTimeImmutable|string, skipAuthorization?: bool} $options
+     * Provider-outcome handoff for bridge/result adapters.
+     *
+     * Owns READY→SENT / READY→FAILED. When the bridge delivers against CREATED or
+     * FAILED, promotes to READY first so the ADR matrix remains the sole status
+     * state machine. Provider-trace fields are applied on the terminal save.
+     *
+     * @param array{
+     *   providerName?: string|null,
+     *   providerMessageId?: string|null,
+     *   lastError?: string|null,
+     *   failureCategory?: string|null,
+     *   retryCount?: int,
+     *   now?: DateTimeImmutable|string
+     * } $providerTrace
+     */
+    public function applyProviderOutcome(Entity $execution, string $targetStatus, array $providerTrace = []): Entity
+    {
+        if ($execution->getEntityType() !== 'SendExecution') {
+            throw new BadRequest('SendExecution provider outcome requires a SendExecution entity.');
+        }
+        if (!in_array($targetStatus, [self::STATUS_SENT, self::STATUS_FAILED], true)) {
+            throw new BadRequest('Provider outcome handoff only supports SENT or FAILED.');
+        }
+
+        $options = ['skipAuthorization' => true];
+        if (array_key_exists('now', $providerTrace)) {
+            $options['now'] = $providerTrace['now'];
+        }
+
+        $currentStatus = (string) ($execution->get('status') ?: self::STATUS_CREATED);
+        if ($currentStatus === self::STATUS_CREATED) {
+            $this->transition($execution, self::STATUS_READY, $options);
+        } elseif ($currentStatus === self::STATUS_FAILED) {
+            // Connector may redeliver after a prior failure; re-arm without the
+            // operator retry-limit gate used by FAILED→READY workflow actions.
+            $this->transition($execution, self::STATUS_READY, $options + [
+                'skipRetryLimit' => true,
+            ]);
+        } elseif ($currentStatus !== self::STATUS_READY) {
+            throw new BadRequest(
+                "Provider outcome handoff cannot run from status {$currentStatus}."
+            );
+        }
+
+        $this->applyProviderTraceFields($execution, $providerTrace);
+
+        return $this->transition($execution, $targetStatus, $options);
+    }
+
+    /**
+     * @param array{
+     *   now?: DateTimeImmutable|string,
+     *   skipAuthorization?: bool,
+     *   skipRetryLimit?: bool
+     * } $options
      */
     public function transition(Entity $execution, string $targetStatus, array $options = []): Entity
     {
@@ -140,7 +193,11 @@ class SendExecutionTransitionService
             $this->authorize($execution, $this->resolveAction($currentStatus, $targetStatus));
         }
 
-        if ($currentStatus === self::STATUS_FAILED && $targetStatus === self::STATUS_READY) {
+        if (
+            $currentStatus === self::STATUS_FAILED
+            && $targetStatus === self::STATUS_READY
+            && ($options['skipRetryLimit'] ?? false) !== true
+        ) {
             $this->assertRetryAllowed($execution);
         }
 
@@ -161,6 +218,25 @@ class SendExecutionTransitionService
                 return $execution;
             }
         );
+    }
+
+    /**
+     * @param array{
+     *   providerName?: string|null,
+     *   providerMessageId?: string|null,
+     *   lastError?: string|null,
+     *   failureCategory?: string|null,
+     *   retryCount?: int,
+     *   now?: DateTimeImmutable|string
+     * } $providerTrace
+     */
+    private function applyProviderTraceFields(Entity $execution, array $providerTrace): void
+    {
+        foreach (['providerName', 'providerMessageId', 'lastError', 'failureCategory', 'retryCount'] as $field) {
+            if (array_key_exists($field, $providerTrace)) {
+                $execution->set($field, $providerTrace[$field]);
+            }
+        }
     }
 
     /**

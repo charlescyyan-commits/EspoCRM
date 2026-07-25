@@ -24,10 +24,14 @@ class CrmResultAdapterBoundaryTests(unittest.TestCase):
 
     def test_service_updates_only_existing_send_execution_terminal_fields(self) -> None:
         self.assertIn("getEntityById('SendExecution', $result->executionId())", self.source)
-        for field_name in ("'status'", "'providerMessageId'", "'failureCategory'", "'lastError'"):
+        self.assertIn("SendExecutionTransitionService", self.source)
+        self.assertIn("transitionService->transition", self.source)
+        self.assertNotIn("'status' => 'SENT'", self.source)
+        self.assertNotIn("'status' => 'FAILED'", self.source)
+        for field_name in ("'providerMessageId'", "'failureCategory'", "'lastError'"):
             with self.subTest(field_name=field_name):
                 self.assertIn(field_name, self.source)
-        self.assertIn("$this->entityManager->saveEntity($execution)", self.source)
+        self.assertNotIn("$this->entityManager->saveEntity($execution)", self.source)
 
     def test_service_preserves_terminal_and_duplicate_rules_without_retry(self) -> None:
         self.assertIn("'DUPLICATE_RESULT'", self.source)

@@ -4,14 +4,16 @@ declare(strict_types=1);
 
 namespace Espo\Modules\Prospecting\Services;
 
+use Espo\Core\Exceptions\BadRequest;
 use Espo\ORM\Entity;
 use Espo\ORM\EntityManager;
 
 /**
  * Records a terminal connector bridge result in CRM source records.
  *
- * This adapter writes only SendExecution and an optional SENT EmailEvent. The
- * existing after-save hooks own all Lead lifecycle projection.
+ * Status transitions are owned by SendExecutionTransitionService via provider
+ * outcome handoff. This adapter supplies provider-trace fields and optional
+ * SENT EmailEvent creation only. Lead projection remains hook-owned.
  */
 final class SendExecutionBridgeAdapterService
 {
@@ -25,13 +27,17 @@ final class SendExecutionBridgeAdapterService
 
     private const ACCEPTABLE_RECEIVE_STATES = ['CREATED', 'READY', 'FAILED'];
 
-    public function __construct(private EntityManager $entityManager) {}
+    public function __construct(
+        private EntityManager $entityManager,
+        private SendExecutionTransitionService $transitionService,
+    ) {}
 
     /**
      * Persist one validated terminal bridge result.
      *
-     * Saving SendExecution deliberately triggers EmailLifecycleProjectionHook.
-     * This service never loads, mutates, or saves a Lead directly.
+     * Saving SendExecution (via transition handoff) deliberately triggers
+     * EmailLifecycleProjectionHook. This service never loads, mutates, or saves
+     * a Lead directly.
      */
     public function receiveResult(SendExecutionBridgeResult $result): void
     {
@@ -51,24 +57,38 @@ final class SendExecutionBridgeAdapterService
         }
 
         if ($result->normalizedStatus() === BridgeNormalizedStatus::SENT) {
-            $execution->set([
-                'status' => 'SENT',
+            $this->handoffProviderOutcome($execution, SendExecutionTransitionService::STATUS_SENT, [
                 'providerName' => 'Brevo',
                 'providerMessageId' => $result->providerAttemptId(),
             ]);
-            $this->entityManager->saveEntity($execution);
             $this->ensureSentEmailEvent($execution, $result);
 
             return;
         }
 
-        $execution->set([
-            'status' => 'FAILED',
+        $this->handoffProviderOutcome($execution, SendExecutionTransitionService::STATUS_FAILED, [
             'failureCategory' => $this->failureCategory($result->errorClass()),
             'lastError' => $result->errorCode(),
             'retryCount' => ((int) ($execution->get('retryCount') ?? 0)) + 1,
         ]);
-        $this->entityManager->saveEntity($execution);
+    }
+
+    /**
+     * @param array{
+     *   providerName?: string|null,
+     *   providerMessageId?: string|null,
+     *   lastError?: string|null,
+     *   failureCategory?: string|null,
+     *   retryCount?: int
+     * } $providerTrace
+     */
+    private function handoffProviderOutcome(Entity $execution, string $targetStatus, array $providerTrace): void
+    {
+        try {
+            $this->transitionService->applyProviderOutcome($execution, $targetStatus, $providerTrace);
+        } catch (BadRequest $exception) {
+            throw new BridgeRejectionException($exception->getMessage(), 0, $exception);
+        }
     }
 
     private function loadExecution(string $executionId): Entity

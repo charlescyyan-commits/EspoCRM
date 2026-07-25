@@ -4,14 +4,15 @@ declare(strict_types=1);
 
 namespace Espo\Modules\Prospecting\Services;
 
+use Espo\Core\Exceptions\BadRequest;
 use Espo\ORM\Entity;
 use Espo\ORM\EntityManager;
 
 /**
  * C14.3.1C CRM terminal-result writer.
  *
- * It updates SendExecution only. Saving that source entity invokes the
- * existing projection hook; this service never creates events or writes Lead.
+ * Updates SendExecution provider-trace fields and delegates status mutation to
+ * SendExecutionTransitionService. Never creates events or writes Lead.
  */
 final class SendExecutionResultAdapterService
 {
@@ -23,7 +24,10 @@ final class SendExecutionResultAdapterService
         BridgeErrorClass::UNKNOWN => 'UNKNOWN',
     ];
 
-    public function __construct(private EntityManager $entityManager) {}
+    public function __construct(
+        private EntityManager $entityManager,
+        private SendExecutionTransitionService $transitionService,
+    ) {}
 
     public function apply(SendExecutionBridgeResult $result): string
     {
@@ -35,7 +39,6 @@ final class SendExecutionResultAdapterService
         $currentStatus = (string) $execution->get('status');
         if ($currentStatus === 'READY') {
             $this->applyReadyTransition($execution, $result);
-            $this->entityManager->saveEntity($execution);
 
             return 'APPLIED';
         }
@@ -53,21 +56,32 @@ final class SendExecutionResultAdapterService
     {
         if ($result->normalizedStatus() === BridgeNormalizedStatus::SENT) {
             $execution->set([
-                'status' => 'SENT',
                 'providerMessageId' => $result->providerAttemptId(),
                 'failureCategory' => null,
                 'lastError' => null,
             ]);
+            $this->transitionTo($execution, SendExecutionTransitionService::STATUS_SENT);
 
             return;
         }
 
         $execution->set([
-            'status' => 'FAILED',
             'providerMessageId' => null,
             'failureCategory' => $this->failureCategory($result->errorClass()),
             'lastError' => $result->errorCode(),
         ]);
+        $this->transitionTo($execution, SendExecutionTransitionService::STATUS_FAILED);
+    }
+
+    private function transitionTo(Entity $execution, string $targetStatus): void
+    {
+        try {
+            $this->transitionService->transition($execution, $targetStatus, [
+                'skipAuthorization' => true,
+            ]);
+        } catch (BadRequest $exception) {
+            throw new BridgeRejectionException($exception->getMessage(), 0, $exception);
+        }
     }
 
     private function isDuplicate(Entity $execution, SendExecutionBridgeResult $result): bool

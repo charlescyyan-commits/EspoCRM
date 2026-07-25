@@ -1,4 +1,4 @@
-"""Phase3C18 WP1.1 SendExecutionTransitionService foundation contracts."""
+"""Phase3C18 WP1 SendExecutionTransitionService + adapter migration contracts."""
 
 from __future__ import annotations
 
@@ -27,6 +27,8 @@ class Phase3C18SendExecutionTransitionServiceTests(unittest.TestCase):
         cls.source = read(TRANSITION)
         cls.save_option = read(SAVE_OPTION)
         cls.entity_defs = read(ENTITY_DEFS)
+        cls.bridge = read(BRIDGE)
+        cls.result = read(RESULT)
 
     def test_service_exists_with_governance_marker(self) -> None:
         self.assertIn("namespace Espo\\Modules\\Prospecting\\Services;", self.source)
@@ -36,6 +38,10 @@ class Phase3C18SendExecutionTransitionServiceTests(unittest.TestCase):
         self.assertIn("public function transition(Entity $execution, string $targetStatus, array $options = []): Entity", self.source)
         self.assertIn("public function authorize(Entity $execution, string $action): void", self.source)
         self.assertIn("public function resolveAction(string $currentStatus, string $targetStatus): string", self.source)
+        self.assertIn(
+            "public function applyProviderOutcome(Entity $execution, string $targetStatus, array $providerTrace = []): Entity",
+            self.source,
+        )
 
     def test_valid_transition_matrix_matches_adr(self) -> None:
         expected_edges = {
@@ -114,6 +120,7 @@ class Phase3C18SendExecutionTransitionServiceTests(unittest.TestCase):
         self.assertIn("retryCount", self.source)
         self.assertIn("maxRetries", self.source)
         self.assertIn("SendExecution retry limit reached for maxRetries.", self.source)
+        self.assertIn("skipRetryLimit", self.source)
 
     def test_acl_authorization_integration_present(self) -> None:
         self.assertIn("private Acl $acl", self.source)
@@ -121,21 +128,41 @@ class Phase3C18SendExecutionTransitionServiceTests(unittest.TestCase):
         self.assertIn("checkEntityEdit($execution)", self.source)
         self.assertIn("skipAuthorization", self.source)
 
-    def test_adapters_not_migrated_yet(self) -> None:
-        bridge = read(BRIDGE)
-        result = read(RESULT)
-        self.assertNotIn("SendExecutionTransitionService", bridge)
-        self.assertNotIn("SendExecutionTransitionService", result)
-        self.assertIn("'status' => 'SENT'", bridge)
-        self.assertIn("'status' => 'FAILED'", bridge)
-        self.assertIn("'status' => 'SENT'", result)
-        self.assertIn("'status' => 'FAILED'", result)
+    def test_adapters_cannot_write_status_directly(self) -> None:
+        """Negative assertion: adapters must not mutate SendExecution.status."""
+        for name, source in (("bridge", self.bridge), ("result", self.result)):
+            with self.subTest(adapter=name):
+                self.assertIn("SendExecutionTransitionService", source)
+                self.assertNotIn("'status' => 'SENT'", source)
+                self.assertNotIn("'status' => 'FAILED'", source)
+                self.assertNotIn("'status' => \"SENT\"", source)
+                self.assertNotIn("'status' => \"FAILED\"", source)
+                self.assertNotIn('set(\'status\'', source)
+                self.assertNotIn('set("status"', source)
+                self.assertNotRegex(
+                    source,
+                    r"->set\(\s*\[[^\]]*['\"]status['\"]\s*=>",
+                    msg=f"{name} must not set status via array payload",
+                )
+
+        self.assertIn("applyProviderOutcome", self.bridge)
+        self.assertIn("handoffProviderOutcome", self.bridge)
+        self.assertIn("transitionService->transition", self.result)
+        self.assertIn("'providerName' => 'Brevo'", self.bridge)
+        self.assertIn("'providerMessageId'", self.bridge)
+        self.assertIn("'failureCategory'", self.bridge)
+        self.assertIn("'lastError'", self.bridge)
+        self.assertIn("'retryCount'", self.bridge)
+        self.assertIn("'providerMessageId'", self.result)
+        self.assertIn("'failureCategory'", self.result)
+        self.assertIn("'lastError'", self.result)
 
     def test_does_not_touch_quote_or_approval_lifecycle(self) -> None:
-        self.assertNotIn("QuoteTransitionService", self.source)
-        self.assertNotIn("ApprovalService", self.source)
-        self.assertNotIn("Quote.status", self.source)
-        self.assertNotIn("Approval.status", self.source)
+        for source in (self.source, self.bridge, self.result):
+            self.assertNotIn("QuoteTransitionService", source)
+            self.assertNotIn("ApprovalService", source)
+            self.assertNotIn("Quote.status", source)
+            self.assertNotIn("Approval.status", source)
 
 
 if __name__ == "__main__":
