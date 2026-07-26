@@ -43,6 +43,7 @@ class Phase3C17WP14DashboardCommandCenterTests(unittest.TestCase):
     def test_daily_queue_filters_use_existing_status_fields_without_services_or_acl_changes(self) -> None:
         self.assertIn("'Task', 'actual', 'dateStart', 'asc', ['onlyMy']", self.source)
         self.assertIn("'DraftApproval', 'c17Pending', 'createdAt'", self.source)
+        self.assertIn("'SendExecution', 'c18ReadyToSend', 'createdAt'", self.source)
         self.assertIn("'ReplyEvent', 'c17AwaitingReply', 'receivedAt'", self.source)
         self.assertIn("'Approval', 'c17Pending', 'createdAt'", self.source)
         for path, filter_name, field, value in (

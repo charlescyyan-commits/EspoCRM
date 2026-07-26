@@ -37,9 +37,10 @@
     "C17DashboardSearchStrategies": "搜索策略", "C17DashboardSearchJobs": "搜索任务",
     "C17DashboardProspectPool": "潜客池", "C17DashboardLeads": "线索",
     "C17DashboardResearchEvidence": "研究证据", "C17DashboardSalesFeedback": "销售反馈",
-    "C17DashboardLearningSignals": "学习信号", "C17DashboardDraftApprovals": "触达审批",
+    "C17DashboardLearningSignals": "学习信号",     "C17DashboardDraftApprovals": "触达审批",
     "C17DashboardSendExecutions": "发送执行", "C17DashboardReplyEvents": "客户回复",
     "C17DashboardEmailEvents": "邮件事件", "C17DashboardQuotes": "报价",
-    "C17DashboardQuoteApprovals": "报价审批", "C17DashboardProformaInvoices": "形式发票"
+    "C17DashboardQuoteApprovals": "报价审批", "C17DashboardProformaInvoices": "形式发票",
+    "C18DashboardPendingSend": "待发送", "C18DashboardFailedSend": "发送失败"
   }
 }

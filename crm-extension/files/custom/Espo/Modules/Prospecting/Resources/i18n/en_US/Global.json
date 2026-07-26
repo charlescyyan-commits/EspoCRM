@@ -37,9 +37,10 @@
     "C17DashboardSearchStrategies": "Search Strategies", "C17DashboardSearchJobs": "Search Jobs",
     "C17DashboardProspectPool": "Prospect Pool", "C17DashboardLeads": "Leads",
     "C17DashboardResearchEvidence": "Research Evidence", "C17DashboardSalesFeedback": "Sales Feedback",
-    "C17DashboardLearningSignals": "Learning Signals", "C17DashboardDraftApprovals": "Draft Approvals",
+    "C17DashboardLearningSignals": "Learning Signals",     "C17DashboardDraftApprovals": "Draft Approvals",
     "C17DashboardSendExecutions": "Send Executions", "C17DashboardReplyEvents": "Reply Events",
     "C17DashboardEmailEvents": "Email Events", "C17DashboardQuotes": "Quotes",
-    "C17DashboardQuoteApprovals": "Quote Approvals", "C17DashboardProformaInvoices": "Proforma Invoices"
+    "C17DashboardQuoteApprovals": "Quote Approvals", "C17DashboardProformaInvoices": "Proforma Invoices",
+    "C18DashboardPendingSend": "Pending Send", "C18DashboardFailedSend": "Failed Send"
   }
 }

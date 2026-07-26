@@ -19,6 +19,8 @@ declare(strict_types=1);
  *     "我今天应该做什么？" — summary cards, daily queues, operational counters.
  *   搜索中心: search strategy/jobs ownership (SearchStrategy, SearchJob, ProspectPool).
  *   触达中心: outreach + reply visibility (DraftApproval, SendExecution, ReplyEvent).
+ *     CC-2 / C18 WP2.2 adds Command Center daily queue "待发送" (SendExecution READY)
+ *     via native Records dashlet + PrimaryFilter c18ReadyToSend (read-only).
  *   报价中心: quote + approval visibility (Quote, Approval, ProformaInvoice).
  *
  * New-user strategy (no login-time hook):
@@ -154,7 +156,7 @@ function phase3c17ResolveTargetUsers(array $arguments, $entityManager): array
 
 function phase3c17IsManagedDashletId(string $id): bool
 {
-    return preg_match('/^(phase3(?:u03|b07|c0[12]|c17)-)/', $id) === 1;
+    return preg_match('/^(phase3(?:u03|b07|c0[12]|c17|c18)-)/', $id) === 1;
 }
 
 function phase3c17RecordsOptions(
@@ -188,8 +190,9 @@ function phase3c17CommandCenterItems(): array
         ['id' => 'phase3c17-command-my-tasks', 'name' => 'Records', 'x' => 0, 'y' => 2, 'width' => 2, 'height' => 3],
         ['id' => 'phase3c17-command-research', 'name' => 'AcquisitionResearchQueue', 'x' => 2, 'y' => 2, 'width' => 2, 'height' => 3],
         ['id' => 'phase3c17-command-outreach', 'name' => 'Records', 'x' => 0, 'y' => 5, 'width' => 1, 'height' => 3],
-        ['id' => 'phase3c17-command-replies', 'name' => 'Records', 'x' => 1, 'y' => 5, 'width' => 1, 'height' => 3],
-        ['id' => 'phase3c17-command-approvals', 'name' => 'Records', 'x' => 2, 'y' => 5, 'width' => 2, 'height' => 3],
+        ['id' => 'phase3c18-command-pending-send', 'name' => 'Records', 'x' => 1, 'y' => 5, 'width' => 1, 'height' => 3],
+        ['id' => 'phase3c17-command-replies', 'name' => 'Records', 'x' => 2, 'y' => 5, 'width' => 1, 'height' => 3],
+        ['id' => 'phase3c17-command-approvals', 'name' => 'Records', 'x' => 3, 'y' => 5, 'width' => 1, 'height' => 3],
         // BOTTOM: existing acquisition and evidence metrics/activity dashlets.
         ['id' => 'phase3c17-command-pool', 'name' => 'AcquisitionLeadPool', 'x' => 0, 'y' => 8, 'width' => 2, 'height' => 3],
         ['id' => 'phase3c17-command-recent-discovery', 'name' => 'ProspectingRecentDiscovery', 'x' => 2, 'y' => 8, 'width' => 2, 'height' => 3],
@@ -251,6 +254,7 @@ function phase3c17BuildDashletsOptions(array $options): array
     $options['phase3c17-command-my-tasks'] = phase3c17RecordsOptions('我的任务', 'Task', 'actual', 'dateStart', 'asc', ['onlyMy']);
     $options['phase3c17-command-research'] = ['title' => '待研究客户'];
     $options['phase3c17-command-outreach'] = phase3c17RecordsOptions('待触达', 'DraftApproval', 'c17Pending', 'createdAt');
+    $options['phase3c18-command-pending-send'] = phase3c17RecordsOptions('待发送', 'SendExecution', 'c18ReadyToSend', 'createdAt');
     $options['phase3c17-command-replies'] = phase3c17RecordsOptions('待回复', 'ReplyEvent', 'c17AwaitingReply', 'receivedAt');
     $options['phase3c17-command-approvals'] = phase3c17RecordsOptions('待审批', 'Approval', 'c17Pending', 'createdAt');
     $options['phase3c17-command-pool'] = ['title' => '客户池'];

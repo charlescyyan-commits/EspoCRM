@@ -59,6 +59,8 @@ Espo.define('custom:views/prospecting/dashboard', 'view', function (Dep) {
                 learningSignals: translateGlobal('C17DashboardLearningSignals'),
                 draftApprovals: translateGlobal('C17DashboardDraftApprovals'),
                 sendExecutions: translateGlobal('C17DashboardSendExecutions'),
+                pendingSend: translateGlobal('C18DashboardPendingSend'),
+                failedSend: translateGlobal('C18DashboardFailedSend'),
                 replyEvents: translateGlobal('C17DashboardReplyEvents'),
                 emailEvents: translateGlobal('C17DashboardEmailEvents'),
                 quotes: translateGlobal('C17DashboardQuotes'),
@@ -133,6 +135,8 @@ Espo.define('custom:views/prospecting/dashboard', 'view', function (Dep) {
                     description: this.labels.outreachDescription,
                     entries: filterEntries([
                         {label: this.labels.draftApprovals, href: '#DraftApproval', scope: 'DraftApproval'},
+                        {label: this.labels.pendingSend, href: '#SendExecution/list/primary=c18ReadyToSend', scope: 'SendExecution'},
+                        {label: this.labels.failedSend, href: '#SendExecution/list/primary=c18FailedSend', scope: 'SendExecution'},
                         {label: this.labels.sendExecutions, href: '#SendExecution', scope: 'SendExecution'},
                         {label: this.labels.replyEvents, href: '#ReplyEvent', scope: 'ReplyEvent'},
                         {label: this.labels.emailEvents, href: '#EmailEvent', scope: 'EmailEvent'},

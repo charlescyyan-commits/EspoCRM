@@ -26,6 +26,7 @@ COMMAND_CENTER_ITEMS = (
     "phase3c17-command-my-tasks",
     "phase3c17-command-research",
     "phase3c17-command-outreach",
+    "phase3c18-command-pending-send",
     "phase3c17-command-replies",
     "phase3c17-command-approvals",
     "phase3c17-command-pool",
@@ -102,6 +103,7 @@ class Phase3C17CC1CenterCompositionTests(unittest.TestCase):
         # Queue dashlets reuse the native Records dashlet; no custom queue view.
         for queue_id in (
             "phase3c17-command-my-tasks", "phase3c17-command-outreach",
+            "phase3c18-command-pending-send",
             "phase3c17-command-replies", "phase3c17-command-approvals",
         ):
             self.assertIn(f"'id' => '{queue_id}', 'name' => 'Records'", self.provisioner)
@@ -111,7 +113,7 @@ class Phase3C17CC1CenterCompositionTests(unittest.TestCase):
         for legacy in ("Prospecting Operations", "Acquisition", "Prospecting Home", "销售开发指挥中心"):
             self.assertIn(f"'{legacy}'", self.provisioner)
         self.assertIn("array_merge([$commandCenterTab], $preservedTabs)", self.provisioner)
-        self.assertIn("/^(phase3(?:u03|b07|c0[12]|c17)-)/", self.provisioner)
+        self.assertIn("/^(phase3(?:u03|b07|c0[12]|c17|c18)-)/", self.provisioner)
         # Carried personal items are shifted below the managed grid, not duplicated.
         self.assertIn("max(14, (int) ($item['y'] ?? 0) + 14)", self.provisioner)
 
@@ -122,6 +124,7 @@ class Phase3C17CC1CenterCompositionTests(unittest.TestCase):
             self.provisioner,
         )
         self.assertIn("phase3c17RecordsOptions('待触达', 'DraftApproval', 'c17Pending', 'createdAt')", self.provisioner)
+        self.assertIn("phase3c17RecordsOptions('待发送', 'SendExecution', 'c18ReadyToSend', 'createdAt')", self.provisioner)
         self.assertIn("phase3c17RecordsOptions('待回复', 'ReplyEvent', 'c17AwaitingReply', 'receivedAt')", self.provisioner)
         self.assertIn("phase3c17RecordsOptions('待审批', 'Approval', 'c17Pending', 'createdAt')", self.provisioner)
         research_meta = load_json(MODULE / "Resources" / "metadata" / "dashlets" / "AcquisitionResearchQueue.json")
@@ -129,8 +132,13 @@ class Phase3C17CC1CenterCompositionTests(unittest.TestCase):
         self.assertEqual(research_meta["options"]["defaults"]["searchData"], {"primary": "researchQueue"})
         pool_filters = load_json(MODULE / "Resources" / "metadata" / "selectDefs" / "ProspectPool.json")
         self.assertIn("researchQueue", pool_filters["primaryFilterClassNameMap"])
-        # CC-0A server-side primary filters back the three queue Records dashlets.
-        for entity, key in (("DraftApproval", "c17Pending"), ("ReplyEvent", "c17AwaitingReply"), ("Approval", "c17Pending")):
+        # CC-0A / C18 WP2 server-side primary filters back the queue Records dashlets.
+        for entity, key in (
+            ("DraftApproval", "c17Pending"),
+            ("ReplyEvent", "c17AwaitingReply"),
+            ("Approval", "c17Pending"),
+            ("SendExecution", "c18ReadyToSend"),
+        ):
             select_defs = load_json(MODULE / "Resources" / "metadata" / "selectDefs" / f"{entity}.json")
             self.assertIn(key, select_defs["primaryFilterClassNameMap"], msg=entity)
 

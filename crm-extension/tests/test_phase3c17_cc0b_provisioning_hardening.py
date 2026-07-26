@@ -94,8 +94,9 @@ class Phase3C17CC0BProvisioningHardeningTests(unittest.TestCase):
         self.assertIn("PHASE3C17_COMMAND_CENTER", legacy_block)
         builder = extract_php_function(self.source, "phase3c17BuildDashboardLayout")
         self.assertEqual(builder.count("array_merge([$commandCenterTab], $preservedTabs)"), 1)
-        ids = re.findall(r"'id' => '(phase3c17-command-[^']+)'", self.source)
+        ids = re.findall(r"'id' => '((?:phase3c17|phase3c18)-command-[^']+)'", self.source)
         self.assertEqual(len(ids), len(set(ids)), msg="managed dashlet ids must be unique")
+        self.assertIn("phase3c18-command-pending-send", ids)
 
     def test_no_acl_or_workflow_files_changed_by_provisioner(self) -> None:
         for forbidden in (

@@ -128,11 +128,12 @@ class Phase3C17RuntimeQueueIntegrityTests(unittest.TestCase):
         ):
             self.assertTrue(service_path.is_file(), msg=f"workflow service missing: {service_path}")
 
-    # 7. Dashboard queue configuration unchanged by this fix.
+    # 7. Dashboard queue configuration includes C17 queues + C18 pending send.
     def test_dashboard_queue_configuration_unchanged(self) -> None:
         for expected in (
             "phase3c17RecordsOptions('我的任务', 'Task', 'actual', 'dateStart', 'asc', ['onlyMy'])",
             "phase3c17RecordsOptions('待触达', 'DraftApproval', 'c17Pending', 'createdAt')",
+            "phase3c17RecordsOptions('待发送', 'SendExecution', 'c18ReadyToSend', 'createdAt')",
             "phase3c17RecordsOptions('待回复', 'ReplyEvent', 'c17AwaitingReply', 'receivedAt')",
             "phase3c17RecordsOptions('待审批', 'Approval', 'c17Pending', 'createdAt')",
         ):
@@ -140,6 +141,7 @@ class Phase3C17RuntimeQueueIntegrityTests(unittest.TestCase):
         # Queue dashlets still reuse the native Records dashlet.
         for queue_id in (
             "phase3c17-command-my-tasks", "phase3c17-command-outreach",
+            "phase3c18-command-pending-send",
             "phase3c17-command-replies", "phase3c17-command-approvals",
         ):
             self.assertIn(f"'id' => '{queue_id}', 'name' => 'Records'", self.provisioner)
