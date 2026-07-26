@@ -119,6 +119,12 @@ class Phase3C18SendExecutionQueueFilterTests(unittest.TestCase):
                 MODULE / "Classes" / "Select" / "SendExecution" / "PrimaryFilters" / f"{class_name}.php"
             )
             self.assertIn("adr-c18-sendexecution-v1", source)
+        policy = load_json(
+            MODULE / "Resources" / "metadata" / "app" / "prospectingWorkflow.json"
+        )
+        self.assertEqual(policy["governanceMarker"], "adr-c18-sendexecution-v1")
+        self.assertEqual(policy["sendExecution"]["marker"], "adr-c18-sendexecution-v1")
+        self.assertNotIn("sendExecution.prepare", policy["actionRoleBindings"])
 
     def test_does_not_touch_quote_approval_navigation_or_dashboard(self) -> None:
         for _key, class_name, _status in C18_FILTERS:

@@ -66,6 +66,22 @@ class Phase3C17WorkflowAuthorizerTests(unittest.TestCase):
 
     def test_metadata_role_bindings_have_stable_schema_and_action_coverage(self) -> None:
         self.assertEqual(self.policy["version"], 1)
+        self.assertEqual(self.policy["governanceMarker"], "adr-c18-sendexecution-v1")
+        self.assertEqual(self.policy["sendExecution"]["marker"], "adr-c18-sendexecution-v1")
+        self.assertEqual(
+            self.policy["sendExecution"]["lifecycleOwner"],
+            "SendExecutionTransitionService",
+        )
+        self.assertEqual(
+            set(self.policy["sendExecution"]["actions"]),
+            {
+                "sendExecution.prepare",
+                "sendExecution.recordSent",
+                "sendExecution.recordFailed",
+                "sendExecution.retry",
+                "sendExecution.cancel",
+            },
+        )
         bindings = self.policy["actionRoleBindings"]
         self.assertEqual(
             set(bindings),

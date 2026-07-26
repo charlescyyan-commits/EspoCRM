@@ -1,5 +1,17 @@
 {
   "version": 1,
+  "governanceMarker": "adr-c18-sendexecution-v1",
+  "sendExecution": {
+    "marker": "adr-c18-sendexecution-v1",
+    "lifecycleOwner": "SendExecutionTransitionService",
+    "actions": [
+      "sendExecution.prepare",
+      "sendExecution.recordSent",
+      "sendExecution.recordFailed",
+      "sendExecution.retry",
+      "sendExecution.cancel"
+    ]
+  },
   "actionRoleBindings": {
     "quote.submitForReview": {
       "roleIds": [],
