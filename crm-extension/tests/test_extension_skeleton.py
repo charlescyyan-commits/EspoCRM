@@ -617,6 +617,19 @@ class ExtensionSkeletonTests(unittest.TestCase):
                 entity_filters,
                 msg=f"{entity} PrimaryFilters must match the approved C17 inventory exactly",
             )
+        # Phase3C18 SendExecution operational queue filters — exact inventory
+        c18_filters = {
+            MODULE / "Classes" / "Select" / "SendExecution" / "PrimaryFilters" / "C18ReadyToSend.php",
+            MODULE / "Classes" / "Select" / "SendExecution" / "PrimaryFilters" / "C18FailedSend.php",
+        }
+        for path in c18_filters:
+            self.assertTrue(path.is_file(), msg=f"Missing C18 SendExecution queue filter: {path}")
+        expected |= c18_filters
+        self.assertEqual(
+            set((MODULE / "Classes" / "Select" / "SendExecution" / "PrimaryFilters").glob("*.php")),
+            c18_filters,
+            msg="SendExecution PrimaryFilters must match the approved C18 inventory exactly",
+        )
         self.assertEqual(set(php_files), expected, msg=f"Unexpected PHP files: {php_files}")
 
     def test_core_espocrm_untouched(self) -> None:

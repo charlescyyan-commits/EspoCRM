@@ -15,6 +15,10 @@
   },
   "links": {"draftApproval": "Draft Approval", "lead": "Lead", "replyEvents": "Reply Events"},
   "labels": {"Create SendExecution": "Create Send Execution", "SendExecutions": "Send Executions"},
+  "presetFilters": {
+    "c18ReadyToSend": "Ready to Send",
+    "c18FailedSend": "Failed Send"
+  },
   "options": {
     "status": {"CREATED": "Created", "READY": "Ready", "SENT": "Sent", "FAILED": "Failed", "CANCELLED": "Cancelled"},
     "failureCategory": {"NETWORK": "Network", "PROVIDER": "Provider", "AUTH": "Authentication", "RATE_LIMIT": "Rate Limit", "VALIDATION": "Validation", "UNKNOWN": "Unknown"}

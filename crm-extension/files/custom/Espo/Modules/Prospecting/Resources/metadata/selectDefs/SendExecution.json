@@ -1,0 +1,6 @@
+{
+  "primaryFilterClassNameMap": {
+    "c18ReadyToSend": "Espo\\Modules\\Prospecting\\Classes\\Select\\SendExecution\\PrimaryFilters\\C18ReadyToSend",
+    "c18FailedSend": "Espo\\Modules\\Prospecting\\Classes\\Select\\SendExecution\\PrimaryFilters\\C18FailedSend"
+  }
+}
