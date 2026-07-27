@@ -14,7 +14,7 @@ use Espo\ORM\Entity;
 use Espo\ORM\EntityManager;
 
 /**
- * Shared authorization policy for Quote workflow commands.
+ * Shared authorization policy for Prospecting workflow commands.
  *
  * This service resolves stable workflow action identifiers and checks the
  * existing record ACL and role context. It deliberately does not mutate a
@@ -29,6 +29,8 @@ class WorkflowAuthorizationService
     public const ACTION_MARK_CUSTOMER_REJECTED = 'quote.markCustomerRejected';
     public const ACTION_MARK_ACCEPTED = 'quote.markAccepted';
     public const ACTION_EXPIRE = 'quote.expire';
+    public const ACTION_SEND_EXECUTION_RETRY = 'sendExecution.retry';
+    public const ACTION_SEND_EXECUTION_CANCEL = 'sendExecution.cancel';
 
     /** @var array<string, string> */
     private const ACTION_ALIASES = [
@@ -42,6 +44,24 @@ class WorkflowAuthorizationService
         'reject' => self::ACTION_MARK_CUSTOMER_REJECTED,
     ];
 
+    /** @var list<string> */
+    private const QUOTE_ACTIONS = [
+        self::ACTION_SUBMIT_FOR_REVIEW,
+        self::ACTION_APPROVE,
+        self::ACTION_REJECT_REVIEW,
+        self::ACTION_SEND,
+        self::ACTION_MARK_CUSTOMER_REJECTED,
+        self::ACTION_MARK_ACCEPTED,
+        self::ACTION_EXPIRE,
+    ];
+
+    /** @var array<string, string> */
+    private const SEND_EXECUTION_ACTION_ALIASES = [
+        'retry' => self::ACTION_SEND_EXECUTION_RETRY,
+        'cancel' => self::ACTION_SEND_EXECUTION_CANCEL,
+        'ignore' => self::ACTION_SEND_EXECUTION_CANCEL,
+    ];
+
     /** @var array<string, array{adminOnly?: bool}> */
     private const ACTION_OPTIONS = [
         self::ACTION_SUBMIT_FOR_REVIEW => [],
@@ -53,6 +73,8 @@ class WorkflowAuthorizationService
         self::ACTION_EXPIRE => [
             'adminOnly' => true,
         ],
+        self::ACTION_SEND_EXECUTION_RETRY => [],
+        self::ACTION_SEND_EXECUTION_CANCEL => [],
     ];
 
     /** @var array<string, array{roleIds: list<string>, roleNames: list<string>}>|null */
@@ -97,12 +119,48 @@ class WorkflowAuthorizationService
         $this->assertActionPermission($actor, $action);
     }
 
+    /**
+     * Authorizes C19 SendExecution recovery from read access plus an explicit
+     * workflow role binding. This intentionally does not require edit ACL:
+     * Sales Manager recovery access is an A6 action grant, not general CRUD.
+     */
+    public function authorizeSendExecutionAction(Entity $execution, User $actor, string $action): string
+    {
+        if ($execution->getEntityType() !== 'SendExecution') {
+            throw new BadRequest('SendExecution workflow action requires a SendExecution entity.');
+        }
+
+        $action = $this->resolveSendExecutionAction($action);
+        if (!$this->acl->checkEntityRead($execution)) {
+            throw new Forbidden();
+        }
+
+        $this->assertSendExecutionActionPermission($actor, $action);
+
+        return $action;
+    }
+
     /** @return string One of the ACTION_* stable identifiers. */
     public function resolveAction(string $action): string
     {
         $resolved = self::ACTION_ALIASES[$action] ?? $action;
-        if (!isset(self::ACTION_OPTIONS[$resolved])) {
+        if (!in_array($resolved, self::QUOTE_ACTIONS, true)) {
             throw new BadRequest('Unsupported Quote workflow action.');
+        }
+
+        return $resolved;
+    }
+
+    /** @return string One of the SendExecution ACTION_* stable identifiers. */
+    public function resolveSendExecutionAction(string $action): string
+    {
+        $resolved = self::SEND_EXECUTION_ACTION_ALIASES[$action] ?? $action;
+        if (!in_array(
+            $resolved,
+            [self::ACTION_SEND_EXECUTION_RETRY, self::ACTION_SEND_EXECUTION_CANCEL],
+            true,
+        )) {
+            throw new BadRequest('Unsupported SendExecution workflow action.');
         }
 
         return $resolved;
@@ -131,6 +189,27 @@ class WorkflowAuthorizationService
 
         if (array_intersect($binding['roleNames'], $this->effectiveRoleNames($actor)) === []) {
             throw new Forbidden('Current role cannot perform this Quote workflow action.');
+        }
+    }
+
+    private function assertSendExecutionActionPermission(User $actor, string $action): void
+    {
+        if ($actor->isAdmin()) {
+            return;
+        }
+
+        $binding = $this->actionRoleBindings()[$action] ?? null;
+        if (!is_array($binding)) {
+            throw new Forbidden('Current role cannot perform this SendExecution workflow action.');
+        }
+
+        $roleIds = $this->effectiveRoleIds($actor);
+        if (array_intersect($binding['roleIds'], $roleIds) !== []) {
+            return;
+        }
+
+        if (array_intersect($binding['roleNames'], $this->effectiveRoleNames($actor)) === []) {
+            throw new Forbidden('Current role cannot perform this SendExecution workflow action.');
         }
     }
 
@@ -228,6 +307,14 @@ class WorkflowAuthorizationService
             self::ACTION_EXPIRE => [
                 'roleIds' => [],
                 'roleNames' => [],
+            ],
+            self::ACTION_SEND_EXECUTION_RETRY => [
+                'roleIds' => [],
+                'roleNames' => ['Sales Manager', 'Integration Bot'],
+            ],
+            self::ACTION_SEND_EXECUTION_CANCEL => [
+                'roleIds' => [],
+                'roleNames' => ['Sales Manager', 'Integration Bot'],
             ],
         ];
     }

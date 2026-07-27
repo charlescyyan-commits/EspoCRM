@@ -133,8 +133,11 @@ class Phase3C18SendExecutionMutationGuardTests(unittest.TestCase):
     def test_reuses_workflow_authorization_ownership_pattern_without_new_acl(self) -> None:
         self.assertIn("WorkflowAuthorizationService", self.guard)
         self.assertIn("without introducing a second ACL architecture", self.guard)
-        # Guard does not invent a parallel authorizer; Quote authorizer surface stays quote-only.
-        self.assertNotIn("sendExecution.", self.authorizer)
+        # C19 WP2 extends the shared authorizer; the guard itself still does not
+        # invent a parallel authorization path.
+        self.assertIn("authorizeSendExecutionAction", self.authorizer)
+        self.assertIn("sendExecution.retry", self.authorizer)
+        self.assertIn("sendExecution.cancel", self.authorizer)
         self.assertNotIn("SendExecutionStatusMutationGuard", self.authorizer)
         self.assertIn("private Acl $acl", self.transition)
         self.assertIn("checkEntityEdit($execution)", self.transition)

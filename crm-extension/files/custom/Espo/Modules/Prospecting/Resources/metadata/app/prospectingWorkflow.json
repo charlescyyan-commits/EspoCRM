@@ -3,6 +3,7 @@
   "governanceMarker": "adr-c18-sendexecution-v1",
   "sendExecution": {
     "marker": "adr-c18-sendexecution-v1",
+    "recoveryMarker": "adr-c18-sendexecution-v2",
     "lifecycleOwner": "SendExecutionTransitionService",
     "actions": [
       "sendExecution.prepare",
@@ -49,6 +50,14 @@
     "quote.expire": {
       "roleIds": [],
       "roleNames": []
+    },
+    "sendExecution.retry": {
+      "roleIds": [],
+      "roleNames": ["Sales Manager", "Integration Bot"]
+    },
+    "sendExecution.cancel": {
+      "roleIds": [],
+      "roleNames": ["Sales Manager", "Integration Bot"]
     }
   }
 }

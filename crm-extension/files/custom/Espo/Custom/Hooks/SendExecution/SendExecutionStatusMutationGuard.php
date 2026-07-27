@@ -15,26 +15,40 @@ use Espo\ORM\Repository\Option\SaveOptions;
  * Terminal persistence boundary for SendExecution lifecycle fields.
  *
  * Ownership follows ADR-C18 / adr-c18-sendexecution-v1: only
- * SendExecutionTransitionService may mutate status / sentAt. sendRequestId is
+ * SendExecutionTransitionService may mutate status / sentAt / cancel audit
+ * fields. sendRequestId is
  * create-time evidence and immutable thereafter. Provider-trace fields and
  * ordinary record attributes remain writable via normal CRUD.
  *
- * Authorization for transitions remains on the transition service (edit ACL +
- * workflow action keys), matching the WorkflowAuthorizationService ownership
- * pattern without introducing a second ACL architecture.
+ * Standard lifecycle transitions retain their edit-ACL boundary. C19 recovery
+ * commands arrive only after WorkflowAuthorizationService has checked the
+ * explicit read-ACL-plus-role policy, then use the same authorized save marker
+ * without introducing a second ACL architecture.
  */
 class SendExecutionStatusMutationGuard implements BeforeSave
 {
     public static int $order = 1000;
 
     /** Lifecycle fields owned by SendExecutionTransitionService. */
-    private const LIFECYCLE_FIELDS = ['status', 'sentAt'];
+    private const LIFECYCLE_FIELDS = [
+        'status',
+        'sentAt',
+        'cancelledAt',
+        'cancelledById',
+        'cancelReason',
+    ];
 
     /**
      * Terminal audit / idempotency evidence.
      * sentAt is transition-owned; sendRequestId is create-only.
      */
-    private const TERMINAL_EVIDENCE_FIELDS = ['sentAt', 'sendRequestId'];
+    private const TERMINAL_EVIDENCE_FIELDS = [
+        'sentAt',
+        'cancelledAt',
+        'cancelledById',
+        'cancelReason',
+        'sendRequestId',
+    ];
 
     private const TERMINAL_STATUSES = [
         SendExecutionTransitionService::STATUS_SENT,
@@ -96,8 +110,13 @@ class SendExecutionStatusMutationGuard implements BeforeSave
             }
             $value = $entity->get($field);
             if ($value !== null && $value !== '') {
+                if ($field === 'sentAt') {
+                    throw new Forbidden(
+                        'SendExecution sentAt may only be written by SendExecutionTransitionService.'
+                    );
+                }
                 throw new Forbidden(
-                    'SendExecution sentAt may only be written by SendExecutionTransitionService.'
+                    'SendExecution lifecycle audit fields may only be written by SendExecutionTransitionService.'
                 );
             }
         }

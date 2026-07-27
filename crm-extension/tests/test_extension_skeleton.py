@@ -551,6 +551,7 @@ class ExtensionSkeletonTests(unittest.TestCase):
             MODULE / "Controllers" / "SearchStrategy.php",
             MODULE / "Api" / "PostGenerateSearchStrategyJobs.php",
             MODULE / "Api" / "PostQuoteWorkflowAction.php",
+            MODULE / "Api" / "PostSendExecutionWorkflowAction.php",
             MODULE / "Services" / "SearchStrategyService.php",
             MODULE / "Services" / "SearchStrategyTemplates.php",
             MODULE / "Api" / "PostSyncBrevoEmailEvent.php",
@@ -563,6 +564,7 @@ class ExtensionSkeletonTests(unittest.TestCase):
             MODULE / "Services" / "SendExecutionBridgeAdapterService.php",
             MODULE / "Services" / "SendExecutionResultAdapterService.php",
             MODULE / "Services" / "SendExecutionTransitionService.php",
+            MODULE / "Services" / "SendExecutionWorkflowActionService.php",
             MODULE / "Services" / "QuoteNumberingService.php",
             MODULE / "Services" / "QuoteNumberingServiceInterface.php",
             MODULE / "Services" / "QuoteTransitionService.php",
@@ -803,6 +805,7 @@ class ExtensionSkeletonTests(unittest.TestCase):
                 ("post", "/Prospecting/reply-event/sync", "Espo\\Modules\\Prospecting\\Api\\PostSyncReplyEvent"),
                 ("post", "/Prospecting/search-strategy/generate-jobs", "Espo\\Modules\\Prospecting\\Api\\PostGenerateSearchStrategyJobs"),
                 ("post", "/Prospecting/quote/:id/workflow/:action", "Espo\\Modules\\Prospecting\\Api\\PostQuoteWorkflowAction"),
+                ("post", "/Prospecting/send-execution/:id/workflow/:action", "Espo\\Modules\\Prospecting\\Api\\PostSendExecutionWorkflowAction"),
             },
         )
 

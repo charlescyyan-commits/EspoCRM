@@ -38,5 +38,10 @@
     "route": "/Prospecting/quote/:id/workflow/:action",
     "method": "post",
     "actionClassName": "Espo\\Modules\\Prospecting\\Api\\PostQuoteWorkflowAction"
+  },
+  {
+    "route": "/Prospecting/send-execution/:id/workflow/:action",
+    "method": "post",
+    "actionClassName": "Espo\\Modules\\Prospecting\\Api\\PostSendExecutionWorkflowAction"
   }
 ]

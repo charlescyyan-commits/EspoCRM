@@ -33,6 +33,10 @@ class SendExecutionTransitionService
     public const ACTION_CANCEL = 'sendExecution.cancel';
 
     public const GOVERNANCE_MARKER = 'adr-c18-sendexecution-v1';
+    public const RECOVERY_GOVERNANCE_MARKER = 'adr-c18-sendexecution-v2';
+
+    /** @var list<string> */
+    private const CANCEL_REASONS = ['IGNORED', 'ABANDONED', 'DUPLICATE', 'OTHER'];
 
     /** @var array<string, list<string>> */
     private const VALID_TRANSITIONS = [
@@ -175,7 +179,9 @@ class SendExecutionTransitionService
      * @param array{
      *   now?: DateTimeImmutable|string,
      *   skipAuthorization?: bool,
-     *   skipRetryLimit?: bool
+     *   skipRetryLimit?: bool,
+     *   workflowAuthorizationChecked?: bool,
+     *   reason?: string|null
      * } $options
      */
     public function transition(Entity $execution, string $targetStatus, array $options = []): Entity
@@ -189,7 +195,10 @@ class SendExecutionTransitionService
             throw new BadRequest("SendExecution transition {$currentStatus} -> {$targetStatus} is not allowed.");
         }
 
-        if (($options['skipAuthorization'] ?? false) !== true) {
+        if (
+            ($options['skipAuthorization'] ?? false) !== true
+            && ($options['workflowAuthorizationChecked'] ?? false) !== true
+        ) {
             $this->authorize($execution, $this->resolveAction($currentStatus, $targetStatus));
         }
 
@@ -202,11 +211,18 @@ class SendExecutionTransitionService
         }
 
         $now = $this->resolveNow($options);
-
+        $reason = $targetStatus === self::STATUS_CANCELLED
+            ? $this->normalizeCancelReason($options['reason'] ?? null)
+            : null;
         return $this->entityManager->getTransactionManager()->run(
-            function () use ($execution, $currentStatus, $targetStatus, $now): Entity {
+            function () use ($execution, $currentStatus, $targetStatus, $now, $reason): Entity {
                 if ($targetStatus === self::STATUS_SENT) {
                     $execution->set('sentAt', $now->format('Y-m-d H:i:s'));
+                }
+                if ($targetStatus === self::STATUS_CANCELLED) {
+                    $execution->set('cancelledAt', $now->format('Y-m-d H:i:s'));
+                    $execution->set('cancelledById', $this->user->getId());
+                    $execution->set('cancelReason', $reason);
                 }
 
                 $execution->set('status', $targetStatus);
@@ -254,6 +270,16 @@ class SendExecutionTransitionService
         if ($retryCount >= $maxRetries) {
             throw new BadRequest('SendExecution retry limit reached for maxRetries.');
         }
+    }
+
+    private function normalizeCancelReason(mixed $reason): string
+    {
+        $reason = strtoupper(trim((string) $reason));
+        if (!in_array($reason, self::CANCEL_REASONS, true)) {
+            throw new BadRequest('SendExecution cancel requires a valid cancelReason.');
+        }
+
+        return $reason;
     }
 
     /**

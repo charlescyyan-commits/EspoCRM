@@ -9,6 +9,8 @@
       [{"name": "retryCount"}, {"name": "maxRetries"}],
       [{"name": "nextRetryAt"}, {"name": "assignedUser"}],
       [{"name": "failureCategory"}, {"name": "lastError"}],
+      [{"name": "cancelReason"}, {"name": "cancelledAt"}],
+      [{"name": "cancelledBy"}, false],
       [{"name": "teams", "fullWidth": true}]
     ]
   }

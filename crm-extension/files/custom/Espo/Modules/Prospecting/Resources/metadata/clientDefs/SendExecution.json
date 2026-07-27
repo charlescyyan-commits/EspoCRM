@@ -8,5 +8,11 @@
     {
       "name": "c18FailedSend"
     }
+  ],
+  "detailActionList": [
+    "__APPEND__",
+    {"label": "Retry Send", "name": "retrySendExecution", "acl": "read", "handler": "custom:handlers/send-execution/workflow-transition", "checkVisibilityFunction": "isRetryVisible", "actionFunction": "retry"},
+    {"label": "Cancel Send", "name": "cancelSendExecution", "acl": "read", "handler": "custom:handlers/send-execution/workflow-transition", "checkVisibilityFunction": "isCancelVisible", "actionFunction": "cancel"},
+    {"label": "Ignore Send", "name": "ignoreSendExecution", "acl": "read", "handler": "custom:handlers/send-execution/workflow-transition", "checkVisibilityFunction": "isIgnoreVisible", "actionFunction": "ignore"}
   ]
 }

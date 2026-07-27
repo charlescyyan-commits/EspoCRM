@@ -11,17 +11,21 @@
     "maxRetries": "Maximum Retries",
     "nextRetryAt": "Next Retry At",
     "lastError": "Last Error",
-    "failureCategory": "Failure Category"
+    "failureCategory": "Failure Category",
+    "cancelledAt": "Cancelled At",
+    "cancelledBy": "Cancelled By",
+    "cancelReason": "Cancellation Reason"
   },
-  "links": {"draftApproval": "Draft Approval", "lead": "Lead", "replyEvents": "Reply Events"},
-  "labels": {"Create SendExecution": "Create Send Execution", "SendExecutions": "Send Executions"},
+  "links": {"draftApproval": "Draft Approval", "lead": "Lead", "replyEvents": "Reply Events", "cancelledBy": "Cancelled By"},
+  "labels": {"Create SendExecution": "Create Send Execution", "SendExecutions": "Send Executions", "Retry Send": "Retry Send", "Cancel Send": "Cancel Send", "Ignore Send": "Ignore Send", "retrySucceeded": "Send execution re-armed.", "cancelSucceeded": "Send execution cancelled.", "ignoreSucceeded": "Send execution ignored and permanently cancelled.", "cancelReasonPrompt": "Cancellation reason code (ABANDONED, DUPLICATE, or OTHER):", "cancelReasonRequired": "A valid cancellation reason code is required.", "ignoreConfirmation": "Ignore this failed send permanently? This action cancels the execution.", "statusChangeFailed": "Unable to change Send Execution status."},
   "presetFilters": {
     "c18ReadyToSend": "Ready to Send",
     "c18FailedSend": "Failed Send"
   },
   "options": {
     "status": {"CREATED": "Created", "READY": "Ready", "SENT": "Sent", "FAILED": "Failed", "CANCELLED": "Cancelled"},
-    "failureCategory": {"NETWORK": "Network", "PROVIDER": "Provider", "AUTH": "Authentication", "RATE_LIMIT": "Rate Limit", "VALIDATION": "Validation", "UNKNOWN": "Unknown"}
+    "failureCategory": {"NETWORK": "Network", "PROVIDER": "Provider", "AUTH": "Authentication", "RATE_LIMIT": "Rate Limit", "VALIDATION": "Validation", "UNKNOWN": "Unknown"},
+    "cancelReason": {"IGNORED": "Ignored", "ABANDONED": "Abandoned", "DUPLICATE": "Duplicate", "OTHER": "Other"}
   },
   "tooltips": {
     "retryCount": "Persistence-only retry reservation. This phase does not implement retry execution.",

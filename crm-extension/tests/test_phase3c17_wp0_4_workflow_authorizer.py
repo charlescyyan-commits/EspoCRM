@@ -93,6 +93,8 @@ class Phase3C17WorkflowAuthorizerTests(unittest.TestCase):
                 "quote.markCustomerRejected",
                 "quote.markAccepted",
                 "quote.expire",
+                "sendExecution.retry",
+                "sendExecution.cancel",
             },
         )
         for binding in bindings.values():
