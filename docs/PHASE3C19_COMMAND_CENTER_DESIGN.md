@@ -80,7 +80,7 @@ select. Server-side, single-predicate, non-mutating; conforms to `adr-c18-sendex
 ### 2.4 Reply Event (待回复) — ❌ semantic mismatch (resolved by ADR-C19)
 
 - `C17AwaitingReply` applies `replyStatus = SENT` — **send-confirmation events**, not customer replies. Actual `REPLIED` events had no queue anywhere, and ReplyEvent had no handled-state.
-- **WP0 resolution (ADR-C19):** additive `triageStatus` work lifecycle (`ReplyTriageService`-owned) + `c19OpenReplies` (`triageStatus = OPEN`). The C17 filter is kept as a monitoring queue; WP3 re-titles it 已发送未回复 and adds 已回复待处理 backed by `c19OpenReplies`.
+- **WP0 resolution (ADR-C19, amended 2026-07-27):** additive `triageStatus` work lifecycle (`ReplyTriageService`-owned) with states `OPEN` / `IN_PROGRESS` / `CLOSED`. WP1 implemented `c19OpenReplies` (`triageStatus = OPEN`) + `c19MyReplies` (`triageStatus = IN_PROGRESS AND assignedUserId = current`). The C17 filter is kept as a monitoring queue; WP3 re-titles it 已发送未回复 and adds 已回复待处理 backed by `c19OpenReplies`, plus an optional operator-scoped 我的回复 queue backed by `c19MyReplies`.
 
 ### Queue wiring summary
 
@@ -90,7 +90,8 @@ select. Server-side, single-predicate, non-mutating; conforms to `adr-c18-sendex
 | 发送失败 | SendExecution | status=FAILED | ✅ | ✅ | ❌ | ❌ → **WP3 admit** |
 | 待触达 | DraftApproval | status=PENDING | ✅ | ✅ | ❌ | ✅ |
 | 待回复 (SENT monitoring) | ReplyEvent | replyStatus=SENT | ✅ | ✅ | ❌ | ✅ (re-title WP3) |
-| 已回复待处理 (work) | ReplyEvent | triageStatus=OPEN | WP1 builds `c19OpenReplies` | ✅ | ❌ | ❌ → **WP3 add** |
+| 已回复待处理 (work) | ReplyEvent | triageStatus=OPEN | ✅ `c19OpenReplies` | ✅ | ❌ | ❌ → **WP3 add** |
+| 我的回复 (operator WIP) | ReplyEvent | triageStatus=IN_PROGRESS + assignedUser | ✅ `c19MyReplies` | ✅ | ✅ | ❌ → **WP3 optional** |
 
 ---
 
