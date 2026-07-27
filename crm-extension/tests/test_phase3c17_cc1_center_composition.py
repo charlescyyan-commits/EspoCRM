@@ -275,13 +275,23 @@ class Phase3C17CC1CenterCompositionTests(unittest.TestCase):
         self.assertEqual(zh_global["dashlets"]["ProspectingSummary"], "潜客概览")
         self.assertEqual(zh_global["dashlets"]["AcquisitionOverview"], "获客概览")
 
-        en_c17 = {k for k in en_global["labels"] if k.startswith("C17Dashboard")}
-        zh_c17 = {k for k in zh_global["labels"] if k.startswith("C17Dashboard")}
-        self.assertEqual(en_c17, zh_c17)
-        self.assertEqual(zh_global["labels"]["C17DashboardSearchCenter"], "搜索中心")
-        self.assertEqual(zh_global["labels"]["C17DashboardResearchCenter"], "情报中心")
-        self.assertEqual(zh_global["labels"]["C17DashboardOutreachCenter"], "触达中心")
-        self.assertEqual(zh_global["labels"]["C17DashboardQuoteCenter"], "报价中心")
+        # Phase3C19: legacy C17/C18 launcher Global labels are removed; only C19 remain.
+        self.assertEqual(
+            {k for k in en_global["labels"] if k.startswith("C17Dashboard")},
+            set(),
+        )
+        self.assertEqual(
+            {k for k in zh_global["labels"] if k.startswith("C17Dashboard")},
+            set(),
+        )
+        self.assertEqual(
+            {k for k in en_global["labels"] if k.startswith("C18Dashboard")},
+            set(),
+        )
+        self.assertEqual(
+            {k for k in zh_global["labels"] if k.startswith("C18Dashboard")},
+            set(),
+        )
 
         en_c19 = {k for k in en_global["labels"] if k.startswith("C19Dashboard")}
         zh_c19 = {k for k in zh_global["labels"] if k.startswith("C19Dashboard")}

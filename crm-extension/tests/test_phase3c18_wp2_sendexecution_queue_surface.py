@@ -65,12 +65,21 @@ class Phase3C18SendExecutionQueueSurfaceTests(unittest.TestCase):
         self.assertIn("'#SendExecution/list/primary=c18FailedSend'", self.dashboard)
         self.assertIn("c18FailedSend", self.select_defs["primaryFilterClassNameMap"])
 
-        en = load_json(MODULE / "Resources" / "i18n" / "en_US" / "Global.json")["labels"]
-        zh = load_json(MODULE / "Resources" / "i18n" / "zh_CN" / "Global.json")["labels"]
-        self.assertEqual(en["C18DashboardPendingSend"], "Pending Send")
-        self.assertEqual(en["C18DashboardFailedSend"], "Failed Send")
-        self.assertEqual(zh["C18DashboardPendingSend"], "待发送")
-        self.assertEqual(zh["C18DashboardFailedSend"], "发送失败")
+        # Live copy lives on ProspectingDashboard after C19 workspace conversion.
+        en = load_json(MODULE / "Resources" / "i18n" / "en_US" / "ProspectingDashboard.json")["labels"]
+        zh = load_json(MODULE / "Resources" / "i18n" / "zh_CN" / "ProspectingDashboard.json")["labels"]
+        self.assertEqual(en["pendingSend"], "Pending Send")
+        self.assertEqual(en["failedSend"], "Failed Send")
+        self.assertEqual(zh["pendingSend"], "待发送")
+        self.assertEqual(zh["failedSend"], "发送失败")
+        self.assertNotIn(
+            "C18DashboardPendingSend",
+            load_json(MODULE / "Resources" / "i18n" / "en_US" / "Global.json")["labels"],
+        )
+        self.assertNotIn(
+            "C18DashboardFailedSend",
+            load_json(MODULE / "Resources" / "i18n" / "en_US" / "Global.json")["labels"],
+        )
 
     def test_acl_visibility_preserved_for_queue_surfaces(self) -> None:
         scopes = load_json(SCOPES)

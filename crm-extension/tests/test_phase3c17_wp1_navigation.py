@@ -228,12 +228,34 @@ class Phase3C17WP1NavigationTests(unittest.TestCase):
         self.assertTrue(hidden.isdisjoint(self.desired["prospectingEntries"]))
         self.assertTrue(hidden.issubset(self.desired["managedProspectingEntries"]))
 
-    def test_search_center_retains_direct_operational_access(self) -> None:
+    def test_search_center_is_operational_workspace_without_cross_center_launcher(self) -> None:
         search = (
             CLIENT / "res" / "templates" / "prospecting" / "search.tpl"
         ).read_text(encoding="utf-8")
-        for route in ("#SearchStrategy", "#SearchJob", "#ProspectPool"):
-            self.assertIn(route, search)
+        search_js = (
+            CLIENT / "src" / "views" / "prospecting" / "search.js"
+        ).read_text(encoding="utf-8")
+        surface = search + search_js
+        self.assertIn('data-action="create-search-job"', search)
+        self.assertIn('data-name="strategyId"', search)
+        self.assertIn("labels.createSearchJob", search)
+        self.assertIn("labels.acquisitionPipeline", search)
+        self.assertNotIn("list-group-item", search)
+        self.assertNotIn("operationalCenters", search)
+        self.assertNotIn("col-sm-3", search)
+        for route in ("#SearchJob", "#ProspectPool", "#ProspectPool/list/primary=researchQueue"):
+            self.assertIn(route, surface)
+        for route in (
+            "#ProspectingDashboard",
+            "#ProspectingSearch",
+            "#Lead",
+            "#DraftApproval",
+            "#Quote",
+            "#SendExecution",
+            "#ReplyEvent",
+            "#Approval",
+        ):
+            self.assertNotIn(route, surface)
 
     def test_dashboard_retains_every_required_supporting_access_path(self) -> None:
         for route in (

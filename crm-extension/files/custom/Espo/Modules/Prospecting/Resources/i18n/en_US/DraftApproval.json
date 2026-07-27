@@ -12,7 +12,32 @@
     "lead": "Lead"
   },
   "links": {"lead": "Lead", "approvedBy": "Approved By", "sendExecutions": "Send Executions"},
-  "labels": {"Create DraftApproval": "Create Draft Approval", "DraftApprovals": "Draft Approvals"},
+  "labels": {
+    "Create DraftApproval": "Create Draft Approval",
+    "DraftApprovals": "Draft Approvals",
+    "outreachCenter": "Outreach Center",
+    "workspaceDescription": "Review outreach drafts, execute sends, and triage customer replies.",
+    "loading": "Loading...",
+    "noData": "No data available",
+    "workspaceEmpty": "No Outreach Center surfaces are visible for the current access scope.",
+    "overview": "Outreach Overview",
+    "execution": "Outreach Execution",
+    "replyHandling": "Reply Handling",
+    "pendingApproval": "Pending Approval",
+    "pendingApprovalDescription": "Open Draft Approvals waiting for review.",
+    "pendingSend": "Pending Send",
+    "pendingSendDescription": "Open Send Executions ready to send.",
+    "failedSend": "Failed Send",
+    "failedSendDescription": "Open failed Send Executions for recovery.",
+    "openReplies": "Replies Pending Triage",
+    "openRepliesDescription": "Open customer replies awaiting triage.",
+    "sendExecution": "Send Execution",
+    "sendExecutionDescription": "Open all Send Execution records.",
+    "replyEvent": "Customer Reply",
+    "replyEventDescription": "Open all Customer Reply records.",
+    "draftApproval": "Draft Approval",
+    "draftApprovalDescription": "Open the native Draft Approval list."
+  },
   "options": {
     "status": {"PENDING": "Pending", "APPROVED": "Approved", "REJECTED": "Rejected"}
   },

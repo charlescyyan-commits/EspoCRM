@@ -1,5 +1,5 @@
 {
-  "controller": "controllers/record",
+  "controller": "custom:controllers/draft-approval",
   "iconClass": "fas fa-user-check",
   "filterList": [
     {

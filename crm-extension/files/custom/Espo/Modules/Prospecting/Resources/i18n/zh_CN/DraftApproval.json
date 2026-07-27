@@ -1,6 +1,44 @@
 {
-  "fields": {"name": "标题", "draftId": "草稿 ID", "status": "审批状态", "approvedBy": "审批人", "approvedAt": "审批时间", "decisionReason": "审批原因", "evidenceReference": "证据引用", "scoreSnapshot": "评分快照引用", "contentHash": "已审批内容哈希", "lead": "线索"},
+  "fields": {
+    "name": "标题",
+    "draftId": "草稿 ID",
+    "status": "审批状态",
+    "approvedBy": "审批人",
+    "approvedAt": "审批时间",
+    "decisionReason": "审批原因",
+    "evidenceReference": "证据引用",
+    "scoreSnapshot": "评分快照引用",
+    "contentHash": "已审批内容哈希",
+    "lead": "线索"
+  },
   "links": {"lead": "线索", "approvedBy": "审批人", "sendExecutions": "发送执行"},
-  "labels": {"Create DraftApproval": "创建草稿审批", "DraftApprovals": "草稿审批"},
-  "options": {"status": {"PENDING": "待审批", "APPROVED": "已批准", "REJECTED": "已拒绝"}}
+  "labels": {
+    "Create DraftApproval": "创建草稿审批",
+    "DraftApprovals": "草稿审批",
+    "outreachCenter": "触达中心",
+    "workspaceDescription": "审核触达、执行发送并处理客户回复。",
+    "loading": "加载中...",
+    "noData": "暂无数据",
+    "workspaceEmpty": "当前权限下没有可见的触达中心工作面。",
+    "overview": "触达概览",
+    "execution": "触达执行",
+    "replyHandling": "回复处理",
+    "pendingApproval": "待审批",
+    "pendingApprovalDescription": "打开待审核的触达审批。",
+    "pendingSend": "待发送",
+    "pendingSendDescription": "打开待发送的发送执行。",
+    "failedSend": "发送失败",
+    "failedSendDescription": "打开发送失败的执行记录以便恢复。",
+    "openReplies": "已回复待处理",
+    "openRepliesDescription": "打开待分诊的客户回复。",
+    "sendExecution": "发送执行",
+    "sendExecutionDescription": "打开全部发送执行记录。",
+    "replyEvent": "客户回复",
+    "replyEventDescription": "打开全部客户回复记录。",
+    "draftApproval": "触达审批",
+    "draftApprovalDescription": "打开原生触达审批列表。"
+  },
+  "options": {
+    "status": {"PENDING": "待审批", "APPROVED": "已批准", "REJECTED": "已拒绝"}
+  }
 }

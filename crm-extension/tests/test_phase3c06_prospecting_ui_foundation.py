@@ -110,7 +110,6 @@ class ProspectingUiFoundationTests(unittest.TestCase):
         self.assertNotIn("Ajax.", source)
         self.assertNotIn("provider/", source.lower())
         self.assertNotIn("runtime", source.lower())
-        self.assertNotIn("research", source.lower())
         for label in ("country", "keyword", "provider", "strategy", "resultLimit", "startSearch"):
             self.assertIn("labels." + label, template)
         search_i18n = load_json(MODULE / "Resources" / "i18n" / "en_US" / "ProspectingSearch.json")
@@ -118,6 +117,38 @@ class ProspectingUiFoundationTests(unittest.TestCase):
         self.assertEqual(search_i18n["labels"]["startSearch"], "Start Search")
         self.assertIn("labels.queuedOnlyHelp", template)
         self.assertIn("disabled", template)
+        # Phase3C19: Search Center workspace restores acquisition surfaces only.
+        self.assertNotIn("list-group-item", template)
+        self.assertNotIn("operationalCenters", template)
+        self.assertNotIn("operationalCenters", source)
+        self.assertIn("buildSurfaceConfigs", source)
+        self.assertIn("'#SearchJob'", source)
+        self.assertIn("'#ProspectPool'", source)
+        self.assertIn("'#ProspectPool/list/primary=researchQueue'", source)
+        for key in ("searchJobs", "prospectPool", "researchQueue", "acquisitionPipeline"):
+            self.assertIn(key, search_i18n["labels"])
+            self.assertIn(f"translate('{key}')", source)
+        self.assertEqual(search_i18n["labels"]["researchQueue"], "Research Queue")
+        self.assertNotIn("researchPreparation", search_i18n["labels"])
+        self.assertNotIn("searchStrategies", search_i18n["labels"])
+        self.assertNotIn("operationalSurfaces", search_i18n["labels"])
+        # Acquisition card order: Search Jobs → Prospect Pool → Research Queue.
+        jobs_idx = source.index("key: 'searchJobs'")
+        pool_idx = source.index("key: 'prospectPool'")
+        queue_idx = source.index("key: 'researchQueue'")
+        self.assertLess(jobs_idx, pool_idx)
+        self.assertLess(pool_idx, queue_idx)
+        for orphan in (
+            "dashboard",
+            "centerLead",
+            "centerDraftApproval",
+            "centerQuote",
+        ):
+            self.assertNotIn(orphan, search_i18n["labels"])
+            self.assertNotIn(f"translate('{orphan}')", source)
+        for banned in ("#Lead", "#DraftApproval", "#Quote", "#ProspectingDashboard"):
+            self.assertNotIn(banned, source)
+            self.assertNotIn(banned, template)
 
     def test_search_job_layout_uses_frozen_fields_only(self) -> None:
         labels = layout_labels(MODULE / "Resources" / "layouts" / "SearchJob" / "detail.json")

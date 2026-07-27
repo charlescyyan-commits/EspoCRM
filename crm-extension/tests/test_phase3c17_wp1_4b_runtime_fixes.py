@@ -25,7 +25,7 @@ class Phase3C17WP14BRuntimeFixTests(unittest.TestCase):
             self.assertIn(f"class {entity_type} extends Record", source)
 
     def test_workflow_page_i18n_keys_have_en_zh_parity(self) -> None:
-        for entity_type in ("ProspectingSearch", "ProspectingDashboard", "Quote"):
+        for entity_type in ("ProspectingSearch", "ProspectingDashboard", "Quote", "DraftApproval"):
             en = load_json(MODULE / "Resources" / "i18n" / "en_US" / f"{entity_type}.json")
             zh = load_json(MODULE / "Resources" / "i18n" / "zh_CN" / f"{entity_type}.json")
             self.assertEqual(set(en["labels"]), set(zh["labels"]), msg=entity_type)
@@ -35,6 +35,8 @@ class Phase3C17WP14BRuntimeFixTests(unittest.TestCase):
         search_template = (CLIENT / "res" / "templates" / "prospecting" / "search.tpl").read_text(encoding="utf-8")
         dashboard_source = (CLIENT / "src" / "views" / "prospecting" / "dashboard.js").read_text(encoding="utf-8")
         dashboard_template = (CLIENT / "res" / "templates" / "prospecting" / "dashboard.tpl").read_text(encoding="utf-8")
+        outreach_source = (CLIENT / "src" / "views" / "prospecting" / "outreach.js").read_text(encoding="utf-8")
+        outreach_template = (CLIENT / "res" / "templates" / "prospecting" / "outreach.tpl").read_text(encoding="utf-8")
 
         self.assertIn("'labels', 'ProspectingSearch'", search_source)
         self.assertIn("labels.queuedOnlyHelp", search_template)
@@ -45,6 +47,10 @@ class Phase3C17WP14BRuntimeFixTests(unittest.TestCase):
         self.assertIn("pipelineSummary", dashboard_source)
         self.assertIn("proposalReviewRequired", dashboard_source)
         self.assertNotIn("label: 'Search Center'", dashboard_source)
+        self.assertIn("'labels', 'DraftApproval'", outreach_source)
+        self.assertIn("labels.subtitle", outreach_template)
+        self.assertIn("c19OpenReplies", outreach_source)
+        self.assertNotIn("list-group-item", outreach_template)
 
     def test_quote_actions_keep_server_routing_and_localize_messages(self) -> None:
         source = (CLIENT / "src" / "handlers" / "quote" / "workflow-transition.js").read_text(encoding="utf-8")
