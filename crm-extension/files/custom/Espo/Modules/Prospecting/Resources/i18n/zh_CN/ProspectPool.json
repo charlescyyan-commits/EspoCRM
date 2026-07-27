@@ -14,9 +14,14 @@
     "qualifiedAt": "资格确认时间",
     "crmPushedAt": "CRM 推送时间",
     "note": "备注",
-    "searchJob": "搜索任务"
+    "searchJob": "搜索任务",
+    "lead": "潜客"
   },
-  "links": {"searchJob": "搜索任务"},
+  "links": {
+    "searchJob": "搜索任务",
+    "lead": "潜客",
+    "researchEvidences": "研究证据"
+  },
   "labels": {
     "Create ProspectPool": "创建潜客",
     "ProspectPools": "潜客池",

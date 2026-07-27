@@ -25,9 +25,16 @@
     "AcquisitionSearchStrategies": "Search Strategies", "AcquisitionDiscoveryJobs": "Search Jobs",
     "AcquisitionJobsRunning": "Running Jobs", "AcquisitionJobsWaiting": "Queued Jobs",
     "AcquisitionJobsCompleted": "Completed Jobs", "AcquisitionJobsFailed": "Failed Jobs",
-    "AcquisitionLeadPool": "Prospect Pool", "AcquisitionResearchQueue": "Research Queue"
+    "AcquisitionLeadPool": "Prospect Pool", "AcquisitionResearchQueue": "Research Queue",
+    "IntelligenceResearchWorkbench": "Intelligence Research Workbench"
   },
   "labels": {
+    "IntelligenceResearchQueue": "Research Queue",
+    "IntelligenceResearchGaps": "Research Gaps",
+    "IntelligenceEvidencePanel": "Evidence Panel",
+    "IntelligenceAwaitingResearch": "Awaiting Research",
+    "IntelligenceMissingEvidence": "Missing Evidence",
+    "IntelligenceRecentEvidenceItems": "Recent Evidence Items",
     "C17DashboardSearchCenter": "Search Center", "C17DashboardResearchCenter": "Research Center",
     "C17DashboardOutreachCenter": "Outreach Center", "C17DashboardQuoteCenter": "Quote Center",
     "C17DashboardSearchDescription": "Plan searches, monitor jobs, and curate the prospect pool.",

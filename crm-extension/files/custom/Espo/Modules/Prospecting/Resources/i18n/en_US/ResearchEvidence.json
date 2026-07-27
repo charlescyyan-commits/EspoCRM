@@ -12,10 +12,12 @@
     "peCapturedAt": "Captured At",
     "peSchemaVersion": "Schema Version",
     "peSnapshotHash": "Snapshot Hash",
-    "lead": "Lead"
+    "lead": "Lead",
+    "prospectPool": "Prospect Pool"
   },
   "links": {
-    "lead": "Lead"
+    "lead": "Lead",
+    "prospectPool": "Prospect Pool"
   },
   "labels": {
     "Create ResearchEvidence": "Create Research Evidence",

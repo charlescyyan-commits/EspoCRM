@@ -423,6 +423,11 @@
       "type": "hasMany",
       "entity": "ReplyEvent",
       "foreign": "lead"
+    },
+    "prospectPools": {
+      "type": "hasMany",
+      "entity": "ProspectPool",
+      "foreign": "lead"
     }
   },
   "indexes": {

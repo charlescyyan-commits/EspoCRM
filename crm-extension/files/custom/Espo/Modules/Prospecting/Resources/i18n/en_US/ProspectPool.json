@@ -14,9 +14,14 @@
     "qualifiedAt": "Qualified At",
     "crmPushedAt": "CRM Pushed At",
     "note": "Notes",
-    "searchJob": "Search Job"
+    "searchJob": "Search Job",
+    "lead": "Lead"
   },
-  "links": {"searchJob": "Search Job"},
+  "links": {
+    "searchJob": "Search Job",
+    "lead": "Lead",
+    "researchEvidences": "Research Evidence"
+  },
   "labels": {
     "Create ProspectPool": "Create Prospect",
     "ProspectPools": "Prospect Pool",

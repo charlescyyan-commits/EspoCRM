@@ -614,12 +614,22 @@ class ExtensionSkeletonTests(unittest.TestCase):
         for path in c17_filters:
             self.assertTrue(path.is_file(), msg=f"Missing C17 center queue filter: {path}")
         expected |= c17_filters
+        # Phase3C19 ReplyEvent reply queue filters — exact inventory
+        c19_reply_filters = {
+            MODULE / "Classes" / "Select" / "ReplyEvent" / "PrimaryFilters" / "C19OpenReplies.php",
+            MODULE / "Classes" / "Select" / "ReplyEvent" / "PrimaryFilters" / "C19MyReplies.php",
+        }
+        for path in c19_reply_filters:
+            self.assertTrue(path.is_file(), msg=f"Missing C19 ReplyEvent queue filter: {path}")
+        expected |= c19_reply_filters
         for entity in ("DraftApproval", "ReplyEvent", "Approval"):
             entity_filters = {path for path in c17_filters if entity in path.parts}
+            if entity == "ReplyEvent":
+                entity_filters |= c19_reply_filters
             self.assertEqual(
                 set((MODULE / "Classes" / "Select" / entity / "PrimaryFilters").glob("*.php")),
                 entity_filters,
-                msg=f"{entity} PrimaryFilters must match the approved C17 inventory exactly",
+                msg=f"{entity} PrimaryFilters must match the approved C17/C19 inventory exactly",
             )
         # Phase3C18 SendExecution operational queue filters — exact inventory
         c18_filters = {
@@ -1216,7 +1226,13 @@ class ExtensionSkeletonTests(unittest.TestCase):
         self.assertEqual(pool["fields"]["qualificationStatus"]["options"], ["PENDING", "QUALIFIED", "REJECTED"])
         self.assertEqual(pool["fields"]["crmPushStatus"]["options"], ["NOT_READY", "READY", "PUSHED", "FAILED"])
         self.assertIn("searchJob", pool["links"])
-        self.assertNotIn("lead", pool["fields"])
+        # Phase3C19: ProspectPool gets lead link per ADR Intelligence Center Research Workbench.
+        self.assertIn("lead", pool["fields"])
+        self.assertIn("lead", pool["links"])
+        self.assertEqual(pool["links"]["lead"]["type"], "belongsTo")
+        self.assertEqual(pool["links"]["lead"]["entity"], "Lead")
+        self.assertIn("researchEvidences", pool["links"])
+        self.assertEqual(pool["links"]["researchEvidences"]["type"], "hasMany")
         self.assertNotIn("crmLead", pool["fields"])
 
         search_client = _load_json(MODULE / "Resources" / "metadata" / "clientDefs" / "SearchJob.json")

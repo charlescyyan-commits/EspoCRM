@@ -107,6 +107,9 @@
     "lead": {
       "type": "link"
     },
+    "prospectPool": {
+      "type": "link"
+    },
     "createdAt": {
       "type": "datetime",
       "readOnly": true
@@ -136,6 +139,11 @@
     "lead": {
       "type": "belongsTo",
       "entity": "Lead",
+      "foreign": "researchEvidences"
+    },
+    "prospectPool": {
+      "type": "belongsTo",
+      "entity": "ProspectPool",
       "foreign": "researchEvidences"
     },
     "createdBy": {
@@ -182,6 +190,16 @@
       "type": "unique",
       "columns": [
         "leadId",
+        "peCanonicalUrl",
+        "peEvidenceTypeNormalized",
+        "peClaimHash",
+        "deleteId"
+      ]
+    },
+    "c10EvidenceIdentityProspectPool": {
+      "type": "unique",
+      "columns": [
+        "prospectPoolId",
         "peCanonicalUrl",
         "peEvidenceTypeNormalized",
         "peClaimHash",

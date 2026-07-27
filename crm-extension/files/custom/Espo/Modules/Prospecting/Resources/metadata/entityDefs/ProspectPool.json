@@ -15,12 +15,15 @@
     "crmPushedAt": {"type": "datetime", "required": false, "notNull": false},
     "note": {"type": "text", "required": false, "notNull": false},
     "searchJob": {"type": "link"},
+    "lead": {"type": "link"},
     "createdAt": {"type": "datetime", "readOnly": true},
     "assignedUser": {"type": "link"},
     "teams": {"type": "linkMultiple"}
   },
   "links": {
     "searchJob": {"type": "belongsTo", "entity": "SearchJob", "foreign": "prospectPools"},
+    "lead": {"type": "belongsTo", "entity": "Lead", "foreign": "prospectPools"},
+    "researchEvidences": {"type": "hasMany", "entity": "ResearchEvidence", "foreign": "prospectPool"},
     "assignedUser": {"type": "belongsTo", "entity": "User"},
     "teams": {"type": "hasMany", "entity": "Team", "relationName": "entityTeam", "layoutRelationshipsDisabled": true}
   },

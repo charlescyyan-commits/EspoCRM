@@ -1,0 +1,31 @@
+{
+  "view": "custom:views/dashlets/intelligence-research-workbench",
+  "aclScope": null,
+  "options": {
+    "view": "views/dashlets/options/base",
+    "fields": {
+      "title": {
+        "type": "varchar",
+        "required": true
+      },
+      "autorefreshInterval": {
+        "type": "enumFloat",
+        "options": [0, 0.5, 1, 2, 5, 10]
+      }
+    },
+    "defaults": {
+      "title": "Intelligence Research Workbench",
+      "autorefreshInterval": 0
+    },
+    "layout": [
+      {
+        "rows": [
+          [{"name": "title"}, {"name": "autorefreshInterval"}]
+        ]
+      }
+    ]
+  },
+  "accessDataList": [
+    {"inPortalDisabled": true}
+  ]
+}
