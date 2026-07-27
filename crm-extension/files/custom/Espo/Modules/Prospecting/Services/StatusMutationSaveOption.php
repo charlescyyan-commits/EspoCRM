@@ -14,4 +14,5 @@ final class StatusMutationSaveOption
     public const QUOTE_STATUS_MUTATION_AUTHORIZED = 'prospecting.quoteStatusMutationAuthorized';
     public const APPROVAL_STATUS_MUTATION_AUTHORIZED = 'prospecting.approvalStatusMutationAuthorized';
     public const SEND_EXECUTION_STATUS_MUTATION_AUTHORIZED = 'prospecting.sendExecutionStatusMutationAuthorized';
+    public const REPLY_TRIAGE_MUTATION_AUTHORIZED = 'prospecting.replyTriageMutationAuthorized';
 }

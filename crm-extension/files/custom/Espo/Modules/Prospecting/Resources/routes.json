@@ -25,6 +25,11 @@
     "actionClassName": "Espo\\Modules\\Prospecting\\Api\\PostSyncBrevoEmailEvent"
   },
   {
+    "route": "/Prospecting/reply-event/sync",
+    "method": "post",
+    "actionClassName": "Espo\\Modules\\Prospecting\\Api\\PostSyncReplyEvent"
+  },
+  {
     "route": "/Prospecting/search-strategy/generate-jobs",
     "method": "post",
     "actionClassName": "Espo\\Modules\\Prospecting\\Api\\PostGenerateSearchStrategyJobs"

@@ -8,6 +8,10 @@
     "sendTraceReference": {"type": "varchar", "maxLength": 255, "required": true, "trim": true},
     "sendExecution": {"type": "link", "required": true},
     "lead": {"type": "link", "required": true},
+    "triageStatus": {"type": "enum", "required": false, "notNull": false, "options": ["OPEN", "IN_PROGRESS", "CLOSED"], "readOnly": true, "displayAsLabel": true, "style": {"OPEN": "warning", "IN_PROGRESS": "primary", "CLOSED": "success"}},
+    "closedReason": {"type": "text", "required": false, "notNull": false, "readOnly": true},
+    "closedAt": {"type": "datetime", "readOnly": true},
+    "closedBy": {"type": "link", "readOnly": true},
     "createdAt": {"type": "datetime", "readOnly": true},
     "modifiedAt": {"type": "datetime", "readOnly": true},
     "createdBy": {"type": "link", "readOnly": true},
@@ -18,6 +22,7 @@
   "links": {
     "sendExecution": {"type": "belongsTo", "entity": "SendExecution", "foreign": "replyEvents"},
     "lead": {"type": "belongsTo", "entity": "Lead", "foreign": "replyEvents"},
+    "closedBy": {"type": "belongsTo", "entity": "User"},
     "createdBy": {"type": "belongsTo", "entity": "User"},
     "modifiedBy": {"type": "belongsTo", "entity": "User"},
     "assignedUser": {"type": "belongsTo", "entity": "User"},

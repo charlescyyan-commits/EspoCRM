@@ -7,12 +7,17 @@
     "eventMetadata": "Event Metadata",
     "sendTraceReference": "Send Trace Reference",
     "sendExecution": "Send Execution",
-    "lead": "Lead"
+    "lead": "Lead",
+    "triageStatus": "Triage Status",
+    "closedReason": "Closed Reason",
+    "closedAt": "Closed At",
+    "closedBy": "Closed By"
   },
-  "links": {"sendExecution": "Send Execution", "lead": "Lead"},
+  "links": {"sendExecution": "Send Execution", "lead": "Lead", "closedBy": "Closed By"},
   "labels": {"Create ReplyEvent": "Create Reply Event", "ReplyEvents": "Reply Events"},
   "options": {
-    "replyStatus": {"SENT": "Sent", "REPLIED": "Replied", "BOUNCED": "Bounced", "UNSUBSCRIBED": "Unsubscribed"}
+    "replyStatus": {"SENT": "Sent", "REPLIED": "Replied", "BOUNCED": "Bounced", "UNSUBSCRIBED": "Unsubscribed"},
+    "triageStatus": {"OPEN": "Open", "IN_PROGRESS": "In Progress", "CLOSED": "Closed"}
   },
   "tooltips": {
     "eventMetadata": "Event metadata only. Do not store a full email body, prompt content, or hidden reasoning.",
