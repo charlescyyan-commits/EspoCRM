@@ -1,143 +1,81 @@
-<div class="row">
-    <div class="col-sm-3">
-        <div class="panel panel-default">
-            <div class="panel-heading"><strong>{{labels.prospecting}}</strong></div>
-            <div class="list-group list-group-panel">
-                <a class="list-group-item active" href="#ProspectingDashboard">
-                    <span class="fas fa-binoculars"></span> {{labels.dashboard}}
-                </a>
-                <a class="list-group-item" data-action="open-search" href="#ProspectingSearch">
-                    <span class="fas fa-search"></span> {{labels.searchCenter}}
-                </a>
-                <a class="list-group-item" href="#Lead">
-                    <span class="fas fa-user-tag"></span> {{labels.researchCenter}}
-                </a>
-                <a class="list-group-item" href="#DraftApproval">
-                    <span class="fas fa-paper-plane"></span> {{labels.outreachCenter}}
-                </a>
-                <a class="list-group-item" href="#Quote">
-                    <span class="fas fa-file-signature"></span> {{labels.quoteCenter}}
-                </a>
-            </div>
-        </div>
-        <div class="panel panel-default">
-            <div class="panel-heading">{{labels.workflow}}</div>
-            <div class="panel-body" style="font-size:12px;line-height:1.5;">
-                <div>{{labels.workflowDiscover}}</div>
-                <div>{{labels.workflowResearch}}</div>
-                <div>{{labels.workflowOutreach}}</div>
-                <div>{{labels.workflowQuotes}}</div>
-            </div>
+<div class="page-header" style="margin-top: 0;">
+    <div class="pull-right text-muted" style="margin-top: 8px;">{{today}}</div>
+    <h3 style="margin-top: 0;">{{labels.title}}</h3>
+    <p class="text-muted" style="margin-bottom: 16px;">{{labels.subtitle}}</p>
+</div>
+
+{{#if loading}}
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <div class="text-muted">{{labels.loading}}</div>
         </div>
     </div>
-    <div class="col-sm-9">
-        <div class="page-header" style="margin-top:0;">
-            <h3 style="margin-top:0;">{{labels.operations}}</h3>
-            <p class="text-muted" style="margin-bottom:16px;">
-                {{labels.operationsDescription}}
-            </p>
-        </div>
-
-        <div class="panel panel-default">
-            <div class="panel-heading"><strong>{{labels.operationalCenters}}</strong></div>
-            <div class="panel-body">
-                <div class="row">
-                    {{#each centers}}
-                        <div class="col-sm-6" style="margin-bottom:16px;">
-                            <h4 style="margin-top:0;"><a href="{{href}}">{{name}}</a></h4>
-                            <p class="text-muted">{{description}}</p>
-                            {{#if hasEntries}}
-                                <div class="list-group" style="margin-bottom:0;">
-                                    {{#each entries}}
-                                        <a class="list-group-item" href="{{href}}">{{label}}</a>
-                                    {{/each}}
-                                </div>
-                            {{/if}}
-                        </div>
-                    {{/each}}
-                </div>
-                <p class="text-muted" style="margin-bottom:0;">
-                    {{labels.analyticsDeferred}}
-                </p>
-            </div>
-        </div>
-
-        <div class="panel panel-default">
-            <div class="panel-heading"><strong>{{labels.summary}}</strong></div>
-            <div class="panel-body">
-                {{#if loading}}
-                    <div class="text-muted">{{labels.loading}}</div>
-                {{else}}
+{{else}}
+    {{#if hasSections}}
+        {{#each sections}}
+            <div class="panel panel-default">
+                <div class="panel-heading"><strong>{{title}}</strong></div>
+                <div class="panel-body">
                     <div class="row">
-                        {{#each metrics}}
-                            <div class="col-sm-15" style="width:20%;float:left;padding:0 6px;box-sizing:border-box;">
-                                <div class="text-center" style="padding:8px 4px;">
-                                    <div class="text-muted" style="font-size:12px;">{{label}}</div>
-                                    <div style="font-size:26px;font-weight:600;">
-                                        <a href="{{href}}" style="color:inherit;text-decoration:none;">{{value}}</a>
+                        {{#each cards}}
+                            <div class="col-sm-6 col-md-3" style="margin-bottom: 16px;">
+                                <div class="panel panel-default" style="margin-bottom: 0; min-height: 150px;">
+                                    <div class="panel-body">
+                                        <div class="text-muted" style="font-size: 12px; min-height: 34px;">{{label}}</div>
+                                        {{#if isCount}}
+                                            <div style="font-size: 30px; font-weight: 600; line-height: 1.2; margin-top: 8px;">
+                                                <a href="{{href}}" style="color: inherit; text-decoration: none;">
+                                                    {{#if count}}{{count}}{{else}}0{{/if}}
+                                                </a>
+                                            </div>
+                                            {{#unless count}}
+                                                <div class="text-muted" style="font-size: 11px; margin-top: 6px;">{{../../labels.noData}}</div>
+                                            {{/unless}}
+                                        {{/if}}
+                                        {{#if isHandoff}}
+                                            <div style="font-size: 18px; font-weight: 600; line-height: 1.2; margin-top: 12px;">
+                                                <a href="{{href}}" style="color: inherit; text-decoration: none;">{{label}}</a>
+                                            </div>
+                                        {{/if}}
+                                        {{#if description}}
+                                            <div class="text-muted" style="font-size: 12px; margin-top: 12px;">
+                                                {{description}}
+                                            </div>
+                                        {{/if}}
                                     </div>
-                                    {{#unless value}}
-                                        <div class="text-muted" style="font-size:11px;">{{../labels.noData}}</div>
-                                    {{/unless}}
                                 </div>
                             </div>
                         {{/each}}
                     </div>
-                    <div class="clearfix"></div>
-                    {{#unless hasMetrics}}
-                        <div class="text-muted margin-top" style="margin-top:8px;">
-                            {{labels.noActivity}}
-                        </div>
-                    {{/unless}}
-                {{/if}}
+                </div>
             </div>
-        </div>
-
+        {{/each}}
+    {{else}}
         <div class="panel panel-default">
-            <div class="panel-heading">
-                <strong>{{labels.recentActivity}}</strong>
-                <a class="pull-right" href="#SearchJob" style="font-weight:normal;">{{labels.viewAll}}</a>
-            </div>
-            <div class="panel-body" style="padding-top:0;">
-                {{#if loading}}
-                    <div class="text-muted" style="padding-top:12px;">{{labels.loading}}</div>
-                {{else}}
-                    {{#if hasRecentJobs}}
-                        <div class="table-responsive">
-                            <table class="table table-striped" style="margin-bottom:0;">
-                                <thead>
-                                    <tr>
-                                        <th>{{labels.name}}</th>
-                                        <th>{{labels.status}}</th>
-                                        <th>{{labels.created}}</th>
-                                        <th>{{labels.count}}</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {{#each recentJobs}}
-                                        <tr>
-                                            <td><a href="{{href}}">{{name}}</a></td>
-                                            <td>{{status}}</td>
-                                            <td>{{createdAt}}</td>
-                                            <td>{{count}}</td>
-                                        </tr>
-                                    {{/each}}
-                                </tbody>
-                            </table>
-                        </div>
-                    {{else}}
-                        <div class="text-muted" style="padding:16px 0;">
-                            <div style="font-size:16px;margin-bottom:4px;">0</div>
-                            {{labels.noSearchJobs}}
-                            <div style="margin-top:8px;">
-                                <a href="#ProspectingSearch">{{labels.startDiscover}}</a>
-                                |
-                                <a href="#SearchStrategy">{{labels.openSearchStrategies}}</a>
+            <div class="panel-body text-muted">{{labels.emptyState}}</div>
+        </div>
+    {{/if}}
+
+    {{#if hasPipeline}}
+        <div class="panel panel-default">
+            <div class="panel-heading"><strong>{{labels.pipelineSummary}}</strong></div>
+            <div class="panel-body">
+                <div class="row text-center">
+                    {{#each pipeline}}
+                        <div class="col-sm-15" style="width: 20%; float: left; padding: 0 6px; box-sizing: border-box;">
+                            <div style="padding: 8px 4px;">
+                                <div class="text-muted" style="font-size: 12px;">{{label}}</div>
+                                <div style="font-size: 24px; font-weight: 600; line-height: 1.2;">
+                                    <a href="{{href}}" style="color: inherit; text-decoration: none;">
+                                        {{count}}
+                                    </a>
+                                </div>
                             </div>
                         </div>
-                    {{/if}}
-                {{/if}}
+                    {{/each}}
+                </div>
+                <div class="clearfix"></div>
             </div>
         </div>
-    </div>
-</div>
+    {{/if}}
+{{/if}}

@@ -50,6 +50,13 @@
     "C17DashboardSendExecutions": "Send Executions", "C17DashboardReplyEvents": "Reply Events",
     "C17DashboardEmailEvents": "Email Events", "C17DashboardQuotes": "Quotes",
     "C17DashboardQuoteApprovals": "Quote Approvals", "C17DashboardProformaInvoices": "Proforma Invoices",
-    "C18DashboardPendingSend": "Pending Send", "C18DashboardFailedSend": "Failed Send"
+    "C18DashboardPendingSend": "Pending Send", "C18DashboardFailedSend": "Failed Send",
+    "C19DashboardFailedSend": "Failed Send",
+    "C19DashboardOpenReplies": "Replies Pending Triage",
+    "C19DashboardMyReplies": "My Replies",
+    "C19DashboardFollowUpDue": "Follow Up Today",
+    "C19DashboardProposalReviewRequired": "Proposal Review Required",
+    "C19DashboardResearchFailed": "Research Failed",
+    "C19DashboardSentAwaitingReply": "Sent Awaiting Reply"
   }
 }

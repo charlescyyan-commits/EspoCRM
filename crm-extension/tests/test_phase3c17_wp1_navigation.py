@@ -237,19 +237,21 @@ class Phase3C17WP1NavigationTests(unittest.TestCase):
 
     def test_dashboard_retains_every_required_supporting_access_path(self) -> None:
         for route in (
-            "#Lead",
-            "#ResearchEvidence",
-            "#SalesFeedback",
-            "#LearningSignal",
-            "#DraftApproval",
-            "#SendExecution",
-            "#ReplyEvent",
-            "#EmailEvent",
+            "#Lead/list/primary=peFollowUpDue",
+            "#Lead/list/primary=peResearchFailed",
+            "#Lead/list/primary=peMissingEvidence",
+            "#Lead/list/primary=peProposalReviewRequired",
+            "#DraftApproval/list/primary=c17Pending",
+            "#SendExecution/list/primary=c18ReadyToSend",
+            "#SendExecution/list/primary=c18FailedSend",
+            "#ReplyEvent/list/primary=c19OpenReplies",
+            "#ReplyEvent/list/primary=c17AwaitingReply",
             "#Quote",
-            "#Approval",
-            "#ProformaInvoice",
+            "#Approval/list/primary=c17Pending",
         ):
             self.assertIn(route, self.dashboard_js + self.dashboard_template)
+        for removed in ("#ProspectingSearch", "#SearchStrategy", "#SearchJob", "#ResearchEvidence", "#SalesFeedback", "#LearningSignal", "#EmailEvent", "#ProformaInvoice"):
+            self.assertNotIn(removed, self.dashboard_js + self.dashboard_template)
         self.assertNotIn("#QuoteItem", self.dashboard_js + self.dashboard_template)
 
     def test_existing_lead_and_quote_relationship_panels_preserve_child_access(self) -> None:
@@ -327,13 +329,13 @@ class Phase3C17WP1NavigationTests(unittest.TestCase):
         self.assertEqual(global_en["labels"]["C19NavigationSupportDivider"], "Support")
         self.assertEqual(global_zh["labels"]["C19NavigationSupportDivider"], "支持")
 
-    def test_dashboard_center_labels_are_i18n_backed(self) -> None:
-        self.assertIn("getLanguage().translate(key, 'labels', 'Global')", self.dashboard_js)
+    def test_dashboard_workspace_labels_are_i18n_backed(self) -> None:
+        self.assertIn("getLanguage().translate(key, 'labels', 'ProspectingDashboard')", self.dashboard_js)
         for literal in (
-            "name: 'Search Center'",
-            "name: 'Research Center'",
-            "name: 'Outreach Center'",
-            "name: 'Quote Center'",
+            "label: 'Pending Send'",
+            "label: 'Failed Send'",
+            "label: 'Research Status'",
+            "label: 'Outreach Status'",
         ):
             self.assertNotIn(literal, self.dashboard_js)
 

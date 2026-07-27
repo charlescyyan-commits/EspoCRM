@@ -40,10 +40,11 @@ class Phase3C17WP14BRuntimeFixTests(unittest.TestCase):
         self.assertIn("labels.queuedOnlyHelp", search_template)
         self.assertNotIn("Country and Keyword are required", search_source)
         self.assertIn("'labels', 'ProspectingDashboard'", dashboard_source)
-        self.assertIn("operationalCenters: translate('operationalCenters')", dashboard_source)
-        self.assertIn("labels.operationsDescription", dashboard_template)
-        self.assertIn("labels.totalProspects", dashboard_source)
-        self.assertNotIn("label: 'Total Prospects'", dashboard_source)
+        self.assertIn("workspaceDescription", dashboard_source)
+        self.assertIn("labels.subtitle", dashboard_template)
+        self.assertIn("pipelineSummary", dashboard_source)
+        self.assertIn("proposalReviewRequired", dashboard_source)
+        self.assertNotIn("label: 'Search Center'", dashboard_source)
 
     def test_quote_actions_keep_server_routing_and_localize_messages(self) -> None:
         source = (CLIENT / "src" / "handlers" / "quote" / "workflow-transition.js").read_text(encoding="utf-8")

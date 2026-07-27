@@ -50,6 +50,13 @@
     "C17DashboardSendExecutions": "发送执行", "C17DashboardReplyEvents": "客户回复",
     "C17DashboardEmailEvents": "邮件事件", "C17DashboardQuotes": "报价",
     "C17DashboardQuoteApprovals": "报价审批", "C17DashboardProformaInvoices": "形式发票",
-    "C18DashboardPendingSend": "待发送", "C18DashboardFailedSend": "发送失败"
+    "C18DashboardPendingSend": "待发送", "C18DashboardFailedSend": "发送失败",
+    "C19DashboardFailedSend": "发送失败",
+    "C19DashboardOpenReplies": "已回复待处理",
+    "C19DashboardMyReplies": "我的回复",
+    "C19DashboardFollowUpDue": "今日跟进",
+    "C19DashboardProposalReviewRequired": "待报价评审",
+    "C19DashboardResearchFailed": "研究失败",
+    "C19DashboardSentAwaitingReply": "已发送未回复"
   }
 }

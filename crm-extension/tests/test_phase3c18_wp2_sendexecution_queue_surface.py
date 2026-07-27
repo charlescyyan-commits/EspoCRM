@@ -37,7 +37,7 @@ class Phase3C18SendExecutionQueueSurfaceTests(unittest.TestCase):
         cls.dashboard = read(DASHBOARD_JS)
         cls.select_defs = load_json(SELECT_DEFS)
 
-    def test_dashlet_binds_pending_send_to_ready_primary_filter(self) -> None:
+    def test_dashlets_bind_pending_and_failed_send_primary_filters(self) -> None:
         self.assertIn(
             "phase3c17RecordsOptions('待发送', 'SendExecution', 'c18ReadyToSend', 'createdAt')",
             self.provisioner,
@@ -46,20 +46,23 @@ class Phase3C18SendExecutionQueueSurfaceTests(unittest.TestCase):
             "'id' => 'phase3c18-command-pending-send', 'name' => 'Records'",
             self.provisioner,
         )
+        self.assertIn(
+            "phase3c17RecordsOptions('发送失败', 'SendExecution', 'c18FailedSend', 'createdAt')",
+            self.provisioner,
+        )
+        self.assertIn(
+            "'id' => 'phase3c19-command-failed-send', 'name' => 'Records'",
+            self.provisioner,
+        )
         self.assertIn("c18ReadyToSend", self.select_defs["primaryFilterClassNameMap"])
-        self.assertIn("/^(phase3(?:u03|b07|c0[12]|c17|c18)-)/", self.provisioner)
+        self.assertIn("c18FailedSend", self.select_defs["primaryFilterClassNameMap"])
+        self.assertIn("/^(phase3(?:u03|b07|c0[12]|c17|c18|c19)-)/", self.provisioner)
 
     def test_outreach_center_exposes_pending_and_failed_send_queues(self) -> None:
-        self.assertIn("C18DashboardPendingSend", self.dashboard)
-        self.assertIn("C18DashboardFailedSend", self.dashboard)
-        self.assertIn(
-            "href: '#SendExecution/list/primary=c18ReadyToSend'",
-            self.dashboard,
-        )
-        self.assertIn(
-            "href: '#SendExecution/list/primary=c18FailedSend'",
-            self.dashboard,
-        )
+        self.assertIn("pendingSend", self.dashboard)
+        self.assertIn("failedSend", self.dashboard)
+        self.assertIn("'#SendExecution/list/primary=c18ReadyToSend'", self.dashboard)
+        self.assertIn("'#SendExecution/list/primary=c18FailedSend'", self.dashboard)
         self.assertIn("c18FailedSend", self.select_defs["primaryFilterClassNameMap"])
 
         en = load_json(MODULE / "Resources" / "i18n" / "en_US" / "Global.json")["labels"]
@@ -72,9 +75,9 @@ class Phase3C18SendExecutionQueueSurfaceTests(unittest.TestCase):
     def test_acl_visibility_preserved_for_queue_surfaces(self) -> None:
         scopes = load_json(SCOPES)
         self.assertTrue(scopes.get("acl"))
-        # Outreach center entries remain ACL-gated by scope.
-        self.assertIn("acl.check(entry.scope, 'read')", self.dashboard)
-        self.assertIn("scope: 'SendExecution'", self.dashboard)
+        # Dashboard cards remain ACL-gated by scope.
+        self.assertIn("acl.check(card.scope, 'read')", self.dashboard)
+        self.assertIn("'SendExecution'", self.dashboard)
         # Command Center pending-send is a native Records dashlet (ACL via entityType).
         self.assertNotIn("skipAccessCheck", self.provisioner)
         self.assertNotIn("disableAccessControl", self.provisioner)
@@ -107,9 +110,6 @@ class Phase3C18SendExecutionQueueSurfaceTests(unittest.TestCase):
     def test_forbidden_surfaces_not_introduced(self) -> None:
         for banned in ("tabList", "navigation.json", "ConfigWriter", "aclDefs"):
             self.assertNotIn(banned, self.provisioner)
-        # No Failed Send daily queue on Command Center (Outreach Center only).
-        self.assertNotIn("c18FailedSend", self.provisioner)
-        self.assertNotIn("发送失败", self.provisioner)
         # No new center/scope invented by this WP.
         for banned_scope in ("BusinessCenter", "SendCenter", "OutreachQueue"):
             self.assertFalse(

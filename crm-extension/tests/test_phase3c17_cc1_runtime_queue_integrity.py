@@ -134,7 +134,7 @@ class Phase3C17RuntimeQueueIntegrityTests(unittest.TestCase):
             "phase3c17RecordsOptions('我的任务', 'Task', 'actual', 'dateStart', 'asc', ['onlyMy'])",
             "phase3c17RecordsOptions('待触达', 'DraftApproval', 'c17Pending', 'createdAt')",
             "phase3c17RecordsOptions('待发送', 'SendExecution', 'c18ReadyToSend', 'createdAt')",
-            "phase3c17RecordsOptions('待回复', 'ReplyEvent', 'c17AwaitingReply', 'receivedAt')",
+            "phase3c17RecordsOptions('已发送未回复', 'ReplyEvent', 'c17AwaitingReply', 'receivedAt')",
             "phase3c17RecordsOptions('待审批', 'Approval', 'c17Pending', 'createdAt')",
         ):
             self.assertIn(expected, self.provisioner)

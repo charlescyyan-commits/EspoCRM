@@ -57,39 +57,43 @@ class ProspectingUiFoundationTests(unittest.TestCase):
         source = (CLIENT / "res" / "templates" / "prospecting" / "dashboard.tpl").read_text(encoding="utf-8")
         dashboard_js = (CLIENT / "src" / "views" / "prospecting" / "dashboard.js").read_text(encoding="utf-8")
         navigation_surface = source + dashboard_js
-        for route in ("#ProspectingDashboard", "#ProspectingSearch", "#SearchJob", "#ProspectPool", "#SearchStrategy"):
+        for route in (
+            "#SendExecution/list/primary=c18ReadyToSend",
+            "#SendExecution/list/primary=c18FailedSend",
+            "#ReplyEvent/list/primary=c19OpenReplies",
+            "#ReplyEvent/list/primary=c17AwaitingReply",
+            "#Approval/list/primary=c17Pending",
+            "#ProspectPool/list/primary=researchQueue",
+            "#Lead/list/primary=peFollowUpDue",
+            "#Lead/list/primary=peResearchFailed",
+            "#Lead/list/primary=peMissingEvidence",
+            "#Lead/list/primary=peProposalReviewRequired",
+            "#Quote",
+        ):
             self.assertIn(route, navigation_surface)
-        # Phase3U03 dashboard productization: overview + summary + recent discovery empty states.
-        # Phase3C17 WP1.4B localizes these visible labels through the dashboard scope.
+        # Phase3C19 dashboard workspace: section headers and pipeline summary are i18n-backed.
         for label in (
-            "operationalCenters",
-            "summary",
-            "recentActivity",
-            "noData",
+            "overview",
+            "researchStatus",
+            "outreachStatus",
+            "commercialHandoff",
+            "pipelineSummary",
+            "workspaceEmpty",
         ):
-            self.assertIn(label, source)
+            self.assertIn(label, dashboard_js)
         dashboard_i18n = load_json(MODULE / "Resources" / "i18n" / "en_US" / "ProspectingDashboard.json")
-        self.assertEqual(dashboard_i18n["labels"]["operationalCenters"], "Operational Centers")
-        self.assertEqual(dashboard_i18n["labels"]["summary"], "Prospecting Summary")
-        self.assertEqual(dashboard_i18n["labels"]["recentActivity"], "Recent Discovery Activity")
+        self.assertEqual(dashboard_i18n["labels"]["overview"], "Overview")
+        self.assertEqual(dashboard_i18n["labels"]["researchStatus"], "Research Status")
+        self.assertEqual(dashboard_i18n["labels"]["outreachStatus"], "Outreach Status")
         self.assertEqual(dashboard_i18n["labels"]["noData"], "No data available")
-        labels = load_json(MODULE / "Resources" / "i18n" / "en_US" / "Global.json")["labels"]
-        self.assertEqual(labels["C17DashboardSearchJobs"], "Search Jobs")
-        self.assertEqual(labels["C17DashboardProspectPool"], "Prospect Pool")
-        self.assertIn("getLanguage().translate(key, 'labels', 'Global')", dashboard_js)
-        self.assertIn('data-action="open-search"', source)
-
-        for key in (
-            "C17DashboardSearchCenter",
-            "C17DashboardResearchCenter",
-            "C17DashboardOutreachCenter",
-            "C17DashboardQuoteCenter",
-        ):
-            self.assertIn(key, dashboard_js)
+        self.assertIn("getLanguage().translate(key, 'labels', 'ProspectingDashboard')", dashboard_js)
+        self.assertNotIn('data-action="open-search"', source)
+        self.assertNotIn("#ProspectingSearch", navigation_surface)
         self.assertIn("countRecords", dashboard_js)
-        self.assertIn("loadRecentJobs", dashboard_js)
-        self.assertIn("ProspectPool", dashboard_js)
-        self.assertIn("SearchJob", dashboard_js)
+        self.assertIn("buildSectionConfigs", dashboard_js)
+        self.assertIn("buildPipelineConfigs", dashboard_js)
+        self.assertIn("c19OpenReplies", dashboard_js)
+        self.assertIn("peProposalReviewRequired", dashboard_js)
         self.assertNotIn("PHASE3B02", dashboard_js)
         self.assertNotIn("FORMULA-TEST", dashboard_js)
 

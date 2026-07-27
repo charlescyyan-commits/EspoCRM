@@ -156,7 +156,7 @@ function phase3c17ResolveTargetUsers(array $arguments, $entityManager): array
 
 function phase3c17IsManagedDashletId(string $id): bool
 {
-    return preg_match('/^(phase3(?:u03|b07|c0[12]|c17|c18)-)/', $id) === 1;
+    return preg_match('/^(phase3(?:u03|b07|c0[12]|c17|c18|c19)-)/', $id) === 1;
 }
 
 function phase3c17RecordsOptions(
@@ -186,18 +186,25 @@ function phase3c17CommandCenterItems(): array
         // TOP: operational summaries; both dashlets already exist in the extension.
         ['id' => 'phase3c17-command-summary', 'name' => 'ProspectingSummary', 'x' => 0, 'y' => 0, 'width' => 2, 'height' => 2],
         ['id' => 'phase3c17-command-overview', 'name' => 'AcquisitionOverview', 'x' => 2, 'y' => 0, 'width' => 2, 'height' => 2],
-        // MIDDLE: daily queues. Records is an EspoCRM native dashlet.
-        ['id' => 'phase3c17-command-my-tasks', 'name' => 'Records', 'x' => 0, 'y' => 2, 'width' => 2, 'height' => 3],
-        ['id' => 'phase3c17-command-research', 'name' => 'AcquisitionResearchQueue', 'x' => 2, 'y' => 2, 'width' => 2, 'height' => 3],
-        ['id' => 'phase3c17-command-outreach', 'name' => 'Records', 'x' => 0, 'y' => 5, 'width' => 1, 'height' => 3],
-        ['id' => 'phase3c18-command-pending-send', 'name' => 'Records', 'x' => 1, 'y' => 5, 'width' => 1, 'height' => 3],
-        ['id' => 'phase3c17-command-replies', 'name' => 'Records', 'x' => 2, 'y' => 5, 'width' => 1, 'height' => 3],
-        ['id' => 'phase3c17-command-approvals', 'name' => 'Records', 'x' => 3, 'y' => 5, 'width' => 1, 'height' => 3],
+        // ACTION: exception queues first. Records is an EspoCRM native dashlet.
+        ['id' => 'phase3c19-command-failed-send', 'name' => 'Records', 'x' => 0, 'y' => 2, 'width' => 1, 'height' => 3],
+        ['id' => 'phase3c19-command-open-replies', 'name' => 'Records', 'x' => 1, 'y' => 2, 'width' => 1, 'height' => 3],
+        ['id' => 'phase3c17-command-approvals', 'name' => 'Records', 'x' => 2, 'y' => 2, 'width' => 1, 'height' => 3],
+        ['id' => 'phase3c19-command-followup', 'name' => 'Records', 'x' => 3, 'y' => 2, 'width' => 1, 'height' => 3],
+        // MIDDLE: personal work and pipeline progression queues.
+        ['id' => 'phase3c17-command-my-tasks', 'name' => 'Records', 'x' => 0, 'y' => 5, 'width' => 1, 'height' => 3],
+        ['id' => 'phase3c17-command-outreach', 'name' => 'Records', 'x' => 1, 'y' => 5, 'width' => 1, 'height' => 3],
+        ['id' => 'phase3c18-command-pending-send', 'name' => 'Records', 'x' => 2, 'y' => 5, 'width' => 1, 'height' => 3],
+        ['id' => 'phase3c17-command-replies', 'name' => 'Records', 'x' => 3, 'y' => 5, 'width' => 1, 'height' => 3],
+        ['id' => 'phase3c17-command-research', 'name' => 'AcquisitionResearchQueue', 'x' => 0, 'y' => 8, 'width' => 1, 'height' => 3],
+        ['id' => 'phase3c19-command-proposal-review', 'name' => 'Records', 'x' => 1, 'y' => 8, 'width' => 1, 'height' => 3],
+        ['id' => 'phase3c19-command-research-failed', 'name' => 'Records', 'x' => 2, 'y' => 8, 'width' => 1, 'height' => 3],
+        ['id' => 'phase3c19-command-my-replies', 'name' => 'Records', 'x' => 3, 'y' => 8, 'width' => 1, 'height' => 3],
         // BOTTOM: existing acquisition and evidence metrics/activity dashlets.
-        ['id' => 'phase3c17-command-pool', 'name' => 'AcquisitionLeadPool', 'x' => 0, 'y' => 8, 'width' => 2, 'height' => 3],
-        ['id' => 'phase3c17-command-recent-discovery', 'name' => 'ProspectingRecentDiscovery', 'x' => 2, 'y' => 8, 'width' => 2, 'height' => 3],
-        ['id' => 'phase3c17-command-completed', 'name' => 'AcquisitionJobsCompleted', 'x' => 0, 'y' => 11, 'width' => 2, 'height' => 3],
-        ['id' => 'phase3c17-command-evidence', 'name' => 'RecentResearchEvidence', 'x' => 2, 'y' => 11, 'width' => 2, 'height' => 3],
+        ['id' => 'phase3c17-command-pool', 'name' => 'AcquisitionLeadPool', 'x' => 0, 'y' => 11, 'width' => 2, 'height' => 3],
+        ['id' => 'phase3c17-command-recent-discovery', 'name' => 'ProspectingRecentDiscovery', 'x' => 2, 'y' => 11, 'width' => 2, 'height' => 3],
+        ['id' => 'phase3c17-command-completed', 'name' => 'AcquisitionJobsCompleted', 'x' => 0, 'y' => 14, 'width' => 2, 'height' => 3],
+        ['id' => 'phase3c17-command-evidence', 'name' => 'RecentResearchEvidence', 'x' => 2, 'y' => 14, 'width' => 2, 'height' => 3],
     ];
 }
 
@@ -226,7 +233,7 @@ function phase3c17BuildDashboardLayout(array $layout): array
             if (!is_array($item) || phase3c17IsManagedDashletId((string) ($item['id'] ?? ''))) {
                 continue;
             }
-            $item['y'] = max(14, (int) ($item['y'] ?? 0) + 14);
+            $item['y'] = max(17, (int) ($item['y'] ?? 0) + 17);
             $carriedItems[] = $item;
         }
     }
@@ -255,8 +262,14 @@ function phase3c17BuildDashletsOptions(array $options): array
     $options['phase3c17-command-research'] = ['title' => '待研究客户'];
     $options['phase3c17-command-outreach'] = phase3c17RecordsOptions('待触达', 'DraftApproval', 'c17Pending', 'createdAt');
     $options['phase3c18-command-pending-send'] = phase3c17RecordsOptions('待发送', 'SendExecution', 'c18ReadyToSend', 'createdAt');
-    $options['phase3c17-command-replies'] = phase3c17RecordsOptions('待回复', 'ReplyEvent', 'c17AwaitingReply', 'receivedAt');
+    $options['phase3c17-command-replies'] = phase3c17RecordsOptions('已发送未回复', 'ReplyEvent', 'c17AwaitingReply', 'receivedAt');
     $options['phase3c17-command-approvals'] = phase3c17RecordsOptions('待审批', 'Approval', 'c17Pending', 'createdAt');
+    $options['phase3c19-command-failed-send'] = phase3c17RecordsOptions('发送失败', 'SendExecution', 'c18FailedSend', 'createdAt');
+    $options['phase3c19-command-open-replies'] = phase3c17RecordsOptions('已回复待处理', 'ReplyEvent', 'c19OpenReplies', 'receivedAt');
+    $options['phase3c19-command-my-replies'] = phase3c17RecordsOptions('我的回复', 'ReplyEvent', 'c19MyReplies', 'receivedAt');
+    $options['phase3c19-command-followup'] = phase3c17RecordsOptions('今日跟进', 'Lead', 'peFollowUpDue', 'nextFollowUpAt', 'asc');
+    $options['phase3c19-command-proposal-review'] = phase3c17RecordsOptions('待报价评审', 'Lead', 'peProposalReviewRequired', 'modifiedAt');
+    $options['phase3c19-command-research-failed'] = phase3c17RecordsOptions('研究失败', 'Lead', 'peResearchFailed', 'modifiedAt');
     $options['phase3c17-command-pool'] = ['title' => '客户池'];
     $options['phase3c17-command-recent-discovery'] = ['title' => '新增客户'];
     $options['phase3c17-command-completed'] = ['title' => '研究完成（任务）'];

@@ -2,246 +2,235 @@ Espo.define('custom:views/prospecting/dashboard', 'view', function (Dep) {
     return Dep.extend({
         template: 'custom:prospecting/dashboard',
 
-        events: {
-            'click [data-action="open-search"]': 'actionOpenSearch',
-        },
-
         data: function () {
             return {
                 loading: this.loading,
-                metrics: this.metrics || [],
-                hasMetrics: this.hasMetrics,
-                recentJobs: this.recentJobs || [],
-                hasRecentJobs: this.hasRecentJobs,
-                centers: this.centers || [],
                 labels: this.labels || {},
+                sections: this.sections || [],
+                pipeline: this.pipeline || [],
+                hasSections: this.hasSections,
+                hasPipeline: this.hasPipeline,
+                today: this.today,
             };
         },
 
         setup: function () {
             this.loading = true;
-            this.hasMetrics = false;
-            this.hasRecentJobs = false;
             this.labels = this.buildLabels();
-            this.metrics = this.buildEmptyMetrics();
-            this.recentJobs = [];
-            this.centers = this.buildCenters();
+            this.sectionConfigs = this.buildSectionConfigs();
+            this.pipelineConfigs = this.buildPipelineConfigs();
+            this.sections = this.materializeSections();
+            this.pipeline = this.materializePipeline();
+            this.hasSections = this.sections.length > 0;
+            this.hasPipeline = this.pipeline.length > 0;
+            this.today = this.buildTodayLabel();
             this.wait(this.loadDashboardData());
         },
 
-        actionOpenSearch: function () {
-            this.getRouter().navigate('ProspectingSearch', {trigger: true});
-        },
-
         buildLabels: function () {
-            var translateGlobal = function (key) {
-                return this.getLanguage().translate(key, 'labels', 'Global');
-            }.bind(this);
             var translate = function (key) {
                 return this.getLanguage().translate(key, 'labels', 'ProspectingDashboard');
             }.bind(this);
 
             return {
-                searchCenter: translateGlobal('C17DashboardSearchCenter'),
-                researchCenter: translateGlobal('C17DashboardResearchCenter'),
-                outreachCenter: translateGlobal('C17DashboardOutreachCenter'),
-                quoteCenter: translateGlobal('C17DashboardQuoteCenter'),
-                searchDescription: translateGlobal('C17DashboardSearchDescription'),
-                researchDescription: translateGlobal('C17DashboardResearchDescription'),
-                outreachDescription: translateGlobal('C17DashboardOutreachDescription'),
-                quoteDescription: translateGlobal('C17DashboardQuoteDescription'),
-                searchStrategies: translateGlobal('C17DashboardSearchStrategies'),
-                searchJobs: translateGlobal('C17DashboardSearchJobs'),
-                prospectPool: translateGlobal('C17DashboardProspectPool'),
-                leads: translateGlobal('C17DashboardLeads'),
-                researchEvidence: translateGlobal('C17DashboardResearchEvidence'),
-                salesFeedback: translateGlobal('C17DashboardSalesFeedback'),
-                learningSignals: translateGlobal('C17DashboardLearningSignals'),
-                draftApprovals: translateGlobal('C17DashboardDraftApprovals'),
-                sendExecutions: translateGlobal('C17DashboardSendExecutions'),
-                pendingSend: translateGlobal('C18DashboardPendingSend'),
-                failedSend: translateGlobal('C18DashboardFailedSend'),
-                replyEvents: translateGlobal('C17DashboardReplyEvents'),
-                emailEvents: translateGlobal('C17DashboardEmailEvents'),
-                quotes: translateGlobal('C17DashboardQuotes'),
-                quoteApprovals: translateGlobal('C17DashboardQuoteApprovals'),
-                proformaInvoices: translateGlobal('C17DashboardProformaInvoices'),
-                prospecting: translate('prospecting'),
-                dashboard: translate('dashboard'),
-                workflow: translate('workflow'),
-                workflowDiscover: translate('workflowDiscover'),
-                workflowResearch: translate('workflowResearch'),
-                workflowOutreach: translate('workflowOutreach'),
-                workflowQuotes: translate('workflowQuotes'),
-                operations: translate('operations'),
-                operationsDescription: translate('operationsDescription'),
-                operationalCenters: translate('operationalCenters'),
-                analyticsDeferred: translate('analyticsDeferred'),
-                summary: translate('summary'),
+                title: translate('operations'),
+                subtitle: translate('workspaceDescription'),
                 loading: translate('loading'),
                 noData: translate('noData'),
-                noActivity: translate('noActivity'),
-                recentActivity: translate('recentActivity'),
-                viewAll: translate('viewAll'),
-                name: translate('name'),
-                status: translate('status'),
-                created: translate('created'),
-                count: translate('count'),
-                noSearchJobs: translate('noSearchJobs'),
-                startDiscover: translate('startDiscover'),
-                openSearchStrategies: translate('openSearchStrategies'),
-                totalProspects: translate('totalProspects'),
-                newThisWeek: translate('newThisWeek'),
-                needResearch: translate('needResearch'),
-                researchCompleted: translate('researchCompleted'),
-                highPriority: translate('highPriority'),
-                untitledJob: translate('untitledJob'),
-                notAvailable: translate('notAvailable'),
+                emptyState: translate('workspaceEmpty'),
+                overview: translate('overview'),
+                researchStatus: translate('researchStatus'),
+                outreachStatus: translate('outreachStatus'),
+                commercialHandoff: translate('commercialHandoff'),
+                pipelineSummary: translate('pipelineSummary'),
+                pendingSend: translate('pendingSend'),
+                failedSend: translate('failedSend'),
+                repliedPendingTriage: translate('repliedPendingTriage'),
+                pendingApprovals: translate('pendingApprovals'),
+                researchQueue: translate('researchQueue'),
+                followUpDue: translate('followUpDue'),
+                researchRework: translate('researchRework'),
+                missingEvidence: translate('missingEvidence'),
+                pendingOutreach: translate('pendingOutreach'),
+                sentAwaitingReply: translate('sentAwaitingReply'),
+                proposalReviewRequired: translate('proposalReviewRequired'),
+                quoteCenterHandoff: translate('quoteCenterHandoff'),
+                quoteCenterDescription: translate('quoteCenterDescription'),
+                pipelineProspectPool: translate('pipelineProspectPool'),
+                pipelineResearchInProgress: translate('pipelineResearchInProgress'),
+                pipelineResearched: translate('pipelineResearched'),
+                pipelineOutreached: translate('pipelineOutreached'),
+                pipelineProposalReview: translate('pipelineProposalReview'),
             };
         },
 
-        buildCenters: function () {
-            var acl = this.getAcl();
-            var filterEntries = function (entries) {
-                return entries.filter(function (entry) {
-                    return !entry.scope || acl.check(entry.scope, 'read');
-                });
-            };
-            var centers = [
-                {
-                    name: this.labels.searchCenter,
-                    href: '#ProspectingSearch',
-                    description: this.labels.searchDescription,
-                    entries: filterEntries([
-                        {label: this.labels.searchStrategies, href: '#SearchStrategy', scope: 'SearchStrategy'},
-                        {label: this.labels.searchJobs, href: '#SearchJob', scope: 'SearchJob'},
-                        {label: this.labels.prospectPool, href: '#ProspectPool', scope: 'ProspectPool'},
-                    ]),
-                },
-                {
-                    name: this.labels.researchCenter,
-                    href: '#Lead',
-                    description: this.labels.researchDescription,
-                    entries: filterEntries([
-                        {label: this.labels.leads, href: '#Lead', scope: 'Lead'},
-                        {label: this.labels.researchEvidence, href: '#ResearchEvidence', scope: 'ResearchEvidence'},
-                        {label: this.labels.salesFeedback, href: '#SalesFeedback', scope: 'SalesFeedback'},
-                        {label: this.labels.learningSignals, href: '#LearningSignal', scope: 'LearningSignal'},
-                    ]),
-                },
-                {
-                    name: this.labels.outreachCenter,
-                    href: '#DraftApproval',
-                    description: this.labels.outreachDescription,
-                    entries: filterEntries([
-                        {label: this.labels.draftApprovals, href: '#DraftApproval', scope: 'DraftApproval'},
-                        {label: this.labels.pendingSend, href: '#SendExecution/list/primary=c18ReadyToSend', scope: 'SendExecution'},
-                        {label: this.labels.failedSend, href: '#SendExecution/list/primary=c18FailedSend', scope: 'SendExecution'},
-                        {label: this.labels.sendExecutions, href: '#SendExecution', scope: 'SendExecution'},
-                        {label: this.labels.replyEvents, href: '#ReplyEvent', scope: 'ReplyEvent'},
-                        {label: this.labels.emailEvents, href: '#EmailEvent', scope: 'EmailEvent'},
-                    ]),
-                },
-                {
-                    name: this.labels.quoteCenter,
-                    href: '#Quote',
-                    description: this.labels.quoteDescription,
-                    entries: filterEntries([
-                        {label: this.labels.quotes, href: '#Quote', scope: 'Quote'},
-                        {label: this.labels.quoteApprovals, href: '#Approval', scope: 'Approval'},
-                        {label: this.labels.proformaInvoices, href: '#ProformaInvoice', scope: 'ProformaInvoice'},
-                    ]),
-                },
-            ];
-
-            return centers.map(function (center) {
-                center.hasEntries = center.entries.length > 0;
-                return center;
-            });
+        buildTodayLabel: function () {
+            return new Date().toISOString().slice(0, 10);
         },
 
-        buildEmptyMetrics: function () {
+        buildSectionConfigs: function () {
             return [
-                {key: 'total', label: this.labels.totalProspects, value: 0, href: '#ProspectPool'},
-                {key: 'newWeek', label: this.labels.newThisWeek, value: 0, href: '#ProspectPool'},
-                {key: 'needResearch', label: this.labels.needResearch, value: 0, href: '#ProspectPool/list/primary=prospectsReadyForResearch'},
-                {key: 'researchDone', label: this.labels.researchCompleted, value: 0, href: '#ProspectPool'},
-                {key: 'highPriority', label: this.labels.highPriority, value: 0, href: '#SearchJob'},
+                {
+                    key: 'overview',
+                    title: this.labels.overview,
+                    cards: [
+                        this.buildCountCard('pendingSend', 'SendExecution', 'SendExecution', 'c18ReadyToSend', '#SendExecution/list/primary=c18ReadyToSend'),
+                        this.buildCountCard('failedSend', 'SendExecution', 'SendExecution', 'c18FailedSend', '#SendExecution/list/primary=c18FailedSend'),
+                        this.buildCountCard('repliedPendingTriage', 'ReplyEvent', 'ReplyEvent', 'c19OpenReplies', '#ReplyEvent/list/primary=c19OpenReplies'),
+                        this.buildCountCard('pendingApprovals', 'Approval', 'Approval', 'c17Pending', '#Approval/list/primary=c17Pending'),
+                    ],
+                },
+                {
+                    key: 'researchStatus',
+                    title: this.labels.researchStatus,
+                    cards: [
+                        this.buildCountCard('researchQueue', 'ProspectPool', 'ProspectPool', 'researchQueue', '#ProspectPool/list/primary=researchQueue'),
+                        this.buildCountCard('followUpDue', 'Lead', 'Lead', 'peFollowUpDue', '#Lead/list/primary=peFollowUpDue'),
+                        this.buildCountCard('researchRework', 'Lead', 'Lead', 'peResearchFailed', '#Lead/list/primary=peResearchFailed'),
+                        this.buildCountCard('missingEvidence', 'Lead', 'Lead', 'peMissingEvidence', '#Lead/list/primary=peMissingEvidence'),
+                    ],
+                },
+                {
+                    key: 'outreachStatus',
+                    title: this.labels.outreachStatus,
+                    cards: [
+                        this.buildCountCard('pendingOutreach', 'DraftApproval', 'DraftApproval', 'c17Pending', '#DraftApproval/list/primary=c17Pending'),
+                        this.buildCountCard('sentAwaitingReply', 'ReplyEvent', 'ReplyEvent', 'c17AwaitingReply', '#ReplyEvent/list/primary=c17AwaitingReply'),
+                    ],
+                },
+                {
+                    key: 'commercialHandoff',
+                    title: this.labels.commercialHandoff,
+                    cards: [
+                        this.buildCountCard('proposalReviewRequired', 'Lead', 'Lead', 'peProposalReviewRequired', '#Lead/list/primary=peProposalReviewRequired'),
+                        this.buildHandoffCard('quoteCenterHandoff', 'Quote', '#Quote', this.labels.quoteCenterDescription),
+                    ],
+                },
             ];
+        },
+
+        buildPipelineConfigs: function () {
+            return [
+                this.buildPipelineStage('pipelineProspectPool', 'ProspectPool', null, '#ProspectPool'),
+                this.buildPipelineStage('pipelineResearchInProgress', 'Lead', 'peResearchPending', '#Lead/list/primary=peResearchPending'),
+                this.buildPipelineStage('pipelineResearched', 'Lead', 'peResearchCompleted', '#Lead/list/primary=peResearchCompleted'),
+                this.buildPipelineStage('pipelineOutreached', 'Lead', 'peAwaitingReply', '#Lead/list/primary=peAwaitingReply'),
+                this.buildPipelineStage('pipelineProposalReview', 'Lead', 'peProposalReviewRequired', '#Lead/list/primary=peProposalReviewRequired'),
+            ];
+        },
+
+        buildCountCard: function (labelKey, scope, entityType, primaryFilter, href) {
+            return {
+                type: 'count',
+                isCount: true,
+                label: this.labels[labelKey],
+                scope: scope,
+                entityType: entityType,
+                primaryFilter: primaryFilter,
+                href: href,
+                count: 0,
+            };
+        },
+
+        buildHandoffCard: function (labelKey, scope, href, description) {
+            return {
+                type: 'handoff',
+                isHandoff: true,
+                label: this.labels[labelKey],
+                scope: scope,
+                href: href,
+                description: description,
+            };
+        },
+
+        buildPipelineStage: function (labelKey, entityType, primaryFilter, href) {
+            return {
+                label: this.labels[labelKey],
+                entityType: entityType,
+                primaryFilter: primaryFilter,
+                href: href,
+                count: 0,
+            };
+        },
+
+        materializeSections: function () {
+            var acl = this.getAcl();
+
+            return this.sectionConfigs
+                .map(function (section) {
+                    var cards = section.cards.filter(function (card) {
+                        return !card.scope || acl.check(card.scope, 'read');
+                    }).map(function (card) {
+                        return Object.assign({}, card);
+                    });
+
+                    return {
+                        key: section.key,
+                        title: section.title,
+                        cards: cards,
+                        hasCards: cards.length > 0,
+                    };
+                })
+                .filter(function (section) {
+                    return section.hasCards;
+                });
+        },
+
+        materializePipeline: function () {
+            var acl = this.getAcl();
+
+            return this.pipelineConfigs
+                .filter(function (stage) {
+                    return acl.check(stage.entityType, 'read');
+                })
+                .map(function (stage) {
+                    return Object.assign({}, stage);
+                });
         },
 
         loadDashboardData: function () {
             var self = this;
+            var sectionPromises = [];
+            var pipelinePromises = [];
 
-            return Promise.all([
-                this.countRecords('ProspectPool', {}),
-                this.countRecords('ProspectPool', {
-                    where: [{type: 'lastXDays', attribute: 'createdAt', value: '7'}],
-                }),
-                this.countRecords('ProspectPool', {primaryFilter: 'prospectsReadyForResearch'}),
-                this.countRecords('ProspectPool', {
-                    where: [{type: 'equals', attribute: 'researchStatus', value: 'COMPLETED'}],
-                }),
-                this.countRecords('SearchJob', {
-                    where: [{type: 'equals', attribute: 'priority', value: 'P1'}],
-                }),
-                this.loadRecentJobs(),
-            ]).then(function (results) {
-                self.metrics = self.buildEmptyMetrics();
-                self.metrics[0].value = results[0];
-                self.metrics[1].value = results[1];
-                self.metrics[2].value = results[2];
-                self.metrics[3].value = results[3];
-                self.metrics[4].value = results[4];
-                self.hasMetrics = results.slice(0, 5).some(function (n) { return n > 0; });
-                self.recentJobs = results[5] || [];
-                self.hasRecentJobs = self.recentJobs.length > 0;
+            this.sections.forEach(function (section, sectionIndex) {
+                section.cards.forEach(function (card, cardIndex) {
+                    if (card.type !== 'count') {
+                        return;
+                    }
+
+                    sectionPromises.push(
+                        self.countRecords(card.entityType, {primaryFilter: card.primaryFilter}).then(function (count) {
+                            self.sections[sectionIndex].cards[cardIndex].count = count;
+                        })
+                    );
+                });
+            });
+
+            this.pipeline.forEach(function (stage, stageIndex) {
+                pipelinePromises.push(
+                    self.countRecords(stage.entityType, {primaryFilter: stage.primaryFilter}).then(function (count) {
+                        self.pipeline[stageIndex].count = count;
+                    })
+                );
+            });
+
+            return Promise.all(sectionPromises.concat(pipelinePromises)).then(function () {
+                self.hasSections = self.sections.length > 0;
+                self.hasPipeline = self.pipeline.length > 0;
                 self.loading = false;
             }).catch(function () {
-                self.metrics = self.buildEmptyMetrics();
-                self.recentJobs = [];
-                self.hasMetrics = false;
-                self.hasRecentJobs = false;
+                self.sections = self.materializeSections();
+                self.pipeline = self.materializePipeline();
+                self.hasSections = self.sections.length > 0;
+                self.hasPipeline = self.pipeline.length > 0;
                 self.loading = false;
-            });
-        },
-
-        loadRecentJobs: function () {
-            var self = this;
-
-            if (!this.getAcl().check('SearchJob', 'read')) {
-                return Promise.resolve([]);
-            }
-
-            return new Promise(function (resolve) {
-                self.getCollectionFactory().create('SearchJob', function (collection) {
-                    collection.maxSize = 8;
-                    collection.orderBy = 'createdAt';
-                    collection.order = 'desc';
-
-                    collection.fetch()
-                        .then(function () {
-                            var rows = collection.models.map(function (model) {
-                                return {
-                                    id: model.id,
-                                    name: model.get('name') || self.labels.untitledJob,
-                                    status: model.get('status') || self.labels.notAvailable,
-                                    createdAt: model.get('createdAt') || self.labels.notAvailable,
-                                    count: model.get('resultCount') != null ? model.get('resultCount') : 0,
-                                    href: '#SearchJob/view/' + model.id,
-                                };
-                            });
-                            resolve(rows);
-                        })
-                        .catch(function () {
-                            resolve([]);
-                        });
-                });
             });
         },
 
         countRecords: function (entityType, options) {
             var self = this;
+            var settings = options || {};
 
             if (!this.getAcl().check(entityType, 'read')) {
                 return Promise.resolve(0);
@@ -252,12 +241,8 @@ Espo.define('custom:views/prospecting/dashboard', 'view', function (Dep) {
                     collection.maxSize = 1;
                     collection.data = collection.data || {};
 
-                    if (options.primaryFilter) {
-                        collection.data.primaryFilter = options.primaryFilter;
-                    }
-
-                    if (options.where) {
-                        collection.where = options.where;
+                    if (settings.primaryFilter) {
+                        collection.data.primaryFilter = settings.primaryFilter;
                     }
 
                     collection.fetch()
