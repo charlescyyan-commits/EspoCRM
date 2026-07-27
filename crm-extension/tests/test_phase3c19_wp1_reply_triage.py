@@ -97,13 +97,22 @@ class Phase3C19ReplyTriageServiceTests(unittest.TestCase):
         )
 
     def test_authorization_action_keys(self) -> None:
-        self.assertIn("ACTION_START_PROGRESS = 'replyEvent.startProgress'", self.source)
-        self.assertIn("ACTION_REOPEN = 'replyEvent.reopen'", self.source)
+        self.assertIn("ACTION_ASSIGN = 'replyEvent.assign'", self.source)
+        self.assertIn("ACTION_RELEASE = 'replyEvent.release'", self.source)
         self.assertIn("ACTION_CLOSE = 'replyEvent.close'", self.source)
         self.assertIn("TRANSITION_ACTIONS", self.source)
-        self.assertIn("self::TRIAGE_IN_PROGRESS => self::ACTION_START_PROGRESS", self.source)
+        self.assertIn("self::TRIAGE_IN_PROGRESS => self::ACTION_ASSIGN", self.source)
         self.assertIn("self::TRIAGE_CLOSED => self::ACTION_CLOSE", self.source)
-        self.assertIn("self::TRIAGE_OPEN => self::ACTION_REOPEN", self.source)
+        self.assertIn("self::TRIAGE_OPEN => self::ACTION_RELEASE", self.source)
+
+    def test_assign_and_release_move_ownership(self) -> None:
+        # assign (OPEN -> IN_PROGRESS): operator takes ownership.
+        self.assertIn("$replyEvent->set('assignedUserId', $this->user->getId());", self.source)
+        # release (IN_PROGRESS -> OPEN): unassign back to the open queue.
+        self.assertIn("$replyEvent->set('assignedUserId', null);", self.source)
+        # Ownership writes are tied to the target status, not to provider facts.
+        self.assertIn("$targetStatus === self::TRIAGE_IN_PROGRESS", self.source)
+        self.assertIn("$targetStatus === self::TRIAGE_OPEN", self.source)
 
     def test_close_requires_reason(self) -> None:
         self.assertIn("ReplyEvent close requires a closedReason.", self.source)
@@ -351,7 +360,7 @@ class Phase3C19ReplyEventMetadataTests(unittest.TestCase):
         self.assertEqual(reply_event["lifecycleOwner"], "ReplyTriageService")
         self.assertEqual(
             reply_event["actions"],
-            ["replyEvent.startProgress", "replyEvent.reopen", "replyEvent.close"],
+            ["replyEvent.assign", "replyEvent.release", "replyEvent.close"],
         )
         # C18 policy surfaces stay untouched; no reply keys inside quote bindings.
         self.assertEqual(self.policy["governanceMarker"], "adr-c18-sendexecution-v1")

@@ -16,8 +16,8 @@
     "marker": "adr-c19-replyevent-v1",
     "lifecycleOwner": "ReplyTriageService",
     "actions": [
-      "replyEvent.startProgress",
-      "replyEvent.reopen",
+      "replyEvent.assign",
+      "replyEvent.release",
       "replyEvent.close"
     ]
   },

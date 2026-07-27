@@ -8,6 +8,12 @@
       "where": [
         {"type": "equals", "attribute": "replyStatus", "value": "SENT"}
       ]
+    },
+    {
+      "name": "c19OpenReplies"
+    },
+    {
+      "name": "c19MyReplies"
     }
   ]
 }

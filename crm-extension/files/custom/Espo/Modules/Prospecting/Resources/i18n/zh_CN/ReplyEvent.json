@@ -2,5 +2,6 @@
   "fields": {"name": "标题", "externalEventId": "外部事件 ID", "replyStatus": "回复状态", "receivedAt": "接收时间", "eventMetadata": "事件元数据", "sendTraceReference": "发送追踪引用", "sendExecution": "发送执行", "lead": "线索", "triageStatus": "处理状态", "closedReason": "关闭原因", "closedAt": "关闭时间", "closedBy": "关闭人"},
   "links": {"sendExecution": "发送执行", "lead": "线索", "closedBy": "关闭人"},
   "labels": {"Create ReplyEvent": "创建回复事件", "ReplyEvents": "回复事件"},
-  "options": {"replyStatus": {"SENT": "已发送", "REPLIED": "已回复", "BOUNCED": "退信", "UNSUBSCRIBED": "已退订"}, "triageStatus": {"OPEN": "待处理", "IN_PROGRESS": "处理中", "CLOSED": "已关闭"}}
+  "options": {"replyStatus": {"SENT": "已发送", "REPLIED": "已回复", "BOUNCED": "退信", "UNSUBSCRIBED": "已退订"}, "triageStatus": {"OPEN": "待处理", "IN_PROGRESS": "处理中", "CLOSED": "已关闭"}},
+  "presetFilters": {"c19OpenReplies": "待处理回复", "c19MyReplies": "我的回复"}
 }

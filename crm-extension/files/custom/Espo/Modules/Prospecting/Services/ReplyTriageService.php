@@ -25,8 +25,8 @@ class ReplyTriageService
     public const TRIAGE_IN_PROGRESS = 'IN_PROGRESS';
     public const TRIAGE_CLOSED = 'CLOSED';
 
-    public const ACTION_START_PROGRESS = 'replyEvent.startProgress';
-    public const ACTION_REOPEN = 'replyEvent.reopen';
+    public const ACTION_ASSIGN = 'replyEvent.assign';
+    public const ACTION_RELEASE = 'replyEvent.release';
     public const ACTION_CLOSE = 'replyEvent.close';
 
     public const GOVERNANCE_MARKER = 'adr-c19-replyevent-v1';
@@ -41,11 +41,11 @@ class ReplyTriageService
     /** @var array<string, array<string, string>> */
     private const TRANSITION_ACTIONS = [
         self::TRIAGE_OPEN => [
-            self::TRIAGE_IN_PROGRESS => self::ACTION_START_PROGRESS,
+            self::TRIAGE_IN_PROGRESS => self::ACTION_ASSIGN,
             self::TRIAGE_CLOSED => self::ACTION_CLOSE,
         ],
         self::TRIAGE_IN_PROGRESS => [
-            self::TRIAGE_OPEN => self::ACTION_REOPEN,
+            self::TRIAGE_OPEN => self::ACTION_RELEASE,
             self::TRIAGE_CLOSED => self::ACTION_CLOSE,
         ],
     ];
@@ -95,8 +95,8 @@ class ReplyTriageService
         }
 
         $knownActions = [
-            self::ACTION_START_PROGRESS,
-            self::ACTION_REOPEN,
+            self::ACTION_ASSIGN,
+            self::ACTION_RELEASE,
             self::ACTION_CLOSE,
         ];
         if (!in_array($action, $knownActions, true)) {
@@ -152,6 +152,16 @@ class ReplyTriageService
                     $replyEvent->set('closedReason', trim((string) $reason));
                     $replyEvent->set('closedAt', $now->format('Y-m-d H:i:s'));
                     $replyEvent->set('closedById', $this->user->getId());
+                }
+
+                if ($targetStatus === self::TRIAGE_IN_PROGRESS) {
+                    // assign: the triaging operator takes ownership.
+                    $replyEvent->set('assignedUserId', $this->user->getId());
+                }
+
+                if ($targetStatus === self::TRIAGE_OPEN) {
+                    // release: unassign back to the open queue.
+                    $replyEvent->set('assignedUserId', null);
                 }
 
                 $replyEvent->set('triageStatus', $targetStatus);

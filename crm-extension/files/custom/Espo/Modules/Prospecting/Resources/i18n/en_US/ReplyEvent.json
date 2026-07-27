@@ -19,6 +19,10 @@
     "replyStatus": {"SENT": "Sent", "REPLIED": "Replied", "BOUNCED": "Bounced", "UNSUBSCRIBED": "Unsubscribed"},
     "triageStatus": {"OPEN": "Open", "IN_PROGRESS": "In Progress", "CLOSED": "Closed"}
   },
+  "presetFilters": {
+    "c19OpenReplies": "Open Replies",
+    "c19MyReplies": "My Replies"
+  },
   "tooltips": {
     "eventMetadata": "Event metadata only. Do not store a full email body, prompt content, or hidden reasoning.",
     "sendTraceReference": "Original accepted send trace reference."
