@@ -516,6 +516,8 @@ class ExtensionSkeletonTests(unittest.TestCase):
             EXT / "scripts" / "AfterInstall.php",
             MODULE / "Entities" / "ResearchEvidence.php",
             MODULE / "Controllers" / "ResearchEvidence.php",
+            MODULE / "Services" / "ResearchEvidenceService.php",
+            MODULE / "Services" / "PromotionInheritanceService.php",
             MODULE / "Classes" / "Select" / "Lead" / "PrimaryFilters" / "PeTierA.php",
             MODULE / "Classes" / "Select" / "Lead" / "PrimaryFilters" / "PeRecentlySynced.php",
             MODULE / "Classes" / "Select" / "Lead" / "PrimaryFilters" / "PeRecentlyResearched.php",
