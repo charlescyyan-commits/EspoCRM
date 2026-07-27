@@ -11,7 +11,9 @@ Closes the `1.9.12-alpha` release line after the C18 `1.9.11-alpha` /
 `phase3c18-freeze` baseline. The release completes C19 governance, Reply Center
 triage ownership, SendExecution recovery actions, Command Center queue
 composition, and the Prospecting Dashboard operational workspace. The canonical
-artifact is synchronized to release commit `2d07b5cff5f86b0ced4165b4c8fd2944ef44b89a`.
+artifact is synchronized to release commit `8ae8eb1`
+(`phase3c19: sync 1.9.12-alpha release after Search Center workspace`).
+Freeze documentation index: `docs/PHASE3C19_RELEASE_NOTES.md`.
 
 ## Shipped state
 
