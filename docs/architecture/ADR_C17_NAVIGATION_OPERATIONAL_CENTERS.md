@@ -1277,6 +1277,106 @@ implementation, materializer, and contract tests.
 
 ---
 
-*End of ADR. WP1.2A amendments A–J retained; 2026-07-23 acceptance and implementation
-alignment applied; Amendment A1 (WP1.4 product-polish reconciliation) applied.
-Status: Accepted.*
+## ADR Amendment A3 — Commercial, Intelligence, and Support Center Separation
+
+### Status
+
+**Accepted** — 2026-07-27 (docs-only governance acceptance).
+
+### Relationship and authority
+
+A3 evolves this ADR within its existing authority. It does not overturn,
+deprecate, or redesign ADR-C17, and it does not modify ADR-C16. The accepted
+source record is
+`docs/architecture/ADR_NAVIGATION_AMENDMENT_A3.md`; this section incorporates
+its governing decisions into the authoritative ADR.
+
+The following remain frozen and unchanged:
+
+- the A–F entity visibility classification, including Quote as Class A, Lead as
+  the single Class E global-native record source, and ResearchEvidence as Class D;
+- the five operational Centers: Dashboard, Search, Research/Intelligence,
+  Outreach, and Quote;
+- Center composition boundaries: no Center owns persistence, ACL, lifecycle, or
+  status transitions;
+- the governance chain of ADR → desired-state artifact → one materializer →
+  `config.tabList` → drift validation;
+- the single-writer rule for `config.tabList`.
+
+### Decision
+
+A3 clarifies phase ownership in the information architecture without changing
+entity or workflow ownership:
+
+| Navigation grouping | Accepted entry arrangement | Boundary |
+| --- | --- | --- |
+| Market Development / Prospecting | Dashboard, Search Center, Intelligence Center reference, Outreach Center | Discovery, research, and first-contact outreach only |
+| Customer Management | Account, Contact, Lead, Opportunity | Existing native CRM record ownership remains unchanged |
+| Commercial | Quote Center (`Quote`, with existing Approval and ProformaInvoice access paths) | Quote remains Class A; only its divider membership changes |
+| Support | KnowledgeBaseArticle | Placeholder resource grouping only; no Case, Ticket, or Support workflow |
+| Activities | Email | Unchanged |
+| More | Task, Calendar | Calendar remains in More |
+
+The approved physical IA therefore separates Quote Center from the Prospecting
+divider into a Commercial divider, moves KnowledgeBaseArticle from More into a
+Support divider, and makes the Intelligence Center an explicit Prospecting
+composition reference. This is a navigation composition decision only.
+
+### Intelligence Center composition boundary
+
+The Intelligence Center reference is not a new entity, scope, custom page, ACL
+surface, workflow owner, or duplicate top-level tab. It composes existing
+surfaces:
+
+- the native Lead list, which remains the sole global CRM research record source;
+- ResearchEvidence and the existing related/supporting record paths;
+- the Phase3C19 Intelligence Research Workbench dashlet; and
+- existing SalesFeedback, LearningSignal, and EmailEvent supporting panels.
+
+Lead remains under Customer Management and must not be duplicated. The explicit
+Intelligence Center label is an IA reference to the same Lead-led research
+surface, not a second Lead navigation entry.
+
+### Non-goals and constraints
+
+A3 authorizes none of the following:
+
+- new business entities, database schema, Case/Ticket implementation, or Support
+  workflow;
+- changes to Quote, Approval, ProformaInvoice, SendExecution, ReplyEvent, Lead,
+  ProspectPool, or Intelligence Workbench behavior;
+- ACL, role, record-security, scope, or lifecycle ownership changes;
+- a dashboard redesign, new custom Center page, navigation framework, or
+  materializer rewrite.
+
+The existing rollback rule remains primary: restore the captured pre-change
+effective `config.tabList`; re-running a prior desired-state materializer is
+baseline reconstruction only.
+
+### Acceptance record
+
+| Date | Gate / decision | Result |
+| --- | --- | --- |
+| 2026-07-27 | Frozen A–F classifications, five-Center model, and governance chain reviewed | **PASS** — unchanged |
+| 2026-07-27 | Intelligence Center composition boundary reviewed | **PASS** — no new scope, entity, ACL, page, or workflow owner |
+| 2026-07-27 | Commercial and Support grouping reviewed | **PASS** — Quote remains Class A; Support contains KnowledgeBaseArticle only |
+| 2026-07-27 | Phase3C19 charter boundary reviewed | **PASS** — A3 acceptance does not broaden C19 WP1–WP3 implementation authority |
+| 2026-07-27 | Amendment A3 accepted | **ACCEPTED** — design authority; implementation requires separately authorized work |
+
+### Amendment history
+
+- **A1** — WP1.4 product-polish reconciliation: desired-state marker and frozen
+  implementation aligned; no entity classification or governance-chain change.
+- **A2** — WP1.2/WP1.2A findings A–J: frozen A–F classification, Lead/Research
+  boundary, Center composition boundary, and single-writer governance retained.
+  The companion acceptance record remains
+  `docs/PHASE3C17_WP1_2_NAVIGATION_ADR_AMENDMENT.md`.
+- **A3** — Commercial, Intelligence, and Support Center separation: Quote divider
+  membership, KnowledgeBaseArticle grouping, and explicit Intelligence Center
+  composition reference evolved; all frozen ownership boundaries retained.
+
+---
+
+*End of ADR. WP1.2A amendments A–J retained; A1 (WP1.4 product-polish
+reconciliation), A2 (WP1.2 governance findings), and A3 (Commercial,
+Intelligence, and Support Center separation) are recorded. Status: Accepted.*
