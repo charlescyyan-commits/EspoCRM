@@ -27,6 +27,7 @@ LEGACY_U04 = (
     / "phase3u04_provision_navbar_tab_order.php"
 )
 ADR = ROOT / "docs" / "architecture" / "ADR_C17_NAVIGATION_OPERATIONAL_CENTERS.md"
+A3_ADR = ROOT / "docs" / "architecture" / "ADR_NAVIGATION_AMENDMENT_A3.md"
 
 
 def load_json(path: Path) -> dict:
@@ -79,11 +80,15 @@ class Phase3C17WP1NavigationTests(unittest.TestCase):
         self.assertEqual(self.desired["schemaVersion"], 1)
         self.assertEqual(
             self.desired["navigationVersion"],
-            "phase3c17-wp1-4-product-polish-v1",
+            "phase3c19-ia-v1",
         )
         adr = ADR.read_text(encoding="utf-8")
         self.assertIn("## Status\n\n**Accepted**", adr)
         self.assertIn("deployment/navigation/phase3c17_navigation.json", adr)
+        a3_adr = A3_ADR.read_text(encoding="utf-8")
+        self.assertIn("**Status:** Accepted", a3_adr)
+        self.assertIn("## 4. Target Information Architecture", a3_adr)
+        self.assertIn("phase3c19-ia-v1", self.materializer)
 
     def test_only_c17_materializer_writes_global_tab_list(self) -> None:
         writers = []
@@ -137,14 +142,25 @@ class Phase3C17WP1NavigationTests(unittest.TestCase):
                 "ProspectingDashboard",
                 "ProspectingSearch",
                 "DraftApproval",
-                "Quote",
             ],
         )
         self.assertEqual(
+            self.desired["prospectingCenterOrder"],
+            ["dashboard", "search", "research", "outreach"],
+        )
+        self.assertEqual(
             self.desired["centers"]["research"]["placement"],
-            "global-native-preserved",
+            "prospecting-composition-reference",
         )
         self.assertEqual(self.desired["centers"]["research"]["entry"], "Lead")
+        self.assertEqual(
+            self.desired["centers"]["research"]["parentDividerId"],
+            "phase3c17-prospecting",
+        )
+        self.assertEqual(
+            self.desired["centers"]["research"]["physicalEntryPlacement"],
+            "customer-management-global-native-preserved",
+        )
 
     def test_product_polish_physical_order_is_chinese_first_and_lead_is_unique(self) -> None:
         order = self.desired["topLevelOrder"]
@@ -153,16 +169,46 @@ class Phase3C17WP1NavigationTests(unittest.TestCase):
             order[1:],
             [
                 {"type": "divider", "text": "潜客开发", "id": "phase3c17-prospecting"},
-                "ProspectingDashboard", "ProspectingSearch", "DraftApproval", "Quote",
+                "ProspectingDashboard", "ProspectingSearch", "DraftApproval",
                 {"type": "divider", "text": "客户管理", "id": "phase3c17-customer-management"},
                 "Account", "Contact", "Lead", "Opportunity",
+                {"type": "divider", "text": "商务", "id": "phase3c19-commercial"},
+                "Quote",
+                {"type": "divider", "text": "支持", "id": "phase3c19-support"},
+                "KnowledgeBaseArticle",
                 {"type": "divider", "text": "活动", "id": "phase3c17-activities"},
                 "Email",
                 {"type": "divider", "text": "更多", "id": "phase3c17-more"},
-                "Task", "Calendar", "KnowledgeBaseArticle",
+                "Task", "Calendar",
             ],
         )
         self.assertEqual(order.count("Lead"), 1)
+
+    def test_a3_divider_membership_is_exact(self) -> None:
+        order = self.desired["topLevelOrder"]
+        divider_positions = {
+            item["id"]: index
+            for index, item in enumerate(order)
+            if isinstance(item, dict) and item.get("type") == "divider"
+        }
+        self.assertEqual(
+            list(divider_positions),
+            [
+                "phase3c17-prospecting",
+                "phase3c17-customer-management",
+                "phase3c19-commercial",
+                "phase3c19-support",
+                "phase3c17-activities",
+                "phase3c17-more",
+            ],
+        )
+        commercial = divider_positions["phase3c19-commercial"]
+        support = divider_positions["phase3c19-support"]
+        activities = divider_positions["phase3c17-activities"]
+        more = divider_positions["phase3c17-more"]
+        self.assertEqual(order[commercial + 1:support], ["Quote"])
+        self.assertEqual(order[support + 1:activities], ["KnowledgeBaseArticle"])
+        self.assertEqual(order[more + 1:], ["Task", "Calendar"])
 
     def test_supporting_objects_are_not_top_level_prospecting_entries(self) -> None:
         hidden = {
@@ -276,6 +322,10 @@ class Phase3C17WP1NavigationTests(unittest.TestCase):
         self.assertEqual(global_zh["scopeNames"]["EmailEvent"], "邮件事件")
         self.assertEqual(global_zh["scopeNames"]["SalesFeedback"], "销售反馈")
         self.assertEqual(global_zh["scopeNames"]["LearningSignal"], "学习信号")
+        self.assertEqual(global_en["labels"]["C19NavigationCommercialDivider"], "Commercial")
+        self.assertEqual(global_zh["labels"]["C19NavigationCommercialDivider"], "商务")
+        self.assertEqual(global_en["labels"]["C19NavigationSupportDivider"], "Support")
+        self.assertEqual(global_zh["labels"]["C19NavigationSupportDivider"], "支持")
 
     def test_dashboard_center_labels_are_i18n_backed(self) -> None:
         self.assertIn("getLanguage().translate(key, 'labels', 'Global')", self.dashboard_js)

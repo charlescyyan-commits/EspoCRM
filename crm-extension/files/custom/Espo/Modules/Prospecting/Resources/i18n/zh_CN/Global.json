@@ -35,6 +35,8 @@
     "IntelligenceAwaitingResearch": "等待研究",
     "IntelligenceMissingEvidence": "证据缺失",
     "IntelligenceRecentEvidenceItems": "最近证据项",
+    "C19NavigationCommercialDivider": "商务",
+    "C19NavigationSupportDivider": "支持",
     "C17DashboardSearchCenter": "搜索中心", "C17DashboardResearchCenter": "情报中心",
     "C17DashboardOutreachCenter": "触达中心", "C17DashboardQuoteCenter": "报价中心",
     "C17DashboardSearchDescription": "规划搜索、监控任务并整理潜客池。",

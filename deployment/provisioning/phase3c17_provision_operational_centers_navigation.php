@@ -16,7 +16,7 @@ declare(strict_types=1);
  *     --restore=/safe/path/pre-c17-navigation.json
  */
 
-const PHASE3C17_NAVIGATION_MARKER = 'phase3c17-wp1-4-product-polish-v1';
+const PHASE3C17_NAVIGATION_MARKER = 'phase3c19-ia-v1';
 const PHASE3C17_SNAPSHOT_SCHEMA_VERSION = 1;
 
 /**
