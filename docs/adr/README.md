@@ -68,6 +68,30 @@ Positive, negative, and follow-up work.
 - Phase report links
 ```
 
+## Phase-scoped ADRs (actual practice)
+
+Phase ADRs use `ADR-C{N}_…` / `ADR-C{N}-A{M}_…` filenames for consistency with
+accepted siblings. The numeric `NNNN-short-title.md` convention above remains the
+README template; reconciling the two is a docs-only C20 WP0 item.
+
+| ADR | Status | Path |
+| --- | --- | --- |
+| ADR-C18-A6 | Accepted | [ADR-C18-A6_SEND_RECOVERY_ACTION_BOUNDARY.md](ADR-C18-A6_SEND_RECOVERY_ACTION_BOUNDARY.md) |
+| ADR-C19 | Accepted (Amended) | [ADR-C19_REPLY_EVENT_LIFECYCLE.md](ADR-C19_REPLY_EVENT_LIFECYCLE.md) |
+| ADR-C20 | Proposed | [ADR-C20_AI_PLATFORM_ARCHITECTURE.md](ADR-C20_AI_PLATFORM_ARCHITECTURE.md) |
+
+### ADR-C20 (Proposed)
+
+- **Marker:** `adr-c20-aiplatform-v1`
+- **Baseline:** `phase3c19-freeze` @ `4a7a111` (`1.9.12-alpha`)
+- **Scope:** AI Platform module, provider abstraction, `AIJob` lifecycle, advisory
+  `AIQualificationInsight` architecture (§6.4 — non-authoritative dynamic qualification
+  layer with required provenance; no `AIScore`; Chitu owns canonical scoring)
+- **Constraint:** WP0 documentation only — no runtime/code/artifact authorization;
+  §11.1 human ratification required before WP2
+- **Header style:** Status / Date / Phase / Decision Owners / Related / Acceptance
+  record aligned with ADR-C18-A6 and ADR-C19
+
 ## Suggested ADR Topics (Not Yet Written)
 
 These are **candidates only** — not accepted decisions in this index:
@@ -83,3 +107,4 @@ These are **candidates only** — not accepted decisions in this index:
 
 - [../reports/README.md](../reports/README.md)
 - [../architecture/BOUNDARIES.md](../architecture/BOUNDARIES.md)
+- [ADR-C20_AI_PLATFORM_ARCHITECTURE.md](ADR-C20_AI_PLATFORM_ARCHITECTURE.md)
