@@ -13,13 +13,29 @@ Use this list as the freeze gate. Details live in linked reports — do not copy
 - [x] Runtime verified  
 - [x] Release artifact verified  
 - [x] Package check PASS (`build_release_package.py --check`)  
-- [x] Full tests PASS (`384` tests)  
+- [x] Extension test suite PASS (`384` tests)  
+- [x] Repository regression suite reviewed:  
+  - `156` passed  
+  - Known stale assertions: `2` tests require C20 test maintenance  
+  - Impact: No runtime impact.  
 - [x] Runtime screenshots captured (`docs/evidence/phase3c19-search-center-gate/`)  
 - [x] Navigation verified (C17 desired-state / contract tests; DraftApproval remains Outreach entry)  
 - [x] Search Center verified (acquisition cards + Research Queue route/count)  
 - [x] Outreach Workspace verified (workspace opens; native list preserved)  
 - [x] i18n verified (en/zh ProspectingSearch + DraftApproval workspace key parity)  
 - [x] Ready for release  
+
+---
+
+## Test scope clarification
+
+The `384` test result refers specifically to:
+
+`crm-extension/tests/`
+
+The complete repository regression invocation currently reports two stale assertions superseded by C18 architecture changes.
+
+These are tracked as C20 WP0 maintenance items.
 
 ---
 
