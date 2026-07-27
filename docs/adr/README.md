@@ -85,8 +85,9 @@ README template; reconciling the two is a docs-only C20 WP0 item.
 - **Marker:** `adr-c20-aiplatform-v1`
 - **Baseline:** `phase3c19-freeze` @ `4a7a111` (`1.9.12-alpha`)
 - **Scope:** AI Platform module, provider abstraction, `AIJob` lifecycle, advisory
-  `AIQualificationInsight` architecture (§6.4 — non-authoritative dynamic qualification
-  layer with required provenance; no `AIScore`; Chitu owns canonical scoring)
+  `AIQualificationInsight` architecture (§6.4 — fully immutable after create;
+  supersession ordering; non-authoritative; no `AIScore`; Chitu owns canonical scoring
+  and qualification decisions)
 - **Constraint:** WP0 documentation only — no runtime/code/artifact authorization;
   §11.1 human ratification required before WP2
 - **Header style:** Status / Date / Phase / Decision Owners / Related / Acceptance

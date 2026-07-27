@@ -7,8 +7,8 @@
 ### Acceptance record
 
 - Phase3C20 WP0 documentation import, 2026-07-27
-- Independent final audit input (Claude Web): scoring authority, advisory
-  `AIQualificationInsight`, and `AGENTS.md` egress constraints
+- Author self-review / advisory architecture review input: scoring authority,
+  advisory `AIQualificationInsight`, and `AGENTS.md` egress constraints
 - **Not Accepted.** Status remains Proposed until Phase3C20 Charter Approval Board
   ratification; §11.1 must be resolved by a human owner before WP2
 - WP0 documentation only — no runtime, code, metadata, test, or artifact
@@ -451,7 +451,9 @@ it is never silently disabled.
 | `EmailCampaign` | **Deferred** | C22. Premature in C20/C21; tends to accrete scheduling logic belonging elsewhere. |
 | `EmailAccount` | **Deferred** | C21, with `EmailDeliveryProvider`. Out of C20 scope — C20 sends nothing. |
 
-**Clarify:** Chitu owns canonical scoring. AI provides contextual intelligence only.
+**Clarify:** Chitu owns canonical scoring **and** qualification decisions. AI provides
+contextual intelligence only. EspoCRM stores, displays, and orchestrates — it does not
+calculate qualification verdicts.
 
 ### 6.4 `AIQualificationInsight` architecture
 
@@ -459,6 +461,23 @@ it is never silently disabled.
 
 Advisory AI-generated qualification insight — a dynamic qualification layer that explains
 context for operators. It is **not** a second scoring engine.
+
+#### Qualification decision ownership
+
+| Role | Owner |
+| --- | --- |
+| Qualification **decisions** | **Chitu** |
+| `AIQualificationInsight` | **Advisory only** |
+| EspoCRM | **Stores**, **displays**, and **orchestrates workflow** |
+
+EspoCRM must **NOT** calculate qualification verdicts from:
+
+- `canonical_score`
+- `AIQualificationInsight`
+- confidence
+
+No C20 service, controller, workflow, or filter may become qualification decision
+authority. That authority remains with Chitu.
 
 #### It is NOT
 
@@ -486,6 +505,21 @@ context for operators. It is **not** a second scoring engine.
 
 May also reference `ResearchEvidence` where the insight draws on stored research artifacts.
 
+#### Full immutability after create
+
+The **entire** `AIQualificationInsight` entity is immutable after creation — not only
+provenance fields.
+
+| Rule | Decision |
+| --- | --- |
+| Update | **No** update path after create |
+| Delete | **No** delete path for any role |
+| Corrections | Create a **new superseding** insight; do not mutate the prior row |
+| History | Prior rows are preserved; current insight is derived from **supersession ordering** |
+
+**Do not** introduce a mutable `isCurrent` (or equivalent) flag. “Current” is computed
+from the supersession chain / ordering, never from an editable boolean.
+
 #### Restrictions
 
 | Restriction | Rule |
@@ -493,14 +527,15 @@ May also reference `ResearchEvidence` where the insight draws on stored research
 | Canonical score | **Cannot** modify `canonical_score` |
 | Chitu qualification | **Cannot** override Chitu qualification |
 | Prospecting lifecycle | **Cannot** mutate Prospecting lifecycle status or fields |
-| Queue predicates | **Cannot** be used as PrimaryFilter authority |
+| PrimaryFilter / queues | **Cannot** be used as PrimaryFilter authority or lifecycle queue authority |
 | Research logic | **Cannot** replace Chitu research logic |
+| Qualification verdicts | EspoCRM **cannot** derive a qualification verdict from score, insight, or confidence |
 
 #### Lifecycle ownership
 
 `AIQualificationInsight` has **no lifecycle ownership** and no transition service.
-Provenance fields are append-only after create. No Prospecting transition service may
-read it to drive state changes.
+The entity is fully immutable after create. No Prospecting transition service may read it
+to drive state changes.
 
 ### 6.5 Lifecycle ownership pattern
 
@@ -608,17 +643,24 @@ side.
     module. Scores are persisted from Chitu with provenance only. No `AIScore` entity.
 15. C20 ships **no email-sending path**: no `EmailDeliveryProvider` implementation, no
     send action, no `SendExecution` write from `AIPlatform`.
-16. `AIQualificationInsight`, if present, is advisory only: it must not authoritatively
-    score, must not replace qualification authority, and must not mutate lifecycle status.
+16. `AIQualificationInsight` is advisory only. It must not set, update, or compete with
+    `canonical_score`; must not replace Chitu qualification decisions; and must not
+    mutate Prospecting lifecycle status or fields.
 17. `AIQualificationInsight` has **no lifecycle ownership** — no status field, no
     transition matrix, no owning transition service.
 18. **No transition service** (Prospecting or AIPlatform) may read
     `AIQualificationInsight` to drive state changes.
 19. **No write path to `canonical_score`** exists from `AIQualificationInsight`,
     `AIPlatform`, or any C20 advisory surface.
-20. `AIQualificationInsight` provenance (`AIRequestLog`, `PromptTemplate` version,
-    provider, model, timestamp, actor) is **append-only** after create — no update or
-    delete path that erases attribution.
+20. The entire `AIQualificationInsight` entity is **immutable after create** — no update
+    and no delete for any role. Corrections create a new superseding insight; history is
+    preserved. Current insight is derived from supersession ordering. A mutable
+    `isCurrent` (or equivalent) flag is **forbidden**.
+21. EspoCRM must not calculate qualification verdicts from `canonical_score`,
+    `AIQualificationInsight`, or confidence. **No C20 service, controller, workflow, or
+    filter may become qualification decision authority** — Chitu owns that authority.
+22. `AIQualificationInsight` must not be used as PrimaryFilter authority or as lifecycle
+    queue authority.
 
 ---
 
@@ -690,7 +732,7 @@ side.
 4. Dry-run mode completes a full trace with zero network egress.
 5. Full suite green under the canonical invocation (WP4 prerequisite).
 6. `AIJob.FAILED` is operator-recoverable and surfaced in a dashboard queue.
-7. Contract tests enforce all twenty §8 invariants.
+7. Contract tests enforce all twenty-two §8 invariants.
 8. WP0 closes every item of recorded C19 technical debt.
 
 ---
@@ -751,7 +793,8 @@ constraint, and this ADR records the question rather than assuming the answer.
 | 2026-07-27 | D3 — connector is the sole outbound egress point | §2 D3 |
 | 2026-07-27 | D4 — custody split (Option C) recommended; direct-LLM question escalated | §2 D4, §11.1 |
 | 2026-07-27 | `AIScore` as a computed value **rejected**; Chitu `canonical_score` is authoritative. Do not create `AIScore`. | §1.3, §6.3 |
-| 2026-07-27 | `AIQualificationInsight` introduced as advisory dynamic qualification layer. Canonical scoring remains Chitu-owned. AI provides contextual intelligence only. | §1.3, §6.3–6.4, §8.16–8.20 |
+| 2026-07-27 | `AIQualificationInsight` introduced as advisory dynamic qualification layer. Canonical scoring remains Chitu-owned. AI provides contextual intelligence only. | §1.3, §6.3–6.4, §8.16–8.22 |
+| 2026-07-28 | Entire `AIQualificationInsight` entity immutable after create; supersession ordering replaces mutable `isCurrent`; Chitu owns qualification decisions; EspoCRM must not derive verdicts; PrimaryFilter / queue authority forbidden | §6.4, §8.16–8.22 |
 | 2026-07-27 | `Prospect` entity rejected; `ProspectPool` / `Lead` remain the only identities | §6.3 |
 | 2026-07-27 | `Modules/Automation`, `EmailCampaign`, `EmailAccount` deferred beyond C20 | §6.3, §10 |
 | 2026-07-27 | `RATE_LIMIT` is existing elsewhere; add for `BridgeErrorClass` parity. New: `QUOTA`, `CONTENT_FILTER` | §4.3 |
