@@ -3,5 +3,5 @@
   "links": {"draftApproval": "草稿审批", "lead": "线索", "replyEvents": "回复事件", "cancelledBy": "取消人"},
   "labels": {"Create SendExecution": "创建发送执行", "SendExecutions": "发送执行", "Retry Send": "重新发送", "Cancel Send": "取消发送", "Ignore Send": "忽略发送", "retrySucceeded": "发送执行已重新就绪。", "cancelSucceeded": "发送执行已取消。", "ignoreSucceeded": "发送执行已忽略并永久取消。", "cancelReasonPrompt": "取消原因代码（ABANDONED、DUPLICATE 或 OTHER）：", "cancelReasonRequired": "必须提供有效的取消原因代码。", "ignoreConfirmation": "要永久忽略此失败发送吗？该操作将取消发送执行。", "statusChangeFailed": "无法更改发送执行状态。"},
   "presetFilters": {"c18ReadyToSend": "待发送", "c18FailedSend": "发送失败"},
-  "options": {"status": {"CREATED": "已创建", "READY": "已就绪", "SENT": "已发送", "FAILED": "失败", "CANCELLED": "已取消"}, "failureCategory": {"NETWORK": "网络", "PROVIDER": "提供商", "AUTH": "认证", "RATE_LIMIT": "速率限制", "VALIDATION": "校验", "UNKNOWN": "未知"}, "cancelReason": {"IGNORED": "已忽略", "ABANDONED": "已放弃", "DUPLICATE": "重复", "OTHER": "其他"}}
+  "options": {"status": {"CREATED": "已创建", "READY": "已就绪", "SENT": "已发送", "FAILED": "失败", "CANCELLED": "已取消"}, "failureCategory": {"NETWORK": "网络", "PROVIDER": "提供商", "AUTH": "认证", "RATE_LIMIT": "速率限制", "VALIDATION": "校验", "UNKNOWN": "未知", "QUOTA": "配额", "CONTENT_FILTER": "内容过滤"}, "cancelReason": {"IGNORED": "已忽略", "ABANDONED": "已放弃", "DUPLICATE": "重复", "OTHER": "其他"}}
 }

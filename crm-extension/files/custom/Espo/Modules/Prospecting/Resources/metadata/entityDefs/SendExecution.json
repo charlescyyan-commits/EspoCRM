@@ -12,7 +12,7 @@
     "cancelledAt": {"type": "datetime", "readOnly": true},
     "cancelledBy": {"type": "link", "readOnly": true},
     "cancelReason": {"type": "enum", "required": false, "notNull": false, "readOnly": true, "options": ["IGNORED", "ABANDONED", "DUPLICATE", "OTHER"], "displayAsLabel": true},
-    "failureCategory": {"type": "enum", "required": false, "notNull": false, "options": ["NETWORK", "PROVIDER", "AUTH", "RATE_LIMIT", "VALIDATION", "UNKNOWN"], "displayAsLabel": true, "style": {"NETWORK": "warning", "PROVIDER": "danger", "AUTH": "danger", "RATE_LIMIT": "warning", "VALIDATION": "warning", "UNKNOWN": "default"}},
+    "failureCategory": {"type": "enum", "required": false, "notNull": false, "options": ["NETWORK", "PROVIDER", "AUTH", "RATE_LIMIT", "VALIDATION", "UNKNOWN", "QUOTA", "CONTENT_FILTER"], "displayAsLabel": true, "style": {"NETWORK": "warning", "PROVIDER": "danger", "AUTH": "danger", "RATE_LIMIT": "warning", "VALIDATION": "warning", "UNKNOWN": "default", "QUOTA": "danger", "CONTENT_FILTER": "warning"}},
     "draftApproval": {"type": "link", "required": true},
     "lead": {"type": "link", "required": true},
     "createdAt": {"type": "datetime", "readOnly": true},

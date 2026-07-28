@@ -12,7 +12,7 @@ from chitu_connector.espocrm_sync.failure_classification import (
     classify_failure,
     normalize_failure_category,
 )
-from tests.test_phase3c11_2_persistence_entities import C10_FROZEN_HASHES, C10_TEST_HASHES, sha256
+from test_phase3c11_2_persistence_entities import C10_FROZEN_HASHES, C10_TEST_HASHES, sha256
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -22,7 +22,7 @@ CANONICAL_ARCHIVE = ROOT / "deployment" / "prospecting-extension-1.9.12-alpha.zi
 PROJECTION = EXT / "files" / "custom" / "Espo" / "Modules" / "Prospecting" / "Services" / "EmailLifecycleProjectionService.php"
 FAILURE_SOURCE = ROOT / "chitu-connector" / "chitu_connector" / "espocrm_sync" / "failure_classification.py"
 
-FAILURE_CATEGORIES = ["NETWORK", "PROVIDER", "AUTH", "RATE_LIMIT", "VALIDATION", "UNKNOWN"]
+FAILURE_CATEGORIES = ["NETWORK", "PROVIDER", "AUTH", "RATE_LIMIT", "VALIDATION", "UNKNOWN", "QUOTA", "CONTENT_FILTER"]
 SEND_EXECUTION_STATUSES = ["CREATED", "READY", "SENT", "FAILED", "CANCELLED"]
 
 

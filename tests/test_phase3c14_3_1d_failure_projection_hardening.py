@@ -191,7 +191,11 @@ class FailureProjectionHardeningTests(unittest.TestCase):
         self.assertNotIn("ReplyEvent", php_source)
         self.assertNotIn("getEntity('Lead'", php_source)
         self.assertNotIn('getEntity("Lead"', php_source)
-        self.assertIn("saveEntity($execution)", php_source)
+        # C18: status mutation is owned by SendExecutionTransitionService — the
+        # result adapter must not persist status via a direct EntityManager save.
+        self.assertIn("SendExecutionTransitionService", php_source)
+        self.assertIn("transitionService->transition", php_source)
+        self.assertNotIn("->saveEntity(", php_source)
 
     def test_safe_result_surfaces_contain_no_secrets_or_recipient_content(self) -> None:
         root = Path(__file__).resolve().parents[1]
@@ -214,7 +218,6 @@ class FailureProjectionHardeningTests(unittest.TestCase):
         )
         forbidden_markers = (
             "api_key",
-            "authorization",
             "bearer ",
             "password",
             "secret",
@@ -222,10 +225,20 @@ class FailureProjectionHardeningTests(unittest.TestCase):
             "subject",
             "body",
         )
+        # Credential-header forms only — allow workflow option key skipAuthorization.
+        forbidden_authorization_forms = (
+            "'authorization'",
+            '"authorization"',
+            "authorization:",
+            "authorization ",
+        )
 
         for source_path in sources:
             source = source_path.read_text(encoding="utf-8").casefold()
             for marker in forbidden_markers:
+                with self.subTest(source=source_path.name, marker=marker):
+                    self.assertNotIn(marker, source)
+            for marker in forbidden_authorization_forms:
                 with self.subTest(source=source_path.name, marker=marker):
                     self.assertNotIn(marker, source)
 

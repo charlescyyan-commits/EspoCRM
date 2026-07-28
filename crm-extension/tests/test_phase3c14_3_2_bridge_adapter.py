@@ -72,6 +72,9 @@ class BridgeAdapterContractTests(unittest.TestCase):
         self.assertIn("BridgeErrorClass::VALIDATION => 'VALIDATION'", self.adapter)
         self.assertIn("BridgeErrorClass::PROVIDER => 'PROVIDER'", self.adapter)
         self.assertIn("BridgeErrorClass::UNKNOWN => 'UNKNOWN'", self.adapter)
+        self.assertIn("BridgeErrorClass::RATE_LIMIT => 'RATE_LIMIT'", self.adapter)
+        self.assertIn("BridgeErrorClass::QUOTA => 'QUOTA'", self.adapter)
+        self.assertIn("BridgeErrorClass::CONTENT_FILTER => 'CONTENT_FILTER'", self.adapter)
 
     def test_invalid_payload_is_rejected_before_entity_lookup(self) -> None:
         self.assertIn("private const ALLOWED_PAYLOAD_FIELDS", self.result)

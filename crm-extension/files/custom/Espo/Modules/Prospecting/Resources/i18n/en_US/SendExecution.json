@@ -24,7 +24,7 @@
   },
   "options": {
     "status": {"CREATED": "Created", "READY": "Ready", "SENT": "Sent", "FAILED": "Failed", "CANCELLED": "Cancelled"},
-    "failureCategory": {"NETWORK": "Network", "PROVIDER": "Provider", "AUTH": "Authentication", "RATE_LIMIT": "Rate Limit", "VALIDATION": "Validation", "UNKNOWN": "Unknown"},
+    "failureCategory": {"NETWORK": "Network", "PROVIDER": "Provider", "AUTH": "Authentication", "RATE_LIMIT": "Rate Limit", "VALIDATION": "Validation", "UNKNOWN": "Unknown", "QUOTA": "Quota", "CONTENT_FILTER": "Content Filter"},
     "cancelReason": {"IGNORED": "Ignored", "ABANDONED": "Abandoned", "DUPLICATE": "Duplicate", "OTHER": "Other"}
   },
   "tooltips": {

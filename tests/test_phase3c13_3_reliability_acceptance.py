@@ -21,7 +21,7 @@ from chitu_connector.espocrm_sync.worker_execution import (
     SendExecutionWorker,
     WorkExecutionStatus,
 )
-from tests.test_phase3c11_2_persistence_entities import C10_FROZEN_HASHES, C10_TEST_HASHES, sha256
+from test_phase3c11_2_persistence_entities import C10_FROZEN_HASHES, C10_TEST_HASHES, sha256
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -168,7 +168,7 @@ class ReliabilityAcceptanceTests(unittest.TestCase):
         self.assertEqual(fields["lastError"]["type"], "text")
         self.assertEqual(
             fields["failureCategory"]["options"],
-            ["NETWORK", "PROVIDER", "AUTH", "RATE_LIMIT", "VALIDATION", "UNKNOWN"],
+            ["NETWORK", "PROVIDER", "AUTH", "RATE_LIMIT", "VALIDATION", "UNKNOWN", "QUOTA", "CONTENT_FILTER"],
         )
         self.assertNotIn("RETRYING", fields["status"]["options"])
 

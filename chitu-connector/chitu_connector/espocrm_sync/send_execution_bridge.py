@@ -28,13 +28,30 @@ class BridgeNormalizedStatus(str, Enum):
 
 
 class BridgeErrorClass(str, Enum):
-    """Failure classes compatible with the C14.2B terminal mapping."""
+    """Failure classes compatible with the C14.2B terminal mapping.
+
+    C20 WP0.4 parity: RATE_LIMIT already exists on SendExecution.failureCategory /
+    provider contracts. QUOTA and CONTENT_FILTER are new. This enum classifies
+    errors only — it does not own retry scheduling.
+    """
 
     NETWORK = "NETWORK"
     AUTH = "AUTH"
     VALIDATION = "VALIDATION"
     PROVIDER = "PROVIDER"
     UNKNOWN = "UNKNOWN"
+    RATE_LIMIT = "RATE_LIMIT"
+    QUOTA = "QUOTA"
+    CONTENT_FILTER = "CONTENT_FILTER"
+
+    def is_auto_retry_eligible(self) -> bool:
+        """Taxonomy-level auto-retry eligibility (ADR-C20 §4.3)."""
+
+        return self in {
+            BridgeErrorClass.NETWORK,
+            BridgeErrorClass.PROVIDER,
+            BridgeErrorClass.RATE_LIMIT,
+        }
 
 
 def generate_idempotency_key(execution_id: str) -> str:

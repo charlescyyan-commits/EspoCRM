@@ -9,7 +9,7 @@ import unittest
 from chitu_connector.espocrm_sync.brevo_http import BrevoHttpResponse, BrevoTransportError
 from chitu_connector.espocrm_sync.brevo_provider import BrevoConfiguration, BrevoProviderAdapter
 from chitu_connector.espocrm_sync.provider_contract import ProviderErrorCategory, ProviderStatus, SendRequest, SendResultStatus
-from tests.test_phase3c11_2_persistence_entities import C10_FROZEN_HASHES, C10_TEST_HASHES, sha256
+from test_phase3c11_2_persistence_entities import C10_FROZEN_HASHES, C10_TEST_HASHES, sha256
 
 
 ROOT = Path(__file__).resolve().parents[1]

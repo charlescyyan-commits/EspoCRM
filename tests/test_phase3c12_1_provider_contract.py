@@ -16,7 +16,7 @@ from chitu_connector.espocrm_sync.provider_contract import (
     SendResultStatus,
     map_error_to_failure_category,
 )
-from tests.test_phase3c11_2_persistence_entities import C10_FROZEN_HASHES, C10_TEST_HASHES, sha256
+from test_phase3c11_2_persistence_entities import C10_FROZEN_HASHES, C10_TEST_HASHES, sha256
 
 
 ROOT = Path(__file__).resolve().parents[1]

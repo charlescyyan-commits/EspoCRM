@@ -23,6 +23,9 @@ final class SendExecutionBridgeAdapterService
         BridgeErrorClass::VALIDATION => 'VALIDATION',
         BridgeErrorClass::PROVIDER => 'PROVIDER',
         BridgeErrorClass::UNKNOWN => 'UNKNOWN',
+        BridgeErrorClass::RATE_LIMIT => 'RATE_LIMIT',
+        BridgeErrorClass::QUOTA => 'QUOTA',
+        BridgeErrorClass::CONTENT_FILTER => 'CONTENT_FILTER',
     ];
 
     private const ACCEPTABLE_RECEIVE_STATES = ['CREATED', 'READY', 'FAILED'];
