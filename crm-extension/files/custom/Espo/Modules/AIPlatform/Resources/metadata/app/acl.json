@@ -1,0 +1,17 @@
+{
+  "mandatory": {
+    "scopeLevel": {
+      "ProviderCredential": false
+    }
+  },
+  "adminMandatory": {
+    "scopeLevel": {
+      "ProviderCredential": {
+        "create": "yes",
+        "read": "all",
+        "edit": "all",
+        "delete": "all"
+      }
+    }
+  }
+}

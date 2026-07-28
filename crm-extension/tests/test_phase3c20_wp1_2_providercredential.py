@@ -12,6 +12,11 @@ ROOT = Path(__file__).resolve().parents[2]
 AI_PLATFORM = ROOT / "crm-extension" / "files" / "custom" / "Espo" / "Modules" / "AIPlatform"
 ENTITY_DEFS = AI_PLATFORM / "Resources" / "metadata" / "entityDefs"
 ENTITY_DEF = ENTITY_DEFS / "ProviderCredential.json"
+SCOPE = AI_PLATFORM / "Resources" / "metadata" / "scopes" / "ProviderCredential.json"
+ACL_DEF = AI_PLATFORM / "Resources" / "metadata" / "aclDefs" / "ProviderCredential.json"
+ENTITY_ACL = AI_PLATFORM / "Resources" / "metadata" / "entityAcl" / "ProviderCredential.json"
+APP_ACL = AI_PLATFORM / "Resources" / "metadata" / "app" / "acl.json"
+APP_ACL_PORTAL = AI_PLATFORM / "Resources" / "metadata" / "app" / "aclPortal.json"
 
 ALLOWED_FIELDS = {
     "providerKey",
@@ -74,8 +79,11 @@ ISOLATION_TERMS = (
 )
 FORBIDDEN_RUNTIME_DIRECTORIES = (
     "Api",
+    "Actions",
     "Controllers",
     "Entities",
+    "Hooks",
+    "Jobs",
     "Services",
 )
 FORBIDDEN_RUNTIME_TERMS = (
@@ -90,8 +98,12 @@ FORBIDDEN_RUNTIME_TERMS = (
 )
 
 
+def load_json(path: Path) -> dict[str, object]:
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
 def load_entity_def() -> dict[str, object]:
-    return json.loads(ENTITY_DEF.read_text(encoding="utf-8"))
+    return load_json(ENTITY_DEF)
 
 
 class Phase3C20WP12ProviderCredentialTests(unittest.TestCase):
@@ -161,6 +173,73 @@ class Phase3C20WP12ProviderCredentialTests(unittest.TestCase):
                 if re.search(rf"\b{re.escape(term)}\b", source):
                     offenders.append(f"{path.relative_to(ROOT)}: {term}")
         self.assertEqual(offenders, [])
+
+    def test_scope_exists_with_acl_enabled_and_no_public_surface(self) -> None:
+        self.assertEqual(set(SCOPE.parent.glob("*.json")), {SCOPE})
+        scope = load_json(SCOPE)
+        self.assertEqual(
+            scope,
+            {
+                "entity": True,
+                "object": False,
+                "tab": False,
+                "acl": True,
+                "aclPortal": False,
+                "customizable": False,
+                "importable": False,
+                "module": "AIPlatform",
+                "type": "Base",
+                "statusField": None,
+            },
+        )
+
+    def test_acl_forces_admin_only_crud_and_portal_denial(self) -> None:
+        self.assertEqual(set(ACL_DEF.parent.glob("*.json")), {ACL_DEF})
+        self.assertEqual(set(ENTITY_ACL.parent.glob("*.json")), {ENTITY_ACL})
+        self.assertEqual(set(APP_ACL.parent.glob("*.json")), {APP_ACL, APP_ACL_PORTAL})
+        self.assertEqual(load_json(ACL_DEF), {})
+
+        acl = load_json(APP_ACL)
+        self.assertFalse(acl["mandatory"]["scopeLevel"]["ProviderCredential"])
+        self.assertEqual(
+            acl["adminMandatory"]["scopeLevel"]["ProviderCredential"],
+            {"create": "yes", "read": "all", "edit": "all", "delete": "all"},
+        )
+
+        portal_acl = load_json(APP_ACL_PORTAL)
+        self.assertFalse(portal_acl["mandatory"]["scopeLevel"]["ProviderCredential"])
+
+    def test_credential_reference_is_internal_write_only_metadata(self) -> None:
+        self.assertEqual(
+            load_json(ENTITY_ACL),
+            {"fields": {"credentialReference": {"internal": True}}},
+        )
+
+    def test_owner_user_does_not_create_record_ownership_acl(self) -> None:
+        metadata = load_entity_def()
+        self.assertEqual(set(metadata["links"]), {"ownerUser"})
+        self.assertNotIn("assignedUser", metadata["fields"])
+        self.assertNotIn("teams", metadata["fields"])
+
+        acl_def = load_json(ACL_DEF)
+        self.assertNotIn("readOwnerUserField", acl_def)
+        self.assertNotIn("ownershipCheckerClassName", acl_def)
+        acl_text = APP_ACL.read_text(encoding="utf-8")
+        self.assertNotRegex(acl_text, r'"(?:own|team)"')
+
+    def test_no_ui_or_runtime_metadata_surface_is_created(self) -> None:
+        forbidden_paths = (
+            AI_PLATFORM / "Resources" / "metadata" / "clientDefs",
+            AI_PLATFORM / "Resources" / "layouts",
+            AI_PLATFORM / "Resources" / "views",
+            AI_PLATFORM / "Views",
+            AI_PLATFORM / "Resources" / "metadata" / "navigation",
+            AI_PLATFORM / "Resources" / "metadata" / "dashlets",
+        )
+        for path in forbidden_paths:
+            self.assertFalse(path.exists(), msg=str(path))
+        for directory in FORBIDDEN_RUNTIME_DIRECTORIES:
+            self.assertFalse((AI_PLATFORM / directory).exists(), msg=directory)
 
 
 if __name__ == "__main__":
