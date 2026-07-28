@@ -1,6 +1,6 @@
 # Chitu Prospecting Integration - EspoCRM Extension
 
-**Current version:** `1.9.5-alpha`
+**Current version:** `1.9.13-alpha`
 **Version authority:** [`manifest.json`](manifest.json)
 **Compatibility:** EspoCRM `>=7.4.0`, PHP `>=8.1`
 **Release posture:** alpha; validate only in a disposable or explicitly approved CRM.
@@ -42,7 +42,7 @@ EspoCRM packages require a lowercase `files/` directory. The ZIP includes `manif
 
 ```powershell
 cd D:\EspoCRM-Production\crm-extension
-.\scripts\build_release_package.ps1 -OutputPath ..\deployment\prospecting-extension-1.9.5-alpha.zip
+.\scripts\build_release_package.ps1 -OutputPath ..\deployment\prospecting-extension-1.9.13-alpha.zip
 ```
 
 Install the ZIP through **Administration > Extensions**, allow EspoCRM to rebuild when prompted, then use the matching release notes and deployment guide for the target version. See [../docs/deployment/INSTALL.md](../docs/deployment/INSTALL.md).

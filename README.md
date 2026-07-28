@@ -4,9 +4,9 @@ This workspace owns the installable **Chitu Prospecting Integration** extension,
 
 ## Current release baseline
 
-- **Extension version:** `1.9.6-alpha`
+- **Extension version:** `1.9.13-alpha`
 - **Version authority:** [`crm-extension/manifest.json`](crm-extension/manifest.json)
-- **Installable artifact:** `deployment/prospecting-extension-1.9.6-alpha.zip`
+- **Installable artifact:** `deployment/prospecting-extension-1.9.13-alpha.zip`
 - **Platform compatibility:** EspoCRM `>=7.4.0`; PHP `>=8.1`
 - **Release status:** alpha / disposable or explicitly approved CRM validation only
 

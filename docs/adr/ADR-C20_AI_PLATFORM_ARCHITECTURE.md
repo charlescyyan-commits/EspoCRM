@@ -801,6 +801,8 @@ constraint, and this ADR records the question rather than assuming the answer.
 | 2026-07-27 | `Modules/Automation`, `EmailCampaign`, `EmailAccount` deferred beyond C20 | §6.3, §10 |
 | 2026-07-27 | `RATE_LIMIT` is existing elsewhere; add for `BridgeErrorClass` parity. New: `QUOTA`, `CONTENT_FILTER` | §4.3 |
 | 2026-07-28 | WP0.4 executed BridgeError parity (`RATE_LIMIT` / `QUOTA` / `CONTENT_FILTER`) as additive taxonomy expansion only; transition service, mutation guard, and action keys unchanged — see §14 and charter §7 | §14, charter §7 |
+| 2026-07-28 | **C3 Artifact Provenance Repair** completed by `41e90bc`: collision resolved; `1.9.12-alpha` preserved; `1.9.13-alpha` created | §14.3, §14.5 |
+| 2026-07-28 | Governance evidence preserved on `master` by `78b85bf` (charter, freeze readiness, ADR §14, registry alignment) | §14.5 |
 | 2026-07-27 | `AIJob.FAILED` non-terminal and operator-recoverable, mirroring C19 WP2 | §7.2 |
 | 2026-07-27 | C20 ships no email-sending path | §8.15, §10 |
 | 2026-07-27 | WP5 consumes Chitu/connector research outputs only; no duplicate research engine | §10 |
@@ -845,16 +847,42 @@ no `nextRetryAt`.
 
 ### 14.3 Known consequence — release line
 
-WP0 changed shipped payload without a version bump, so `1.9.12-alpha` now maps to two
-distinct artifacts: `E11715D2…` at `phase3c19-freeze` and `1F981503…` at `962a7ae`. A
-bump to `1.9.13-alpha` is required before WP0 exit. Tracked as charter §8 O1.
-**Version bump is still pending** — this documentation package does not rebuild the ZIP
-or change `manifest.json`.
+WP0 changed shipped payload without a version bump, so `1.9.12-alpha` mapped to two
+distinct artifacts at audit baseline: `E11715D2…` at `phase3c19-freeze` and
+`1F981503…` at `962a7ae`. Tracked as charter §8 O1.
+
+**Version bump completed by `41e90bc`** (*phase3c20: create 1.9.13-alpha release line
+after WP0 governance repair*):
+
+- `1.9.12-alpha` restored to the C19 freeze artifact
+  (`E11715D2771ABE82F393B4BD86124329223CDAA2FE37A6EC0CF7FC5B0D3C1218`)
+- `1.9.13-alpha` created as the new release line
+- `v1.9.12-alpha` restored/backfilled at the C19 freeze commit
+
+See §14.5 for the C3 Artifact Provenance Repair execution record.
 
 ### 14.4 Registry alignment
 
 `C20-INV-03` and `C20-INV-18` were reclassified `DEFERRED → ACTIVE`; both were already
 enforced by WP0.3 boundary guards. Counts 7/15 → 9/13. `C20-INV-17` remains `DEFERRED`.
+
+### 14.5 C3 Artifact Provenance Repair
+
+**Commit:** `41e90bc` — *phase3c20: create 1.9.13-alpha release line after WP0 governance
+repair* (2026-07-28).
+
+| Action | Result |
+| --- | --- |
+| Old collision | Resolved — one version string no longer maps to two artifacts |
+| `1.9.12-alpha` | Preserved as the C19 freeze artifact (`E11715D2…` at `phase3c19-freeze` / `v1.9.12-alpha`) |
+| `1.9.13-alpha` | Created as the post-WP0.4 release line (manifest, ZIP, sidecar, release notes) |
+
+Architecture decisions in §§1–13 are unchanged. This record documents release-line
+repair only.
+
+Governance evidence preserving the charter, freeze readiness report, this §14 record,
+and registry alignment landed in `78b85bf` (*phase3c20: preserve WP0 governance evidence
+and invariant alignment*).
 
 ---
 

@@ -250,13 +250,14 @@ requires a separate ADR.
 ## 5. Blockers
 
 Status as at the audit baseline `962a7ae`, with current disposition.
+Original findings are preserved; dispositions below reflect post-C1/C2/C3 closure.
 
 | ID | Blocker | Severity | Disposition |
 | --- | --- | --- | --- |
-| **B1** | **`1.9.12-alpha` maps to two artifacts.** Payload changed without a version bump; 6 documents cite the superseded hash, 0 cited the current one. | **HIGH** | **OPEN.** Requires the `1.9.13-alpha` bump (§3.4). |
-| **B2** | **Frozen-surface change had no paper trail.** WP0.4 modified `entityDefs/SendExecution.json`, `BridgeErrorClass`, and two adapters with no charter, no ADR decision-log entry, and no resolution of the §10 exclusion ambiguity. | MEDIUM | **Resolved** by `docs/PHASE3C20_CHARTER.md` §7 and ADR §14. |
-| **B3** | **No C20 charter existed.** Every prior phase had one. WP0 had no artifact defining scope, exit gates, or decisions. | MEDIUM | **Resolved** by `docs/PHASE3C20_CHARTER.md`. |
-| **B4** | **Registry alignment uncommitted.** `master` still reported INV-03 and INV-18 as `DEFERRED`. | MECHANICAL | **Resolved** when the C1 alignment lands. |
+| **B1** | **`1.9.12-alpha` maps to two artifacts.** Payload changed without a version bump; 6 documents cite the superseded hash, 0 cited the current one. | **HIGH** | **CLOSED** by `41e90bc`. `1.9.12-alpha` restored to `E11715D2771ABE82F393B4BD86124329223CDAA2FE37A6EC0CF7FC5B0D3C1218`; `1.9.13-alpha` created. |
+| **B2** | **Frozen-surface change had no paper trail.** WP0.4 modified `entityDefs/SendExecution.json`, `BridgeErrorClass`, and two adapters with no charter, no ADR decision-log entry, and no resolution of the §10 exclusion ambiguity. | MEDIUM | **CLOSED** by `docs/PHASE3C20_CHARTER.md` §7 and ADR §14 (`78b85bf`). |
+| **B3** | **No C20 charter existed.** Every prior phase had one. WP0 had no artifact defining scope, exit gates, or decisions. | MEDIUM | **CLOSED** by `docs/PHASE3C20_CHARTER.md` (`78b85bf`). |
+| **B4** | **Registry alignment uncommitted.** `master` still reported INV-03 and INV-18 as `DEFERRED`. | MECHANICAL | **CLOSED** by C1 registry alignment in `78b85bf`. |
 
 **Additional finding:** the ADR's closing statement read *"WP0 documentation only — no
 runtime, code, metadata, test, or artifact changes"* while the WP0 commit made all five.
@@ -266,8 +267,8 @@ Corrected; execution recorded in ADR §14.
 
 O2 `BOUNDARIES.md` §2/§3 stale · O3 INV-10 partial-coverage credit · O4 INV-17 WP3
 migration note · O5 INV-18 hardcoded guard scope · O6 C19 debt (charter WP1.5 row,
-Workbench retro-charter) · O7 `v1.9.12-alpha` tag never applied · O8 ADR §11.1
-ratification (gates WP2 only).
+Workbench retro-charter) · O7 tag/provenance **CLOSED** (`v1.9.12-alpha` restored/backfilled;
+`1.9.13-alpha` release line created) · O8 ADR §11.1 ratification (gates WP2 only).
 
 ---
 
@@ -303,6 +304,10 @@ The engineering was sound: **571 passing tests** with zero failures, an internal
 consistent artifact, a structurally correct 22-row registry, and two guards demonstrably
 firing. Remaining blocker B1 is release hygiene, not defective code.
 
+> **Historical note.** Section 7 records the verdict at audit baseline `962a7ae`.
+> Post-C3 disposition of B1–B4 is in §9. Final WP0 freeze PASS is **not** claimed here;
+> a final freeze audit remains required.
+
 ---
 
 ## 8. Related
@@ -316,6 +321,42 @@ firing. Remaining blocker B1 is release hygiene, not defective code.
   Committing it is an open action.
 - `docs/PHASE3C19_FREEZE_CHECKLIST.md` (cites the superseded `E11715D2` artifact)
 - `AGENTS.md` / `CLAUDE.md`, `docs/architecture/BOUNDARIES.md`
+
+---
+
+## 9. Post-C3 Closure Addendum
+
+Added after C1/C2/C3 completion. Original audit findings in §§1–7 are preserved
+unchanged as the historical record at baseline `962a7ae`.
+
+### 9.1 Commit completion
+
+| Commit | Message | Result |
+| --- | --- | --- |
+| **C1** | `78b85bf` — *phase3c20: preserve WP0 governance evidence and invariant alignment* | **Completed** |
+| **C2** | Included in `78b85bf`: C20 Charter, WP0 Freeze Readiness Report, ADR-C20 execution record, invariant registry alignment | **Completed** |
+| **C3** | `41e90bc` — *phase3c20: create 1.9.13-alpha release line after WP0 governance repair* | **Completed** |
+
+### 9.2 Previous blockers — post-C3 status
+
+| ID | Status | Reason |
+| --- | --- | --- |
+| **B1** | **CLOSED** | `1.9.12-alpha` restored to `E11715D2771ABE82F393B4BD86124329223CDAA2FE37A6EC0CF7FC5B0D3C1218`; `1.9.13-alpha` created by `41e90bc` |
+| **B2** | **CLOSED** | Charter §7 + ADR §14 paper trail landed in `78b85bf` |
+| **B3** | **CLOSED** | `docs/PHASE3C20_CHARTER.md` landed in `78b85bf` |
+| **B4** | **CLOSED** | Registry INV-03 / INV-18 alignment landed in `78b85bf` |
+
+### 9.3 WP0 exit candidate
+
+| Candidate | Commit |
+| --- | --- |
+| `phase3c20-wp0-exit` candidate | `78b85bf` |
+
+### 9.4 Remaining gate
+
+B1–B4 are closed. **Final WP0 freeze PASS is not claimed by this addendum.** A final
+freeze audit against charter §5 exit gates remains required before tagging
+`phase3c20-wp0-exit` / `v1.9.13-alpha`.
 
 ---
 

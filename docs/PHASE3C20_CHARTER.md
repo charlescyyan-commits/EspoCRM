@@ -208,13 +208,13 @@ for the line that ships it.
 
 | # | Item | Blocking? |
 | --- | --- | --- |
-| O1 | **Release line: `1.9.12-alpha` currently maps to two artifacts** — `E11715D2…` at `phase3c19-freeze`, `1F981503…` at `962a7ae`. WP0.4 changed shipped payload without a version bump. Requires `1.9.13-alpha`. | **Yes** |
+| O1 | **Artifact provenance collision (historical).** At audit baseline `962a7ae`, `1.9.12-alpha` mapped to two artifacts — `E11715D2…` at `phase3c19-freeze` and `1F981503…` at `962a7ae`. **CLOSED** by commit `41e90bc`: `1.9.12-alpha` restored to the C19 freeze artifact (`E11715D2…`); `1.9.13-alpha` created as the new release line. | **CLOSED** |
 | O2 | `BOUNDARIES.md` §2/§3 stale — DeepSeek runtime described as out of scope; Apify listed "Not Implemented" though `providers/apify_provider.py` exists | No |
 | O3 | `C20-INV-10` partially enforced by `test_retry_classification_preservation` but credited at zero; registry has no `PARTIAL` status | No |
 | O4 | `C20-INV-17` guard fails **by design** when WP3 creates `AIQualificationInsight` — must be replaced with real INV-17 enforcement, never weakened | No |
 | O5 | `C20-INV-18` guard hardcodes four transition owners; scope must widen as services are added | No |
 | O6 | C19 debt: charter WP1.5 row; Intelligence Center Research Workbench retro-charter | No |
-| O7 | `v1.9.12-alpha` tag never applied at `4a7a111` | No |
+| O7 | **Tag / provenance (historical).** `v1.9.12-alpha` was never applied at `4a7a111` at audit time. **CLOSED:** `v1.9.12-alpha` restored/backfilled at the C19 freeze commit; `1.9.13-alpha` release line created by `41e90bc`. | **CLOSED** |
 | O8 | ADR §11.1 ratification — gates WP2 only | No (blocks WP2) |
 
 ---
@@ -229,9 +229,12 @@ for the line that ships it.
 | 2026-07-28 | `C20-INV-03` and `C20-INV-18` reclassified `DEFERRED → ACTIVE`; both were already enforced by WP0.3 guards. Counts 7/15 → 9/13. | WP0.5 |
 | 2026-07-28 | `C20-INV-17` remains `DEFERRED` — its only coverage is an entity-absence scope guard, not invariant enforcement | §8 O4 |
 | 2026-07-28 | Version bump to `1.9.13-alpha` required before WP0 exit; deferred to a separate commit | §8 O1 |
+| 2026-07-28 | **`41e90bc`** — *phase3c20: create 1.9.13-alpha release line after WP0 governance repair*. O1/O7 closed: `1.9.12-alpha` restored to C19 freeze artifact; `1.9.13-alpha` created; `v1.9.12-alpha` restored/backfilled | §8 O1, O7 |
+| 2026-07-28 | **`78b85bf`** — *phase3c20: preserve WP0 governance evidence and invariant alignment*. Charter, freeze readiness report, ADR §14, and registry alignment preserved on `master` | C1/C2 |
 | 2026-07-28 | `Modules/Automation` not created in C20 | ADR §2 D1 |
 
 ---
 
 *WP0.5/WP0.6 package: documentation and test-count governance only. No runtime PHP,
-metadata, connector, navigation, or artifact changes are made by this charter.*
+metadata, connector, navigation, or artifact changes are made by this charter.
+Subsequent C3 (`41e90bc`) performed the release-line repair recorded above.*
