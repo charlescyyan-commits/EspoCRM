@@ -100,10 +100,13 @@ FORBIDDEN_RUNTIME_DIRECTORIES = (
     "Services",
 )
 FORBIDDEN_RUNTIME_TERMS = (
+    r"\bProvider\b",
     r"\bResolver\b",
     r"\bRegistry\b",
     r"\bAdapter\b",
     r"\bTransport\b",
+    r"\bConnector\b",
+    r"\bGuzzle\b",
     r"\bHTTP\b",
     r"\bcurl\b",
     r"\bfile_get_contents\b",
@@ -117,7 +120,9 @@ FORBIDDEN_REFERENCE_RUNTIME_TERMS = (
     "resolveCredential",
     "getSecret",
     "decryptCredential",
+    "decryptSecret",
     "loadProviderKey",
+    "readSecret",
 )
 FORBIDDEN_EGRESS_PATTERNS = (
     r"\bcurl(?:_[A-Za-z0-9_]+)?\b",
@@ -139,6 +144,16 @@ FORBIDDEN_RUNTIME_SURFACE_TERMS = (
     "Controller",
     "Action",
     "Job",
+    "Hook",
+    "Workflow",
+)
+WP_BOUNDARY_TERMS = (
+    "Prospecting",
+    "SendExecution",
+    "ReplyEvent",
+    "MutationGuard",
+    "canonical_score",
+    "AIQualificationInsight",
 )
 
 
@@ -335,6 +350,15 @@ class Phase3C20WP12ProviderCredentialTests(unittest.TestCase):
         for path in module_source_files():
             source = path.read_text(encoding="utf-8")
             for term in FORBIDDEN_RUNTIME_SURFACE_TERMS:
+                if re.search(rf"\b{re.escape(term)}\b", source, flags=re.IGNORECASE):
+                    offenders.append(f"{path.relative_to(AI_PLATFORM).as_posix()}: {term}")
+        self.assertEqual(offenders, [])
+
+    def test_wp_boundaries_and_workflow_mutation_remain_absent(self) -> None:
+        offenders: list[str] = []
+        for path in module_source_files():
+            source = path.read_text(encoding="utf-8")
+            for term in WP_BOUNDARY_TERMS:
                 if re.search(rf"\b{re.escape(term)}\b", source, flags=re.IGNORECASE):
                     offenders.append(f"{path.relative_to(AI_PLATFORM).as_posix()}: {term}")
         self.assertEqual(offenders, [])
