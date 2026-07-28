@@ -12,10 +12,10 @@
 | Document | Role |
 |----------|------|
 | `AGENTS.md` / `CLAUDE.md` | Authoritative — take precedence over ADR-C20 until formally amended |
-| `docs/adr/ADR-C20_AI_PLATFORM_ARCHITECTURE.md` | Proposed architecture; §11.1 unresolved |
+| `docs/adr/ADR-C20_AI_PLATFORM_ARCHITECTURE.md` | Proposed architecture; §11.1 ratified — Option C selected |
 | `docs/adr/C20_INVARIANT_REGISTRY.md` | 22-invariant machine-checkable registry |
 | `docs/PHASE3C20_CHARTER.md` | Active C20 charter; WP2 gated on this ratification |
-| `docs/PHASE3C20_WP1_EXIT_RECONCILIATION.md` | WP1 exit evidence; F4: §11.1 unresolved |
+| `docs/PHASE3C20_WP1_EXIT_RECONCILIATION.md` | WP1 exit evidence; F4: §11.1 resolved — Option C ratified |
 | `docs/PHASE3C20_ADR_11_1_RATIFICATION_CHECKLIST.md` | Prerequisite verification; READY FOR RATIFICATION |
 | `docs/architecture/BOUNDARIES.md` | System boundaries; scoring and live runtime out of scope |
 
@@ -61,7 +61,7 @@ constraint — not a technical decision — and requires human judgment.
 
 ## 5. Decision Options
 
-### Option A — YES (Ratify Option C) ✅ SELECTED
+### Option A — YES: Ratify Option C (Restricted Capability Portfolio) ✅ SELECTED
 
 > **A new `CompletionProvider` adapter for capabilities Chitu does not own
 > does NOT violate `AGENTS.md`.**
