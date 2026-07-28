@@ -166,7 +166,10 @@ class Phase3C20WP0InvariantRegistryTests(unittest.TestCase):
         if AI_PLATFORM.exists():
             for path in AI_PLATFORM.rglob("*.php"):
                 text = path.read_text(encoding="utf-8", errors="ignore")
-                self.assertNotRegex(text, r"\bqualify(Verdict|Decision)?\b", flags=re.IGNORECASE)
+                self.assertIsNone(
+                    re.search(r"\bqualify(Verdict|Decision)?\b", text, flags=re.IGNORECASE),
+                    msg=f"Qualification decision terminology is forbidden in {path}",
+                )
                 self.assertNotIn("canonical_score", text)
 
 

@@ -1,7 +1,7 @@
 """Phase3C20 WP0.3 ADR-C20 boundary guards.
 
-Static offline guards for prohibited patterns. No AIPlatform module, entities,
-services, metadata, or provider runtime are created by this suite.
+Static offline guards for prohibited patterns. WP1.1 may add an isolated
+AIPlatform namespace skeleton, but no provider runtime is introduced here.
 """
 
 from __future__ import annotations
@@ -101,12 +101,6 @@ class Phase3C20WP0BoundaryGuardTests(unittest.TestCase):
     # 1. Provider egress boundary
     # ------------------------------------------------------------------
 
-    def test_aiplatform_module_is_not_introduced_in_wp0(self) -> None:
-        self.assertFalse(
-            AI_PLATFORM.exists(),
-            msg="Modules/AIPlatform must not be created in WP0; boundary guards are tests-only.",
-        )
-
     def test_php_runtime_has_no_direct_provider_egress(self) -> None:
         violations: list[str] = []
         for path in iter_php_files(PHP_ROOT):
@@ -127,8 +121,8 @@ class Phase3C20WP0BoundaryGuardTests(unittest.TestCase):
         )
 
     def test_connector_remains_sole_documented_egress_owner(self) -> None:
-        # WP0 posture: CRM package has no AIPlatform HTTP client; connector providers exist.
-        self.assertFalse(AI_PLATFORM.exists())
+        # An approved WP1.1 namespace may now exist; connector providers remain
+        # the sole documented egress owner.
         connector_providers = (
             ROOT
             / "chitu-connector"

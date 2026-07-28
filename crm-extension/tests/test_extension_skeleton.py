@@ -11,6 +11,7 @@ EXT = Path(__file__).resolve().parents[1]
 ROOT = EXT.parent
 CONTRACT = ROOT / "docs" / "sync-contracts" / "ESPOCRM_SYNC_CONTRACT_V1.json"
 MODULE = EXT / "files" / "custom" / "Espo" / "Modules" / "Prospecting"
+AI_PLATFORM = EXT / "files" / "custom" / "Espo" / "Modules" / "AIPlatform"
 MODULE_ENTITY_DEFS = MODULE / "Resources" / "metadata" / "entityDefs"
 MODULE_LAYOUTS = MODULE / "Resources" / "layouts"
 SURFACE_ENTITY_DEFS = MODULE_ENTITY_DEFS
@@ -575,6 +576,7 @@ class ExtensionSkeletonTests(unittest.TestCase):
             MODULE / "Services" / "StatusMutationSaveOption.php",
             MODULE / "Entities" / "Approval.php",
             MODULE / "Binding.php",
+            AI_PLATFORM / "Binding.php",
             EXT / "files" / "custom" / "Espo" / "Custom" / "Hooks" / "Approval" / "AuditFieldProtectionHook.php",
             EXT / "files" / "custom" / "Espo" / "Custom" / "Hooks" / "Approval" / "ApprovalStatusMutationGuard.php",
             EXT / "files" / "custom" / "Espo" / "Custom" / "Hooks" / "Quote" / "QuoteStatusMutationGuard.php",

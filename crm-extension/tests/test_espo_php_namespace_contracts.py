@@ -21,7 +21,13 @@ ALLOWED_NAMESPACE_PREFIXES = (
     "Espo\\ORM\\",
     "Espo\\Entities\\",
     "Espo\\Modules\\Prospecting\\",
+    "Espo\\Modules\\AIPlatform\\",
     "Espo\\Custom\\",
+)
+
+MODULE_NAMESPACE_ROOTS = (
+    "Espo\\Modules\\Prospecting",
+    "Espo\\Modules\\AIPlatform",
 )
 
 USE_OR_NAMESPACE = re.compile(
@@ -55,8 +61,8 @@ class EspoPhpNamespaceContractTests(unittest.TestCase):
             for reference in extract_espo_references(text):
                 if any(reference.startswith(prefix) for prefix in ALLOWED_NAMESPACE_PREFIXES):
                     continue
-                # Namespace declarations for Espo\Modules\Prospecting itself are allowed.
-                if reference == "Espo\\Modules\\Prospecting" or reference.startswith("Espo\\Modules\\Prospecting\\"):
+                # Approved module namespace roots and descendants are allowed.
+                if any(reference == root or reference.startswith(f"{root}\\") for root in MODULE_NAMESPACE_ROOTS):
                     continue
                 relative = path.relative_to(ROOT).as_posix()
                 unknown.append(f"{relative}: unrecognized Espo namespace {reference}")

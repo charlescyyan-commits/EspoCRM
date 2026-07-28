@@ -1,7 +1,7 @@
 """Phase3C20 WP0.4 BridgeErrorClass parity contracts.
 
 Covers RATE_LIMIT parity plus new QUOTA / CONTENT_FILTER classes.
-Does not change lifecycle ownership, retry policy ownership, or add AIPlatform.
+Does not change lifecycle ownership, retry policy ownership, or add provider runtime.
 """
 
 from __future__ import annotations
@@ -68,16 +68,6 @@ I18N_ZH = (
     / "zh_CN"
     / "SendExecution.json"
 )
-AI_PLATFORM = (
-    ROOT
-    / "crm-extension"
-    / "files"
-    / "custom"
-    / "Espo"
-    / "Modules"
-    / "AIPlatform"
-)
-
 EXISTING_CLASSES = (
     "NETWORK",
     "AUTH",
@@ -202,8 +192,7 @@ class Phase3C20WP0BridgeErrorParityTests(unittest.TestCase):
         self.assertIn(FailureCategory.CONTENT_FILTER.value, values)
         self.assertEqual(FailureCategory.RATE_LIMIT.value, "RATE_LIMIT")
 
-    def test_no_aiplatform_or_provider_client_introduced(self) -> None:
-        self.assertFalse(AI_PLATFORM.exists())
+    def test_no_provider_client_introduced(self) -> None:
         for path in (BRIDGE_ERROR_CLASS_PHP, BRIDGE_ADAPTER, RESULT_ADAPTER):
             text = read(path)
             self.assertNotIn("DeepSeek", text)
