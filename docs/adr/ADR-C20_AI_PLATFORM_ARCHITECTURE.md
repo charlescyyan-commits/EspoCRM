@@ -11,8 +11,9 @@
   advisory `AIQualificationInsight`, and `AGENTS.md` egress constraints
 - **Not Accepted.** Status remains Proposed until Phase3C20 Charter Approval Board
   ratification; §11.1 must be resolved by a human owner before WP2
-- WP0 documentation only — no runtime, code, metadata, test, or artifact
-  authorization is granted by this document
+- WP0 as originally drafted claimed documentation-only authorization; **as executed**
+  at `962a7ae` it also included bounded additive BridgeError taxonomy parity — see §14
+  and `docs/PHASE3C20_CHARTER.md` §7
 
 ## Date
 
@@ -794,16 +795,70 @@ constraint, and this ADR records the question rather than assuming the answer.
 | 2026-07-27 | D4 — custody split (Option C) recommended; direct-LLM question escalated | §2 D4, §11.1 |
 | 2026-07-27 | `AIScore` as a computed value **rejected**; Chitu `canonical_score` is authoritative. Do not create `AIScore`. | §1.3, §6.3 |
 | 2026-07-27 | `AIQualificationInsight` introduced as advisory dynamic qualification layer. Canonical scoring remains Chitu-owned. AI provides contextual intelligence only. | §1.3, §6.3–6.4, §8.16–8.22 |
+| 2026-07-28 | WP0 execution recorded (§14); closing statement corrected — WP0 was not documentation-only. Frozen-surface position: additive taxonomy expansion is not a lifecycle change; see charter §7 | §14 |
 | 2026-07-28 | Entire `AIQualificationInsight` entity immutable after create; supersession ordering replaces mutable `isCurrent`; Chitu owns qualification decisions; EspoCRM must not derive verdicts; PrimaryFilter / queue authority forbidden | §6.4, §8.16–8.22 |
 | 2026-07-27 | `Prospect` entity rejected; `ProspectPool` / `Lead` remain the only identities | §6.3 |
 | 2026-07-27 | `Modules/Automation`, `EmailCampaign`, `EmailAccount` deferred beyond C20 | §6.3, §10 |
 | 2026-07-27 | `RATE_LIMIT` is existing elsewhere; add for `BridgeErrorClass` parity. New: `QUOTA`, `CONTENT_FILTER` | §4.3 |
+| 2026-07-28 | WP0.4 executed BridgeError parity (`RATE_LIMIT` / `QUOTA` / `CONTENT_FILTER`) as additive taxonomy expansion only; transition service, mutation guard, and action keys unchanged — see §14 and charter §7 | §14, charter §7 |
 | 2026-07-27 | `AIJob.FAILED` non-terminal and operator-recoverable, mirroring C19 WP2 | §7.2 |
 | 2026-07-27 | C20 ships no email-sending path | §8.15, §10 |
 | 2026-07-27 | WP5 consumes Chitu/connector research outputs only; no duplicate research engine | §10 |
 
 ---
 
-*Status: Proposed. WP0 documentation only — no runtime, code, metadata, test, or artifact
-changes are authorized by this document. §11.1 requires human ratification before WP2
-implementation may begin.*
+## 14. WP0 Execution Record
+
+Added 2026-07-28. This section records what Phase3C20 WP0 **executed**, because the
+ADR's original closing statement described WP0 as documentation-only and that was
+contradicted by the WP0 commit.
+
+**Commit:** `962a7ae` — *phase3c20: complete WP0 AI platform governance foundation*
+(2026-07-28). Authorized by `docs/PHASE3C20_CHARTER.md` §3 and §7.
+
+### 14.1 What WP0 changed
+
+| Category | Files | Nature |
+| --- | --- | --- |
+| Test infrastructure | `pytest.ini` (new); root test import/stale-assertion repairs | Canonical invocation; C14 assertion repair |
+| Governance | `docs/adr/C20_INVARIANT_REGISTRY.md` (new) | 22-invariant registry with meta-tests |
+| Contract tests | 3 new `test_phase3c20_wp0_*.py` | Registry, boundary guards, bridge parity |
+| **Runtime PHP** | `BridgeErrorClass.php`, `SendExecutionBridgeAdapterService.php`, `SendExecutionResultAdapterService.php` | Additive error-taxonomy expansion |
+| **Metadata** | `entityDefs/SendExecution.json` | `failureCategory` widened: `QUOTA`, `CONTENT_FILTER` |
+| **i18n** | `SendExecution.json` (en_US, zh_CN) | Labels for the two new categories |
+| **Connector** | `espocrm_sync/failure_classification.py`, `send_execution_bridge.py` | Matching taxonomy expansion |
+| **Artifact** | `prospecting-extension-1.9.12-alpha.zip` + sidecar | Rebuilt |
+
+WP0 therefore made runtime, metadata, test, and artifact changes. The original closing
+statement was inaccurate and has been corrected.
+
+### 14.2 Frozen-surface position
+
+The Prospecting changes are additive value-object and enum widening, not lifecycle
+changes. Verified at `962a7ae`: `SendExecutionTransitionService`,
+`SendExecutionStatusMutationGuard`, and `prospectingWorkflow.json` action keys have
+**zero** changes. Full rationale and bounds: `docs/PHASE3C20_CHARTER.md` §7.
+
+Retry ownership is unchanged — `isAutoRetryEligible()` / `is_auto_retry_eligible()`
+classify only and are contract-tested to reference no transition service and introduce
+no `nextRetryAt`.
+
+### 14.3 Known consequence — release line
+
+WP0 changed shipped payload without a version bump, so `1.9.12-alpha` now maps to two
+distinct artifacts: `E11715D2…` at `phase3c19-freeze` and `1F981503…` at `962a7ae`. A
+bump to `1.9.13-alpha` is required before WP0 exit. Tracked as charter §8 O1.
+**Version bump is still pending** — this documentation package does not rebuild the ZIP
+or change `manifest.json`.
+
+### 14.4 Registry alignment
+
+`C20-INV-03` and `C20-INV-18` were reclassified `DEFERRED → ACTIVE`; both were already
+enforced by WP0.3 boundary guards. Counts 7/15 → 9/13. `C20-INV-17` remains `DEFERRED`.
+
+---
+
+*Status: Proposed. This ADR is a design document and authorizes no implementation by
+itself; each work package is authorized by `docs/PHASE3C20_CHARTER.md`. WP0 as executed
+was **not** documentation-only — see §14 for the execution record. §11.1 requires human
+ratification before WP2 implementation may begin.*

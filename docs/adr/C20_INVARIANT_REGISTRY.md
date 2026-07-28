@@ -28,7 +28,7 @@ Columns (strict order):
 | --- | --- | --- | --- | --- | --- |
 | C20-INV-01 | Marker `adr-c20-aiplatform-v1` present in AI Platform metadata and contract tests | DEFERRED | WP1 | - | AIPlatform metadata and marker-bearing contract tests land |
 | C20-INV-02 | No prospecting identifier (`Lead`, `ProspectPool`, `SearchJob`, `DraftApproval`, `SendExecution`, `ReplyEvent`, `Quote`) appears in `Modules/AIPlatform` | ACTIVE | WP0 | crm-extension/tests/test_phase3c20_wp0_invariant_registry.py | WP0 absence gate; remains ACTIVE when AIPlatform lands under WP1 |
-| C20-INV-03 | No outbound HTTP from PHP to provider domains (`curl`, `file_get_contents`, Guzzle, sockets) | DEFERRED | WP1 | - | AIPlatform PHP module skeleton lands |
+| C20-INV-03 | No outbound HTTP from PHP to provider domains (`curl`, `file_get_contents`, Guzzle, sockets) | ACTIVE | WP0 | crm-extension/tests/test_phase3c20_wp0_boundary_guards.py | WP0 egress gate over the whole `crm-extension/files` PHP tree; remains ACTIVE when AIPlatform lands under WP1 |
 | C20-INV-04 | No plaintext credential in API responses, logs, or exceptions; credential fields write-only | DEFERRED | WP1 | - | `ProviderCredential` custody surface lands |
 | C20-INV-05 | Every `AIJob` status write passes through `AIJobService` with authorized save option; hook guard rejects direct mutation | DEFERRED | WP3 | - | `AIJob` + `AIJobService` + mutation guard land |
 | C20-INV-06 | `AIJob` transitions limited to §7.2 matrix; `SUCCEEDED`/`CANCELLED` terminal; `CANCELLED` requires reason | DEFERRED | WP3 | - | `AIJob` lifecycle implementation lands |
@@ -43,7 +43,7 @@ Columns (strict order):
 | C20-INV-15 | C20 ships no email-sending path — no `EmailDeliveryProvider`, no send action, no `SendExecution` write from `AIPlatform` | ACTIVE | WP0 | crm-extension/tests/test_phase3c20_wp0_invariant_registry.py | WP0 absence gate; delivery remains C21+ |
 | C20-INV-16 | `AIQualificationInsight` is advisory only — must not set/update/compete with `canonical_score`, replace Chitu qualification, or mutate Prospecting lifecycle | ACTIVE | WP0 | crm-extension/tests/test_phase3c20_wp0_invariant_registry.py | WP0 absence/governance gate; entity work later |
 | C20-INV-17 | `AIQualificationInsight` has no lifecycle ownership — no status field, transition matrix, or owning transition service | DEFERRED | WP3 | - | `AIQualificationInsight` entity definition lands |
-| C20-INV-18 | No transition service may read `AIQualificationInsight` to drive state changes | DEFERRED | WP3 | - | Insight entity + transition-service contract tests land |
+| C20-INV-18 | No transition service may read `AIQualificationInsight` to drive state changes | ACTIVE | WP0 | crm-extension/tests/test_phase3c20_wp0_boundary_guards.py | WP0 gate over the four Prospecting transition owners; guard scope must widen as transition services are added |
 | C20-INV-19 | No write path to `canonical_score` from `AIQualificationInsight`, `AIPlatform`, or any C20 advisory surface | ACTIVE | WP0 | crm-extension/tests/test_phase3c20_wp0_invariant_registry.py | WP0 absence gate |
 | C20-INV-20 | Entire `AIQualificationInsight` immutable after create; supersession ordering; mutable `isCurrent` forbidden | DEFERRED | WP3 | - | `AIQualificationInsight` persistence lands |
 | C20-INV-21 | EspoCRM must not calculate qualification verdicts from `canonical_score`, `AIQualificationInsight`, or confidence; no C20 surface may become qualification decision authority | ACTIVE | WP0 | crm-extension/tests/test_phase3c20_wp0_invariant_registry.py | WP0 absence/governance gate |
@@ -56,8 +56,8 @@ Columns (strict order):
 | Metric | Value |
 | --- | --- |
 | Total invariants | 22 |
-| ACTIVE | 7 |
-| DEFERRED | 15 |
+| ACTIVE | 9 |
+| DEFERRED | 13 |
 | ACTIVE + DEFERRED | 22 |
 
 ---

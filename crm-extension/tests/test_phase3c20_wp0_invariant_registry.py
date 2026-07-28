@@ -89,8 +89,8 @@ class Phase3C20WP0InvariantRegistryTests(unittest.TestCase):
         active = [row for row in self.rows if row["status"] == "ACTIVE"]
         deferred = [row for row in self.rows if row["status"] == "DEFERRED"]
         self.assertEqual(len(active) + len(deferred), EXPECTED_TOTAL)
-        self.assertEqual(len(active), 7)
-        self.assertEqual(len(deferred), 15)
+        self.assertEqual(len(active), 9)
+        self.assertEqual(len(deferred), 13)
         for row in deferred:
             with self.subTest(invariant_id=row["id"]):
                 self.assertTrue(row["owning_wp"], msg="DEFERRED rows must declare owning_wp")
