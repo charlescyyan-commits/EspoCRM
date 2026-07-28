@@ -50,7 +50,7 @@ deployment/prospecting-extension-<version>.zip.sha256
 Generate manually (PowerShell):
 
 ```powershell
-Get-FileHash deployment\prospecting-extension-1.9.12-alpha.zip -Algorithm SHA256
+Get-FileHash deployment\prospecting-extension-1.9.13-alpha.zip -Algorithm SHA256
 ```
 
 ## Validation
@@ -71,9 +71,10 @@ python -m unittest discover -s crm-extension/tests
 | `prospecting-extension-1.9.9-alpha.zip` | Historical package |
 | `prospecting-extension-1.9.10-alpha.zip` | Historical C17 freeze package |
 | `prospecting-extension-1.9.11-alpha.zip` | Historical C18 package |
-| `prospecting-extension-1.9.12-alpha.zip` | Current package; matches `manifest.json` |
+| `prospecting-extension-1.9.12-alpha.zip` | Historical C19 freeze package |
+| `prospecting-extension-1.9.13-alpha.zip` | Current package; matches `manifest.json` |
 
-The current `1.9.12-alpha` ZIP has a committed `.sha256` sidecar at `deployment/prospecting-extension-1.9.12-alpha.zip.sha256`.
+The current `1.9.13-alpha` ZIP has a committed `.sha256` sidecar at `deployment/prospecting-extension-1.9.13-alpha.zip.sha256`. The retained `1.9.12-alpha` ZIP and sidecar preserve the `phase3c19-freeze` identity.
 
 ## Related Documents
 
