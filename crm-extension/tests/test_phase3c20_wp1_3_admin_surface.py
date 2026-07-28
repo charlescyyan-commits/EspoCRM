@@ -15,6 +15,8 @@ APP_ACL = AI_PLATFORM / "Resources" / "metadata" / "app" / "acl.json"
 APP_ACL_PORTAL = AI_PLATFORM / "Resources" / "metadata" / "app" / "aclPortal.json"
 ENTITY_ACL = AI_PLATFORM / "Resources" / "metadata" / "entityAcl" / "ProviderCredential.json"
 I18N = AI_PLATFORM / "Resources" / "i18n"
+LAYOUTS = AI_PLATFORM / "Resources" / "layouts" / "ProviderCredential"
+APPROVED_LAYOUTS = {LAYOUTS / "list.json", LAYOUTS / "detail.json"}
 
 ADMIN_I18N = {
     "en_US": I18N / "en_US" / "Admin.json",
@@ -137,7 +139,10 @@ class Phase3C20WP13AdminSurfaceTests(unittest.TestCase):
         for directory in FORBIDDEN_RUNTIME_DIRECTORIES:
             self.assertFalse((AI_PLATFORM / directory).exists(), msg=directory)
         self.assertFalse((AI_PLATFORM / "Resources" / "metadata" / "clientDefs").exists())
-        self.assertFalse((AI_PLATFORM / "Resources" / "layouts").exists())
+        self.assertEqual(
+            set((AI_PLATFORM / "Resources" / "layouts").rglob("*.json")),
+            APPROVED_LAYOUTS,
+        )
 
 
 if __name__ == "__main__":

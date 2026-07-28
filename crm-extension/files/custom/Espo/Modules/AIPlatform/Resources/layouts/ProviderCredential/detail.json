@@ -1,0 +1,12 @@
+[
+  {
+    "label": "Credential Reference Registry",
+    "rows": [
+      [{"name": "displayName"}, {"name": "providerKey"}],
+      [{"name": "environment"}, {"name": "ownerUser"}],
+      [{"name": "fingerprint"}, {"name": "lastFour"}],
+      [{"name": "rotationDueAt"}, {"name": "lastRotatedAt"}],
+      [{"name": "description", "fullWidth": true}]
+    ]
+  }
+]

@@ -1,6 +1,6 @@
 {
   "scopeNames": {
-    "ProviderCredential": "Credential"
+    "ProviderCredential": "Provider Credential"
   },
   "scopeNamesPlural": {
     "ProviderCredential": "Credentials"

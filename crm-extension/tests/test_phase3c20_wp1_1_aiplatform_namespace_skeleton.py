@@ -49,11 +49,17 @@ AUTHORIZED_METADATA_FILES = {
     "Resources/metadata/entityAcl/ProviderCredential.json",
     "Resources/metadata/app/acl.json",
     "Resources/metadata/app/aclPortal.json",
+    "Resources/i18n/en_US/ProviderCredential.json",
+    "Resources/i18n/zh_CN/ProviderCredential.json",
+    "Resources/layouts/ProviderCredential/list.json",
+    "Resources/layouts/ProviderCredential/detail.json",
 }
 AUTHORIZED_METADATA_DIRECTORIES = {
     "Resources/metadata/entityDefs",
     "Resources/metadata/scopes",
     "Resources/metadata/aclDefs",
+    "Resources/layouts",
+    "Resources/layouts/ProviderCredential",
 }
 FORBIDDEN_RUNTIME_REFERENCES = (
     r"\bProvider\b",
@@ -109,6 +115,7 @@ class Phase3C20WP11AIPlatformNamespaceSkeletonTests(unittest.TestCase):
             relative = path.relative_to(AI_PLATFORM).as_posix()
             if (
                 relative not in AUTHORIZED_METADATA_FILES
+                and relative not in AUTHORIZED_METADATA_DIRECTORIES
                 and any(token in path.name for token in FORBIDDEN_PATH_TOKENS)
             ):
                 offenders.append(relative)
@@ -119,6 +126,8 @@ class Phase3C20WP11AIPlatformNamespaceSkeletonTests(unittest.TestCase):
             ):
                 offenders.append(relative)
             if not path.is_file():
+                continue
+            if {"i18n", "layouts"}.intersection(path.relative_to(AI_PLATFORM).parts):
                 continue
             text = read(path)
             for pattern in FORBIDDEN_RUNTIME_REFERENCES:

@@ -1,0 +1,8 @@
+[
+  {"name": "displayName", "width": 22, "link": true},
+  {"name": "providerKey", "width": 18},
+  {"name": "environment", "width": 14},
+  {"name": "fingerprint", "width": 22},
+  {"name": "lastFour", "width": 10},
+  {"name": "rotationDueAt", "width": 14}
+]

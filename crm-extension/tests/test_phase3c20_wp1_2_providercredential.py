@@ -24,6 +24,10 @@ ADMIN_I18N_EN = AI_PLATFORM / "Resources" / "i18n" / "en_US" / "Admin.json"
 GLOBAL_I18N_EN = AI_PLATFORM / "Resources" / "i18n" / "en_US" / "Global.json"
 ADMIN_I18N_ZH = AI_PLATFORM / "Resources" / "i18n" / "zh_CN" / "Admin.json"
 GLOBAL_I18N_ZH = AI_PLATFORM / "Resources" / "i18n" / "zh_CN" / "Global.json"
+ENTITY_I18N_EN = AI_PLATFORM / "Resources" / "i18n" / "en_US" / "ProviderCredential.json"
+ENTITY_I18N_ZH = AI_PLATFORM / "Resources" / "i18n" / "zh_CN" / "ProviderCredential.json"
+LIST_LAYOUT = AI_PLATFORM / "Resources" / "layouts" / "ProviderCredential" / "list.json"
+DETAIL_LAYOUT = AI_PLATFORM / "Resources" / "layouts" / "ProviderCredential" / "detail.json"
 
 APPROVED_MODULE_FILES = {
     BINDING,
@@ -39,6 +43,10 @@ APPROVED_MODULE_FILES = {
     GLOBAL_I18N_EN,
     ADMIN_I18N_ZH,
     GLOBAL_I18N_ZH,
+    ENTITY_I18N_EN,
+    ENTITY_I18N_ZH,
+    LIST_LAYOUT,
+    DETAIL_LAYOUT,
 }
 
 ALLOWED_FIELDS = {
@@ -183,6 +191,14 @@ def module_source_files() -> list[Path]:
     )
 
 
+def runtime_contract_files() -> list[Path]:
+    return [
+        path
+        for path in module_source_files()
+        if not {"i18n", "layouts"}.intersection(path.relative_to(AI_PLATFORM).parts)
+    ]
+
+
 class Phase3C20WP12ProviderCredentialTests(unittest.TestCase):
     def test_entity_definition_has_exact_reference_metadata_fields(self) -> None:
         self.assertTrue(ENTITY_DEF.is_file())
@@ -230,9 +246,7 @@ class Phase3C20WP12ProviderCredentialTests(unittest.TestCase):
 
         for directory in FORBIDDEN_RUNTIME_DIRECTORIES:
             self.assertFalse((AI_PLATFORM / directory).exists(), msg=directory)
-        for path in AI_PLATFORM.rglob("*"):
-            if not path.is_file():
-                continue
+        for path in runtime_contract_files():
             source = path.read_text(encoding="utf-8")
             for pattern in FORBIDDEN_RUNTIME_TERMS:
                 self.assertIsNone(re.search(pattern, source, flags=re.IGNORECASE), msg=f"{path}: {pattern}")
@@ -242,7 +256,7 @@ class Phase3C20WP12ProviderCredentialTests(unittest.TestCase):
             for path in module_source_files()
             if "credentialReference" in path.read_text(encoding="utf-8")
         }
-        self.assertEqual(reference_paths, {ENTITY_DEF, ENTITY_ACL})
+        self.assertEqual(reference_paths, {ENTITY_DEF, ENTITY_ACL, ENTITY_I18N_EN, ENTITY_I18N_ZH})
 
     def test_credential_reference_has_no_runtime_resolution_path(self) -> None:
         offenders: list[str] = []
@@ -345,7 +359,6 @@ class Phase3C20WP12ProviderCredentialTests(unittest.TestCase):
     def test_no_ui_or_runtime_metadata_surface_is_created(self) -> None:
         forbidden_paths = (
             AI_PLATFORM / "Resources" / "metadata" / "clientDefs",
-            AI_PLATFORM / "Resources" / "layouts",
             AI_PLATFORM / "Resources" / "views",
             AI_PLATFORM / "Views",
             AI_PLATFORM / "Resources" / "metadata" / "navigation",
@@ -353,6 +366,10 @@ class Phase3C20WP12ProviderCredentialTests(unittest.TestCase):
         )
         for path in forbidden_paths:
             self.assertFalse(path.exists(), msg=str(path))
+        self.assertEqual(
+            set((AI_PLATFORM / "Resources" / "layouts").rglob("*.json")),
+            {LIST_LAYOUT, DETAIL_LAYOUT},
+        )
         for directory in FORBIDDEN_RUNTIME_DIRECTORIES:
             self.assertFalse((AI_PLATFORM / directory).exists(), msg=directory)
 
