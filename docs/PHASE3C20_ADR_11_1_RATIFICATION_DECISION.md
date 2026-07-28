@@ -2,10 +2,10 @@
 
 ## 1. Status
 
-**Status:** PENDING HUMAN DECISION  
-**Date:** 2026-07-28  
-**Type:** Governance ratification — documentation only  
-**Gates:** ADR-C20 §11.1, WP2 implementation
+**Status:** RATIFIED — OPTION C (Restricted Capability Portfolio)
+**Date:** 2026-07-28
+**Type:** Governance ratification — documentation only
+**Gates:** ADR-C20 §11.1 resolved; WP2 authorized under binding constraints
 
 ## 2. Governing Documents
 
@@ -61,7 +61,7 @@ constraint — not a technical decision — and requires human judgment.
 
 ## 5. Decision Options
 
-### Option A — YES (Ratify Option C)
+### Option A — YES (Ratify Option C) ✅ SELECTED
 
 > **A new `CompletionProvider` adapter for capabilities Chitu does not own
 > does NOT violate `AGENTS.md`.**
@@ -197,13 +197,13 @@ the §11.1 outcome.
 
 ### Decision
 
-**Owner:** ______________________
+**Owner:** Charles
 
-**Date:** ______________________
+**Date:** 2026-07-28
 
 **Decision (select one):**
 
-- [ ] **YES** — A new `CompletionProvider` adapter for capabilities Chitu does
+- [x] **YES** — A new `CompletionProvider` adapter for capabilities Chitu does
   not own does NOT violate `AGENTS.md`. WP2 may proceed with the full C20
   capability portfolio including `CompletionProvider`.
 
@@ -212,42 +212,86 @@ the §11.1 outcome.
   `CompletionProvider` is removed from the C20 portfolio. All AI must arrive
   from Chitu.
 
-### Conditions (if any)
+### Approval Meaning
 
-___________________________________________________________________________
+EspoCRM is authorized to orchestrate AI-assisted prospecting workflows,
+including:
 
-___________________________________________________________________________
+- AI research evidence presentation
+- AI qualification insights
+- AI draft assistance
+- Human approval workflows
+- Reply classification support
+- AI-assisted sales operations
 
-___________________________________________________________________________
+### Binding Constraints
 
-### Interpretation Guidance (if any)
+1. **Chitu Intelligence remains the intelligence authority.** Chitu owns
+   `canonical_score`, ICP matching, qualification logic and verdicts, research
+   logic, and intelligence generation. EspoCRM consumes and persists — it never
+   reimplements or competes.
 
-The human owner may optionally provide interpretive guidance on the scope of
-the `AGENTS.md` "AI research logic" prohibition. This guidance binds AI agents
-working on C20 and any successor phase.
+2. **EspoCRM remains the workflow, governance, audit, and human-control
+   layer.** Orchestration, permissions, persistence, audit trail, operator
+   recovery, and human decision gates are EspoCRM's domain.
 
-___________________________________________________________________________
+3. **AI insights are advisory and cannot become authoritative CRM lifecycle
+   decisions.** No AI-generated output may drive a status transition, queue
+   predicate, or lifecycle mutation without human approval.
 
-___________________________________________________________________________
+4. **EspoCRM does not own AI model execution.** All model invocation routes
+   through the connector (sole egress). No PHP code opens an HTTP connection to
+   any AI provider.
 
-___________________________________________________________________________
+5. **EspoCRM does not directly call external AI/provider APIs.** Provider
+   routing is configuration, not code. The connector is the single integration
+   surface for all outbound AI I/O.
+
+6. **Provider credentials remain outside CRM custody.** EspoCRM holds
+   credential metadata, ownership, rotation schedule, and audit trail —
+   references only. The connector holds actual secrets in its environment.
+
+7. **Human approval remains required for external actions.** No autonomous
+   outreach, no automatic email sending, no unattended provider invocation.
+   Every C20 invocation is operator-initiated.
+
+### Interpretation Guidance
+
+The `AGENTS.md` prohibition on modifying "AI research logic" protects Chitu's
+existing research pipeline — `website_research.py`,
+`single_candidate_loop.py`, and the vendored contracts under
+`chitu_connector/vendored/contracts/`. It does **not** prohibit creating new,
+separately-owned AI capability in the connector that serves purposes Chitu does
+not own.
+
+A `CompletionProvider` adapter must serve **only** capabilities that fall
+outside Chitu's ownership scope. It must not:
+
+- Replicate or augment Chitu's research pipeline
+- Generate scores that compete with `canonical_score`
+- Produce qualification verdicts
+- Generate email content that bypasses the DraftApproval workflow
+- Operate autonomously without operator initiation
+
+If a proposed `CompletionProvider` use case touches any Chitu-owned capability,
+it must be escalated back to the human owner for a separate ratification.
 
 ### Signature
 
-**Approved by:** ______________________
+**Approved by:** Charles
 
-**Date:** ______________________
+**Date:** 2026-07-28
 
 ## 11. Post-Ratification Actions
 
-| Action | Owner | Timing |
-|--------|-------|--------|
-| Record decision in C20 Charter §9 decision log | AI agent | Immediate |
-| Amend ADR-C20 §11.1 header with outcome | AI agent | Immediate |
-| Update WP2 scope in C20 Charter §4 if NO | AI agent | Immediate |
-| Document `CompletionProvider` capability scope if YES | Human owner + AI agent | Before WP2 begins |
-| Begin WP2 implementation | AI agent | After recording |
-| Close §11.1 in governance tracking | AI agent | After recording |
+| Action | Status |
+|--------|--------|
+| This document signed by the human owner with a YES decision | ✅ Complete — Charles, 2026-07-28 |
+| Record decision in C20 Charter §9 decision log | Pending — AI agent |
+| Amend ADR-C20 §11.1 header with outcome | Pending — AI agent |
+| Document `CompletionProvider` capability scope (allowed and forbidden use cases) | Pending — before WP2 begins |
+| Begin WP2 implementation | Authorized — after scope documentation |
+| Close §11.1 in governance tracking | Pending — AI agent |
 
 ## 12. Related
 
@@ -258,6 +302,7 @@ ___________________________________________________________________________
 
 ---
 
-*This document is a ratification template. No decision is recorded until the
-human owner completes §10. No WP2 implementation is authorized until §10 is
-signed.*
+*ADR-C20 §11.1 is ratified. Option C (Restricted Capability Portfolio) is the
+governing decision. WP2 is authorized under the seven binding constraints
+recorded in §10. The CompletionProvider capability scope must be documented
+before WP2 implementation begins.*
