@@ -1,4 +1,4 @@
-"""Phase3C20 WP1.2.1 ProviderCredential reference-custody contracts."""
+"""Phase3C20 WP1.2 ProviderCredential reference-custody contracts."""
 
 from __future__ import annotations
 
@@ -17,6 +17,19 @@ ACL_DEF = AI_PLATFORM / "Resources" / "metadata" / "aclDefs" / "ProviderCredenti
 ENTITY_ACL = AI_PLATFORM / "Resources" / "metadata" / "entityAcl" / "ProviderCredential.json"
 APP_ACL = AI_PLATFORM / "Resources" / "metadata" / "app" / "acl.json"
 APP_ACL_PORTAL = AI_PLATFORM / "Resources" / "metadata" / "app" / "aclPortal.json"
+BINDING = AI_PLATFORM / "Binding.php"
+MODULE_METADATA = AI_PLATFORM / "Resources" / "module.json"
+
+APPROVED_MODULE_FILES = {
+    BINDING,
+    MODULE_METADATA,
+    ENTITY_DEF,
+    SCOPE,
+    ACL_DEF,
+    ENTITY_ACL,
+    APP_ACL,
+    APP_ACL_PORTAL,
+}
 
 ALLOWED_FIELDS = {
     "providerKey",
@@ -88,6 +101,9 @@ FORBIDDEN_RUNTIME_DIRECTORIES = (
 )
 FORBIDDEN_RUNTIME_TERMS = (
     r"\bResolver\b",
+    r"\bRegistry\b",
+    r"\bAdapter\b",
+    r"\bTransport\b",
     r"\bHTTP\b",
     r"\bcurl\b",
     r"\bfile_get_contents\b",
@@ -95,6 +111,34 @@ FORBIDDEN_RUNTIME_TERMS = (
     r"\bProviderCredentialService\b",
     r"\bRotationService\b",
     r"\bAuditService\b",
+    r"\bSecretService\b",
+)
+FORBIDDEN_REFERENCE_RUNTIME_TERMS = (
+    "resolveCredential",
+    "getSecret",
+    "decryptCredential",
+    "loadProviderKey",
+)
+FORBIDDEN_EGRESS_PATTERNS = (
+    r"\bcurl(?:_[A-Za-z0-9_]+)?\b",
+    r"\bGuzzle\b",
+    r"\bHttpClient\b",
+    r"\bHTTP\s+client\b",
+    r"\bexternal\s+request\b",
+    r"\bconnector\s+invocation\b",
+    r"\bfile_get_contents\b",
+    r"\bstream_socket_client\b",
+    r"\bfsockopen\b",
+)
+FORBIDDEN_RUNTIME_SURFACE_TERMS = (
+    "CredentialService",
+    "ProviderCredentialService",
+    "RotationService",
+    "AuditService",
+    "SecretService",
+    "Controller",
+    "Action",
+    "Job",
 )
 
 
@@ -104,6 +148,14 @@ def load_json(path: Path) -> dict[str, object]:
 
 def load_entity_def() -> dict[str, object]:
     return load_json(ENTITY_DEF)
+
+
+def module_source_files() -> list[Path]:
+    return sorted(
+        path
+        for path in AI_PLATFORM.rglob("*")
+        if path.is_file() and path.suffix in {".json", ".php"}
+    )
 
 
 class Phase3C20WP12ProviderCredentialTests(unittest.TestCase):
@@ -133,6 +185,15 @@ class Phase3C20WP12ProviderCredentialTests(unittest.TestCase):
                 msg=f"Forbidden secret field declared: {field_name}",
             )
 
+    def test_forbidden_secret_identifiers_are_absent_from_all_module_sources(self) -> None:
+        offenders: list[str] = []
+        for path in module_source_files():
+            source = path.read_text(encoding="utf-8")
+            for identifier in FORBIDDEN_SECRET_FIELDS:
+                if re.search(rf"\b{re.escape(identifier)}\b", source, flags=re.IGNORECASE):
+                    offenders.append(f"{path.relative_to(AI_PLATFORM).as_posix()}: {identifier}")
+        self.assertEqual(offenders, [])
+
     def test_credential_reference_is_metadata_only(self) -> None:
         metadata = load_entity_def()
         field = metadata["fields"]["credentialReference"]
@@ -151,17 +212,43 @@ class Phase3C20WP12ProviderCredentialTests(unittest.TestCase):
             for pattern in FORBIDDEN_RUNTIME_TERMS:
                 self.assertIsNone(re.search(pattern, source, flags=re.IGNORECASE), msg=f"{path}: {pattern}")
 
+        reference_paths = {
+            path
+            for path in module_source_files()
+            if "credentialReference" in path.read_text(encoding="utf-8")
+        }
+        self.assertEqual(reference_paths, {ENTITY_DEF, ENTITY_ACL})
+
+    def test_credential_reference_has_no_runtime_resolution_path(self) -> None:
+        offenders: list[str] = []
+        for path in module_source_files():
+            source = path.read_text(encoding="utf-8")
+            for term in FORBIDDEN_REFERENCE_RUNTIME_TERMS:
+                if re.search(rf"\b{re.escape(term)}\b", source, flags=re.IGNORECASE):
+                    offenders.append(f"{path.relative_to(AI_PLATFORM).as_posix()}: {term}")
+        self.assertEqual(offenders, [])
+
+    def test_provider_egress_is_absent(self) -> None:
+        offenders: list[str] = []
+        for path in module_source_files():
+            source = path.read_text(encoding="utf-8")
+            for pattern in FORBIDDEN_EGRESS_PATTERNS:
+                if re.search(pattern, source, flags=re.IGNORECASE):
+                    offenders.append(f"{path.relative_to(AI_PLATFORM).as_posix()}: {pattern}")
+        self.assertEqual(offenders, [])
+
     def test_lifecycle_is_absent(self) -> None:
         metadata = load_entity_def()
         fields = metadata["fields"]
         self.assertTrue(FORBIDDEN_LIFECYCLE_TERMS.isdisjoint(fields))
 
-        source = ENTITY_DEF.read_text(encoding="utf-8")
-        for term in FORBIDDEN_LIFECYCLE_TERMS:
-            self.assertIsNone(
-                re.search(rf"\b{re.escape(term)}\b", source, flags=re.IGNORECASE),
-                msg=f"Forbidden lifecycle term declared: {term}",
-            )
+        offenders: list[str] = []
+        for path in module_source_files():
+            source = path.read_text(encoding="utf-8")
+            for term in FORBIDDEN_LIFECYCLE_TERMS:
+                if re.search(rf"\b{re.escape(term)}\b", source, flags=re.IGNORECASE):
+                    offenders.append(f"{path.relative_to(AI_PLATFORM).as_posix()}: {term}")
+        self.assertEqual(offenders, [])
 
     def test_namespace_isolation_is_preserved(self) -> None:
         offenders: list[str] = []
@@ -240,6 +327,17 @@ class Phase3C20WP12ProviderCredentialTests(unittest.TestCase):
             self.assertFalse(path.exists(), msg=str(path))
         for directory in FORBIDDEN_RUNTIME_DIRECTORIES:
             self.assertFalse((AI_PLATFORM / directory).exists(), msg=directory)
+
+    def test_no_service_or_runtime_surface_is_declared(self) -> None:
+        self.assertEqual(set(module_source_files()), APPROVED_MODULE_FILES)
+
+        offenders: list[str] = []
+        for path in module_source_files():
+            source = path.read_text(encoding="utf-8")
+            for term in FORBIDDEN_RUNTIME_SURFACE_TERMS:
+                if re.search(rf"\b{re.escape(term)}\b", source, flags=re.IGNORECASE):
+                    offenders.append(f"{path.relative_to(AI_PLATFORM).as_posix()}: {term}")
+        self.assertEqual(offenders, [])
 
 
 if __name__ == "__main__":
