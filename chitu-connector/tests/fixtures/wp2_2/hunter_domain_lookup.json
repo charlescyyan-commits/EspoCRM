@@ -1,0 +1,4 @@
+{
+  "request": {"method": "GET", "url": "https://api.hunter.io/v2/domain-search?domain=example.com"},
+  "response": {"status_code": 200, "body": {"data": {"domain": "example.com", "organization": "Example Corp", "emails": [{"value": "sales@example.com"}, {"value": "info@example.com"}]}}}
+}

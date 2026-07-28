@@ -1,0 +1,4 @@
+{
+  "request": {"method": "GET", "url": "https://api.hunter.io/v2/domain-search?domain=example.com"},
+  "response": {"status_code": 401, "body": {"errors": [{"code": "authentication_failed"}]}}
+}

@@ -1,0 +1,4 @@
+{
+  "request": {"method": "GET", "url": "https://api.hunter.io/v2/email-verifier?email=ada%40example.com"},
+  "response": {"status_code": 200, "body": {"data": {"email": "ada@example.com", "result": "deliverable", "score": 92}}}
+}

@@ -1,0 +1,4 @@
+{
+  "request": {"method": "POST", "url": "https://api.apollo.io/api/v1/organizations/enrich"},
+  "response": {"status_code": 401, "body": {"error": "unauthorized"}}
+}

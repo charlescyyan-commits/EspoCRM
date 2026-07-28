@@ -1,0 +1,4 @@
+{
+  "request": {"method": "GET", "url": "https://api.hunter.io/v2/domain-search?domain=example.com"},
+  "response": {"status_code": 429, "headers": {"Retry-After": "23"}, "body": {"errors": [{"code": "rate_limit"}]}}
+}
