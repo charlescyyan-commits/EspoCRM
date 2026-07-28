@@ -17,8 +17,13 @@ ACL_DEF = AI_PLATFORM / "Resources" / "metadata" / "aclDefs" / "ProviderCredenti
 ENTITY_ACL = AI_PLATFORM / "Resources" / "metadata" / "entityAcl" / "ProviderCredential.json"
 APP_ACL = AI_PLATFORM / "Resources" / "metadata" / "app" / "acl.json"
 APP_ACL_PORTAL = AI_PLATFORM / "Resources" / "metadata" / "app" / "aclPortal.json"
+ADMIN_PANEL = AI_PLATFORM / "Resources" / "metadata" / "app" / "adminPanel.json"
 BINDING = AI_PLATFORM / "Binding.php"
 MODULE_METADATA = AI_PLATFORM / "Resources" / "module.json"
+ADMIN_I18N_EN = AI_PLATFORM / "Resources" / "i18n" / "en_US" / "Admin.json"
+GLOBAL_I18N_EN = AI_PLATFORM / "Resources" / "i18n" / "en_US" / "Global.json"
+ADMIN_I18N_ZH = AI_PLATFORM / "Resources" / "i18n" / "zh_CN" / "Admin.json"
+GLOBAL_I18N_ZH = AI_PLATFORM / "Resources" / "i18n" / "zh_CN" / "Global.json"
 
 APPROVED_MODULE_FILES = {
     BINDING,
@@ -29,6 +34,11 @@ APPROVED_MODULE_FILES = {
     ENTITY_ACL,
     APP_ACL,
     APP_ACL_PORTAL,
+    ADMIN_PANEL,
+    ADMIN_I18N_EN,
+    GLOBAL_I18N_EN,
+    ADMIN_I18N_ZH,
+    GLOBAL_I18N_ZH,
 }
 
 ALLOWED_FIELDS = {
@@ -298,7 +308,10 @@ class Phase3C20WP12ProviderCredentialTests(unittest.TestCase):
     def test_acl_forces_admin_only_crud_and_portal_denial(self) -> None:
         self.assertEqual(set(ACL_DEF.parent.glob("*.json")), {ACL_DEF})
         self.assertEqual(set(ENTITY_ACL.parent.glob("*.json")), {ENTITY_ACL})
-        self.assertEqual(set(APP_ACL.parent.glob("*.json")), {APP_ACL, APP_ACL_PORTAL})
+        self.assertEqual(
+            set(APP_ACL.parent.glob("*.json")),
+            {APP_ACL, APP_ACL_PORTAL, ADMIN_PANEL},
+        )
         self.assertEqual(load_json(ACL_DEF), {})
 
         acl = load_json(APP_ACL)

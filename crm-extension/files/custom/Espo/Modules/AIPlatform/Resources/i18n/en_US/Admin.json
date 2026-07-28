@@ -1,0 +1,12 @@
+{
+  "labels": {
+    "AI Platform": "AI Platform",
+    "Credentials": "Credentials"
+  },
+  "descriptions": {
+    "providerCredentialReferenceCustody": "Manage externally held credential references and custody metadata."
+  },
+  "keywords": {
+    "aiPlatform": "AI Platform,credentials,credential references"
+  }
+}

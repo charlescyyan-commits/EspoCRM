@@ -1,0 +1,12 @@
+{
+  "labels": {
+    "AI Platform": "AI 平台",
+    "Credentials": "凭据引用"
+  },
+  "descriptions": {
+    "providerCredentialReferenceCustody": "管理由外部系统保管的凭据引用及其责任元数据。"
+  },
+  "keywords": {
+    "aiPlatform": "AI 平台,凭据,凭据引用"
+  }
+}

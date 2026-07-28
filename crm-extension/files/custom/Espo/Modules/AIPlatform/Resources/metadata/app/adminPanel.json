@@ -1,0 +1,14 @@
+{
+  "aiPlatform": {
+    "label": "AI Platform",
+    "itemList": [
+      {
+        "url": "#ProviderCredential",
+        "label": "Credentials",
+        "iconClass": "fas fa-key",
+        "description": "providerCredentialReferenceCustody"
+      }
+    ],
+    "order": 80
+  }
+}
