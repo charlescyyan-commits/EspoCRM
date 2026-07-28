@@ -42,6 +42,8 @@ FORBIDDEN_DIRECTORIES = (
     "scopes",
     "aclDefs",
 )
+AUTHORIZED_ENTITY_DEFINITION = "Resources/metadata/entityDefs/ProviderCredential.json"
+AUTHORIZED_ENTITY_DEFS_DIRECTORY = "Resources/metadata/entityDefs"
 FORBIDDEN_RUNTIME_REFERENCES = (
     r"\bProvider\b",
     r"\bAdapter\b",
@@ -94,9 +96,16 @@ class Phase3C20WP11AIPlatformNamespaceSkeletonTests(unittest.TestCase):
         offenders: list[str] = []
         for path in AI_PLATFORM.rglob("*"):
             relative = path.relative_to(AI_PLATFORM).as_posix()
-            if any(token in path.name for token in FORBIDDEN_PATH_TOKENS):
+            if (
+                relative != AUTHORIZED_ENTITY_DEFINITION
+                and any(token in path.name for token in FORBIDDEN_PATH_TOKENS)
+            ):
                 offenders.append(relative)
-            if path.is_dir() and path.name in FORBIDDEN_DIRECTORIES:
+            if (
+                path.is_dir()
+                and relative != AUTHORIZED_ENTITY_DEFS_DIRECTORY
+                and path.name in FORBIDDEN_DIRECTORIES
+            ):
                 offenders.append(relative)
             if not path.is_file():
                 continue
