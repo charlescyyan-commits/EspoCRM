@@ -2,9 +2,9 @@
 
 ## Status
 
-**Proposed** — pending independent architecture review. This ADR does not
-authorize C21 entities, metadata, migrations, runtime, provider integration,
-or workflow implementation.
+**Accepted** — Accepted after Phase3C21 ADR Final Acceptance Review. This ADR
+authorizes C21 entities, metadata, migrations, runtime, provider integration,
+and workflow implementation.
 
 ## Date
 
