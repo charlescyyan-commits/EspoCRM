@@ -1,0 +1,7 @@
+{
+  "response": {
+    "status_code": 200,
+    "headers": {"x-request-id": "fixture-draft-request"},
+    "body": {"id": "fixture-draft", "model": "fixture-model", "choices": [{"message": {"content": "Proposed operator-reviewed draft text."}, "finish_reason": "tool_calls"}], "usage": {"prompt_tokens": 25, "completion_tokens": 7}}
+  }
+}

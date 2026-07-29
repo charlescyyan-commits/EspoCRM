@@ -1,0 +1,7 @@
+{
+  "response": {
+    "status_code": 200,
+    "headers": {"x-request-id": "fixture-research-request"},
+    "body": {"id": "fixture-research", "model": "fixture-model", "choices": [{"message": {"content": "Evidence indicates active demand."}, "finish_reason": "stop"}], "usage": {"prompt_tokens": 31, "completion_tokens": 9}}
+  }
+}

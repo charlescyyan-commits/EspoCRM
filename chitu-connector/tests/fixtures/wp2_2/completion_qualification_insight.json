@@ -1,0 +1,7 @@
+{
+  "response": {
+    "status_code": 200,
+    "headers": {"x-request-id": "fixture-insight-request"},
+    "body": {"id": "fixture-insight", "model": "fixture-model", "choices": [{"message": {"content": "Advisory market signal: recent expansion activity."}, "finish_reason": "length"}], "usage": {"prompt_tokens": 28, "completion_tokens": 11}}
+  }
+}

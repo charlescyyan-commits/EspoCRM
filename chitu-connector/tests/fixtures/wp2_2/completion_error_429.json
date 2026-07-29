@@ -1,0 +1,7 @@
+{
+  "response": {
+    "status_code": 429,
+    "headers": {"Retry-After": "29"},
+    "body": {"error": "rate_limited"}
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "response": {
+    "status_code": 200,
+    "headers": {"x-request-id": "fixture-reply-request"},
+    "body": {"id": "fixture-reply", "model": "fixture-model", "choices": [{"message": {"content": "Suggested category: interested; sentiment: positive."}, "finish_reason": "content_filter"}], "usage": {"prompt_tokens": 19, "completion_tokens": 8}}
+  }
+}
