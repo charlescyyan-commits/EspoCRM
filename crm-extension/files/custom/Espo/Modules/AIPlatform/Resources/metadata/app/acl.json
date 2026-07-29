@@ -1,7 +1,8 @@
 {
   "mandatory": {
     "scopeLevel": {
-      "ProviderCredential": false
+      "ProviderCredential": false,
+      "PromptTemplate": false
     }
   },
   "adminMandatory": {
@@ -11,6 +12,12 @@
         "read": "all",
         "edit": "all",
         "delete": "all"
+      },
+      "PromptTemplate": {
+        "create": "yes",
+        "read": "all",
+        "edit": "all",
+        "delete": "no"
       }
     }
   }

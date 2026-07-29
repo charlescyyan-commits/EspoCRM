@@ -1,0 +1,121 @@
+{
+  "fields": {
+    "name": {
+      "type": "varchar",
+      "maxLength": 255,
+      "required": true,
+      "trim": true
+    },
+    "templateKey": {
+      "type": "varchar",
+      "maxLength": 100,
+      "required": true,
+      "trim": true
+    },
+    "version": {
+      "type": "int",
+      "required": true,
+      "min": 1
+    },
+    "contentHash": {
+      "type": "varchar",
+      "maxLength": 64,
+      "required": true,
+      "trim": true,
+      "readOnly": true
+    },
+    "capability": {
+      "type": "varchar",
+      "maxLength": 100,
+      "required": true,
+      "trim": true
+    },
+    "purpose": {
+      "type": "varchar",
+      "maxLength": 255,
+      "required": true,
+      "trim": true
+    },
+    "templateBody": {
+      "type": "text",
+      "required": true
+    },
+    "status": {
+      "type": "enum",
+      "required": true,
+      "readOnly": true,
+      "options": [
+        "DRAFT",
+        "ACTIVE",
+        "RETIRED"
+      ],
+      "default": "DRAFT",
+      "displayAsLabel": true,
+      "style": {
+        "DRAFT": "default",
+        "ACTIVE": "success",
+        "RETIRED": "warning"
+      }
+    },
+    "hasBeenReferenced": {
+      "type": "bool",
+      "required": true,
+      "readOnly": true,
+      "default": false
+    },
+    "createdAt": {
+      "type": "datetime",
+      "readOnly": true
+    },
+    "modifiedAt": {
+      "type": "datetime",
+      "readOnly": true
+    },
+    "createdBy": {
+      "type": "link",
+      "readOnly": true
+    },
+    "modifiedBy": {
+      "type": "link",
+      "readOnly": true
+    }
+  },
+  "links": {
+    "createdBy": {
+      "type": "belongsTo",
+      "entity": "User"
+    },
+    "modifiedBy": {
+      "type": "belongsTo",
+      "entity": "User"
+    }
+  },
+  "audited": true,
+  "collection": {
+    "orderBy": "modifiedAt",
+    "order": "desc",
+    "textFilterFields": [
+      "name",
+      "templateKey",
+      "capability",
+      "purpose",
+      "status"
+    ]
+  },
+  "deleteId": true,
+  "indexes": {
+    "templateKeyVersion": {
+      "type": "unique",
+      "columns": [
+        "templateKey",
+        "version",
+        "deleteId"
+      ]
+    },
+    "status": {
+      "columns": [
+        "status"
+      ]
+    }
+  }
+}

@@ -1,7 +1,8 @@
 {
   "mandatory": {
     "scopeLevel": {
-      "ProviderCredential": false
+      "ProviderCredential": false,
+      "PromptTemplate": false
     }
   }
 }

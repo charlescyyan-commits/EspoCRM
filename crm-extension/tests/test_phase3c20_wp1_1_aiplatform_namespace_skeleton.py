@@ -43,11 +43,15 @@ FORBIDDEN_DIRECTORIES = (
 AUTHORIZED_METADATA_FILES = {
     "Resources/metadata/entityDefs/ProviderCredential.json",
     "Resources/metadata/entityDefs/AIJob.json",
+    "Resources/metadata/entityDefs/PromptTemplate.json",
     "Resources/metadata/scopes/ProviderCredential.json",
     "Resources/metadata/scopes/AIJob.json",
+    "Resources/metadata/scopes/PromptTemplate.json",
     "Resources/metadata/aclDefs/ProviderCredential.json",
     "Resources/metadata/aclDefs/AIJob.json",
+    "Resources/metadata/aclDefs/PromptTemplate.json",
     "Resources/metadata/entityAcl/ProviderCredential.json",
+    "Resources/metadata/entityAcl/PromptTemplate.json",
     "Resources/metadata/app/acl.json",
     "Resources/metadata/app/aclPortal.json",
     "Resources/i18n/en_US/ProviderCredential.json",
@@ -59,11 +63,17 @@ AUTHORIZED_RUNTIME_FILES = {
     "Services/AIJobService.php",
     "Services/AIJobStatusMutationSaveOption.php",
     "Hooks/AIJob/AIJobStatusMutationGuard.php",
+    "Entities/PromptTemplate.php",
+    "Services/PromptTemplateService.php",
+    "Services/PromptTemplateSaveOption.php",
+    "Hooks/PromptTemplate/PromptTemplateMutationGuard.php",
 }
 AUTHORIZED_RUNTIME_DIRECTORIES = {
+    "Entities",
     "Services",
     "Hooks",
     "Hooks/AIJob",
+    "Hooks/PromptTemplate",
 }
 AUTHORIZED_METADATA_DIRECTORIES = {
     "Resources/metadata/entityDefs",
@@ -134,6 +144,7 @@ class Phase3C20WP11AIPlatformNamespaceSkeletonTests(unittest.TestCase):
                 offenders.append(relative)
             if (
                 path.is_dir()
+                and relative not in AUTHORIZED_RUNTIME_DIRECTORIES
                 and relative not in AUTHORIZED_METADATA_DIRECTORIES
                 and path.name in FORBIDDEN_DIRECTORIES
             ):

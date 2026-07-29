@@ -13,11 +13,17 @@ AI_PLATFORM = ROOT / "crm-extension" / "files" / "custom" / "Espo" / "Modules" /
 ENTITY_DEFS = AI_PLATFORM / "Resources" / "metadata" / "entityDefs"
 ENTITY_DEF = ENTITY_DEFS / "ProviderCredential.json"
 AI_JOB_ENTITY_DEF = ENTITY_DEFS / "AIJob.json"
+PROMPT_TEMPLATE_ENTITY_DEF = ENTITY_DEFS / "PromptTemplate.json"
 SCOPE = AI_PLATFORM / "Resources" / "metadata" / "scopes" / "ProviderCredential.json"
 AI_JOB_SCOPE = AI_PLATFORM / "Resources" / "metadata" / "scopes" / "AIJob.json"
+PROMPT_TEMPLATE_SCOPE = AI_PLATFORM / "Resources" / "metadata" / "scopes" / "PromptTemplate.json"
 ACL_DEF = AI_PLATFORM / "Resources" / "metadata" / "aclDefs" / "ProviderCredential.json"
 AI_JOB_ACL_DEF = AI_PLATFORM / "Resources" / "metadata" / "aclDefs" / "AIJob.json"
+PROMPT_TEMPLATE_ACL_DEF = AI_PLATFORM / "Resources" / "metadata" / "aclDefs" / "PromptTemplate.json"
 ENTITY_ACL = AI_PLATFORM / "Resources" / "metadata" / "entityAcl" / "ProviderCredential.json"
+PROMPT_TEMPLATE_ENTITY_ACL = (
+    AI_PLATFORM / "Resources" / "metadata" / "entityAcl" / "PromptTemplate.json"
+)
 APP_ACL = AI_PLATFORM / "Resources" / "metadata" / "app" / "acl.json"
 APP_ACL_PORTAL = AI_PLATFORM / "Resources" / "metadata" / "app" / "aclPortal.json"
 ADMIN_PANEL = AI_PLATFORM / "Resources" / "metadata" / "app" / "adminPanel.json"
@@ -34,6 +40,12 @@ DETAIL_LAYOUT = AI_PLATFORM / "Resources" / "layouts" / "ProviderCredential" / "
 AI_JOB_SERVICE = AI_PLATFORM / "Services" / "AIJobService.php"
 AI_JOB_SAVE_OPTION = AI_PLATFORM / "Services" / "AIJobStatusMutationSaveOption.php"
 AI_JOB_GUARD = AI_PLATFORM / "Hooks" / "AIJob" / "AIJobStatusMutationGuard.php"
+PROMPT_TEMPLATE_ENTITY = AI_PLATFORM / "Entities" / "PromptTemplate.php"
+PROMPT_TEMPLATE_SERVICE = AI_PLATFORM / "Services" / "PromptTemplateService.php"
+PROMPT_TEMPLATE_SAVE_OPTION = AI_PLATFORM / "Services" / "PromptTemplateSaveOption.php"
+PROMPT_TEMPLATE_GUARD = (
+    AI_PLATFORM / "Hooks" / "PromptTemplate" / "PromptTemplateMutationGuard.php"
+)
 
 APPROVED_MODULE_FILES = {
     BINDING,
@@ -59,6 +71,14 @@ APPROVED_MODULE_FILES = {
     AI_JOB_SERVICE,
     AI_JOB_SAVE_OPTION,
     AI_JOB_GUARD,
+    PROMPT_TEMPLATE_ENTITY_DEF,
+    PROMPT_TEMPLATE_SCOPE,
+    PROMPT_TEMPLATE_ACL_DEF,
+    PROMPT_TEMPLATE_ENTITY_ACL,
+    PROMPT_TEMPLATE_ENTITY,
+    PROMPT_TEMPLATE_SERVICE,
+    PROMPT_TEMPLATE_SAVE_OPTION,
+    PROMPT_TEMPLATE_GUARD,
 }
 
 ALLOWED_FIELDS = {
@@ -211,7 +231,10 @@ def runtime_contract_files() -> list[Path]:
 class Phase3C20WP12ProviderCredentialTests(unittest.TestCase):
     def test_entity_definition_has_exact_reference_metadata_fields(self) -> None:
         self.assertTrue(ENTITY_DEF.is_file())
-        self.assertEqual(set(ENTITY_DEFS.glob("*.json")), {ENTITY_DEF, AI_JOB_ENTITY_DEF})
+        self.assertEqual(
+            set(ENTITY_DEFS.glob("*.json")),
+            {ENTITY_DEF, AI_JOB_ENTITY_DEF, PROMPT_TEMPLATE_ENTITY_DEF},
+        )
 
         metadata = load_entity_def()
         fields = metadata["fields"]
@@ -306,7 +329,10 @@ class Phase3C20WP12ProviderCredentialTests(unittest.TestCase):
         self.assertEqual(offenders, [])
 
     def test_scope_exists_with_acl_enabled_and_no_public_surface(self) -> None:
-        self.assertEqual(set(SCOPE.parent.glob("*.json")), {SCOPE, AI_JOB_SCOPE})
+        self.assertEqual(
+            set(SCOPE.parent.glob("*.json")),
+            {SCOPE, AI_JOB_SCOPE, PROMPT_TEMPLATE_SCOPE},
+        )
         scope = load_json(SCOPE)
         self.assertEqual(
             scope,
@@ -325,8 +351,14 @@ class Phase3C20WP12ProviderCredentialTests(unittest.TestCase):
         )
 
     def test_acl_forces_admin_only_crud_and_portal_denial(self) -> None:
-        self.assertEqual(set(ACL_DEF.parent.glob("*.json")), {ACL_DEF, AI_JOB_ACL_DEF})
-        self.assertEqual(set(ENTITY_ACL.parent.glob("*.json")), {ENTITY_ACL})
+        self.assertEqual(
+            set(ACL_DEF.parent.glob("*.json")),
+            {ACL_DEF, AI_JOB_ACL_DEF, PROMPT_TEMPLATE_ACL_DEF},
+        )
+        self.assertEqual(
+            set(ENTITY_ACL.parent.glob("*.json")),
+            {ENTITY_ACL, PROMPT_TEMPLATE_ENTITY_ACL},
+        )
         self.assertEqual(
             set(APP_ACL.parent.glob("*.json")),
             {APP_ACL, APP_ACL_PORTAL, ADMIN_PANEL},
@@ -383,13 +415,30 @@ class Phase3C20WP12ProviderCredentialTests(unittest.TestCase):
 
         self.assertEqual(
             set((AI_PLATFORM / "Services").glob("*.php")),
-            {AI_JOB_SERVICE, AI_JOB_SAVE_OPTION},
+            {
+                AI_JOB_SERVICE,
+                AI_JOB_SAVE_OPTION,
+                PROMPT_TEMPLATE_SERVICE,
+                PROMPT_TEMPLATE_SAVE_OPTION,
+            },
         )
         self.assertEqual(
             set((AI_PLATFORM / "Hooks" / "AIJob").glob("*.php")),
             {AI_JOB_GUARD},
         )
-        for path in (AI_JOB_SERVICE, AI_JOB_SAVE_OPTION, AI_JOB_GUARD):
+        self.assertEqual(
+            set((AI_PLATFORM / "Hooks" / "PromptTemplate").glob("*.php")),
+            {PROMPT_TEMPLATE_GUARD},
+        )
+        for path in (
+            AI_JOB_SERVICE,
+            AI_JOB_SAVE_OPTION,
+            AI_JOB_GUARD,
+            PROMPT_TEMPLATE_ENTITY,
+            PROMPT_TEMPLATE_SERVICE,
+            PROMPT_TEMPLATE_SAVE_OPTION,
+            PROMPT_TEMPLATE_GUARD,
+        ):
             self.assertNotIn("ProviderCredential", path.read_text(encoding="utf-8"))
 
     def test_wp_boundaries_and_workflow_mutation_remain_absent(self) -> None:

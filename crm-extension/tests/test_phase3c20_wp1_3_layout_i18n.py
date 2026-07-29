@@ -53,14 +53,17 @@ FORBIDDEN_RUNTIME_DIRECTORIES = (
     "Api",
     "Actions",
     "Controllers",
-    "Entities",
     "Jobs",
 )
 ALLOWED_WP3_RUNTIME_FILES = {
     AI_PLATFORM / "Services" / "AIJobService.php",
     AI_PLATFORM / "Services" / "AIJobStatusMutationSaveOption.php",
     AI_PLATFORM / "Hooks" / "AIJob" / "AIJobStatusMutationGuard.php",
+    AI_PLATFORM / "Services" / "PromptTemplateService.php",
+    AI_PLATFORM / "Services" / "PromptTemplateSaveOption.php",
+    AI_PLATFORM / "Hooks" / "PromptTemplate" / "PromptTemplateMutationGuard.php",
 }
+ALLOWED_WP3_ENTITIES = {AI_PLATFORM / "Entities" / "PromptTemplate.php"}
 
 
 def load_json(path: Path) -> object:
@@ -133,6 +136,10 @@ class Phase3C20WP13LayoutI18nTests(unittest.TestCase):
             * (AI_PLATFORM / "Hooks").rglob("*.php"),
         }
         self.assertEqual(runtime_files, ALLOWED_WP3_RUNTIME_FILES)
+        self.assertEqual(
+            set((AI_PLATFORM / "Entities").glob("*.php")),
+            ALLOWED_WP3_ENTITIES,
+        )
 
 
 if __name__ == "__main__":
