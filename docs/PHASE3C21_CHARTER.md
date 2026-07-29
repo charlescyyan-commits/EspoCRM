@@ -74,6 +74,22 @@ Human Adoption
 Lead
 ```
 
+The WP3 governed intelligence segment is:
+
+```text
+ProspectPool
+    ↓
+ResearchEvidence
+    ↓
+AIQualificationInsight
+    ↓
+IntelligenceAggregate
+    ↓
+HumanFeedback
+    ↓
+Feedback Analytics
+```
+
 The final adoption step requires a human or separately authorized CRM
 workflow. C21 evidence, confidence, or insight cannot perform the conversion.
 Existing `ProspectPool` operational status fields remain owned by their frozen
@@ -165,7 +181,123 @@ intelligence improvement requires a separately governed Chitu interface.
 
 ---
 
-## 8. C20 Provenance
+## 8. Intelligence Aggregation Governance
+
+Aggregation allowed scope:
+
+- aggregation of governed intelligence records;
+- governance-preserving aggregation of ResearchEvidence and
+  AIQualificationInsight; and
+- read-only intelligence aggregation context.
+
+Forbidden:
+
+- score;
+- rank;
+- priority; and
+- qualification.
+
+### confidenceDistribution semantic guard
+
+`confidenceDistribution` is a semantic guard for the distribution of confidence
+across governed intelligence inputs. It is not a score, ranking, priority, or
+qualification field.
+
+### evidenceCoverage semantic boundary
+
+`evidenceCoverage` is an evidence-coverage representation. It is not a score,
+rank, priority, qualification, CRM filter predicate, queue authority, or
+lifecycle decision.
+
+---
+
+## 9. Intelligence Governance Pipeline
+
+```text
+ResearchEvidence
+    ↓
+AIQualificationInsight
+    ↓
+IntelligenceAggregate
+    ↓
+HumanFeedback
+    ↓
+Feedback Analytics
+```
+
+Pipeline is governance relationship, not execution.
+
+---
+
+## 10. WP3 Entity Inventory
+
+### IntelligenceAggregate
+
+Fields:
+
+- `signalCount`
+- `evidenceCoverage`
+- `confidenceDistribution`
+- `frequentSignals`
+- `latestInsightAt`
+- `insightReferences`
+- `sourceAIRequestLog`
+- `supersedes`
+
+### IntelligenceSignal
+
+Fields:
+
+- `signalLabel`
+- `signalDomain`
+- `sourceInsight`
+- `sourceEvidence`
+- `occurredAt`
+- `aggregate`
+
+Forbidden fields:
+
+- score;
+- rank;
+- priority; and
+- qualification.
+
+---
+
+## 11. PrimaryFilter and Queue Authority Boundary
+
+Forbidden:
+
+- PrimaryFilter source;
+- Lead/ProspectPool filterList reference;
+- CRM dashlet decision panel;
+- workflow condition; and
+- sort authority.
+
+---
+
+## 12. C22 Separation
+
+C22 entities:
+
+- `ProspectCandidate`
+- `ProspectRun`
+- `ActionGate`
+- `ExecutionLedger`
+- `OutreachExecution`
+- `AutomationRule`
+- `ActionLedger`
+
+C21 does not provide:
+
+- execution classes;
+- execution guards;
+- action save options; or
+- automation runtime.
+
+---
+
+## 13. C20 Provenance
 
 C21 references C20 evidence only. It does not own or duplicate C20 runtime.
 
@@ -185,20 +317,25 @@ Registry resolution, provider credentials, adapters, or routing.
 
 ---
 
-## 9. Forbidden Scope
+## 14. Forbidden Scope
 
 C21 does not authorize:
 
 - provider execution, provider routing, or credential storage;
 - AI runtime, agent execution, ActionLedger, or AutomationRule;
 - email sending or outreach automation;
-- score or qualification authority;
+- score, rank, priority, or qualification authority;
 - Lead, Opportunity, customer, or revenue lifecycle automation; or
 - `ProspectCandidate` or any duplicate pre-CRM identity.
 
+C21 also does not authorize PrimaryFilter source, Lead/ProspectPool filterList
+references, CRM dashlet decision panels, workflow conditions, or sort
+authority. C22 execution classes, execution guards, action save options, and
+automation runtime remain outside the C21 namespace.
+
 ---
 
-## 10. Work-Package Gate
+## 15. Work-Package Gate
 
 WP1 is **ResearchEvidence Governance Hardening**, not entity creation. It must:
 
