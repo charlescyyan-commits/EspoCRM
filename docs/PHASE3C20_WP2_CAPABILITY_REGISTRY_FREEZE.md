@@ -1,205 +1,321 @@
 # Phase3C20 WP2 Capability Registry Freeze
 
-**Status:** Frozen
+**Status:** FROZEN
+
 **Date:** 2026-07-29
-**Commit:** `c898dc7c9964c186ab1ccd1dc26c27ff9acc311d`
-**Phase:** Phase3C20 WP2 Extension — WP-C20-AUDIT-01
-**Governing Reference:** `docs/PHASE3C20_OPEN_SOURCE_REFERENCE_DECISIONS.md`
+
+**Implementation baseline:** `c898dc7c9964c186ab1ccd1dc26c27ff9acc311d`
+(*feat(c20): add controlled capability registry resolution*)
+
+**Open-source reference freeze:** `b110f2d8e92c890e346490eac4f862f1c7745f9d`
+(*docs(c20): freeze open-source reference decisions*)
+
+**Governing references:**
+`docs/adr/ADR-C20_AI_PLATFORM_ARCHITECTURE.md`,
+`docs/PHASE3C20_WP2_CHARTER.md`,
+`docs/PHASE3C20_OPEN_SOURCE_REFERENCE_DECISIONS.md`
 
 ---
 
-## 1. Scope
+## 1. Purpose
 
-The capability registry is a **deterministic, in-memory resolution component** in the
-connector provider layer. It selects a single provider from CRM-authorized bindings
-for a given `(capability, purpose)` pair.
+WP2 delivers the C20 AI Platform **Capability Resolution Layer**.
 
-### 1.1 Delivered
+The frozen contract is the **Capability Registry Resolution Contract**. It is the
+foundation for later WP3 / provider work:
 
-| File | Lines | Purpose |
-|------|-------|---------|
-| `chitu-connector/chitu_connector/acquisition/providers/registry.py` | 271 | `CapabilityRegistry` class, `ProviderBinding`, `CapabilityResolutionRequest`, `CapabilityResolutionResult`, `ProviderCandidateEvaluation`, `ProviderHealthState`, `AdapterRegistration` |
-| `chitu-connector/tests/test_phase3c20_wp2_capability_registry.py` | 273 | 14 contract tests covering resolution, filtering, determinism, error taxonomy, credential safety, network isolation, duplicate rejection |
+- `AIJob`
+- `AIRequestLog`
+- `CompletionProvider`
+- `SearchProvider`
+- `EnrichmentProvider`
 
-### 1.2 Explicitly NOT Delivered
+Goals:
 
-- CRM-side PHP orchestration code
-- `AIJob`, `AIRequestLog`, `PromptTemplate`, `AIQualificationInsight` entities
-- `ProviderRoute` configuration UI or entity
-- `ProviderHealth` entity or scheduled health checks
-- Provider credential storage or resolution
-- Any HTTP transport, provider SDK invocation, or network egress
-- Scoring, ICP, qualification, or email-generation logic
-- C21/C22 entities or workflows
-- `ProviderRateLimit` entity or rate-limit enforcement
+| Goal | Meaning |
+| --- | --- |
+| Provider replaceability | Adapters are selected by CRM policy bindings, not hardcoded callers |
+| Auditable selection | Every resolution returns a complete non-secret candidate evaluation trace |
+| CRM-controlled authority | Allowed providers, credentials references, and policy versions originate in EspoCRM |
+| Connector non-authority | The connector resolves among CRM-authorized candidates only; it does not own business decisions |
 
----
-
-## 2. Contract
-
-### 2.1 Input: `CapabilityResolutionRequest`
-
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `capability` | `Capability` | Yes | SEARCH, ENRICHMENT, or COMPLETION |
-| `purpose` | `str` | Yes | CRM-defined purpose within the capability |
-| `allowed_provider_bindings` | `tuple[ProviderBinding, ...]` | Yes | CRM-authorized candidates; the registry may not select outside this set |
-| `credential_availability` | `Mapping[str, bool]` | Yes | Per-credential-reference availability flag |
-| `provider_health` | `Mapping[str, ProviderHealthState]` | Yes | Per-provider health state (input only; registry never probes) |
-| `policy_version` | `str` | Yes | CRM policy version for provenance |
-| `request_context` | `Mapping[str, Any]` | Yes | Opaque context; must not contain secret fields |
-
-### 2.2 Output: `CapabilityResolutionResult`
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `requested_capability` | `Capability` | Echo of request |
-| `purpose` | `str` | Echo of request |
-| `selected_provider_id` | `str` | The resolved provider |
-| `selected_adapter_type` | `str` | The adapter class name |
-| `selected_credential_reference` | `str` | CRM credential reference (opaque, not a secret) |
-| `policy_version` | `str` | Echo of request |
-| `candidate_evaluations` | `tuple[ProviderCandidateEvaluation, ...]` | Full per-candidate evaluation trace |
-| `fallback_occurred` | `bool` | True if a higher-precedence candidate was skipped or degraded |
-| `resolution_reason` | `str` | Human-readable explanation |
-
-### 2.3 Error Contract
-
-All failures use the existing `ProviderError` type from `chitu_connector.acquisition.models`,
-classified through `classify_provider_error()` from `taxonomy.py`. No parallel error type
-exists.
-
-| Error Code | Status | Retryable | Condition |
-|------------|--------|-----------|-----------|
-| `DUPLICATE_PROVIDER_ID` | 400 | No | Same `provider_id` registered twice |
-| `DUPLICATE_PROVIDER_BINDING` | 400 | No | Same `provider_id` appears twice in request bindings |
-| `INVALID_CAPABILITY` | 400 | No | Unknown capability value |
-| `INVALID_RESOLUTION_REQUEST` | 400 | No | Empty purpose or policy version |
-| `INVALID_PROVIDER_BINDING` | 400 | No | Malformed binding |
-| `INVALID_PROVIDER_REGISTRATION` | 400 | No | Malformed adapter registration |
-| `INVALID_PROVIDER_HEALTH` | 400 | No | Non-enum health value supplied |
-| `SECRET_IN_RESOLUTION_INPUT` | 400 | No | Secret field detected in request_context |
-| `CAPABILITY_UNAVAILABLE` | 503 | Yes | No eligible provider after filtering all candidates |
+This freeze records the contract. It does not authorize WP3 entity implementation.
 
 ---
 
-## 3. Boundary
+## 2. Scope
 
-### 3.1 Authority Chain
+### 2.1 Delivered
 
-```
-EspoCRM ProviderBinding / request policy
-        │
-        ▼
-connector CapabilityRegistry.resolve()
-        │  selects only from CRM-authorized bindings
-        ▼
-existing capability-port adapter (SearchProvider | EnrichmentProvider | CompletionProvider)
-        │
-        ▼
-external provider (via injected HttpTransport — registry never touches this layer)
-```
+| Deliverable | Record |
+| --- | --- |
+| `CapabilityResolutionRequest` | Frozen request shape |
+| `CapabilityResolutionResult` | Frozen result / audit shape |
+| Provider candidate evaluation | Per-candidate eligibility and skip reasons |
+| Deterministic selection | Stable ranking across identical inputs |
+| Fallback reasoning | `fallback_occurred` + `resolution_reason` |
+| Safe metadata output | Opaque credential references only; no secrets |
+| Error taxonomy reuse | Existing `ProviderError` / BridgeError classification path |
 
-### 3.2 Registry Must NOT
+Implementation surface (evidence, not change scope for this document):
 
-- Discover, create, or persist provider configurations
-- Select a provider outside the CRM-supplied `allowed_provider_bindings`
-- Open an HTTP connection, construct a transport, or invoke a provider SDK
-- Store, log, return, or accept secret values in any field
-- Resolve, validate, or rotate credentials
-- Perform health checks or probe provider endpoints
-- Become a scoring, qualification, or lifecycle authority
-- Create or mutate CRM entities
+| File | Role |
+| --- | --- |
+| `chitu-connector/chitu_connector/acquisition/providers/registry.py` | Registry types and resolver |
+| `chitu-connector/tests/test_phase3c20_wp2_capability_registry.py` | Registry contract tests |
 
-### 3.3 Registry May
+### 2.2 Explicitly NOT Delivered
 
-- Accept `credential_availability: Mapping[str, bool]` as a pre-resolved input
-- Accept `provider_health: Mapping[str, ProviderHealthState]` as a pre-evaluated input
-- Return `selected_credential_reference: str` (an opaque CRM identifier, never a secret)
-- Return a complete `candidate_evaluations` trace for audit and logging
+WP2 Capability Registry does **not** include:
 
-### 3.4 Secret Field Detection
+- `AIJob`
+- `AIRequestLog`
+- `PromptTemplate`
+- `ProspectCandidate`
+- `QualificationInsight` / `AIQualificationInsight`
+- `CandidateScore` / `AIScore`
+- Email sending
+- Lifecycle transition
+- Automation
 
-The following key patterns are forbidden in `request_context`:
-
-`apiKey`, `apiSecret`, `token`, `password`, `plaintextCredential`, `encryptedSecret`,
-`decryptedValue`, `credentialReference`
-
-Detection is case-insensitive and strips non-alphanumeric characters before matching.
-A request containing any of these patterns raises `SECRET_IN_RESOLUTION_INPUT`.
+Also excluded: CRM-side PHP orchestration, provider discovery, secret storage,
+HTTP execution inside the registry, and C21/C22 workflows.
 
 ---
 
-## 4. Test Evidence
+## 3. Contract
 
-### 4.1 Test Run
+### 3.1 Request — `CapabilityResolutionRequest`
 
-```
-chitu-connector/tests/test_phase3c20_wp2_capability_registry.py - 14 passed
-Full C20 suite (125 tests) - all passed
-C20 boundary guards (19 tests) - all passed
-C20 invariant registry (10 tests) - all passed
+| Field | Requirement |
+| --- | --- |
+| `capability` | Required. Capability under resolution (SEARCH / ENRICHMENT / COMPLETION). |
+| `purpose` | Required. CRM-defined purpose within the capability. |
+| `allowed_provider_bindings` | Required. CRM-authorized candidate set. Registry may not select outside it. |
+| `credential_availability` | Required. Per-credential-reference availability flags. |
+| `provider_health` | Required. Per-provider health input. Registry never probes health. |
+| `policy_version` | Required. CRM policy version for provenance. |
+| `request_context` | Required. Opaque context. Must not contain secret fields. |
+
+Binding constraints:
+
+- Credential fields may carry **reference / status only**.
+- Secrets are forbidden in request input.
+- Allowed providers **must originate from CRM** (`ProviderBinding` / request policy).
+
+### 3.2 Result — `CapabilityResolutionResult`
+
+| Field | Requirement |
+| --- | --- |
+| `requested_capability` | Echo of request |
+| `purpose` | Echo of request |
+| `selected_provider_id` | Resolved provider id |
+| `selected_adapter_type` | Selected adapter type |
+| `selected_credential_reference` | Opaque CRM credential reference (never a secret) |
+| `candidate_evaluations` | Full per-candidate evaluation trace |
+| `fallback_occurred` | True when a higher-precedence candidate was skipped or degraded |
+| `resolution_reason` | Human-readable resolution explanation |
+| `policy_version` | Echo of request |
+
+**Result semantics:** the result is **audit information**. It is not a business
+decision, qualification verdict, score, or lifecycle authorization.
+
+---
+
+## 4. Resolution Algorithm
+
+### 4.1 Flow
+
+```text
+CRM ProviderBinding
+        ↓
+CapabilityResolutionRequest
+        ↓
+Candidate Evaluation
+        ↓
+Eligibility Filtering
+        ↓
+Deterministic Ranking
+        ↓
+CapabilityResolutionResult
 ```
 
-### 4.2 Coverage Matrix
+### 4.2 Eligibility filtering
 
-| Test | Coverage |
-|------|----------|
-| `test_single_available_crm_authorized_provider_resolves` | Happy path, result shape |
-| `test_resolution_is_deterministic_by_priority_then_provider_id` | Determinism, priority tiebreak |
-| `test_disabled_provider_is_skipped` | `PROVIDER_DISABLED` gate |
-| `test_unavailable_credential_is_skipped` | `CREDENTIAL_UNAVAILABLE` gate |
-| `test_unhealthy_provider_is_skipped` | `PROVIDER_UNHEALTHY` gate |
-| `test_healthy_provider_precedes_degraded_provider_and_audits_fallback` | DEGRADED → HEALTHY fallback, `fallback_occurred` audit |
-| `test_no_available_provider_uses_existing_controlled_provider_error` | `CAPABILITY_UNAVAILABLE`, error taxonomy reuse |
-| `test_registered_but_not_crm_authorized_provider_cannot_be_selected` | CRM authority boundary |
-| `test_provider_without_requested_capability_cannot_be_selected` | `BINDING_CAPABILITY_UNSUPPORTED` gate |
-| `test_duplicate_provider_registration_fails_closed` | `DUPLICATE_PROVIDER_ID`, fail-closed |
-| `test_purpose_can_resolve_to_different_authorized_provider` | Purpose-differentiated routing |
-| `test_result_and_evaluations_expose_only_safe_registry_metadata` | Secret rejection, result field audit |
-| `test_registry_has_no_network_transport_or_adapter_invocation_surface` | Zero network imports (source-code inspection) |
-| `test_duplicate_binding_and_unknown_health_are_rejected_or_skipped_safely` | `DUPLICATE_PROVIDER_BINDING`, `PROVIDER_HEALTH_UNKNOWN` |
+Candidates are filtered / skipped when any of the following apply:
 
----
+| Filter | Typical skip reason |
+| --- | --- |
+| Disabled provider | `PROVIDER_DISABLED` |
+| Unsupported capability | `BINDING_CAPABILITY_UNSUPPORTED` / `ADAPTER_CAPABILITY_UNSUPPORTED` |
+| Unsupported purpose | `PURPOSE_NOT_ALLOWED` |
+| Credential unavailable | `MISSING_CREDENTIAL_REFERENCE` / `CREDENTIAL_UNAVAILABLE` |
+| Unhealthy / unknown health | `PROVIDER_UNHEALTHY` / `PROVIDER_HEALTH_UNKNOWN` |
+| Adapter not registered / type mismatch | `ADAPTER_NOT_REGISTERED` / `ADAPTER_TYPE_MISMATCH` |
 
-## 5. Known Non-Blocking Improvements
+If no eligible candidate remains, resolution fails closed with controlled
+`CAPABILITY_UNAVAILABLE`.
 
-| # | Finding | Severity |
-|---|---|---|
-| R1 | `ADAPTER_TYPE_MISMATCH` skip reason has no dedicated contract test | Low — covered by type system; explicit test would improve coverage |
-| R2 | Purpose values (`"discovery"`, `"research"`) are free-form strings with no enumerated taxonomy | Low — CRM owns purpose definitions; enumeration belongs in CRM policy, not connector |
-| R3 | `credential_availability` absent-key behavior (defaults to unavailable) is correct but implicit | Low — behavior is tested; docstring could be more explicit |
+### 4.3 Deterministic selection rules
 
-None of these block freeze. All are documented for future WP iterations.
+Eligible candidates are ranked deterministically by:
+
+1. **health** (HEALTHY preferred over DEGRADED)
+2. **priority** (lower numeric priority wins)
+3. **provider_id** (stable tie-break)
+
+Identical inputs produce identical outputs. Fallback is recorded when the
+selected provider is not the first candidate in the evaluation order.
 
 ---
 
-## 6. Open Source Attribution
+## 5. Authority Boundary
 
-| Aspect | Record |
-|--------|-------|
-| Conceptual reference | YALC `src/lib/providers/capabilities.ts` at commit `ffc6e37` (MIT) |
-| Borrowing type | Independent Python reimplementation; no external source file, code fragment, or license notice copied |
-| Design concepts adapted | Priority-based resolution, candidate evaluation with skip reasons, deterministic fallback |
-| Design concepts NOT copied | Filesystem provider discovery, MCP config loading, async provider invocation, TypeScript runtime architecture |
-| Attribution | Recorded in `docs/PHASE3C20_OPEN_SOURCE_REFERENCE_DECISIONS.md` §"Licensing and Code-Borrowing Decision" |
-| Compliance | MIT source → MIT-compatible independent implementation. No attribution notice required in source files. |
+### 5.1 EspoCRM Authority
+
+EspoCRM owns:
+
+- `ProviderBinding`
+- Credential reference metadata
+- ACL
+- Policy / `policy_version`
+- Business workflow and lifecycle authority
+
+### 5.2 Connector Authority
+
+The connector owns only:
+
+- Capability resolution among CRM-authorized bindings
+- Adapter invocation (outside this registry component; via injected transport)
+
+The connector does **not** own:
+
+- Provider discovery
+- Credential ownership / secret custody
+- Business decisions
+- Lifecycle ownership
+
+### 5.3 External Provider
+
+External providers are responsible for:
+
+- AI execution
+- Search
+- Enrichment
+- Completion
+
+### 5.4 Connector MUST NOT
+
+- Bypass CRM provider binding
+- Discover providers
+- Store secrets
+- Modify CRM lifecycle
+- Calculate qualification / scores
 
 ---
 
-## 7. Decision
+## 6. Security Constraints
 
-**The WP2 Capability Registry is frozen at `c898dc7`.**
+Mandatory:
 
-No ADR amendment is required. The implementation satisfies ADR-C20 §4.1 (capability ports),
-§4.2.7 (routing as configuration), and §4.3 (normalized error taxonomy) without modifying
-any invariant.
+| Constraint | Requirement |
+| --- | --- |
+| No secret storage | Registry stores no credentials or tokens |
+| No HTTP execution inside registry | No transport construction, SDK call, or network I/O |
+| No environment lookup | No env-based secret or provider discovery |
+| No credential materialization | Only opaque references and availability booleans |
+| No unsafe logging | Result / evaluations expose safe metadata only |
 
-The registry is ready for WP3 consumption. `CapabilityResolutionResult` carries
-`selected_provider_id`, `selected_credential_reference`, `candidate_evaluations`,
-`fallback_occurred`, `resolution_reason`, and `policy_version` — sufficient for
-`AIJob` dispatch and `AIRequestLog` provenance recording.
+Secret-bearing keys in `request_context` are rejected (`SECRET_IN_RESOLUTION_INPUT`).
 
 ---
 
-*Frozen 2026-07-29. Commit `c898dc7`. No further WP2 registry changes without a new decision record.*
+## 7. Error Handling
+
+Reuse existing:
+
+- `ProviderError`
+- BridgeError / provider error taxonomy classification
+
+**Do not** introduce a parallel error system for capability resolution.
+
+Recorded failure classes include:
+
+| Condition | Controlled outcome |
+| --- | --- |
+| No provider available | `CAPABILITY_UNAVAILABLE` |
+| Credential unavailable | Candidate skip / may yield unavailable |
+| Unsupported capability | Candidate skip / request validation |
+| Duplicate registration | `DUPLICATE_PROVIDER_ID` |
+| Duplicate binding | `DUPLICATE_PROVIDER_BINDING` |
+| Provider unavailable / unhealthy | Candidate skip |
+| Secret in input | `SECRET_IN_RESOLUTION_INPUT` |
+
+---
+
+## 8. Testing Evidence
+
+Recorded evidence at freeze:
+
+| Suite | Result |
+| --- | --- |
+| Capability Registry | **14 passed** |
+| C20 WP2 | **92 passed** |
+| Connector | **404 passed** |
+| Boundary | **25 passed**, **4 subtests** |
+| Root | **597 passed**, **3 authorized baseline artifact failures** |
+
+The three root artifact failures are **authorized baseline** release-integrity
+failures and are **unrelated to WP2** capability-registry work. They do not
+block this freeze.
+
+---
+
+## 9. Deferred Items
+
+Post-freeze (non-blocking):
+
+| Item | Notes |
+| --- | --- |
+| Adapter mismatch dedicated test | `ADAPTER_TYPE_MISMATCH` covered by types; dedicated test deferred |
+| Purpose taxonomy documentation | Purpose strings remain CRM-owned; enumeration deferred |
+| Credential availability documentation | Absent-key → unavailable behavior is tested; docs refinement deferred |
+
+These are **not blockers**.
+
+---
+
+## 10. Open Source Attribution
+
+| Reference | Record |
+| --- | --- |
+| **YALC** | Inspiration / reference only. No code copied. License boundary respected. |
+| **OpenOutreach** | GPLv3. Design reference only. No code copied. |
+
+Full licensing and borrowing decisions:
+`docs/PHASE3C20_OPEN_SOURCE_REFERENCE_DECISIONS.md`.
+
+---
+
+## 11. Freeze Decision
+
+```text
+WP2 Capability Registry Status:
+
+FROZEN
+
+ADR-C20 amendment:
+
+Not required
+```
+
+Rationale: the registry implements ADR-C20 capability-port routing and
+normalized error taxonomy without amending ADR invariants. It is ready for
+WP3 consumption as the resolution foundation under `AIJob` / `AIRequestLog`
+provenance — without authorizing WP3 implementation in this document.
+
+---
+
+*Frozen 2026-07-29 at implementation baseline `c898dc7`. Documentation-only
+freeze record. No PHP, metadata, connector runtime, test, or artifact changes
+are made by this document.*
