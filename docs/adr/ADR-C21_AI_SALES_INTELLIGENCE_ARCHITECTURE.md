@@ -24,6 +24,7 @@ Phase3C21 — AI Sales Intelligence Layer
 - `docs/adr/ADR-C20_AI_PLATFORM_ARCHITECTURE.md` — C20 execution governance
 - `docs/PHASE3C20_WP3_DETAILED_DESIGN_DECISIONS.md` — frozen C20 provenance boundary
 - `docs/adr/C20_INVARIANT_REGISTRY.md` — standing C20 authority/lifecycle boundaries
+- `docs/adr/C21_INVARIANT_REGISTRY.md` — proposed C21 intelligence-governance invariants
 - `AGENTS.md` / `CLAUDE.md` — repository-level prohibitions
 
 ---
@@ -98,6 +99,17 @@ research evidence, advisory intelligence, and human feedback *about* a
 `ProspectPool` record, but those records do not replace or own candidate
 identity.
 
+### 4.1.1 Open-source reference alignment
+
+The open-source reference decisions anticipated `ProspectCandidate` as a
+future C21 modelling principle. C21 preserves the underlying principle —
+separating pre-CRM candidate identity from Lead identity — through a
+`ProspectPool` extension rather than introducing a duplicate identity entity.
+
+`ProspectPool` therefore remains distinct from Lead: it is the pre-CRM
+candidate identity, while Lead remains the CRM-accepted business identity.
+No C21 record owns, replaces, or automatically converts either identity.
+
 ### 4.2 Options considered
 
 | Option | Description | Decision |
@@ -145,6 +157,23 @@ Research evidence is not a score, qualification verdict, lifecycle instruction,
 or replacement for Chitu research logic. Its future schema must preserve type,
 source/attribution where applicable, capture context, and C20 provenance where
 it was AI-produced.
+
+### 5.1 Immutability and correction
+
+After creation, the following core evidence facts are immutable:
+
+```text
+evidenceType
+content
+sourceReference
+capturedAt
+provenance
+```
+
+Original evidence remains preserved. A correction is represented as a new
+evidence record or a supersession reference; it must not overwrite historical
+evidence. This rule preserves the distinction between an original source,
+observation, or inference and a later correction.
 
 ---
 
@@ -205,6 +234,11 @@ approved Chitu and governance contracts.
 ---
 
 ## 8. C20 Provenance Integration
+
+C21 operationalizes intelligence interpretation. It references C20 execution
+provenance and does not modify C20 execution governance. This ADR is additive:
+it neither amends C20 nor transfers C20 provider, runtime, or evidence
+ownership into C21.
 
 C21 may reference these C20 records for provenance only:
 
@@ -278,8 +312,10 @@ PrimaryFilter authority, lifecycle queue authority, or direct transition input.
 
 ## 12. C21 Invariants
 
-The eventual C21 Charter and invariant registry must activate contract tests
-for at least these invariants:
+`docs/adr/C21_INVARIANT_REGISTRY.md` is the documentation-only registry for
+the following proposed C21 invariants. The eventual C21 Charter must define
+their activation triggers and contract-test evidence; this ADR creates no code
+or tests.
 
 | ID | Invariant |
 | --- | --- |
