@@ -15,6 +15,8 @@ final class C22ExecutionSaveOption
         'c22.actionGateDecisionAuthorized';
     public const EXECUTION_LEDGER_CREATE_AUTHORIZED =
         'c22.executionLedgerCreateAuthorized';
+    public const PROSPECT_RUN_STATUS_MUTATION_AUTHORIZED =
+        'c22.prospectRunStatusMutationAuthorized';
 
     private function __construct()
     {

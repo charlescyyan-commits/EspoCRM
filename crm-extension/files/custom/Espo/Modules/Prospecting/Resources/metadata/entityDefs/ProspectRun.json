@@ -25,6 +25,22 @@
       "min": 1,
       "readOnly": true
     },
+    "status": {
+      "type": "enum",
+      "required": true,
+      "options": [
+        "CREATED",
+        "PLANNING",
+        "WAITING_APPROVAL",
+        "EXECUTING",
+        "COMPLETED",
+        "FAILED",
+        "CANCELLED"
+      ],
+      "default": "CREATED",
+      "readOnly": true,
+      "displayAsLabel": true
+    },
     "candidates": {
       "type": "linkMultiple",
       "readOnly": true
@@ -73,7 +89,8 @@
     "textFilterFields": [
       "name",
       "runKey",
-      "executionScope"
+      "executionScope",
+      "status"
     ]
   },
   "deleteId": true,
@@ -88,6 +105,11 @@
     "createdAt": {
       "columns": [
         "createdAt"
+      ]
+    },
+    "status": {
+      "columns": [
+        "status"
       ]
     }
   }

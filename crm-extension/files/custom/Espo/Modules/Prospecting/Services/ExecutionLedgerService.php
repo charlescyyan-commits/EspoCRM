@@ -27,6 +27,10 @@ final class ExecutionLedgerService
     public const EVENT_EXECUTION_STARTED = 'EXECUTION_STARTED';
     public const EVENT_EXECUTION_RESULT = 'EXECUTION_RESULT';
     public const EVENT_FAILURE_CLASSIFICATION = 'FAILURE_CLASSIFICATION';
+    public const EVENT_ACTION_REQUESTED = 'ACTION_REQUESTED';
+    public const EVENT_APPROVAL_GRANTED = 'APPROVAL_GRANTED';
+    public const EVENT_EXECUTION_COMPLETED = 'EXECUTION_COMPLETED';
+    public const EVENT_EXECUTION_FAILED = 'EXECUTION_FAILED';
 
     /** @var list<string> */
     private const EVENT_TYPES = [
@@ -35,6 +39,10 @@ final class ExecutionLedgerService
         self::EVENT_EXECUTION_STARTED,
         self::EVENT_EXECUTION_RESULT,
         self::EVENT_FAILURE_CLASSIFICATION,
+        self::EVENT_ACTION_REQUESTED,
+        self::EVENT_APPROVAL_GRANTED,
+        self::EVENT_EXECUTION_COMPLETED,
+        self::EVENT_EXECUTION_FAILED,
     ];
 
     /** @var list<string> */
@@ -164,7 +172,13 @@ final class ExecutionLedgerService
         if (
             in_array(
                 $eventType,
-                [self::EVENT_EXECUTION_STARTED, self::EVENT_EXECUTION_RESULT],
+                [
+                    self::EVENT_APPROVAL_GRANTED,
+                    self::EVENT_EXECUTION_STARTED,
+                    self::EVENT_EXECUTION_RESULT,
+                    self::EVENT_EXECUTION_COMPLETED,
+                    self::EVENT_EXECUTION_FAILED,
+                ],
                 true
             )
         ) {
@@ -177,6 +191,38 @@ final class ExecutionLedgerService
         ) {
             throw new BadRequest(
                 'ExecutionLedger gate decision must match ActionGate.'
+            );
+        }
+        if (
+            $eventType === self::EVENT_ACTION_REQUESTED
+            && $outcome !== 'PENDING'
+        ) {
+            throw new BadRequest(
+                'ExecutionLedger action request requires PENDING.'
+            );
+        }
+        if (
+            $eventType === self::EVENT_APPROVAL_GRANTED
+            && $outcome !== 'APPROVED'
+        ) {
+            throw new BadRequest(
+                'ExecutionLedger approval grant requires APPROVED.'
+            );
+        }
+        if (
+            $eventType === self::EVENT_EXECUTION_COMPLETED
+            && $outcome !== 'SUCCEEDED'
+        ) {
+            throw new BadRequest(
+                'ExecutionLedger completion requires SUCCEEDED.'
+            );
+        }
+        if (
+            $eventType === self::EVENT_EXECUTION_FAILED
+            && ($outcome !== 'FAILED' || $failureCategory === null)
+        ) {
+            throw new BadRequest(
+                'ExecutionLedger execution failure requires classification.'
             );
         }
         if (

@@ -9,8 +9,10 @@ use Espo\Core\Exceptions\BadRequest;
 use Espo\Core\Exceptions\Conflict;
 use Espo\Core\Exceptions\Forbidden;
 use Espo\Entities\User;
+use Espo\Modules\Prospecting\ProviderBoundary\ProviderTypeRegistry;
 use Espo\ORM\Entity;
 use Espo\ORM\EntityManager;
+use InvalidArgumentException;
 
 /**
  * Human authorization boundary for proposed C22 execution actions.
@@ -76,10 +78,13 @@ final class ActionGateService
         }
 
         $actorId = $this->authenticatedActorId();
-        $actionType = $this->requiredString($attributes, 'actionType');
-        if (!preg_match('/^[A-Z][A-Z0-9_]{0,99}$/', $actionType)) {
+        try {
+            $actionType = ProviderTypeRegistry::assertAllowed(
+                $this->requiredString($attributes, 'actionType')
+            );
+        } catch (InvalidArgumentException) {
             throw new BadRequest(
-                'ActionGate actionType must be an uppercase action identifier.'
+                'ActionGate actionType must be a controlled provider type.'
             );
         }
 

@@ -30,7 +30,11 @@
         "GATE_DECISION",
         "EXECUTION_STARTED",
         "EXECUTION_RESULT",
-        "FAILURE_CLASSIFICATION"
+        "FAILURE_CLASSIFICATION",
+        "ACTION_REQUESTED",
+        "APPROVAL_GRANTED",
+        "EXECUTION_COMPLETED",
+        "EXECUTION_FAILED"
       ],
       "readOnly": true,
       "displayAsLabel": true
