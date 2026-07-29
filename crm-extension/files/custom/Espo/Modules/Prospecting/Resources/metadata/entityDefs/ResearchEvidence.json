@@ -175,6 +175,14 @@
       "type": "link",
       "readOnly": true
     },
+    "evidenceRevision": {
+      "type": "int",
+      "required": true,
+      "default": 1,
+      "min": 1,
+      "readOnly": true,
+      "tooltip": true
+    },
     "supersededBy": {
       "type": "linkMultiple",
       "readOnly": true

@@ -171,6 +171,8 @@ final class ResearchEvidenceGovernanceService
             'validationState' =>
                 ResearchEvidenceService::VALIDATION_UNVALIDATED,
             'supersedesId' => $original->getId(),
+            'evidenceRevision' =>
+                max(1, (int) $original->get('evidenceRevision')) + 1,
         ]);
 
         return $this->entityManager->getTransactionManager()->run(

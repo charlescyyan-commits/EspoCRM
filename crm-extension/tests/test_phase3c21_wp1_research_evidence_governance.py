@@ -81,6 +81,13 @@ class Phase3C21ResearchEvidenceMetadataTests(unittest.TestCase):
             "LEGACY_UNCLASSIFIED",
         )
 
+    def test_evidence_revision_defaults_to_first_revision_and_is_read_only(self) -> None:
+        revision = self.fields["evidenceRevision"]
+        self.assertEqual(revision["type"], "int")
+        self.assertEqual(revision["default"], 1)
+        self.assertEqual(revision["min"], 1)
+        self.assertTrue(revision["readOnly"])
+
     def test_validation_state_is_independent_from_confidence(self) -> None:
         validation = self.fields["validationState"]
         self.assertEqual(
@@ -111,6 +118,14 @@ class Phase3C21ResearchEvidenceMetadataTests(unittest.TestCase):
         indexes = self.entity["indexes"]
         self.assertIn("c10EvidenceIdentity", indexes)
         self.assertIn("c10EvidenceIdentityProspectPool", indexes)
+        self.assertNotIn(
+            "evidenceRevision",
+            indexes["c10EvidenceIdentity"]["columns"],
+        )
+        self.assertNotIn(
+            "evidenceRevision",
+            indexes["c10EvidenceIdentityProspectPool"]["columns"],
+        )
         self.assertIn("sourceAIRequestLogId", indexes["sourceAIRequestLog"]["columns"])
         self.assertIn("supersedesId", indexes["supersedes"]["columns"])
 
@@ -234,6 +249,7 @@ class Phase3C21ImmutableEvidenceTests(unittest.TestCase):
             "sourceAIRequestLogId",
             "sourceAIJobId",
             "supersedesId",
+            "evidenceRevision",
         ):
             with self.subTest(field=field):
                 self.assertIn(f"'{field}'", self.guard)
@@ -260,9 +276,28 @@ class Phase3C21ImmutableEvidenceTests(unittest.TestCase):
         self.assertIn("public function createCorrection", self.governance)
         self.assertIn("getNewEntity('ResearchEvidence')", self.governance)
         self.assertIn("'supersedesId' => $original->getId()", self.governance)
+        self.assertIn("'evidenceRevision' =>", self.governance)
+        self.assertIn(
+            "max(1, (int) $original->get('evidenceRevision')) + 1",
+            self.governance,
+        )
         self.assertIn("VALIDATION_SUPERSEDED", self.governance)
         self.assertIn("getTransactionManager()->run", self.governance)
         self.assertNotIn("removeEntity", self.governance)
+
+    def test_correction_revision_is_derived_only_from_predecessor_revision(self) -> None:
+        correction_method = self.governance.split(
+            "public function createCorrection", 1
+        )[1].split("private function assertEvidence", 1)[0]
+        self.assertIn("$original->get('evidenceRevision')", correction_method)
+        for forbidden_basis in (
+            "peConfidence",
+            "peClaim",
+            "peEvidenceType",
+            "evidenceType",
+        ):
+            with self.subTest(forbidden_basis=forbidden_basis):
+                self.assertNotIn(forbidden_basis, correction_method)
 
     def test_promotion_lead_attachment_uses_narrow_authorization(self) -> None:
         self.assertIn("LEAD_ATTACHMENT_AUTHORIZED", self.promotion)
