@@ -78,7 +78,9 @@ class PromotionInheritanceService
 
             // Link the evidence to the lead while preserving the prospectPool link.
             $evidence->set('leadId', $leadId);
-            $this->entityManager->saveEntity($evidence);
+            $this->entityManager->saveEntity($evidence, [
+                ResearchEvidenceSaveOption::LEAD_ATTACHMENT_AUTHORIZED => true,
+            ]);
             $linked++;
         }
 

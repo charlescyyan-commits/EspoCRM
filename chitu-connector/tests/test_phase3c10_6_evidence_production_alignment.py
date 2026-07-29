@@ -146,7 +146,14 @@ class EvidenceProductionAlignmentTests(TestCase):
             entity_def["indexes"]["c10EvidenceIdentity"],
             {
                 "type": "unique",
-                "columns": ["leadId", "peCanonicalUrl", "peEvidenceTypeNormalized", "peClaimHash", "deleteId"],
+                "columns": [
+                    "leadId",
+                    "peCanonicalUrl",
+                    "peEvidenceTypeNormalized",
+                    "peClaimHash",
+                    "evidenceRevision",
+                    "deleteId",
+                ],
             },
         )
         self.assertTrue(entity_def["deleteId"])

@@ -3,6 +3,7 @@
   "object": true,
   "tab": true,
   "acl": true,
+  "aclPortal": false,
   "customizable": false,
   "importable": false,
   "module": "Prospecting",

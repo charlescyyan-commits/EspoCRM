@@ -52,6 +52,7 @@ class ChituSyncService
         $createdAny = false;
         $updatedAny = false;
         foreach ($payload['evidence'] as $item) {
+            $createdEvidence = false;
             $identity = $this->evidenceIdentity($lead->getId(), $item);
             $evidence = $this->findEvidenceByIdentity(
                 $lead->getId(),
@@ -62,12 +63,13 @@ class ChituSyncService
             if ($evidence === null) {
                 $evidence = $this->entityManager->getEntity('ResearchEvidence');
                 $createdAny = true;
+                $createdEvidence = true;
             } elseif (!$this->acl->checkEntityEdit($evidence)) {
                 throw new Forbidden();
             } else {
                 $updatedAny = true;
             }
-            $evidence->set([
+            $evidenceFields = [
                 'name' => $payload['company']['name'] . ' — ' . $item['evidence_id'],
                 'leadId' => $lead->getId(),
                 'peEvidenceId' => $item['evidence_id'],
@@ -84,7 +86,15 @@ class ChituSyncService
                 'peCanonicalUrl' => $identity['canonicalUrl'],
                 'peEvidenceTypeNormalized' => $identity['normalizedEvidenceType'],
                 'peClaimHash' => $identity['claimHash'],
-            ]);
+            ];
+            if ($createdEvidence) {
+                // This ingress path captures attributable source observations.
+                // Existing legacy rows remain UNKNOWN until reviewed.
+                $evidenceFields['evidenceType'] = 'OBSERVATION';
+                $evidenceFields['provenanceReference'] =
+                    'chitu-evidence:' . $item['evidence_id'];
+            }
+            $evidence->set($evidenceFields);
             $this->entityManager->saveEntity($evidence);
             $ids[] = $evidence->getId();
             $lastEvidence = $evidence;

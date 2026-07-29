@@ -37,6 +37,59 @@
       "trim": true,
       "tooltip": true
     },
+    "evidenceType": {
+      "type": "enum",
+      "required": true,
+      "options": [
+        "UNKNOWN",
+        "FACT",
+        "OBSERVATION",
+        "AI_INFERENCE"
+      ],
+      "default": "UNKNOWN",
+      "displayAsLabel": true,
+      "style": {
+        "UNKNOWN": "warning",
+        "FACT": "success",
+        "OBSERVATION": "info",
+        "AI_INFERENCE": "primary"
+      },
+      "tooltip": true
+    },
+    "classificationReason": {
+      "type": "enum",
+      "required": true,
+      "options": [
+        "LEGACY_UNCLASSIFIED",
+        "LEGACY_MANUAL_REVIEW",
+        "EXPLICIT_CREATE",
+        "EXPLICIT_CORRECTION"
+      ],
+      "default": "LEGACY_UNCLASSIFIED",
+      "readOnly": true,
+      "displayAsLabel": true,
+      "tooltip": true
+    },
+    "validationState": {
+      "type": "enum",
+      "required": true,
+      "options": [
+        "UNVALIDATED",
+        "VERIFIED",
+        "REJECTED",
+        "SUPERSEDED"
+      ],
+      "default": "UNVALIDATED",
+      "readOnly": true,
+      "displayAsLabel": true,
+      "style": {
+        "UNVALIDATED": "warning",
+        "VERIFIED": "success",
+        "REJECTED": "danger",
+        "SUPERSEDED": "default"
+      },
+      "tooltip": true
+    },
     "peSourceUrl": {
       "type": "url",
       "required": false,
@@ -104,6 +157,36 @@
       "trim": true,
       "utility": true
     },
+    "provenanceReference": {
+      "type": "varchar",
+      "maxLength": 255,
+      "required": true,
+      "default": "LEGACY_UNCLASSIFIED",
+      "trim": true,
+      "tooltip": true
+    },
+    "sourceAIRequestLog": {
+      "type": "link"
+    },
+    "sourceAIJob": {
+      "type": "link"
+    },
+    "supersedes": {
+      "type": "link",
+      "readOnly": true
+    },
+    "evidenceRevision": {
+      "type": "int",
+      "required": true,
+      "default": 1,
+      "min": 1,
+      "readOnly": true,
+      "tooltip": true
+    },
+    "supersededBy": {
+      "type": "linkMultiple",
+      "readOnly": true
+    },
     "lead": {
       "type": "link"
     },
@@ -146,6 +229,24 @@
       "entity": "ProspectPool",
       "foreign": "researchEvidences"
     },
+    "sourceAIRequestLog": {
+      "type": "belongsTo",
+      "entity": "AIRequestLog"
+    },
+    "sourceAIJob": {
+      "type": "belongsTo",
+      "entity": "AIJob"
+    },
+    "supersedes": {
+      "type": "belongsTo",
+      "entity": "ResearchEvidence",
+      "foreign": "supersededBy"
+    },
+    "supersededBy": {
+      "type": "hasMany",
+      "entity": "ResearchEvidence",
+      "foreign": "supersedes"
+    },
     "createdBy": {
       "type": "belongsTo",
       "entity": "User"
@@ -186,6 +287,31 @@
         "peSnapshotHash"
       ]
     },
+    "evidenceType": {
+      "columns": [
+        "evidenceType"
+      ]
+    },
+    "validationState": {
+      "columns": [
+        "validationState"
+      ]
+    },
+    "sourceAIRequestLog": {
+      "columns": [
+        "sourceAIRequestLogId"
+      ]
+    },
+    "sourceAIJob": {
+      "columns": [
+        "sourceAIJobId"
+      ]
+    },
+    "supersedes": {
+      "columns": [
+        "supersedesId"
+      ]
+    },
     "c10EvidenceIdentity": {
       "type": "unique",
       "columns": [
@@ -193,6 +319,7 @@
         "peCanonicalUrl",
         "peEvidenceTypeNormalized",
         "peClaimHash",
+        "evidenceRevision",
         "deleteId"
       ]
     },
@@ -203,6 +330,7 @@
         "peCanonicalUrl",
         "peEvidenceTypeNormalized",
         "peClaimHash",
+        "evidenceRevision",
         "deleteId"
       ]
     }

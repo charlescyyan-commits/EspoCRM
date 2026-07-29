@@ -1,0 +1,17 @@
+{
+  "mandatory": {
+    "scopeLevel": {
+      "ResearchEvidence": false
+    }
+  },
+  "adminMandatory": {
+    "scopeLevel": {
+      "ResearchEvidence": {
+        "create": "yes",
+        "read": "all",
+        "edit": "all",
+        "delete": "no"
+      }
+    }
+  }
+}
