@@ -5,7 +5,9 @@
     "ResearchEvidence": "Research Evidence", "DraftApproval": "Outreach Center",
     "SendExecution": "Send Execution", "ReplyEvent": "Customer Reply", "EmailEvent": "Email Event",
     "SalesFeedback": "Sales Feedback", "LearningSignal": "Learning Signal", "Quote": "Quote Center",
-    "QuoteItem": "Quote Item", "ProformaInvoice": "Proforma Invoice", "Approval": "Quote Approval"
+    "QuoteItem": "Quote Item", "ProformaInvoice": "Proforma Invoice", "Approval": "Quote Approval",
+    "ExecutionWorkspace": "Execution Workspace", "ProspectRun": "Prospect Run",
+    "ActionGate": "Action Gate", "ExecutionLedger": "Execution Ledger"
   },
   "scopeNamesPlural": {
     "SearchStrategy": "Search Strategies", "SearchJob": "Search Jobs", "ProspectPool": "Prospect Pool",
@@ -13,10 +15,14 @@
     "ResearchEvidence": "Research Evidence", "DraftApproval": "Outreach Center",
     "SendExecution": "Send Executions", "ReplyEvent": "Customer Replies", "EmailEvent": "Email Events",
     "SalesFeedback": "Sales Feedback", "LearningSignal": "Learning Signals", "Quote": "Quote Center",
-    "QuoteItem": "Quote Items", "ProformaInvoice": "Proforma Invoices", "Approval": "Quote Approvals"
+    "QuoteItem": "Quote Items", "ProformaInvoice": "Proforma Invoices", "Approval": "Quote Approvals",
+    "ExecutionWorkspace": "Execution Workspace", "ProspectRun": "Prospect Runs",
+    "ActionGate": "Action Gates", "ExecutionLedger": "Execution Ledger"
   },
   "scopeNamesSingular": {
-    "DraftApproval": "Outreach Approval", "Quote": "Quote", "Approval": "Quote Approval"
+    "DraftApproval": "Outreach Approval", "Quote": "Quote", "Approval": "Quote Approval",
+    "ProspectRun": "Prospect Run", "ActionGate": "Action Gate",
+    "ExecutionLedger": "Ledger Event"
   },
   "dashlets": {
     "ProspectingIntelligence": "Prospecting Intelligence", "ProspectingSummary": "Prospecting Summary",

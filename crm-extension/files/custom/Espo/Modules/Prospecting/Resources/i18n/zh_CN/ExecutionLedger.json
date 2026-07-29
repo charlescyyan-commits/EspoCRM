@@ -1,0 +1,28 @@
+{
+  "fields": {
+    "name": "账本事件",
+    "prospectCandidate": "潜客候选",
+    "prospectRun": "潜客运行",
+    "actionGate": "失败／操作引用",
+    "eventType": "事件类型",
+    "outcome": "结果",
+    "failureCategory": "失败类别",
+    "actor": "操作人",
+    "occurredAt": "发生时间",
+    "supersedes": "取代",
+    "supersededBy": "被取代"
+  },
+  "links": {
+    "prospectCandidate": "潜客候选",
+    "prospectRun": "潜客运行",
+    "actionGate": "失败／操作引用",
+    "actor": "操作人",
+    "supersedes": "取代",
+    "supersededBy": "被取代"
+  },
+  "labels": {
+    "Create ExecutionLedger": "创建账本事件",
+    "ExecutionLedgers": "执行账本",
+    "executionFailures": "执行失败"
+  }
+}

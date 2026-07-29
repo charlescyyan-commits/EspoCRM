@@ -1,0 +1,28 @@
+{
+  "fields": {
+    "name": "Ledger Event",
+    "prospectCandidate": "Prospect Candidate",
+    "prospectRun": "Prospect Run",
+    "actionGate": "Failure / Action Reference",
+    "eventType": "Event Type",
+    "outcome": "Outcome",
+    "failureCategory": "Failure Category",
+    "actor": "Actor",
+    "occurredAt": "Occurred At",
+    "supersedes": "Supersedes",
+    "supersededBy": "Superseded By"
+  },
+  "links": {
+    "prospectCandidate": "Prospect Candidate",
+    "prospectRun": "Prospect Run",
+    "actionGate": "Failure / Action Reference",
+    "actor": "Actor",
+    "supersedes": "Supersedes",
+    "supersededBy": "Superseded By"
+  },
+  "labels": {
+    "Create ExecutionLedger": "Create Ledger Event",
+    "ExecutionLedgers": "Execution Ledger",
+    "executionFailures": "Execution Failures"
+  }
+}

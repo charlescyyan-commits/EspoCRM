@@ -1,0 +1,8 @@
+[
+  {"name": "name", "width": 24, "link": true},
+  {"name": "decision", "width": 14},
+  {"name": "actionType", "width": 16},
+  {"name": "actionReference", "width": 20},
+  {"name": "requestedBy", "width": 16},
+  {"name": "createdAt", "width": 18}
+]

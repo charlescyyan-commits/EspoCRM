@@ -1,0 +1,38 @@
+{
+  "fields": {
+    "name": "Run Name",
+    "runKey": "Run Key",
+    "executionScope": "Execution Scope",
+    "maxCandidates": "Maximum Candidates",
+    "status": "Lifecycle State",
+    "candidates": "Candidates",
+    "actionGates": "Action Gates",
+    "ledgerEntries": "Ledger Events",
+    "createdBy": "Created By",
+    "createdAt": "Created At"
+  },
+  "links": {
+    "candidates": "Candidates",
+    "actionGates": "Action Gates",
+    "ledgerEntries": "Ledger Events",
+    "createdBy": "Created By"
+  },
+  "labels": {
+    "Create ProspectRun": "Create Prospect Run",
+    "ProspectRuns": "Prospect Runs",
+    "runsActive": "Active Runs",
+    "runsCompleted": "Completed Runs",
+    "runsFailed": "Failed Runs"
+  },
+  "options": {
+    "status": {
+      "CREATED": "Created",
+      "PLANNING": "Planning",
+      "WAITING_APPROVAL": "Waiting Approval",
+      "EXECUTING": "Executing",
+      "COMPLETED": "Completed",
+      "FAILED": "Failed",
+      "CANCELLED": "Cancelled"
+    }
+  }
+}

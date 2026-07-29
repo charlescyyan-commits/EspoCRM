@@ -1,0 +1,16 @@
+{
+  "labels": {
+    "workspaceTitle": "Execution Workspace",
+    "workspaceDescription": "Review approvals and monitor governed prospecting execution without bypassing ActionGate.",
+    "activeRuns": "Active Prospect Runs",
+    "pendingApprovals": "Pending Approvals",
+    "completedExecutions": "Completed Executions",
+    "failedExecutions": "Failed Executions",
+    "ledgerTimeline": "Execution Ledger Timeline",
+    "ledgerDescription": "Read append-only authorization and execution events.",
+    "failureReview": "Review Failures",
+    "loading": "Loading execution workspace...",
+    "noData": "No records",
+    "workspaceEmpty": "No execution surfaces are visible for the current access scope."
+  }
+}

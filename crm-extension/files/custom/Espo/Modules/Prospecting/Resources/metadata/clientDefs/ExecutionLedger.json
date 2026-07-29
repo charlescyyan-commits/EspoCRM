@@ -1,0 +1,7 @@
+{
+  "controller": "controllers/record",
+  "iconClass": "fas fa-history",
+  "filterList": [
+    {"name": "executionFailures"}
+  ]
+}

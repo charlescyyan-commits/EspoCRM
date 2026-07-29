@@ -1,0 +1,7 @@
+{
+  "primaryFilterClassNameMap": {
+    "runsActive": "Espo\\Modules\\Prospecting\\Classes\\Select\\ProspectRun\\PrimaryFilters\\RunsActive",
+    "runsCompleted": "Espo\\Modules\\Prospecting\\Classes\\Select\\ProspectRun\\PrimaryFilters\\RunsCompleted",
+    "runsFailed": "Espo\\Modules\\Prospecting\\Classes\\Select\\ProspectRun\\PrimaryFilters\\RunsFailed"
+  }
+}

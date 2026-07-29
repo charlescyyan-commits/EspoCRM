@@ -1,0 +1,47 @@
+{
+  "fields": {
+    "name": "Approval Request",
+    "prospectCandidate": "Prospect Candidate",
+    "prospectRun": "Prospect Run",
+    "actionType": "Requested Action Type",
+    "actionReference": "Target Reference",
+    "decision": "Current Status",
+    "requestedBy": "Requested By",
+    "decidedBy": "Decided By",
+    "decidedAt": "Decided At",
+    "reason": "Decision Reason",
+    "ledgerEntries": "Ledger Events",
+    "createdAt": "Created At"
+  },
+  "links": {
+    "prospectCandidate": "Prospect Candidate",
+    "prospectRun": "Prospect Run",
+    "requestedBy": "Requested By",
+    "decidedBy": "Decided By",
+    "ledgerEntries": "Ledger Events"
+  },
+  "labels": {
+    "Create ActionGate": "Create Action Gate",
+    "ActionGates": "Action Gates",
+    "pendingApproval": "Pending Approval",
+    "Approve Action": "Approve Action",
+    "Deny Action": "Deny Action",
+    "Defer Action": "Defer Action",
+    "approveConfirmation": "Approve this execution action?",
+    "denialReasonPrompt": "Enter the denial reason.",
+    "denialReasonRequired": "A denial reason is required.",
+    "deferReasonPrompt": "Optional: enter a deferral reason.",
+    "approvalRecorded": "Approval recorded.",
+    "denialRecorded": "Denial recorded.",
+    "deferRecorded": "Deferral recorded.",
+    "decisionFailed": "The ActionGate decision could not be recorded."
+  },
+  "options": {
+    "decision": {
+      "PENDING": "Pending",
+      "APPROVED": "Approved",
+      "DENIED": "Denied",
+      "DEFERRED": "Deferred"
+    }
+  }
+}

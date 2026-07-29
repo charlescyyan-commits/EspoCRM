@@ -633,7 +633,13 @@ class ExtensionSkeletonTests(unittest.TestCase):
             MODULE / "Services" / "ReplyTriageService.php",
             MODULE / "Services" / "ReplyEventSyncService.php",
             MODULE / "Api" / "PostSyncReplyEvent.php",
+            MODULE / "Api" / "PostActionGateDecision.php",
             EXT / "files" / "custom" / "Espo" / "Custom" / "Hooks" / "ReplyEvent" / "ReplyEventMutationGuard.php",
+            MODULE / "Classes" / "Select" / "ProspectRun" / "PrimaryFilters" / "RunsActive.php",
+            MODULE / "Classes" / "Select" / "ProspectRun" / "PrimaryFilters" / "RunsCompleted.php",
+            MODULE / "Classes" / "Select" / "ProspectRun" / "PrimaryFilters" / "RunsFailed.php",
+            MODULE / "Classes" / "Select" / "ActionGate" / "PrimaryFilters" / "PendingApproval.php",
+            MODULE / "Classes" / "Select" / "ExecutionLedger" / "PrimaryFilters" / "ExecutionFailures.php",
         }
         expected |= set((MODULE / "Classes" / "Select" / "Lead" / "PrimaryFilters").glob("*.php"))
         expected |= set((MODULE / "Classes" / "Select" / "SalesFeedback" / "PrimaryFilters").glob("*.php"))
@@ -851,6 +857,7 @@ class ExtensionSkeletonTests(unittest.TestCase):
                 ("post", "/Prospecting/search-strategy/generate-jobs", "Espo\\Modules\\Prospecting\\Api\\PostGenerateSearchStrategyJobs"),
                 ("post", "/Prospecting/quote/:id/workflow/:action", "Espo\\Modules\\Prospecting\\Api\\PostQuoteWorkflowAction"),
                 ("post", "/Prospecting/send-execution/:id/workflow/:action", "Espo\\Modules\\Prospecting\\Api\\PostSendExecutionWorkflowAction"),
+                ("post", "/Prospecting/action-gate/:id/decision/:decision", "Espo\\Modules\\Prospecting\\Api\\PostActionGateDecision"),
             },
         )
 

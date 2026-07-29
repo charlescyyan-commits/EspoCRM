@@ -1,0 +1,47 @@
+{
+  "fields": {
+    "name": "审批请求",
+    "prospectCandidate": "潜客候选",
+    "prospectRun": "潜客运行",
+    "actionType": "请求操作类型",
+    "actionReference": "目标引用",
+    "decision": "当前状态",
+    "requestedBy": "请求人",
+    "decidedBy": "决策人",
+    "decidedAt": "决策时间",
+    "reason": "决策原因",
+    "ledgerEntries": "账本事件",
+    "createdAt": "创建时间"
+  },
+  "links": {
+    "prospectCandidate": "潜客候选",
+    "prospectRun": "潜客运行",
+    "requestedBy": "请求人",
+    "decidedBy": "决策人",
+    "ledgerEntries": "账本事件"
+  },
+  "labels": {
+    "Create ActionGate": "创建操作门",
+    "ActionGates": "操作门",
+    "pendingApproval": "待审批",
+    "Approve Action": "批准操作",
+    "Deny Action": "拒绝操作",
+    "Defer Action": "延后操作",
+    "approveConfirmation": "确认批准此执行操作？",
+    "denialReasonPrompt": "请输入拒绝原因。",
+    "denialReasonRequired": "拒绝必须填写原因。",
+    "deferReasonPrompt": "可选：请输入延后原因。",
+    "approvalRecorded": "已记录批准。",
+    "denialRecorded": "已记录拒绝。",
+    "deferRecorded": "已记录延后。",
+    "decisionFailed": "无法记录 ActionGate 决策。"
+  },
+  "options": {
+    "decision": {
+      "PENDING": "待处理",
+      "APPROVED": "已批准",
+      "DENIED": "已拒绝",
+      "DEFERRED": "已延后"
+    }
+  }
+}

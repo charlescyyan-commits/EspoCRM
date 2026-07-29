@@ -1,0 +1,38 @@
+{
+  "fields": {
+    "name": "运行名称",
+    "runKey": "运行键",
+    "executionScope": "执行范围",
+    "maxCandidates": "最大候选数",
+    "status": "生命周期状态",
+    "candidates": "候选对象",
+    "actionGates": "操作门",
+    "ledgerEntries": "账本事件",
+    "createdBy": "创建人",
+    "createdAt": "创建时间"
+  },
+  "links": {
+    "candidates": "候选对象",
+    "actionGates": "操作门",
+    "ledgerEntries": "账本事件",
+    "createdBy": "创建人"
+  },
+  "labels": {
+    "Create ProspectRun": "创建潜客运行",
+    "ProspectRuns": "潜客运行",
+    "runsActive": "活动运行",
+    "runsCompleted": "已完成运行",
+    "runsFailed": "失败运行"
+  },
+  "options": {
+    "status": {
+      "CREATED": "已创建",
+      "PLANNING": "规划中",
+      "WAITING_APPROVAL": "等待审批",
+      "EXECUTING": "执行中",
+      "COMPLETED": "已完成",
+      "FAILED": "失败",
+      "CANCELLED": "已取消"
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "labels": {
+    "workspaceTitle": "执行工作台",
+    "workspaceDescription": "在不绕过 ActionGate 的前提下审核并监控潜客执行。",
+    "activeRuns": "活动运行",
+    "pendingApprovals": "待审批",
+    "completedExecutions": "已完成执行",
+    "failedExecutions": "失败执行",
+    "ledgerTimeline": "执行账本时间线",
+    "ledgerDescription": "只读查看追加式授权与执行事件。",
+    "failureReview": "查看失败",
+    "loading": "正在加载执行工作台……",
+    "noData": "无记录",
+    "workspaceEmpty": "当前权限范围内没有可见的执行界面。"
+  }
+}

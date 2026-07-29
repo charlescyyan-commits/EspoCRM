@@ -1,0 +1,12 @@
+[
+  {
+    "label": "Ledger Event",
+    "rows": [
+      [{"name": "name"}, {"name": "occurredAt"}],
+      [{"name": "eventType"}, {"name": "outcome"}],
+      [{"name": "failureCategory"}, {"name": "actionGate"}],
+      [{"name": "prospectCandidate"}, {"name": "prospectRun"}],
+      [{"name": "actor"}, {"name": "supersedes"}]
+    ]
+  }
+]

@@ -1,0 +1,32 @@
+{
+  "controller": "controllers/record",
+  "iconClass": "fas fa-project-diagram",
+  "filterList": [
+    {"name": "runsActive"},
+    {"name": "runsCompleted"},
+    {"name": "runsFailed"}
+  ],
+  "relationshipPanels": {
+    "candidates": {
+      "create": false,
+      "select": false,
+      "view": "views/record/panels/relationship",
+      "orderBy": "createdAt",
+      "orderDirection": "desc"
+    },
+    "actionGates": {
+      "create": false,
+      "select": false,
+      "view": "views/record/panels/relationship",
+      "orderBy": "createdAt",
+      "orderDirection": "desc"
+    },
+    "ledgerEntries": {
+      "create": false,
+      "select": false,
+      "view": "views/record/panels/relationship",
+      "orderBy": "occurredAt",
+      "orderDirection": "desc"
+    }
+  }
+}

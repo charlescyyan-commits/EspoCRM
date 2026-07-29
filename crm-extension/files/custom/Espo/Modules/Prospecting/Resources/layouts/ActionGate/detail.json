@@ -1,0 +1,13 @@
+[
+  {
+    "label": "Approval Request",
+    "rows": [
+      [{"name": "name"}, {"name": "decision"}],
+      [{"name": "actionType"}, {"name": "actionReference"}],
+      [{"name": "prospectCandidate"}, {"name": "prospectRun"}],
+      [{"name": "requestedBy"}, {"name": "createdAt"}],
+      [{"name": "decidedBy"}, {"name": "decidedAt"}],
+      [{"name": "reason", "fullWidth": true}]
+    ]
+  }
+]

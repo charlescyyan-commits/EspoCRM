@@ -1,5 +1,7 @@
 {
   "scopeNames": {
+    "ExecutionWorkspace": "执行工作台", "ProspectRun": "潜客运行",
+    "ActionGate": "操作门", "ExecutionLedger": "执行账本",
     "SearchStrategy": "搜索策略", "SearchJob": "搜索任务", "ProspectPool": "潜客池",
     "ProspectingDashboard": "潜客运营", "ProspectingSearch": "搜索中心",
     "ResearchEvidence": "研究证据", "DraftApproval": "触达中心",
@@ -8,6 +10,8 @@
     "QuoteItem": "报价明细", "ProformaInvoice": "形式发票", "Approval": "报价审批"
   },
   "scopeNamesPlural": {
+    "ExecutionWorkspace": "执行工作台", "ProspectRun": "潜客运行",
+    "ActionGate": "操作门", "ExecutionLedger": "执行账本",
     "SearchStrategy": "搜索策略", "SearchJob": "搜索任务", "ProspectPool": "潜客池",
     "ProspectingDashboard": "潜客运营", "ProspectingSearch": "搜索中心",
     "ResearchEvidence": "研究证据", "DraftApproval": "触达中心",
@@ -16,6 +20,8 @@
     "QuoteItem": "报价明细", "ProformaInvoice": "形式发票", "Approval": "报价审批"
   },
   "scopeNamesSingular": {
+    "ProspectRun": "潜客运行", "ActionGate": "操作门",
+    "ExecutionLedger": "账本事件",
     "DraftApproval": "触达审批", "Quote": "报价", "Approval": "报价审批"
   },
   "dashlets": {

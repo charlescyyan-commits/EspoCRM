@@ -49,5 +49,29 @@
     "list": {
       "module": "Prospecting"
     }
+  },
+  "ProspectRun": {
+    "detail": {
+      "module": "Prospecting"
+    },
+    "list": {
+      "module": "Prospecting"
+    }
+  },
+  "ActionGate": {
+    "detail": {
+      "module": "Prospecting"
+    },
+    "list": {
+      "module": "Prospecting"
+    }
+  },
+  "ExecutionLedger": {
+    "detail": {
+      "module": "Prospecting"
+    },
+    "list": {
+      "module": "Prospecting"
+    }
   }
 }

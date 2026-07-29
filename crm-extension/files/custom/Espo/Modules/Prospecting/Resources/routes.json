@@ -43,5 +43,10 @@
     "route": "/Prospecting/send-execution/:id/workflow/:action",
     "method": "post",
     "actionClassName": "Espo\\Modules\\Prospecting\\Api\\PostSendExecutionWorkflowAction"
+  },
+  {
+    "route": "/Prospecting/action-gate/:id/decision/:decision",
+    "method": "post",
+    "actionClassName": "Espo\\Modules\\Prospecting\\Api\\PostActionGateDecision"
   }
 ]

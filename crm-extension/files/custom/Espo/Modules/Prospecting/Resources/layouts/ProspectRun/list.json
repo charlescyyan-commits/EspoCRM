@@ -1,0 +1,7 @@
+[
+  {"name": "name", "width": 28, "link": true},
+  {"name": "status", "width": 18},
+  {"name": "runKey", "width": 24},
+  {"name": "maxCandidates", "width": 14},
+  {"name": "createdAt", "width": 18}
+]

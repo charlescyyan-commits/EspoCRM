@@ -1,0 +1,5 @@
+{
+  "controller": "custom:controllers/execution-workspace",
+  "iconClass": "fas fa-tasks",
+  "color": "#355C7D"
+}

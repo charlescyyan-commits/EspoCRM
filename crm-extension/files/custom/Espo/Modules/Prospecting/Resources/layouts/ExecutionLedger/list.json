@@ -1,0 +1,8 @@
+[
+  {"name": "name", "width": 26, "link": true},
+  {"name": "eventType", "width": 18},
+  {"name": "outcome", "width": 14},
+  {"name": "failureCategory", "width": 16},
+  {"name": "actionGate", "width": 18},
+  {"name": "occurredAt", "width": 18}
+]

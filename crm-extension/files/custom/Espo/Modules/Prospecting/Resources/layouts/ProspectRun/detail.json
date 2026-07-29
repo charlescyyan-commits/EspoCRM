@@ -1,0 +1,11 @@
+[
+  {
+    "label": "Execution Run",
+    "rows": [
+      [{"name": "name"}, {"name": "status"}],
+      [{"name": "runKey"}, {"name": "maxCandidates"}],
+      [{"name": "executionScope", "fullWidth": true}],
+      [{"name": "createdBy"}, {"name": "createdAt"}]
+    ]
+  }
+]

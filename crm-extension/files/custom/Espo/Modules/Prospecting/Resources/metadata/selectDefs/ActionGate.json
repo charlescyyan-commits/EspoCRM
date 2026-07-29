@@ -1,0 +1,5 @@
+{
+  "primaryFilterClassNameMap": {
+    "pendingApproval": "Espo\\Modules\\Prospecting\\Classes\\Select\\ActionGate\\PrimaryFilters\\PendingApproval"
+  }
+}
