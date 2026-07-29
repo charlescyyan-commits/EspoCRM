@@ -1,0 +1,106 @@
+{
+  "fields": {
+    "name": {
+      "type": "varchar",
+      "maxLength": 255,
+      "required": true,
+      "trim": true
+    },
+    "candidateKey": {
+      "type": "varchar",
+      "maxLength": 255,
+      "required": true,
+      "trim": true,
+      "readOnly": true
+    },
+    "prospectRun": {
+      "type": "link",
+      "required": true,
+      "readOnly": true
+    },
+    "prospectPool": {
+      "type": "link",
+      "required": false,
+      "notNull": false,
+      "readOnly": true
+    },
+    "externalReference": {
+      "type": "varchar",
+      "maxLength": 255,
+      "required": false,
+      "notNull": false,
+      "trim": true,
+      "readOnly": true
+    },
+    "actionGates": {
+      "type": "linkMultiple",
+      "readOnly": true
+    },
+    "ledgerEntries": {
+      "type": "linkMultiple",
+      "readOnly": true
+    },
+    "createdAt": {
+      "type": "datetime",
+      "readOnly": true
+    },
+    "createdBy": {
+      "type": "link",
+      "readOnly": true
+    }
+  },
+  "links": {
+    "prospectRun": {
+      "type": "belongsTo",
+      "entity": "ProspectRun",
+      "foreign": "candidates"
+    },
+    "prospectPool": {
+      "type": "belongsTo",
+      "entity": "ProspectPool"
+    },
+    "actionGates": {
+      "type": "hasMany",
+      "entity": "ActionGate",
+      "foreign": "prospectCandidate"
+    },
+    "ledgerEntries": {
+      "type": "hasMany",
+      "entity": "ExecutionLedger",
+      "foreign": "prospectCandidate"
+    },
+    "createdBy": {
+      "type": "belongsTo",
+      "entity": "User"
+    }
+  },
+  "collection": {
+    "orderBy": "createdAt",
+    "order": "desc",
+    "textFilterFields": [
+      "name",
+      "candidateKey",
+      "externalReference"
+    ]
+  },
+  "deleteId": true,
+  "indexes": {
+    "candidateKey": {
+      "type": "unique",
+      "columns": [
+        "candidateKey",
+        "deleteId"
+      ]
+    },
+    "prospectRun": {
+      "columns": [
+        "prospectRunId"
+      ]
+    },
+    "prospectPool": {
+      "columns": [
+        "prospectPoolId"
+      ]
+    }
+  }
+}

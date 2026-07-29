@@ -1,0 +1,94 @@
+{
+  "fields": {
+    "name": {
+      "type": "varchar",
+      "maxLength": 255,
+      "required": true,
+      "trim": true
+    },
+    "runKey": {
+      "type": "varchar",
+      "maxLength": 255,
+      "required": true,
+      "trim": true,
+      "readOnly": true
+    },
+    "executionScope": {
+      "type": "text",
+      "required": true,
+      "readOnly": true
+    },
+    "maxCandidates": {
+      "type": "int",
+      "required": true,
+      "default": 100,
+      "min": 1,
+      "readOnly": true
+    },
+    "candidates": {
+      "type": "linkMultiple",
+      "readOnly": true
+    },
+    "actionGates": {
+      "type": "linkMultiple",
+      "readOnly": true
+    },
+    "ledgerEntries": {
+      "type": "linkMultiple",
+      "readOnly": true
+    },
+    "createdAt": {
+      "type": "datetime",
+      "readOnly": true
+    },
+    "createdBy": {
+      "type": "link",
+      "readOnly": true
+    }
+  },
+  "links": {
+    "candidates": {
+      "type": "hasMany",
+      "entity": "ProspectCandidate",
+      "foreign": "prospectRun"
+    },
+    "actionGates": {
+      "type": "hasMany",
+      "entity": "ActionGate",
+      "foreign": "prospectRun"
+    },
+    "ledgerEntries": {
+      "type": "hasMany",
+      "entity": "ExecutionLedger",
+      "foreign": "prospectRun"
+    },
+    "createdBy": {
+      "type": "belongsTo",
+      "entity": "User"
+    }
+  },
+  "collection": {
+    "orderBy": "createdAt",
+    "order": "desc",
+    "textFilterFields": [
+      "name",
+      "runKey",
+      "executionScope"
+    ]
+  },
+  "deleteId": true,
+  "indexes": {
+    "runKey": {
+      "type": "unique",
+      "columns": [
+        "runKey",
+        "deleteId"
+      ]
+    },
+    "createdAt": {
+      "columns": [
+        "createdAt"
+      ]
+    }
+  }
+}

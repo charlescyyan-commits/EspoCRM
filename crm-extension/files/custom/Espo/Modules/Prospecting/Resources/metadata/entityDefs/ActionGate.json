@@ -1,0 +1,138 @@
+{
+  "fields": {
+    "name": {
+      "type": "varchar",
+      "maxLength": 255,
+      "required": true,
+      "trim": true,
+      "readOnly": true
+    },
+    "prospectCandidate": {
+      "type": "link",
+      "required": true,
+      "readOnly": true
+    },
+    "prospectRun": {
+      "type": "link",
+      "required": true,
+      "readOnly": true
+    },
+    "actionType": {
+      "type": "varchar",
+      "maxLength": 100,
+      "required": true,
+      "trim": true,
+      "readOnly": true
+    },
+    "actionReference": {
+      "type": "varchar",
+      "maxLength": 255,
+      "required": false,
+      "notNull": false,
+      "trim": true,
+      "readOnly": true
+    },
+    "decision": {
+      "type": "enum",
+      "required": true,
+      "options": [
+        "PENDING",
+        "APPROVED",
+        "DENIED",
+        "DEFERRED"
+      ],
+      "default": "PENDING",
+      "readOnly": true,
+      "displayAsLabel": true
+    },
+    "requestedBy": {
+      "type": "link",
+      "required": true,
+      "readOnly": true
+    },
+    "decidedBy": {
+      "type": "link",
+      "required": false,
+      "notNull": false,
+      "readOnly": true
+    },
+    "decidedAt": {
+      "type": "datetime",
+      "required": false,
+      "notNull": false,
+      "readOnly": true
+    },
+    "reason": {
+      "type": "text",
+      "required": false,
+      "notNull": false,
+      "readOnly": true
+    },
+    "ledgerEntries": {
+      "type": "linkMultiple",
+      "readOnly": true
+    },
+    "createdAt": {
+      "type": "datetime",
+      "readOnly": true
+    },
+    "modifiedAt": {
+      "type": "datetime",
+      "readOnly": true
+    }
+  },
+  "links": {
+    "prospectCandidate": {
+      "type": "belongsTo",
+      "entity": "ProspectCandidate",
+      "foreign": "actionGates"
+    },
+    "prospectRun": {
+      "type": "belongsTo",
+      "entity": "ProspectRun",
+      "foreign": "actionGates"
+    },
+    "requestedBy": {
+      "type": "belongsTo",
+      "entity": "User"
+    },
+    "decidedBy": {
+      "type": "belongsTo",
+      "entity": "User"
+    },
+    "ledgerEntries": {
+      "type": "hasMany",
+      "entity": "ExecutionLedger",
+      "foreign": "actionGate"
+    }
+  },
+  "collection": {
+    "orderBy": "createdAt",
+    "order": "desc",
+    "textFilterFields": [
+      "name",
+      "actionType",
+      "actionReference",
+      "decision",
+      "reason"
+    ]
+  },
+  "deleteId": true,
+  "indexes": {
+    "prospectCandidate": {
+      "columns": [
+        "prospectCandidateId"
+      ]
+    },
+    "prospectRun": {
+      "columns": [
+        "prospectRunId"
+      ]
+    },
+    "decision": {
+      "columns": [
+        "decision"
+      ]
+    }
+  }
+}

@@ -1,0 +1,159 @@
+{
+  "fields": {
+    "name": {
+      "type": "varchar",
+      "maxLength": 255,
+      "required": true,
+      "trim": true,
+      "readOnly": true
+    },
+    "prospectCandidate": {
+      "type": "link",
+      "required": true,
+      "readOnly": true
+    },
+    "prospectRun": {
+      "type": "link",
+      "required": true,
+      "readOnly": true
+    },
+    "actionGate": {
+      "type": "link",
+      "required": true,
+      "readOnly": true
+    },
+    "eventType": {
+      "type": "enum",
+      "required": true,
+      "options": [
+        "ACTION_REQUEST",
+        "GATE_DECISION",
+        "EXECUTION_STARTED",
+        "EXECUTION_RESULT",
+        "FAILURE_CLASSIFICATION"
+      ],
+      "readOnly": true,
+      "displayAsLabel": true
+    },
+    "outcome": {
+      "type": "enum",
+      "required": false,
+      "notNull": false,
+      "options": [
+        "PENDING",
+        "APPROVED",
+        "DENIED",
+        "DEFERRED",
+        "SUCCEEDED",
+        "FAILED"
+      ],
+      "readOnly": true,
+      "displayAsLabel": true
+    },
+    "failureCategory": {
+      "type": "enum",
+      "required": false,
+      "notNull": false,
+      "options": [
+        "TRANSIENT",
+        "PERMANENT",
+        "GOVERNANCE"
+      ],
+      "readOnly": true,
+      "displayAsLabel": true
+    },
+    "actor": {
+      "type": "link",
+      "required": true,
+      "readOnly": true
+    },
+    "occurredAt": {
+      "type": "datetime",
+      "required": true,
+      "readOnly": true
+    },
+    "supersedes": {
+      "type": "link",
+      "required": false,
+      "notNull": false,
+      "readOnly": true
+    },
+    "supersededBy": {
+      "type": "linkMultiple",
+      "readOnly": true
+    },
+    "createdAt": {
+      "type": "datetime",
+      "readOnly": true
+    }
+  },
+  "links": {
+    "prospectCandidate": {
+      "type": "belongsTo",
+      "entity": "ProspectCandidate",
+      "foreign": "ledgerEntries"
+    },
+    "prospectRun": {
+      "type": "belongsTo",
+      "entity": "ProspectRun",
+      "foreign": "ledgerEntries"
+    },
+    "actionGate": {
+      "type": "belongsTo",
+      "entity": "ActionGate",
+      "foreign": "ledgerEntries"
+    },
+    "actor": {
+      "type": "belongsTo",
+      "entity": "User"
+    },
+    "supersedes": {
+      "type": "belongsTo",
+      "entity": "ExecutionLedger",
+      "foreign": "supersededBy"
+    },
+    "supersededBy": {
+      "type": "hasMany",
+      "entity": "ExecutionLedger",
+      "foreign": "supersedes"
+    }
+  },
+  "collection": {
+    "orderBy": "occurredAt",
+    "order": "desc",
+    "textFilterFields": [
+      "name",
+      "eventType",
+      "outcome",
+      "failureCategory"
+    ]
+  },
+  "deleteId": true,
+  "indexes": {
+    "prospectCandidate": {
+      "columns": [
+        "prospectCandidateId"
+      ]
+    },
+    "prospectRun": {
+      "columns": [
+        "prospectRunId"
+      ]
+    },
+    "actionGate": {
+      "columns": [
+        "actionGateId"
+      ]
+    },
+    "supersedes": {
+      "columns": [
+        "supersedesId"
+      ]
+    },
+    "occurredAt": {
+      "columns": [
+        "occurredAt"
+      ]
+    }
+  }
+}

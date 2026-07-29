@@ -3,7 +3,11 @@
     "scopeLevel": {
       "ResearchEvidence": false,
       "AIQualificationInsight": false,
-      "HumanFeedback": false
+      "HumanFeedback": false,
+      "ProspectCandidate": false,
+      "ProspectRun": false,
+      "ActionGate": false,
+      "ExecutionLedger": false
     }
   },
   "adminMandatory": {
@@ -21,6 +25,30 @@
         "delete": "no"
       },
       "HumanFeedback": {
+        "create": "yes",
+        "read": "all",
+        "edit": "no",
+        "delete": "no"
+      },
+      "ProspectCandidate": {
+        "create": "yes",
+        "read": "all",
+        "edit": "all",
+        "delete": "no"
+      },
+      "ProspectRun": {
+        "create": "yes",
+        "read": "all",
+        "edit": "all",
+        "delete": "no"
+      },
+      "ActionGate": {
+        "create": "yes",
+        "read": "all",
+        "edit": "all",
+        "delete": "no"
+      },
+      "ExecutionLedger": {
         "create": "yes",
         "read": "all",
         "edit": "no",
