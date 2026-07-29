@@ -54,10 +54,13 @@ FORBIDDEN_RUNTIME_DIRECTORIES = (
     "Actions",
     "Controllers",
     "Entities",
-    "Hooks",
     "Jobs",
-    "Services",
 )
+ALLOWED_WP3_RUNTIME_FILES = {
+    AI_PLATFORM / "Services" / "AIJobService.php",
+    AI_PLATFORM / "Services" / "AIJobStatusMutationSaveOption.php",
+    AI_PLATFORM / "Hooks" / "AIJob" / "AIJobStatusMutationGuard.php",
+}
 
 
 def load_json(path: Path) -> dict[str, object]:
@@ -138,6 +141,11 @@ class Phase3C20WP13AdminSurfaceTests(unittest.TestCase):
         self.assertEqual(list(AI_PLATFORM.rglob("*.js")), [])
         for directory in FORBIDDEN_RUNTIME_DIRECTORIES:
             self.assertFalse((AI_PLATFORM / directory).exists(), msg=directory)
+        runtime_files = {
+            * (AI_PLATFORM / "Services").glob("*.php"),
+            * (AI_PLATFORM / "Hooks").rglob("*.php"),
+        }
+        self.assertEqual(runtime_files, ALLOWED_WP3_RUNTIME_FILES)
         self.assertFalse((AI_PLATFORM / "Resources" / "metadata" / "clientDefs").exists())
         self.assertEqual(
             set((AI_PLATFORM / "Resources" / "layouts").rglob("*.json")),

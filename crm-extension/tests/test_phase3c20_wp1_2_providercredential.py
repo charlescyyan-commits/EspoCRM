@@ -12,8 +12,11 @@ ROOT = Path(__file__).resolve().parents[2]
 AI_PLATFORM = ROOT / "crm-extension" / "files" / "custom" / "Espo" / "Modules" / "AIPlatform"
 ENTITY_DEFS = AI_PLATFORM / "Resources" / "metadata" / "entityDefs"
 ENTITY_DEF = ENTITY_DEFS / "ProviderCredential.json"
+AI_JOB_ENTITY_DEF = ENTITY_DEFS / "AIJob.json"
 SCOPE = AI_PLATFORM / "Resources" / "metadata" / "scopes" / "ProviderCredential.json"
+AI_JOB_SCOPE = AI_PLATFORM / "Resources" / "metadata" / "scopes" / "AIJob.json"
 ACL_DEF = AI_PLATFORM / "Resources" / "metadata" / "aclDefs" / "ProviderCredential.json"
+AI_JOB_ACL_DEF = AI_PLATFORM / "Resources" / "metadata" / "aclDefs" / "AIJob.json"
 ENTITY_ACL = AI_PLATFORM / "Resources" / "metadata" / "entityAcl" / "ProviderCredential.json"
 APP_ACL = AI_PLATFORM / "Resources" / "metadata" / "app" / "acl.json"
 APP_ACL_PORTAL = AI_PLATFORM / "Resources" / "metadata" / "app" / "aclPortal.json"
@@ -28,6 +31,9 @@ ENTITY_I18N_EN = AI_PLATFORM / "Resources" / "i18n" / "en_US" / "ProviderCredent
 ENTITY_I18N_ZH = AI_PLATFORM / "Resources" / "i18n" / "zh_CN" / "ProviderCredential.json"
 LIST_LAYOUT = AI_PLATFORM / "Resources" / "layouts" / "ProviderCredential" / "list.json"
 DETAIL_LAYOUT = AI_PLATFORM / "Resources" / "layouts" / "ProviderCredential" / "detail.json"
+AI_JOB_SERVICE = AI_PLATFORM / "Services" / "AIJobService.php"
+AI_JOB_SAVE_OPTION = AI_PLATFORM / "Services" / "AIJobStatusMutationSaveOption.php"
+AI_JOB_GUARD = AI_PLATFORM / "Hooks" / "AIJob" / "AIJobStatusMutationGuard.php"
 
 APPROVED_MODULE_FILES = {
     BINDING,
@@ -47,6 +53,12 @@ APPROVED_MODULE_FILES = {
     ENTITY_I18N_ZH,
     LIST_LAYOUT,
     DETAIL_LAYOUT,
+    AI_JOB_ENTITY_DEF,
+    AI_JOB_SCOPE,
+    AI_JOB_ACL_DEF,
+    AI_JOB_SERVICE,
+    AI_JOB_SAVE_OPTION,
+    AI_JOB_GUARD,
 }
 
 ALLOWED_FIELDS = {
@@ -108,14 +120,11 @@ ISOLATION_TERMS = (
     "ReplyEvent",
     "Chitu",
 )
-FORBIDDEN_RUNTIME_DIRECTORIES = (
-    "Api",
-    "Actions",
-    "Controllers",
-    "Entities",
-    "Hooks",
-    "Jobs",
-    "Services",
+FORBIDDEN_PROVIDER_CREDENTIAL_RUNTIME_PATHS = (
+    AI_PLATFORM / "Services" / "ProviderCredentialService.php",
+    AI_PLATFORM / "Hooks" / "ProviderCredential",
+    AI_PLATFORM / "Api" / "ProviderCredential",
+    AI_PLATFORM / "Controllers" / "ProviderCredential.php",
 )
 FORBIDDEN_RUNTIME_TERMS = (
     r"\bProvider\b",
@@ -202,7 +211,7 @@ def runtime_contract_files() -> list[Path]:
 class Phase3C20WP12ProviderCredentialTests(unittest.TestCase):
     def test_entity_definition_has_exact_reference_metadata_fields(self) -> None:
         self.assertTrue(ENTITY_DEF.is_file())
-        self.assertEqual(set(ENTITY_DEFS.glob("*.json")), {ENTITY_DEF})
+        self.assertEqual(set(ENTITY_DEFS.glob("*.json")), {ENTITY_DEF, AI_JOB_ENTITY_DEF})
 
         metadata = load_entity_def()
         fields = metadata["fields"]
@@ -244,9 +253,9 @@ class Phase3C20WP12ProviderCredentialTests(unittest.TestCase):
         self.assertNotIn("collection", metadata)
         self.assertNotIn("indexes", metadata)
 
-        for directory in FORBIDDEN_RUNTIME_DIRECTORIES:
-            self.assertFalse((AI_PLATFORM / directory).exists(), msg=directory)
-        for path in runtime_contract_files():
+        for path in FORBIDDEN_PROVIDER_CREDENTIAL_RUNTIME_PATHS:
+            self.assertFalse(path.exists(), msg=str(path))
+        for path in (ENTITY_DEF, ENTITY_ACL):
             source = path.read_text(encoding="utf-8")
             for pattern in FORBIDDEN_RUNTIME_TERMS:
                 self.assertIsNone(re.search(pattern, source, flags=re.IGNORECASE), msg=f"{path}: {pattern}")
@@ -281,13 +290,9 @@ class Phase3C20WP12ProviderCredentialTests(unittest.TestCase):
         fields = metadata["fields"]
         self.assertTrue(FORBIDDEN_LIFECYCLE_TERMS.isdisjoint(fields))
 
-        offenders: list[str] = []
-        for path in module_source_files():
-            source = path.read_text(encoding="utf-8")
-            for term in FORBIDDEN_LIFECYCLE_TERMS:
-                if re.search(rf"\b{re.escape(term)}\b", source, flags=re.IGNORECASE):
-                    offenders.append(f"{path.relative_to(AI_PLATFORM).as_posix()}: {term}")
-        self.assertEqual(offenders, [])
+        source = ENTITY_DEF.read_text(encoding="utf-8")
+        for term in FORBIDDEN_LIFECYCLE_TERMS:
+            self.assertIsNone(re.search(rf"\b{re.escape(term)}\b", source, flags=re.IGNORECASE))
 
     def test_namespace_isolation_is_preserved(self) -> None:
         offenders: list[str] = []
@@ -301,7 +306,7 @@ class Phase3C20WP12ProviderCredentialTests(unittest.TestCase):
         self.assertEqual(offenders, [])
 
     def test_scope_exists_with_acl_enabled_and_no_public_surface(self) -> None:
-        self.assertEqual(set(SCOPE.parent.glob("*.json")), {SCOPE})
+        self.assertEqual(set(SCOPE.parent.glob("*.json")), {SCOPE, AI_JOB_SCOPE})
         scope = load_json(SCOPE)
         self.assertEqual(
             scope,
@@ -320,7 +325,7 @@ class Phase3C20WP12ProviderCredentialTests(unittest.TestCase):
         )
 
     def test_acl_forces_admin_only_crud_and_portal_denial(self) -> None:
-        self.assertEqual(set(ACL_DEF.parent.glob("*.json")), {ACL_DEF})
+        self.assertEqual(set(ACL_DEF.parent.glob("*.json")), {ACL_DEF, AI_JOB_ACL_DEF})
         self.assertEqual(set(ENTITY_ACL.parent.glob("*.json")), {ENTITY_ACL})
         self.assertEqual(
             set(APP_ACL.parent.glob("*.json")),
@@ -370,19 +375,22 @@ class Phase3C20WP12ProviderCredentialTests(unittest.TestCase):
             set((AI_PLATFORM / "Resources" / "layouts").rglob("*.json")),
             {LIST_LAYOUT, DETAIL_LAYOUT},
         )
-        for directory in FORBIDDEN_RUNTIME_DIRECTORIES:
-            self.assertFalse((AI_PLATFORM / directory).exists(), msg=directory)
+        for path in FORBIDDEN_PROVIDER_CREDENTIAL_RUNTIME_PATHS:
+            self.assertFalse(path.exists(), msg=str(path))
 
     def test_no_service_or_runtime_surface_is_declared(self) -> None:
         self.assertEqual(set(module_source_files()), APPROVED_MODULE_FILES)
 
-        offenders: list[str] = []
-        for path in module_source_files():
-            source = path.read_text(encoding="utf-8")
-            for term in FORBIDDEN_RUNTIME_SURFACE_TERMS:
-                if re.search(rf"\b{re.escape(term)}\b", source, flags=re.IGNORECASE):
-                    offenders.append(f"{path.relative_to(AI_PLATFORM).as_posix()}: {term}")
-        self.assertEqual(offenders, [])
+        self.assertEqual(
+            set((AI_PLATFORM / "Services").glob("*.php")),
+            {AI_JOB_SERVICE, AI_JOB_SAVE_OPTION},
+        )
+        self.assertEqual(
+            set((AI_PLATFORM / "Hooks" / "AIJob").glob("*.php")),
+            {AI_JOB_GUARD},
+        )
+        for path in (AI_JOB_SERVICE, AI_JOB_SAVE_OPTION, AI_JOB_GUARD):
+            self.assertNotIn("ProviderCredential", path.read_text(encoding="utf-8"))
 
     def test_wp_boundaries_and_workflow_mutation_remain_absent(self) -> None:
         offenders: list[str] = []

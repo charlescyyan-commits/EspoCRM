@@ -23,7 +23,6 @@ PROSPECTING_REFERENCES = (
     r"\bChitu\b",
 )
 FORBIDDEN_PATH_TOKENS = (
-    "AIJob",
     "Provider",
     "Adapter",
     "Transport",
@@ -35,7 +34,6 @@ FORBIDDEN_DIRECTORIES = (
     "Api",
     "Controllers",
     "Entities",
-    "Services",
     "layouts",
     "clientDefs",
     "entityDefs",
@@ -44,8 +42,11 @@ FORBIDDEN_DIRECTORIES = (
 )
 AUTHORIZED_METADATA_FILES = {
     "Resources/metadata/entityDefs/ProviderCredential.json",
+    "Resources/metadata/entityDefs/AIJob.json",
     "Resources/metadata/scopes/ProviderCredential.json",
+    "Resources/metadata/scopes/AIJob.json",
     "Resources/metadata/aclDefs/ProviderCredential.json",
+    "Resources/metadata/aclDefs/AIJob.json",
     "Resources/metadata/entityAcl/ProviderCredential.json",
     "Resources/metadata/app/acl.json",
     "Resources/metadata/app/aclPortal.json",
@@ -53,6 +54,16 @@ AUTHORIZED_METADATA_FILES = {
     "Resources/i18n/zh_CN/ProviderCredential.json",
     "Resources/layouts/ProviderCredential/list.json",
     "Resources/layouts/ProviderCredential/detail.json",
+}
+AUTHORIZED_RUNTIME_FILES = {
+    "Services/AIJobService.php",
+    "Services/AIJobStatusMutationSaveOption.php",
+    "Hooks/AIJob/AIJobStatusMutationGuard.php",
+}
+AUTHORIZED_RUNTIME_DIRECTORIES = {
+    "Services",
+    "Hooks",
+    "Hooks/AIJob",
 }
 AUTHORIZED_METADATA_DIRECTORIES = {
     "Resources/metadata/entityDefs",
@@ -115,6 +126,8 @@ class Phase3C20WP11AIPlatformNamespaceSkeletonTests(unittest.TestCase):
             relative = path.relative_to(AI_PLATFORM).as_posix()
             if (
                 relative not in AUTHORIZED_METADATA_FILES
+                and relative not in AUTHORIZED_RUNTIME_FILES
+                and relative not in AUTHORIZED_RUNTIME_DIRECTORIES
                 and relative not in AUTHORIZED_METADATA_DIRECTORIES
                 and any(token in path.name for token in FORBIDDEN_PATH_TOKENS)
             ):
