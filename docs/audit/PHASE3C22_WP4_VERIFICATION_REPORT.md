@@ -12,6 +12,9 @@
 | **WP1 Baseline** | `fd47eec` — feat(c22): freeze wp1 execution foundation |
 | **WP2 Baseline** | `18e7d629` — docs(c22): freeze wp2 provider boundary foundation |
 | **WP3 Baseline** | `7a4511a` / `3ebdb46` — WP3 execution foundation |
+| **WP4 Implementation Commit** | `cef8035ded0b1cc202c1efc7c58b90b9662e7146` |
+| **Implementation Message** | `feat(c22): add wp4 operational execution layer` |
+| **Verification Provenance** | Verification follows the WP4 implementation commit above. |
 | **Governing Charter** | Phase3C22 Charter Amendment V1 (`docs/audit/PHASE3C22_CHARTER_AMENDMENT_V1.md`) |
 | **Invariant Registry** | C22 Invariant Registry Draft (`docs/audit/C22_INVARIANT_REGISTRY_DRAFT.md`) — 29 invariants |
 | **WP1 Artifacts** | ActionGate entity, ExecutionLedger entity, ProspectRun entity, ProspectCandidate entity |
