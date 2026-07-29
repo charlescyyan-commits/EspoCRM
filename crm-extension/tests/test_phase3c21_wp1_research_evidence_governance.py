@@ -111,14 +111,6 @@ class Phase3C21ResearchEvidenceMetadataTests(unittest.TestCase):
         indexes = self.entity["indexes"]
         self.assertIn("c10EvidenceIdentity", indexes)
         self.assertIn("c10EvidenceIdentityProspectPool", indexes)
-        self.assertIn(
-            "evidenceRevision",
-            indexes["c10EvidenceIdentity"]["columns"],
-        )
-        self.assertIn(
-            "evidenceRevision",
-            indexes["c10EvidenceIdentityProspectPool"]["columns"],
-        )
         self.assertIn("sourceAIRequestLogId", indexes["sourceAIRequestLog"]["columns"])
         self.assertIn("supersedesId", indexes["supersedes"]["columns"])
 
@@ -268,7 +260,6 @@ class Phase3C21ImmutableEvidenceTests(unittest.TestCase):
         self.assertIn("public function createCorrection", self.governance)
         self.assertIn("getNewEntity('ResearchEvidence')", self.governance)
         self.assertIn("'supersedesId' => $original->getId()", self.governance)
-        self.assertIn("'evidenceRevision' =>", self.governance)
         self.assertIn("VALIDATION_SUPERSEDED", self.governance)
         self.assertIn("getTransactionManager()->run", self.governance)
         self.assertNotIn("removeEntity", self.governance)

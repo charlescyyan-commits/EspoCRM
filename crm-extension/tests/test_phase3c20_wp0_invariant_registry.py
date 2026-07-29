@@ -6,6 +6,7 @@ registry rules. Does not implement AIPlatform, entities, providers, or runtime.
 
 from __future__ import annotations
 
+import json
 import re
 import unittest
 from pathlib import Path
@@ -145,13 +146,38 @@ class Phase3C20WP0InvariantRegistryTests(unittest.TestCase):
                 self.assertNotIn("SendExecution", text)
 
     def test_c20_inv_16_19_21_22_advisory_qualification_governance(self) -> None:
-        # WP0: no premature AIQualificationInsight entity or queue authority surfaces.
-        insight_paths = list(EXTENSION.rglob("*AIQualificationInsight*"))
-        self.assertEqual(
-            insight_paths,
-            [],
-            msg="AIQualificationInsight must not be introduced before its owning WP",
+        # C21 WP2 is the owning work package. Preserve the original C20
+        # invariant as concrete advisory-only and immutability checks.
+        entity_def = (
+            PROSPECTING
+            / "Resources"
+            / "metadata"
+            / "entityDefs"
+            / "AIQualificationInsight.json"
         )
+        guard = (
+            PROSPECTING
+            / "Hooks"
+            / "AIQualificationInsight"
+            / "AIQualificationInsightImmutableGuard.php"
+        )
+        self.assertTrue(entity_def.is_file())
+        self.assertTrue(guard.is_file())
+        fields = json.loads(entity_def.read_text(encoding="utf-8"))["fields"]
+        forbidden_authority = {
+            "score",
+            "canonical_score",
+            "qualificationScore",
+            "qualificationStatus",
+            "status",
+            "lead",
+            "opportunity",
+            "isCurrent",
+        }
+        self.assertTrue(forbidden_authority.isdisjoint(fields))
+        guard_source = guard.read_text(encoding="utf-8")
+        self.assertIn("if (!$entity->isNew())", guard_source)
+        self.assertIn("cannot be deleted", guard_source)
         primary_filters = (
             PROSPECTING
             / "Resources"

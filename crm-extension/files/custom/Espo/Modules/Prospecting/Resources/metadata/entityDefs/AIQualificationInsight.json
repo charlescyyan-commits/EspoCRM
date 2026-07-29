@@ -1,0 +1,156 @@
+{
+  "fields": {
+    "name": {
+      "type": "varchar",
+      "maxLength": 255,
+      "required": true,
+      "trim": true,
+      "readOnly": true
+    },
+    "prospectPool": {
+      "type": "link",
+      "required": true,
+      "readOnly": true
+    },
+    "insightContent": {
+      "type": "text",
+      "required": true,
+      "readOnly": true
+    },
+    "signals": {
+      "type": "text",
+      "required": true,
+      "readOnly": true
+    },
+    "reasoning": {
+      "type": "text",
+      "required": true,
+      "readOnly": true
+    },
+    "confidence": {
+      "type": "float",
+      "required": true,
+      "min": 0,
+      "max": 1,
+      "readOnly": true
+    },
+    "evidenceReferences": {
+      "type": "linkMultiple",
+      "required": true,
+      "readOnly": true
+    },
+    "evidenceReferenceIds": {
+      "type": "text",
+      "required": true,
+      "readOnly": true,
+      "utility": true
+    },
+    "sourceAIRequestLog": {
+      "type": "link",
+      "required": true,
+      "readOnly": true
+    },
+    "sourceAIJob": {
+      "type": "link",
+      "readOnly": true
+    },
+    "supersedes": {
+      "type": "link",
+      "readOnly": true
+    },
+    "supersededBy": {
+      "type": "linkMultiple",
+      "readOnly": true
+    },
+    "humanFeedbacks": {
+      "type": "linkMultiple",
+      "readOnly": true
+    },
+    "createdAt": {
+      "type": "datetime",
+      "readOnly": true
+    },
+    "createdBy": {
+      "type": "link",
+      "readOnly": true
+    }
+  },
+  "links": {
+    "prospectPool": {
+      "type": "belongsTo",
+      "entity": "ProspectPool",
+      "foreign": "qualificationInsights"
+    },
+    "evidenceReferences": {
+      "type": "hasMany",
+      "entity": "ResearchEvidence",
+      "foreign": "qualificationInsights",
+      "relationName": "c21AIQualificationInsightResearchEvidence"
+    },
+    "sourceAIRequestLog": {
+      "type": "belongsTo",
+      "entity": "AIRequestLog"
+    },
+    "sourceAIJob": {
+      "type": "belongsTo",
+      "entity": "AIJob"
+    },
+    "supersedes": {
+      "type": "belongsTo",
+      "entity": "AIQualificationInsight",
+      "foreign": "supersededBy"
+    },
+    "supersededBy": {
+      "type": "hasMany",
+      "entity": "AIQualificationInsight",
+      "foreign": "supersedes"
+    },
+    "humanFeedbacks": {
+      "type": "hasMany",
+      "entity": "HumanFeedback",
+      "foreign": "target"
+    },
+    "createdBy": {
+      "type": "belongsTo",
+      "entity": "User"
+    }
+  },
+  "collection": {
+    "orderBy": "createdAt",
+    "order": "desc",
+    "textFilterFields": [
+      "name",
+      "insightContent",
+      "signals",
+      "reasoning"
+    ]
+  },
+  "deleteId": true,
+  "indexes": {
+    "prospectPool": {
+      "columns": [
+        "prospectPoolId"
+      ]
+    },
+    "sourceAIRequestLog": {
+      "columns": [
+        "sourceAIRequestLogId"
+      ]
+    },
+    "sourceAIJob": {
+      "columns": [
+        "sourceAIJobId"
+      ]
+    },
+    "supersedes": {
+      "columns": [
+        "supersedesId"
+      ]
+    },
+    "createdAt": {
+      "columns": [
+        "createdAt"
+      ]
+    }
+  }
+}

@@ -42,7 +42,6 @@ final class ResearchEvidenceGovernanceGuard implements BeforeSave, BeforeRemove
         'sourceAIRequestLogId',
         'sourceAIJobId',
         'supersedesId',
-        'evidenceRevision',
     ];
 
     public function __construct(private EntityManager $entityManager)

@@ -18,12 +18,16 @@
     "lead": {"type": "link"},
     "createdAt": {"type": "datetime", "readOnly": true},
     "assignedUser": {"type": "link"},
-    "teams": {"type": "linkMultiple"}
+    "teams": {"type": "linkMultiple"},
+    "qualificationInsights": {"type": "linkMultiple", "readOnly": true},
+    "humanFeedbacks": {"type": "linkMultiple", "readOnly": true}
   },
   "links": {
     "searchJob": {"type": "belongsTo", "entity": "SearchJob", "foreign": "prospectPools"},
     "lead": {"type": "belongsTo", "entity": "Lead", "foreign": "prospectPools"},
     "researchEvidences": {"type": "hasMany", "entity": "ResearchEvidence", "foreign": "prospectPool"},
+    "qualificationInsights": {"type": "hasMany", "entity": "AIQualificationInsight", "foreign": "prospectPool"},
+    "humanFeedbacks": {"type": "hasMany", "entity": "HumanFeedback", "foreign": "target"},
     "assignedUser": {"type": "belongsTo", "entity": "User"},
     "teams": {"type": "hasMany", "entity": "Team", "relationName": "entityTeam", "layoutRelationshipsDisabled": true}
   },

@@ -1,7 +1,9 @@
 {
   "mandatory": {
     "scopeLevel": {
-      "ResearchEvidence": false
+      "ResearchEvidence": false,
+      "AIQualificationInsight": false,
+      "HumanFeedback": false
     }
   }
 }

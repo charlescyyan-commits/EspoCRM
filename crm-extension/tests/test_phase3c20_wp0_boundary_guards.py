@@ -63,8 +63,15 @@ SCORING_FORBIDDEN_CODE = (
 )
 
 LIFECYCLE_MUTATION_FROM_AI = (
-    re.compile(r"AIQualificationInsight.*(ProspectPool|Lead|qualificationStatus|peQualification)", re.IGNORECASE | re.DOTALL),
-    re.compile(r"(ProspectPool|Lead).*AIQualificationInsight.*(set|saveEntity|transition)", re.IGNORECASE | re.DOTALL),
+    re.compile(
+        r"->set\(\s*['\"](?:qualificationStatus|peQualification|pipelineStage)['\"]",
+        re.IGNORECASE,
+    ),
+    re.compile(r"saveEntity\(\s*\$(?:prospectPool|lead)\b", re.IGNORECASE),
+    re.compile(
+        r"getNewEntity\(\s*['\"](?:ProspectPool|Lead|Opportunity)['\"]",
+        re.IGNORECASE,
+    ),
 )
 
 QUEUE_AUTHORITY_MARKERS = (
@@ -176,12 +183,31 @@ class Phase3C20WP0BoundaryGuardTests(unittest.TestCase):
     # ------------------------------------------------------------------
 
     def test_no_ai_qualification_insight_lifecycle_writer(self) -> None:
-        insight_paths = list(EXTENSION.rglob("*AIQualificationInsight*"))
-        self.assertEqual(
-            insight_paths,
-            [],
-            msg="AIQualificationInsight must not exist yet; lifecycle mutation via insight is forbidden",
+        entity_def = ENTITY_DEFS / "AIQualificationInsight.json"
+        service = PROSPECTING / "Services" / "AIQualificationInsightService.php"
+        guard = (
+            PROSPECTING
+            / "Hooks"
+            / "AIQualificationInsight"
+            / "AIQualificationInsightImmutableGuard.php"
         )
+        self.assertTrue(entity_def.is_file())
+        self.assertTrue(service.is_file())
+        self.assertTrue(guard.is_file())
+
+        fields = json.loads(read(entity_def))["fields"]
+        lifecycle_fields = {
+            "status",
+            "qualificationStatus",
+            "peQualificationStatus",
+            "pipelineStage",
+            "lead",
+            "opportunity",
+            "isCurrent",
+        }
+        self.assertTrue(lifecycle_fields.isdisjoint(fields))
+        self.assertIn("if (!$entity->isNew())", read(guard))
+        self.assertIn("create a superseding insight", read(guard))
 
     def test_ai_related_surfaces_cannot_mutate_prospect_lifecycle(self) -> None:
         """Guard: no AI* service/controller may write ProspectPool/Lead lifecycle fields."""
@@ -195,18 +221,9 @@ class Phase3C20WP0BoundaryGuardTests(unittest.TestCase):
             or "AIScore" in path.as_posix()
             or "AIJob" in path.as_posix()
         ]
-        lifecycle_markers = (
-            "ProspectPool",
-            "qualificationStatus",
-            "peQualification",
-            "pipelineStage",
-        )
         for path in ai_named:
             text = read(path)
             relative = path.relative_to(ROOT).as_posix()
-            if "AIQualificationInsight" in text and any(marker in text for marker in lifecycle_markers):
-                if re.search(r"->set\(|saveEntity\(|transition\(", text):
-                    violations.append(relative)
             for pattern in LIFECYCLE_MUTATION_FROM_AI:
                 if pattern.search(text):
                     violations.append(f"{relative}: lifecycle coupling pattern")

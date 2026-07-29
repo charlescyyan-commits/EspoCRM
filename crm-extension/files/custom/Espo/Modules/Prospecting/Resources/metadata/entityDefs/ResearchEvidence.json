@@ -175,14 +175,6 @@
       "type": "link",
       "readOnly": true
     },
-    "evidenceRevision": {
-      "type": "int",
-      "required": true,
-      "default": 1,
-      "min": 1,
-      "readOnly": true,
-      "tooltip": true
-    },
     "supersededBy": {
       "type": "linkMultiple",
       "readOnly": true
@@ -216,6 +208,14 @@
     },
     "teams": {
       "type": "linkMultiple"
+    },
+    "qualificationInsights": {
+      "type": "linkMultiple",
+      "readOnly": true
+    },
+    "humanFeedbacks": {
+      "type": "linkMultiple",
+      "readOnly": true
     }
   },
   "links": {
@@ -264,6 +264,17 @@
       "entity": "Team",
       "relationName": "entityTeam",
       "layoutRelationshipsDisabled": true
+    },
+    "qualificationInsights": {
+      "type": "hasMany",
+      "entity": "AIQualificationInsight",
+      "foreign": "evidenceReferences",
+      "relationName": "c21AIQualificationInsightResearchEvidence"
+    },
+    "humanFeedbacks": {
+      "type": "hasMany",
+      "entity": "HumanFeedback",
+      "foreign": "target"
     }
   },
   "collection": {
@@ -319,7 +330,6 @@
         "peCanonicalUrl",
         "peEvidenceTypeNormalized",
         "peClaimHash",
-        "evidenceRevision",
         "deleteId"
       ]
     },
@@ -330,7 +340,6 @@
         "peCanonicalUrl",
         "peEvidenceTypeNormalized",
         "peClaimHash",
-        "evidenceRevision",
         "deleteId"
       ]
     }

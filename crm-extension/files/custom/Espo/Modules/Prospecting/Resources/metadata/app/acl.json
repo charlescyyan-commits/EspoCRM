@@ -1,7 +1,9 @@
 {
   "mandatory": {
     "scopeLevel": {
-      "ResearchEvidence": false
+      "ResearchEvidence": false,
+      "AIQualificationInsight": false,
+      "HumanFeedback": false
     }
   },
   "adminMandatory": {
@@ -10,6 +12,18 @@
         "create": "yes",
         "read": "all",
         "edit": "all",
+        "delete": "no"
+      },
+      "AIQualificationInsight": {
+        "create": "yes",
+        "read": "all",
+        "edit": "no",
+        "delete": "no"
+      },
+      "HumanFeedback": {
+        "create": "yes",
+        "read": "all",
+        "edit": "no",
         "delete": "no"
       }
     }

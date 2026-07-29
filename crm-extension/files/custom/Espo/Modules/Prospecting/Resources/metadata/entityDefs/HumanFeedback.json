@@ -1,0 +1,124 @@
+{
+  "fields": {
+    "name": {
+      "type": "varchar",
+      "maxLength": 255,
+      "required": true,
+      "trim": true,
+      "readOnly": true
+    },
+    "target": {
+      "type": "linkParent",
+      "required": true,
+      "readOnly": true,
+      "entityList": [
+        "AIQualificationInsight",
+        "ResearchEvidence",
+        "ProspectPool"
+      ]
+    },
+    "feedbackType": {
+      "type": "enum",
+      "required": true,
+      "options": [
+        "CONFIRM",
+        "CORRECT",
+        "DISAGREE",
+        "COMMENT"
+      ],
+      "readOnly": true,
+      "displayAsLabel": true
+    },
+    "comment": {
+      "type": "text",
+      "required": false,
+      "notNull": false,
+      "readOnly": true
+    },
+    "assessment": {
+      "type": "enum",
+      "required": false,
+      "notNull": false,
+      "options": [
+        "SUPPORTS",
+        "PARTIALLY_SUPPORTS",
+        "DOES_NOT_SUPPORT",
+        "NOT_APPLICABLE"
+      ],
+      "readOnly": true,
+      "displayAsLabel": true
+    },
+    "actor": {
+      "type": "link",
+      "required": true,
+      "readOnly": true
+    },
+    "supersedes": {
+      "type": "link",
+      "readOnly": true
+    },
+    "supersededBy": {
+      "type": "linkMultiple",
+      "readOnly": true
+    },
+    "createdAt": {
+      "type": "datetime",
+      "readOnly": true
+    }
+  },
+  "links": {
+    "target": {
+      "type": "belongsToParent",
+      "foreign": "humanFeedbacks"
+    },
+    "actor": {
+      "type": "belongsTo",
+      "entity": "User"
+    },
+    "supersedes": {
+      "type": "belongsTo",
+      "entity": "HumanFeedback",
+      "foreign": "supersededBy"
+    },
+    "supersededBy": {
+      "type": "hasMany",
+      "entity": "HumanFeedback",
+      "foreign": "supersedes"
+    }
+  },
+  "collection": {
+    "orderBy": "createdAt",
+    "order": "desc",
+    "textFilterFields": [
+      "name",
+      "feedbackType",
+      "comment",
+      "assessment",
+      "targetType"
+    ]
+  },
+  "deleteId": true,
+  "indexes": {
+    "target": {
+      "columns": [
+        "targetType",
+        "targetId"
+      ]
+    },
+    "actor": {
+      "columns": [
+        "actorId"
+      ]
+    },
+    "supersedes": {
+      "columns": [
+        "supersedesId"
+      ]
+    },
+    "createdAt": {
+      "columns": [
+        "createdAt"
+      ]
+    }
+  }
+}
