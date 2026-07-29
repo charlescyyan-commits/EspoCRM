@@ -2,7 +2,8 @@
   "mandatory": {
     "scopeLevel": {
       "ProviderCredential": false,
-      "PromptTemplate": false
+      "PromptTemplate": false,
+      "AIRequestLog": false
     }
   }
 }

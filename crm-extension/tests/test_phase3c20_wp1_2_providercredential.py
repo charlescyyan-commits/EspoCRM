@@ -13,12 +13,15 @@ AI_PLATFORM = ROOT / "crm-extension" / "files" / "custom" / "Espo" / "Modules" /
 ENTITY_DEFS = AI_PLATFORM / "Resources" / "metadata" / "entityDefs"
 ENTITY_DEF = ENTITY_DEFS / "ProviderCredential.json"
 AI_JOB_ENTITY_DEF = ENTITY_DEFS / "AIJob.json"
+AI_REQUEST_LOG_ENTITY_DEF = ENTITY_DEFS / "AIRequestLog.json"
 PROMPT_TEMPLATE_ENTITY_DEF = ENTITY_DEFS / "PromptTemplate.json"
 SCOPE = AI_PLATFORM / "Resources" / "metadata" / "scopes" / "ProviderCredential.json"
 AI_JOB_SCOPE = AI_PLATFORM / "Resources" / "metadata" / "scopes" / "AIJob.json"
+AI_REQUEST_LOG_SCOPE = AI_PLATFORM / "Resources" / "metadata" / "scopes" / "AIRequestLog.json"
 PROMPT_TEMPLATE_SCOPE = AI_PLATFORM / "Resources" / "metadata" / "scopes" / "PromptTemplate.json"
 ACL_DEF = AI_PLATFORM / "Resources" / "metadata" / "aclDefs" / "ProviderCredential.json"
 AI_JOB_ACL_DEF = AI_PLATFORM / "Resources" / "metadata" / "aclDefs" / "AIJob.json"
+AI_REQUEST_LOG_ACL_DEF = AI_PLATFORM / "Resources" / "metadata" / "aclDefs" / "AIRequestLog.json"
 PROMPT_TEMPLATE_ACL_DEF = AI_PLATFORM / "Resources" / "metadata" / "aclDefs" / "PromptTemplate.json"
 ENTITY_ACL = AI_PLATFORM / "Resources" / "metadata" / "entityAcl" / "ProviderCredential.json"
 PROMPT_TEMPLATE_ENTITY_ACL = (
@@ -40,6 +43,10 @@ DETAIL_LAYOUT = AI_PLATFORM / "Resources" / "layouts" / "ProviderCredential" / "
 AI_JOB_SERVICE = AI_PLATFORM / "Services" / "AIJobService.php"
 AI_JOB_SAVE_OPTION = AI_PLATFORM / "Services" / "AIJobStatusMutationSaveOption.php"
 AI_JOB_GUARD = AI_PLATFORM / "Hooks" / "AIJob" / "AIJobStatusMutationGuard.php"
+AI_REQUEST_LOG_ENTITY = AI_PLATFORM / "Entities" / "AIRequestLog.php"
+AI_REQUEST_LOG_SERVICE = AI_PLATFORM / "Services" / "AIRequestLogService.php"
+AI_REQUEST_LOG_SAVE_OPTION = AI_PLATFORM / "Services" / "AIRequestLogSaveOption.php"
+AI_REQUEST_LOG_GUARD = AI_PLATFORM / "Hooks" / "AIRequestLog" / "AIRequestLogAppendOnlyGuard.php"
 PROMPT_TEMPLATE_ENTITY = AI_PLATFORM / "Entities" / "PromptTemplate.php"
 PROMPT_TEMPLATE_SERVICE = AI_PLATFORM / "Services" / "PromptTemplateService.php"
 PROMPT_TEMPLATE_SAVE_OPTION = AI_PLATFORM / "Services" / "PromptTemplateSaveOption.php"
@@ -71,6 +78,13 @@ APPROVED_MODULE_FILES = {
     AI_JOB_SERVICE,
     AI_JOB_SAVE_OPTION,
     AI_JOB_GUARD,
+    AI_REQUEST_LOG_ENTITY_DEF,
+    AI_REQUEST_LOG_SCOPE,
+    AI_REQUEST_LOG_ACL_DEF,
+    AI_REQUEST_LOG_ENTITY,
+    AI_REQUEST_LOG_SERVICE,
+    AI_REQUEST_LOG_SAVE_OPTION,
+    AI_REQUEST_LOG_GUARD,
     PROMPT_TEMPLATE_ENTITY_DEF,
     PROMPT_TEMPLATE_SCOPE,
     PROMPT_TEMPLATE_ACL_DEF,
@@ -233,7 +247,7 @@ class Phase3C20WP12ProviderCredentialTests(unittest.TestCase):
         self.assertTrue(ENTITY_DEF.is_file())
         self.assertEqual(
             set(ENTITY_DEFS.glob("*.json")),
-            {ENTITY_DEF, AI_JOB_ENTITY_DEF, PROMPT_TEMPLATE_ENTITY_DEF},
+            {ENTITY_DEF, AI_JOB_ENTITY_DEF, AI_REQUEST_LOG_ENTITY_DEF, PROMPT_TEMPLATE_ENTITY_DEF},
         )
 
         metadata = load_entity_def()
@@ -331,7 +345,7 @@ class Phase3C20WP12ProviderCredentialTests(unittest.TestCase):
     def test_scope_exists_with_acl_enabled_and_no_public_surface(self) -> None:
         self.assertEqual(
             set(SCOPE.parent.glob("*.json")),
-            {SCOPE, AI_JOB_SCOPE, PROMPT_TEMPLATE_SCOPE},
+            {SCOPE, AI_JOB_SCOPE, AI_REQUEST_LOG_SCOPE, PROMPT_TEMPLATE_SCOPE},
         )
         scope = load_json(SCOPE)
         self.assertEqual(
@@ -353,7 +367,7 @@ class Phase3C20WP12ProviderCredentialTests(unittest.TestCase):
     def test_acl_forces_admin_only_crud_and_portal_denial(self) -> None:
         self.assertEqual(
             set(ACL_DEF.parent.glob("*.json")),
-            {ACL_DEF, AI_JOB_ACL_DEF, PROMPT_TEMPLATE_ACL_DEF},
+            {ACL_DEF, AI_JOB_ACL_DEF, AI_REQUEST_LOG_ACL_DEF, PROMPT_TEMPLATE_ACL_DEF},
         )
         self.assertEqual(
             set(ENTITY_ACL.parent.glob("*.json")),
@@ -418,6 +432,8 @@ class Phase3C20WP12ProviderCredentialTests(unittest.TestCase):
             {
                 AI_JOB_SERVICE,
                 AI_JOB_SAVE_OPTION,
+                AI_REQUEST_LOG_SERVICE,
+                AI_REQUEST_LOG_SAVE_OPTION,
                 PROMPT_TEMPLATE_SERVICE,
                 PROMPT_TEMPLATE_SAVE_OPTION,
             },
@@ -427,6 +443,10 @@ class Phase3C20WP12ProviderCredentialTests(unittest.TestCase):
             {AI_JOB_GUARD},
         )
         self.assertEqual(
+            set((AI_PLATFORM / "Hooks" / "AIRequestLog").glob("*.php")),
+            {AI_REQUEST_LOG_GUARD},
+        )
+        self.assertEqual(
             set((AI_PLATFORM / "Hooks" / "PromptTemplate").glob("*.php")),
             {PROMPT_TEMPLATE_GUARD},
         )
@@ -434,6 +454,10 @@ class Phase3C20WP12ProviderCredentialTests(unittest.TestCase):
             AI_JOB_SERVICE,
             AI_JOB_SAVE_OPTION,
             AI_JOB_GUARD,
+            AI_REQUEST_LOG_ENTITY,
+            AI_REQUEST_LOG_SERVICE,
+            AI_REQUEST_LOG_SAVE_OPTION,
+            AI_REQUEST_LOG_GUARD,
             PROMPT_TEMPLATE_ENTITY,
             PROMPT_TEMPLATE_SERVICE,
             PROMPT_TEMPLATE_SAVE_OPTION,

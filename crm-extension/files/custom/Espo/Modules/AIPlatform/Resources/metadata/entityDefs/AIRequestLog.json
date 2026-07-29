@@ -1,0 +1,42 @@
+{
+  "fields": {
+    "name": {"type": "varchar", "maxLength": 255, "required": true, "trim": true, "readOnly": true},
+    "aiJob": {"type": "link", "required": true, "readOnly": true},
+    "attemptId": {"type": "varchar", "maxLength": 255, "required": true, "trim": true, "readOnly": true},
+    "attemptNumber": {"type": "int", "required": true, "min": 1, "readOnly": true},
+    "capability": {"type": "enum", "required": true, "options": ["SEARCH", "ENRICHMENT", "COMPLETION"], "readOnly": true, "displayAsLabel": true},
+    "purpose": {"type": "varchar", "maxLength": 255, "required": true, "trim": true, "readOnly": true},
+    "provider": {"type": "varchar", "maxLength": 100, "required": true, "trim": true, "readOnly": true},
+    "model": {"type": "varchar", "maxLength": 255, "required": true, "trim": true, "readOnly": true},
+    "promptTemplateId": {"type": "varchar", "maxLength": 24, "required": true, "trim": true, "readOnly": true},
+    "promptTemplateVersion": {"type": "int", "required": true, "min": 1, "readOnly": true},
+    "promptTemplateHash": {"type": "varchar", "maxLength": 64, "required": true, "trim": true, "readOnly": true},
+    "inputTokens": {"type": "int", "required": true, "min": 0, "readOnly": true},
+    "outputTokens": {"type": "int", "required": true, "min": 0, "readOnly": true},
+    "totalTokens": {"type": "int", "required": true, "min": 0, "readOnly": true},
+    "costAmount": {"type": "float", "required": true, "min": 0, "readOnly": true},
+    "costCurrency": {"type": "varchar", "maxLength": 3, "required": true, "trim": true, "readOnly": true},
+    "latencyMs": {"type": "int", "required": true, "min": 0, "readOnly": true},
+    "status": {"type": "enum", "required": true, "options": ["SUCCEEDED", "FAILED"], "readOnly": true, "displayAsLabel": true, "style": {"SUCCEEDED": "success", "FAILED": "danger"}},
+    "errorClass": {"type": "varchar", "maxLength": 100, "required": false, "notNull": false, "trim": true, "readOnly": true},
+    "failureCategory": {"type": "enum", "required": false, "notNull": false, "options": ["NETWORK", "PROVIDER", "AUTH", "RATE_LIMIT", "VALIDATION", "UNKNOWN", "QUOTA", "CONTENT_FILTER"], "readOnly": true, "displayAsLabel": true},
+    "createdAt": {"type": "datetime", "readOnly": true},
+    "createdBy": {"type": "link", "readOnly": true}
+  },
+  "links": {
+    "aiJob": {"type": "belongsTo", "entity": "AIJob"},
+    "createdBy": {"type": "belongsTo", "entity": "User"}
+  },
+  "collection": {
+    "orderBy": "createdAt",
+    "order": "desc",
+    "textFilterFields": ["name", "attemptId", "capability", "purpose", "provider", "model", "status"]
+  },
+  "deleteId": true,
+  "indexes": {
+    "aiJobAttemptId": {"type": "unique", "columns": ["aiJobId", "attemptId", "deleteId"]},
+    "aiJobAttemptNumber": {"type": "unique", "columns": ["aiJobId", "attemptNumber", "deleteId"]},
+    "aiJob": {"columns": ["aiJobId"]},
+    "createdAt": {"columns": ["createdAt"]}
+  }
+}

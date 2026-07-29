@@ -2,7 +2,8 @@
   "mandatory": {
     "scopeLevel": {
       "ProviderCredential": false,
-      "PromptTemplate": false
+      "PromptTemplate": false,
+      "AIRequestLog": false
     }
   },
   "adminMandatory": {
@@ -17,6 +18,12 @@
         "create": "yes",
         "read": "all",
         "edit": "all",
+        "delete": "no"
+      },
+      "AIRequestLog": {
+        "create": "yes",
+        "read": "all",
+        "edit": "no",
         "delete": "no"
       }
     }
