@@ -2,9 +2,18 @@
 
 ## Status
 
-**Accepted** — Accepted after Phase3C21 ADR Final Acceptance Review. This ADR
-authorizes C21 entities, metadata, migrations, runtime, provider integration,
-and workflow implementation.
+**Accepted** — accepted for C21 Charter and bounded governance-hardening design.
+Acceptance does not authorize provider integration, scoring authority,
+autonomous execution, outreach, or CRM lifecycle automation.
+
+### Acceptance Record
+
+- Independent architecture review verdict: **ACCEPT WITH CONDITIONS**.
+- Review conditions resolved by `247ce51`: candidate-identity alignment,
+  documentation-only C21 invariant strategy, and ResearchEvidence immutability.
+- Phase3C21 Charter + WP1 Governance Design baseline declared **Accepted** on
+  2026-07-29.
+- Implementation remains gated by an approved C21 Charter and bounded WP plan.
 
 ## Date
 
