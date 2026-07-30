@@ -557,6 +557,11 @@ class ExtensionSkeletonTests(unittest.TestCase):
             MODULE / "Services" / "C24ReplySignalSaveOption.php",
             MODULE / "Hooks" / "ReplySignal" / "ReplySignalImmutableGuard.php",
             MODULE / "Hooks" / "ReplySignal" / "ReplySignalLifecycleGuard.php",
+            MODULE / "Entities" / "OpportunityCandidate.php",
+            MODULE / "Services" / "OpportunityCandidateLifecycleService.php",
+            MODULE / "Services" / "C24OpportunityCandidateSaveOption.php",
+            MODULE / "Hooks" / "OpportunityCandidate" / "OpportunityCandidateImmutableGuard.php",
+            MODULE / "Hooks" / "OpportunityCandidate" / "OpportunityCandidateLifecycleGuard.php",
             MODULE / "ProviderBoundary" / "ProviderTypeRegistry.php",
             MODULE / "ProviderBoundary" / "ProviderCapabilityDeclaration.php",
             MODULE / "ProviderBoundary" / "CredentialReference.php",
@@ -720,6 +725,16 @@ class ExtensionSkeletonTests(unittest.TestCase):
             msg="SendExecution PrimaryFilters must match the approved C18 inventory exactly",
         )
         self.assertEqual(set(php_files), expected, msg=f"Unexpected PHP files: {php_files}")
+        # Phase3C24 WP2.2 OpportunityCandidate metadata/ACL foundation (non-PHP inventory).
+        self.assertTrue(
+            (MODULE / "Resources" / "metadata" / "scopes" / "OpportunityCandidate.json").is_file()
+        )
+        self.assertTrue(
+            (MODULE / "Resources" / "metadata" / "aclDefs" / "OpportunityCandidate.json").is_file()
+        )
+        self.assertTrue(
+            (MODULE / "Resources" / "metadata" / "entityDefs" / "OpportunityCandidate.json").is_file()
+        )
 
     def test_core_espocrm_untouched(self) -> None:
         # This repository does not vendor EspoCRM core. Guard against accidental core trees.

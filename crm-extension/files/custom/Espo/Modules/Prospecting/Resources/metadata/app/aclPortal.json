@@ -11,7 +11,8 @@
       "OptimizationInsight": false,
       "PerformanceMetric": false,
       "FeedbackLearningObservation": false,
-      "ReplySignal": false
+      "ReplySignal": false,
+      "OpportunityCandidate": false
     }
   }
 }

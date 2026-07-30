@@ -1,0 +1,32 @@
+{
+  "fields": {
+    "name": "Name",
+    "provenanceReference": "Provenance Reference",
+    "status": "Status",
+    "reviewContext": "Review Context",
+    "commercialSignalSummary": "Commercial Signal Summary",
+    "transitionHistory": "Transition History",
+    "lastTransitionBy": "Last Transition By",
+    "lastTransitionAt": "Last Transition At",
+    "outcomeReference": "Outcome Reference",
+    "outcomeNote": "Outcome Note",
+    "outcomeRecordedAt": "Outcome Recorded At",
+    "createdAt": "Created At",
+    "createdBy": "Created By"
+  },
+  "labels": {
+    "Create OpportunityCandidate": "Create Opportunity Candidate",
+    "OpportunityCandidates": "Opportunity Candidates"
+  },
+  "options": {
+    "status": {
+      "IDENTIFIED": "Identified",
+      "REVIEW_PENDING": "Review Pending",
+      "ACCEPTED": "Accepted",
+      "ACTIVE": "Active",
+      "WON": "Won",
+      "LOST": "Lost",
+      "REJECTED": "Rejected"
+    }
+  }
+}

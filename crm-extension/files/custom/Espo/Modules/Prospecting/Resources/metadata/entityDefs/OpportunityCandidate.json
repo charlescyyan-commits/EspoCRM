@@ -1,0 +1,94 @@
+{
+  "fields": {
+    "name": {
+      "type": "varchar",
+      "maxLength": 255,
+      "required": true,
+      "trim": true,
+      "readOnly": true
+    },
+    "provenanceReference": {
+      "type": "text",
+      "required": true,
+      "readOnly": true
+    },
+    "status": {
+      "type": "enum",
+      "required": true,
+      "default": "IDENTIFIED",
+      "options": [
+        "IDENTIFIED",
+        "REVIEW_PENDING",
+        "ACCEPTED",
+        "ACTIVE",
+        "WON",
+        "LOST",
+        "REJECTED"
+      ],
+      "readOnly": true,
+      "displayAsLabel": true
+    },
+    "reviewContext": {
+      "type": "text",
+      "readOnly": true
+    },
+    "commercialSignalSummary": {
+      "type": "text",
+      "readOnly": true
+    },
+    "transitionHistory": {
+      "type": "text",
+      "readOnly": true
+    },
+    "lastTransitionBy": {
+      "type": "varchar",
+      "maxLength": 100,
+      "readOnly": true
+    },
+    "lastTransitionAt": {
+      "type": "datetime",
+      "readOnly": true
+    },
+    "outcomeReference": {
+      "type": "text",
+      "readOnly": true
+    },
+    "outcomeNote": {
+      "type": "text",
+      "readOnly": true
+    },
+    "outcomeRecordedAt": {
+      "type": "datetime",
+      "readOnly": true
+    },
+    "createdAt": {
+      "type": "datetime",
+      "readOnly": true
+    },
+    "createdBy": {
+      "type": "link",
+      "readOnly": true
+    }
+  },
+  "collection": {
+    "orderBy": "createdAt",
+    "order": "desc",
+    "textFilterFields": [
+      "name",
+      "status"
+    ]
+  },
+  "deleteId": true,
+  "indexes": {
+    "status": {
+      "columns": [
+        "status"
+      ]
+    },
+    "createdAt": {
+      "columns": [
+        "createdAt"
+      ]
+    }
+  }
+}

@@ -7,7 +7,8 @@
     "SalesFeedback": "Sales Feedback", "LearningSignal": "Learning Signal", "Quote": "Quote Center",
     "QuoteItem": "Quote Item", "ProformaInvoice": "Proforma Invoice", "Approval": "Quote Approval",
     "ExecutionWorkspace": "Execution Workspace", "ProspectRun": "Prospect Run",
-    "ActionGate": "Action Gate", "ExecutionLedger": "Execution Ledger"
+    "ActionGate": "Action Gate", "ExecutionLedger": "Execution Ledger",
+    "OpportunityCandidate": "Opportunity Candidate"
   },
   "scopeNamesPlural": {
     "SearchStrategy": "Search Strategies", "SearchJob": "Search Jobs", "ProspectPool": "Prospect Pool",
@@ -17,7 +18,8 @@
     "SalesFeedback": "Sales Feedback", "LearningSignal": "Learning Signals", "Quote": "Quote Center",
     "QuoteItem": "Quote Items", "ProformaInvoice": "Proforma Invoices", "Approval": "Quote Approvals",
     "ExecutionWorkspace": "Execution Workspace", "ProspectRun": "Prospect Runs",
-    "ActionGate": "Action Gates", "ExecutionLedger": "Execution Ledger"
+    "ActionGate": "Action Gates", "ExecutionLedger": "Execution Ledger",
+    "OpportunityCandidate": "Opportunity Candidates"
   },
   "scopeNamesSingular": {
     "DraftApproval": "Outreach Approval", "Quote": "Quote", "Approval": "Quote Approval",

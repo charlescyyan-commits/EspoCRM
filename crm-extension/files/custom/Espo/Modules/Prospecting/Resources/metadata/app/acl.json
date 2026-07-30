@@ -11,7 +11,8 @@
       "OptimizationInsight": false,
       "PerformanceMetric": false,
       "FeedbackLearningObservation": false,
-      "ReplySignal": false
+      "ReplySignal": false,
+      "OpportunityCandidate": false
     }
   },
   "adminMandatory": {
@@ -80,6 +81,12 @@
         "create": "yes",
         "read": "all",
         "edit": "all",
+        "delete": "no"
+      },
+      "OpportunityCandidate": {
+        "create": "yes",
+        "read": "all",
+        "edit": "no",
         "delete": "no"
       }
     }

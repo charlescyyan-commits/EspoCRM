@@ -7,7 +7,8 @@
     "ResearchEvidence": "研究证据", "DraftApproval": "触达中心",
     "SendExecution": "发送执行", "ReplyEvent": "客户回复", "EmailEvent": "邮件事件",
     "SalesFeedback": "销售反馈", "LearningSignal": "学习信号", "Quote": "报价中心",
-    "QuoteItem": "报价明细", "ProformaInvoice": "形式发票", "Approval": "报价审批"
+    "QuoteItem": "报价明细", "ProformaInvoice": "形式发票", "Approval": "报价审批",
+    "OpportunityCandidate": "机会候选"
   },
   "scopeNamesPlural": {
     "ExecutionWorkspace": "执行工作台", "ProspectRun": "潜客运行",
@@ -17,7 +18,8 @@
     "ResearchEvidence": "研究证据", "DraftApproval": "触达中心",
     "SendExecution": "发送执行", "ReplyEvent": "客户回复", "EmailEvent": "邮件事件",
     "SalesFeedback": "销售反馈", "LearningSignal": "学习信号", "Quote": "报价中心",
-    "QuoteItem": "报价明细", "ProformaInvoice": "形式发票", "Approval": "报价审批"
+    "QuoteItem": "报价明细", "ProformaInvoice": "形式发票", "Approval": "报价审批",
+    "OpportunityCandidate": "机会候选"
   },
   "scopeNamesSingular": {
     "ProspectRun": "潜客运行", "ActionGate": "操作门",

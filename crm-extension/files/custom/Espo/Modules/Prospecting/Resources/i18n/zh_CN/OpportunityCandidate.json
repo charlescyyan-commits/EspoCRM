@@ -1,0 +1,32 @@
+{
+  "fields": {
+    "name": "名称",
+    "provenanceReference": "来源引用",
+    "status": "状态",
+    "reviewContext": "评审上下文",
+    "commercialSignalSummary": "商业信号摘要",
+    "transitionHistory": "流转历史",
+    "lastTransitionBy": "最近流转人",
+    "lastTransitionAt": "最近流转时间",
+    "outcomeReference": "结果引用",
+    "outcomeNote": "结果备注",
+    "outcomeRecordedAt": "结果记录时间",
+    "createdAt": "创建时间",
+    "createdBy": "创建人"
+  },
+  "labels": {
+    "Create OpportunityCandidate": "创建机会候选",
+    "OpportunityCandidates": "机会候选"
+  },
+  "options": {
+    "status": {
+      "IDENTIFIED": "已识别",
+      "REVIEW_PENDING": "待评审",
+      "ACCEPTED": "已接受",
+      "ACTIVE": "进行中",
+      "WON": "已赢单",
+      "LOST": "已丢单",
+      "REJECTED": "已拒绝"
+    }
+  }
+}

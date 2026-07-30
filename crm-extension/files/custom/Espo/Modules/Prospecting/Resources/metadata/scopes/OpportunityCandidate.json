@@ -1,0 +1,12 @@
+{
+  "entity": true,
+  "object": false,
+  "tab": false,
+  "acl": true,
+  "aclPortal": false,
+  "customizable": false,
+  "importable": false,
+  "module": "Prospecting",
+  "type": "Base",
+  "statusField": "status"
+}
