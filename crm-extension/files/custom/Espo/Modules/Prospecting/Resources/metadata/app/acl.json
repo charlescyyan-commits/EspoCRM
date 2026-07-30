@@ -12,7 +12,9 @@
       "PerformanceMetric": false,
       "FeedbackLearningObservation": false,
       "ReplySignal": false,
-      "OpportunityCandidate": false
+      "OpportunityCandidate": false,
+      "RevenueInsight": false,
+      "PipelineMetric": false
     }
   },
   "adminMandatory": {
@@ -84,6 +86,18 @@
         "delete": "no"
       },
       "OpportunityCandidate": {
+        "create": "yes",
+        "read": "all",
+        "edit": "no",
+        "delete": "no"
+      },
+      "RevenueInsight": {
+        "create": "yes",
+        "read": "all",
+        "edit": "no",
+        "delete": "no"
+      },
+      "PipelineMetric": {
         "create": "yes",
         "read": "all",
         "edit": "no",

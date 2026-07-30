@@ -562,6 +562,15 @@ class ExtensionSkeletonTests(unittest.TestCase):
             MODULE / "Services" / "C24OpportunityCandidateSaveOption.php",
             MODULE / "Hooks" / "OpportunityCandidate" / "OpportunityCandidateImmutableGuard.php",
             MODULE / "Hooks" / "OpportunityCandidate" / "OpportunityCandidateLifecycleGuard.php",
+            MODULE / "Entities" / "RevenueInsight.php",
+            MODULE / "Entities" / "PipelineMetric.php",
+            MODULE / "Services" / "RevenueInsightService.php",
+            MODULE / "Services" / "PipelineMetricService.php",
+            MODULE / "Services" / "C24RevenueInsightSaveOption.php",
+            MODULE / "Hooks" / "RevenueInsight" / "RevenueInsightImmutableGuard.php",
+            MODULE / "Hooks" / "RevenueInsight" / "RevenueInsightLifecycleGuard.php",
+            MODULE / "Services" / "C24PipelineMetricSaveOption.php",
+            MODULE / "Hooks" / "PipelineMetric" / "PipelineMetricIntegrityGuard.php",
             MODULE / "ProviderBoundary" / "ProviderTypeRegistry.php",
             MODULE / "ProviderBoundary" / "ProviderCapabilityDeclaration.php",
             MODULE / "ProviderBoundary" / "CredentialReference.php",
@@ -734,6 +743,27 @@ class ExtensionSkeletonTests(unittest.TestCase):
         )
         self.assertTrue(
             (MODULE / "Resources" / "metadata" / "entityDefs" / "OpportunityCandidate.json").is_file()
+        )
+        # Phase3C24 WP3.1 RevenueInsight / PipelineMetric entity foundation.
+        self.assertTrue((MODULE / "Entities" / "RevenueInsight.php").is_file())
+        self.assertTrue((MODULE / "Entities" / "PipelineMetric.php").is_file())
+        self.assertTrue(
+            (MODULE / "Resources" / "metadata" / "scopes" / "RevenueInsight.json").is_file()
+        )
+        self.assertTrue(
+            (MODULE / "Resources" / "metadata" / "scopes" / "PipelineMetric.json").is_file()
+        )
+        self.assertTrue(
+            (MODULE / "Resources" / "metadata" / "aclDefs" / "RevenueInsight.json").is_file()
+        )
+        self.assertTrue(
+            (MODULE / "Resources" / "metadata" / "aclDefs" / "PipelineMetric.json").is_file()
+        )
+        self.assertTrue(
+            (MODULE / "Resources" / "metadata" / "entityDefs" / "RevenueInsight.json").is_file()
+        )
+        self.assertTrue(
+            (MODULE / "Resources" / "metadata" / "entityDefs" / "PipelineMetric.json").is_file()
         )
 
     def test_core_espocrm_untouched(self) -> None:

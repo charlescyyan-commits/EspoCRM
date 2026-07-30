@@ -1,0 +1,35 @@
+{
+  "fields": {
+    "name": "名称",
+    "sourceReference": "来源引用",
+    "provenance": "溯源",
+    "insightSummary": "洞察摘要",
+    "interpretation": "解读",
+    "confidence": "置信度",
+    "metricReferences": "指标引用",
+    "reportingPeriod": "报告周期",
+    "freshnessStatus": "新鲜度状态",
+    "reviewStatus": "评审状态",
+    "reviewNote": "评审备注",
+    "createdAt": "创建时间",
+    "createdBy": "创建人"
+  },
+  "labels": {
+    "Create RevenueInsight": "创建收入洞察",
+    "RevenueInsights": "收入洞察"
+  },
+  "options": {
+    "freshnessStatus": {
+      "CURRENT": "当前",
+      "AGING": "老化",
+      "STALE": "过期",
+      "ARCHIVAL": "归档"
+    },
+    "reviewStatus": {
+      "GENERATED": "已生成",
+      "REVIEWED": "已评审",
+      "ACCEPTED": "已接受",
+      "REJECTED": "已拒绝"
+    }
+  }
+}

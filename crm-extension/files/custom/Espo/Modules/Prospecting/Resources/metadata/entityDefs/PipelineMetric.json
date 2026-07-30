@@ -1,0 +1,91 @@
+{
+  "fields": {
+    "metricName": {
+      "type": "varchar",
+      "maxLength": 255,
+      "required": true,
+      "trim": true,
+      "readOnly": true
+    },
+    "metricType": {
+      "type": "varchar",
+      "maxLength": 100,
+      "required": true,
+      "trim": true,
+      "readOnly": true
+    },
+    "value": {
+      "type": "float",
+      "required": true,
+      "readOnly": true
+    },
+    "unit": {
+      "type": "varchar",
+      "maxLength": 50,
+      "readOnly": true
+    },
+    "reportingPeriod": {
+      "type": "text",
+      "required": true,
+      "readOnly": true
+    },
+    "methodology": {
+      "type": "text",
+      "required": true,
+      "readOnly": true
+    },
+    "provenance": {
+      "type": "text",
+      "required": true,
+      "readOnly": true
+    },
+    "freshnessStatus": {
+      "type": "enum",
+      "required": true,
+      "default": "CURRENT",
+      "options": [
+        "CURRENT",
+        "AGING",
+        "STALE",
+        "ARCHIVAL"
+      ],
+      "readOnly": true,
+      "displayAsLabel": true
+    },
+    "createdAt": {
+      "type": "datetime",
+      "readOnly": true
+    },
+    "createdBy": {
+      "type": "link",
+      "readOnly": true
+    }
+  },
+  "collection": {
+    "orderBy": "createdAt",
+    "order": "desc",
+    "textFilterFields": [
+      "metricName",
+      "metricType",
+      "freshnessStatus"
+    ]
+  },
+  "deleteId": true,
+  "indexes": {
+    "metricType": {
+      "columns": [
+        "metricType"
+      ]
+    },
+    "freshnessStatus": {
+      "columns": [
+        "freshnessStatus"
+      ]
+    },
+    "createdAt": {
+      "columns": [
+        "createdAt"
+      ]
+    }
+  }
+}

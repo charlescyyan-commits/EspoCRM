@@ -1,0 +1,26 @@
+{
+  "fields": {
+    "metricName": "Metric Name",
+    "metricType": "Metric Type",
+    "value": "Value",
+    "unit": "Unit",
+    "reportingPeriod": "Reporting Period",
+    "methodology": "Methodology",
+    "provenance": "Provenance",
+    "freshnessStatus": "Freshness Status",
+    "createdAt": "Created At",
+    "createdBy": "Created By"
+  },
+  "labels": {
+    "Create PipelineMetric": "Create Pipeline Metric",
+    "PipelineMetrics": "Pipeline Metrics"
+  },
+  "options": {
+    "freshnessStatus": {
+      "CURRENT": "Current",
+      "AGING": "Aging",
+      "STALE": "Stale",
+      "ARCHIVAL": "Archival"
+    }
+  }
+}

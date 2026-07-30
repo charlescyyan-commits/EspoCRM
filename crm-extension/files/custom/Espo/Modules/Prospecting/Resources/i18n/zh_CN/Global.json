@@ -8,7 +8,9 @@
     "SendExecution": "发送执行", "ReplyEvent": "客户回复", "EmailEvent": "邮件事件",
     "SalesFeedback": "销售反馈", "LearningSignal": "学习信号", "Quote": "报价中心",
     "QuoteItem": "报价明细", "ProformaInvoice": "形式发票", "Approval": "报价审批",
-    "OpportunityCandidate": "机会候选"
+    "OpportunityCandidate": "机会候选",
+    "RevenueInsight": "收入洞察",
+    "PipelineMetric": "管道指标"
   },
   "scopeNamesPlural": {
     "ExecutionWorkspace": "执行工作台", "ProspectRun": "潜客运行",
@@ -19,7 +21,9 @@
     "SendExecution": "发送执行", "ReplyEvent": "客户回复", "EmailEvent": "邮件事件",
     "SalesFeedback": "销售反馈", "LearningSignal": "学习信号", "Quote": "报价中心",
     "QuoteItem": "报价明细", "ProformaInvoice": "形式发票", "Approval": "报价审批",
-    "OpportunityCandidate": "机会候选"
+    "OpportunityCandidate": "机会候选",
+    "RevenueInsight": "收入洞察",
+    "PipelineMetric": "管道指标"
   },
   "scopeNamesSingular": {
     "ProspectRun": "潜客运行", "ActionGate": "操作门",

@@ -1,0 +1,26 @@
+{
+  "fields": {
+    "metricName": "指标名称",
+    "metricType": "指标类型",
+    "value": "数值",
+    "unit": "单位",
+    "reportingPeriod": "报告周期",
+    "methodology": "方法论",
+    "provenance": "溯源",
+    "freshnessStatus": "新鲜度状态",
+    "createdAt": "创建时间",
+    "createdBy": "创建人"
+  },
+  "labels": {
+    "Create PipelineMetric": "创建管道指标",
+    "PipelineMetrics": "管道指标"
+  },
+  "options": {
+    "freshnessStatus": {
+      "CURRENT": "当前",
+      "AGING": "老化",
+      "STALE": "过期",
+      "ARCHIVAL": "归档"
+    }
+  }
+}

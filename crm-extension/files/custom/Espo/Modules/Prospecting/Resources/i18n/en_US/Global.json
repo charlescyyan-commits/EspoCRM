@@ -8,7 +8,9 @@
     "QuoteItem": "Quote Item", "ProformaInvoice": "Proforma Invoice", "Approval": "Quote Approval",
     "ExecutionWorkspace": "Execution Workspace", "ProspectRun": "Prospect Run",
     "ActionGate": "Action Gate", "ExecutionLedger": "Execution Ledger",
-    "OpportunityCandidate": "Opportunity Candidate"
+    "OpportunityCandidate": "Opportunity Candidate",
+    "RevenueInsight": "Revenue Insight",
+    "PipelineMetric": "Pipeline Metric"
   },
   "scopeNamesPlural": {
     "SearchStrategy": "Search Strategies", "SearchJob": "Search Jobs", "ProspectPool": "Prospect Pool",
@@ -19,7 +21,9 @@
     "QuoteItem": "Quote Items", "ProformaInvoice": "Proforma Invoices", "Approval": "Quote Approvals",
     "ExecutionWorkspace": "Execution Workspace", "ProspectRun": "Prospect Runs",
     "ActionGate": "Action Gates", "ExecutionLedger": "Execution Ledger",
-    "OpportunityCandidate": "Opportunity Candidates"
+    "OpportunityCandidate": "Opportunity Candidates",
+    "RevenueInsight": "Revenue Insights",
+    "PipelineMetric": "Pipeline Metrics"
   },
   "scopeNamesSingular": {
     "DraftApproval": "Outreach Approval", "Quote": "Quote", "Approval": "Quote Approval",

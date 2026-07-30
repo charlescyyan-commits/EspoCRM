@@ -1,0 +1,35 @@
+{
+  "fields": {
+    "name": "Name",
+    "sourceReference": "Source Reference",
+    "provenance": "Provenance",
+    "insightSummary": "Insight Summary",
+    "interpretation": "Interpretation",
+    "confidence": "Confidence",
+    "metricReferences": "Metric References",
+    "reportingPeriod": "Reporting Period",
+    "freshnessStatus": "Freshness Status",
+    "reviewStatus": "Review Status",
+    "reviewNote": "Review Note",
+    "createdAt": "Created At",
+    "createdBy": "Created By"
+  },
+  "labels": {
+    "Create RevenueInsight": "Create Revenue Insight",
+    "RevenueInsights": "Revenue Insights"
+  },
+  "options": {
+    "freshnessStatus": {
+      "CURRENT": "Current",
+      "AGING": "Aging",
+      "STALE": "Stale",
+      "ARCHIVAL": "Archival"
+    },
+    "reviewStatus": {
+      "GENERATED": "Generated",
+      "REVIEWED": "Reviewed",
+      "ACCEPTED": "Accepted",
+      "REJECTED": "Rejected"
+    }
+  }
+}

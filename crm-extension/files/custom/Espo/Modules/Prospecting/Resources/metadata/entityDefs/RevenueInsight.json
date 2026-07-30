@@ -1,0 +1,110 @@
+{
+  "fields": {
+    "name": {
+      "type": "varchar",
+      "maxLength": 255,
+      "required": true,
+      "trim": true,
+      "readOnly": true
+    },
+    "sourceReference": {
+      "type": "text",
+      "required": true,
+      "readOnly": true
+    },
+    "provenance": {
+      "type": "text",
+      "required": true,
+      "readOnly": true
+    },
+    "insightSummary": {
+      "type": "text",
+      "required": true,
+      "readOnly": true
+    },
+    "interpretation": {
+      "type": "text",
+      "readOnly": true
+    },
+    "confidence": {
+      "type": "float",
+      "min": 0,
+      "max": 1,
+      "readOnly": true
+    },
+    "metricReferences": {
+      "type": "text",
+      "readOnly": true
+    },
+    "reportingPeriod": {
+      "type": "text",
+      "required": true,
+      "readOnly": true
+    },
+    "freshnessStatus": {
+      "type": "enum",
+      "required": true,
+      "default": "CURRENT",
+      "options": [
+        "CURRENT",
+        "AGING",
+        "STALE",
+        "ARCHIVAL"
+      ],
+      "readOnly": true,
+      "displayAsLabel": true
+    },
+    "reviewStatus": {
+      "type": "enum",
+      "required": true,
+      "default": "GENERATED",
+      "options": [
+        "GENERATED",
+        "REVIEWED",
+        "ACCEPTED",
+        "REJECTED"
+      ],
+      "readOnly": true,
+      "displayAsLabel": true
+    },
+    "reviewNote": {
+      "type": "text",
+      "readOnly": true
+    },
+    "createdAt": {
+      "type": "datetime",
+      "readOnly": true
+    },
+    "createdBy": {
+      "type": "link",
+      "readOnly": true
+    }
+  },
+  "collection": {
+    "orderBy": "createdAt",
+    "order": "desc",
+    "textFilterFields": [
+      "name",
+      "reviewStatus",
+      "freshnessStatus"
+    ]
+  },
+  "deleteId": true,
+  "indexes": {
+    "reviewStatus": {
+      "columns": [
+        "reviewStatus"
+      ]
+    },
+    "freshnessStatus": {
+      "columns": [
+        "freshnessStatus"
+      ]
+    },
+    "createdAt": {
+      "columns": [
+        "createdAt"
+      ]
+    }
+  }
+}
