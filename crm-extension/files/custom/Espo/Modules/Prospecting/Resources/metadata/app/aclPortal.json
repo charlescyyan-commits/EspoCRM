@@ -7,7 +7,9 @@
       "ProspectCandidate": false,
       "ProspectRun": false,
       "ActionGate": false,
-      "ExecutionLedger": false
+      "ExecutionLedger": false,
+      "OptimizationInsight": false,
+      "PerformanceMetric": false
     }
   }
 }

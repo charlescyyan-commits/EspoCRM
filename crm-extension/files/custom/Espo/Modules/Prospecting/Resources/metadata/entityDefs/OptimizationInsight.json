@@ -1,0 +1,128 @@
+{
+  "fields": {
+    "name": {
+      "type": "varchar",
+      "maxLength": 255,
+      "required": true,
+      "trim": true,
+      "readOnly": true
+    },
+    "insightType": {
+      "type": "varchar",
+      "maxLength": 100,
+      "required": true,
+      "trim": true,
+      "readOnly": true
+    },
+    "title": {
+      "type": "varchar",
+      "maxLength": 255,
+      "required": true,
+      "trim": true,
+      "readOnly": true
+    },
+    "description": {
+      "type": "text",
+      "required": true,
+      "readOnly": true
+    },
+    "recommendation": {
+      "type": "text",
+      "required": true,
+      "readOnly": true
+    },
+    "evidenceReference": {
+      "type": "text",
+      "required": true,
+      "readOnly": true
+    },
+    "sourcePeriodStart": {
+      "type": "datetime",
+      "required": true,
+      "readOnly": true
+    },
+    "sourcePeriodEnd": {
+      "type": "datetime",
+      "required": true,
+      "readOnly": true
+    },
+    "generatedAt": {
+      "type": "datetime",
+      "required": true,
+      "readOnly": true
+    },
+    "freshnessStatus": {
+      "type": "enum",
+      "required": true,
+      "options": [
+        "CURRENT",
+        "AGING",
+        "STALE",
+        "ARCHIVAL"
+      ],
+      "readOnly": true,
+      "displayAsLabel": true
+    },
+    "confidence": {
+      "type": "float",
+      "required": true,
+      "min": 0,
+      "max": 1,
+      "readOnly": true
+    },
+    "status": {
+      "type": "enum",
+      "required": true,
+      "default": "GENERATED",
+      "options": [
+        "GENERATED",
+        "REVIEWED",
+        "ACCEPTED",
+        "REJECTED",
+        "SUPERSEDED"
+      ],
+      "readOnly": true,
+      "displayAsLabel": true
+    },
+    "supersedesInsightId": {
+      "type": "varchar",
+      "maxLength": 36,
+      "readOnly": true
+    },
+    "createdAt": {
+      "type": "datetime",
+      "readOnly": true
+    }
+  },
+  "collection": {
+    "orderBy": "generatedAt",
+    "order": "desc",
+    "textFilterFields": [
+      "name",
+      "insightType",
+      "title",
+      "description",
+      "recommendation",
+      "freshnessStatus",
+      "status"
+    ]
+  },
+  "deleteId": true,
+  "indexes": {
+    "generatedAt": {
+      "columns": [
+        "generatedAt"
+      ]
+    },
+    "freshnessStatus": {
+      "columns": [
+        "freshnessStatus"
+      ]
+    },
+    "status": {
+      "columns": [
+        "status"
+      ]
+    }
+  }
+}

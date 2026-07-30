@@ -7,7 +7,9 @@
       "ProspectCandidate": false,
       "ProspectRun": false,
       "ActionGate": false,
-      "ExecutionLedger": false
+      "ExecutionLedger": false,
+      "OptimizationInsight": false,
+      "PerformanceMetric": false
     }
   },
   "adminMandatory": {
@@ -49,6 +51,18 @@
         "delete": "no"
       },
       "ExecutionLedger": {
+        "create": "yes",
+        "read": "all",
+        "edit": "no",
+        "delete": "no"
+      },
+      "OptimizationInsight": {
+        "create": "yes",
+        "read": "all",
+        "edit": "no",
+        "delete": "no"
+      },
+      "PerformanceMetric": {
         "create": "yes",
         "read": "all",
         "edit": "no",
