@@ -9,7 +9,8 @@
       "ActionGate": false,
       "ExecutionLedger": false,
       "OptimizationInsight": false,
-      "PerformanceMetric": false
+      "PerformanceMetric": false,
+      "FeedbackLearningObservation": false
     }
   },
   "adminMandatory": {
@@ -63,6 +64,12 @@
         "delete": "no"
       },
       "PerformanceMetric": {
+        "create": "yes",
+        "read": "all",
+        "edit": "no",
+        "delete": "no"
+      },
+      "FeedbackLearningObservation": {
         "create": "yes",
         "read": "all",
         "edit": "no",

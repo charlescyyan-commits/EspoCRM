@@ -1,0 +1,116 @@
+{
+  "fields": {
+    "name": {
+      "type": "varchar",
+      "maxLength": 255,
+      "required": true,
+      "trim": true,
+      "readOnly": true
+    },
+    "observationType": {
+      "type": "varchar",
+      "maxLength": 100,
+      "required": true,
+      "trim": true,
+      "readOnly": true
+    },
+    "description": {
+      "type": "text",
+      "required": true,
+      "readOnly": true
+    },
+    "sourceReference": {
+      "type": "text",
+      "required": true,
+      "readOnly": true
+    },
+    "feedbackReference": {
+      "type": "text",
+      "required": true,
+      "readOnly": true
+    },
+    "metricReference": {
+      "type": "text",
+      "required": true,
+      "readOnly": true
+    },
+    "aggregationPeriodStart": {
+      "type": "datetime",
+      "required": true,
+      "readOnly": true
+    },
+    "aggregationPeriodEnd": {
+      "type": "datetime",
+      "required": true,
+      "readOnly": true
+    },
+    "confidence": {
+      "type": "float",
+      "required": true,
+      "min": 0,
+      "max": 1,
+      "readOnly": true
+    },
+    "sampleSize": {
+      "type": "int",
+      "required": true,
+      "min": 2,
+      "readOnly": true
+    },
+    "freshnessStatus": {
+      "type": "enum",
+      "required": true,
+      "options": [
+        "CURRENT",
+        "AGING",
+        "STALE",
+        "ARCHIVAL"
+      ],
+      "readOnly": true,
+      "displayAsLabel": true
+    },
+    "status": {
+      "type": "enum",
+      "required": true,
+      "default": "OBSERVED",
+      "options": [
+        "OBSERVED"
+      ],
+      "readOnly": true,
+      "displayAsLabel": true
+    },
+    "createdAt": {
+      "type": "datetime",
+      "readOnly": true
+    }
+  },
+  "collection": {
+    "orderBy": "createdAt",
+    "order": "desc",
+    "textFilterFields": [
+      "name",
+      "observationType",
+      "description",
+      "freshnessStatus",
+      "status"
+    ]
+  },
+  "deleteId": true,
+  "indexes": {
+    "observationType": {
+      "columns": [
+        "observationType"
+      ]
+    },
+    "freshnessStatus": {
+      "columns": [
+        "freshnessStatus"
+      ]
+    },
+    "createdAt": {
+      "columns": [
+        "createdAt"
+      ]
+    }
+  }
+}
