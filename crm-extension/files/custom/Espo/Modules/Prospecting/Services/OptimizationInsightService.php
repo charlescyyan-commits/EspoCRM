@@ -7,6 +7,7 @@ namespace Espo\Modules\Prospecting\Services;
 use DateTimeImmutable;
 use Espo\Core\Acl;
 use Espo\Core\Exceptions\BadRequest;
+use Espo\Core\Exceptions\Conflict;
 use Espo\Core\Exceptions\Forbidden;
 use Espo\ORM\Entity;
 use Espo\ORM\EntityManager;
@@ -122,6 +123,13 @@ final class OptimizationInsightService
             );
         }
 
+        $supersedesInsightId = $this->optionalId(
+            $attributes['supersedesInsightId'] ?? null
+        );
+        if ($supersedesInsightId !== null) {
+            $this->assertSupersession($supersedesInsightId);
+        }
+
         return [
             'insightType' => $this->requiredText($attributes, 'insightType'),
             'title' => $this->requiredText($attributes, 'title'),
@@ -149,10 +157,8 @@ final class OptimizationInsightService
             'confidence' => $this->confidence(
                 $attributes['confidence'] ?? null
             ),
-            'status' => $this->optionalStatus($attributes['status'] ?? null),
-            'supersedesInsightId' => $this->optionalId(
-                $attributes['supersedesInsightId'] ?? null
-            ),
+            'status' => $this->initialStatus($attributes['status'] ?? null),
+            'supersedesInsightId' => $supersedesInsightId,
         ];
     }
 
@@ -244,20 +250,41 @@ final class OptimizationInsightService
         return (float) $value;
     }
 
-    private function optionalStatus(mixed $value): string
+    private function initialStatus(mixed $value): string
     {
-        if ($value === null) {
-            return 'GENERATED';
-        }
-        if (!is_string($value) || !in_array(
-            $value,
-            ['GENERATED', 'REVIEWED', 'ACCEPTED', 'REJECTED', 'SUPERSEDED'],
-            true
-        )) {
-            throw new BadRequest('OptimizationInsight has an invalid status.');
+        if ($value !== null && $value !== 'GENERATED') {
+            throw new BadRequest(
+                'OptimizationInsight new records must be GENERATED.'
+            );
         }
 
-        return $value;
+        return 'GENERATED';
+    }
+
+    private function assertSupersession(string $predecessorId): void
+    {
+        $predecessor = $this->entityManager->getEntity(
+            self::ENTITY_TYPE,
+            $predecessorId
+        );
+        if (!$predecessor || $predecessor->isNew()) {
+            throw new BadRequest(
+                'OptimizationInsight supersession requires an existing predecessor.'
+            );
+        }
+        if (!$this->acl->checkEntityRead($predecessor)) {
+            throw new Forbidden();
+        }
+
+        $successor = $this->entityManager
+            ->getRDBRepository(self::ENTITY_TYPE)
+            ->where(['supersedesInsightId' => $predecessorId])
+            ->findOne();
+        if ($successor) {
+            throw new Conflict(
+                'OptimizationInsight predecessor already has a successor.'
+            );
+        }
     }
 
     private function optionalId(mixed $value): ?string

@@ -8,6 +8,7 @@ use Espo\Core\Exceptions\Forbidden;
 use Espo\Core\Hook\Hook\BeforeRemove;
 use Espo\Core\Hook\Hook\BeforeSave;
 use Espo\Modules\Prospecting\Services\C23AnalyticsSaveOption;
+use Espo\Modules\Prospecting\Services\C23OptimizationInsightLifecycleSaveOption;
 use Espo\ORM\Entity;
 use Espo\ORM\Repository\Option\RemoveOptions;
 use Espo\ORM\Repository\Option\SaveOptions;
@@ -20,7 +21,17 @@ final class OptimizationInsightImmutableGuard implements BeforeSave, BeforeRemov
     public function beforeSave(Entity $entity, SaveOptions $options): void
     {
         if (!$entity->isNew()) {
-            throw new Forbidden('OptimizationInsight is immutable.');
+            if (
+                $options->get(
+                    C23OptimizationInsightLifecycleSaveOption::LIFECYCLE_MUTATION_AUTHORIZED
+                ) !== true
+            ) {
+                throw new Forbidden(
+                    'OptimizationInsight mutation must use its review service.'
+                );
+            }
+
+            return;
         }
         if ($options->get(C23AnalyticsSaveOption::OPTIMIZATION_INSIGHT_CREATE_AUTHORIZED) !== true) {
             throw new Forbidden('OptimizationInsight creation must use its service.');

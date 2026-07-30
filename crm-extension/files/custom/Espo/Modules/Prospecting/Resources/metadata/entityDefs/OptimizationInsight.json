@@ -78,11 +78,24 @@
         "GENERATED",
         "REVIEWED",
         "ACCEPTED",
-        "REJECTED",
-        "SUPERSEDED"
+        "REJECTED"
       ],
       "readOnly": true,
       "displayAsLabel": true
+    },
+    "reviewedAt": {
+      "type": "datetime",
+      "readOnly": true
+    },
+    "reviewedByReference": {
+      "type": "varchar",
+      "maxLength": 100,
+      "trim": true,
+      "readOnly": true
+    },
+    "decisionNote": {
+      "type": "text",
+      "readOnly": true
     },
     "supersedesInsightId": {
       "type": "varchar",
@@ -122,6 +135,11 @@
     "status": {
       "columns": [
         "status"
+      ]
+    },
+    "supersedesInsightId": {
+      "columns": [
+        "supersedesInsightId"
       ]
     }
   }

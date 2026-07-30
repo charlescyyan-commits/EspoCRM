@@ -60,7 +60,7 @@
       "OptimizationInsight": {
         "create": "yes",
         "read": "all",
-        "edit": "no",
+        "edit": "all",
         "delete": "no"
       },
       "PerformanceMetric": {

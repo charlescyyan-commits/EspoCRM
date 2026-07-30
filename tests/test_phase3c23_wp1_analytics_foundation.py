@@ -54,6 +54,9 @@ class Phase3C23Wp1AnalyticsFoundationTests(unittest.TestCase):
                 "freshnessStatus",
                 "confidence",
                 "status",
+                "reviewedAt",
+                "reviewedByReference",
+                "decisionNote",
                 "supersedesInsightId",
                 "createdAt",
             },
@@ -161,10 +164,11 @@ class Phase3C23Wp1AnalyticsFoundationTests(unittest.TestCase):
             self.assertEqual(load_json(ACL_DEFS[entity]), {})
             self.assertFalse(app_acl["mandatory"]["scopeLevel"][entity])
             rights = app_acl["adminMandatory"]["scopeLevel"][entity]
+            expected_edit = "all" if entity == "OptimizationInsight" else "no"
             self.assertEqual(rights, {
                 "create": "yes",
                 "read": "all",
-                "edit": "no",
+                "edit": expected_edit,
                 "delete": "no",
             })
             self.assertFalse(portal_acl["mandatory"]["scopeLevel"][entity])
