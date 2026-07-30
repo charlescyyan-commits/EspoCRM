@@ -1,0 +1,108 @@
+{
+  "fields": {
+    "name": {
+      "type": "varchar",
+      "maxLength": 255,
+      "required": true,
+      "trim": true,
+      "readOnly": true
+    },
+    "sourceReference": {
+      "type": "text",
+      "required": true,
+      "readOnly": true
+    },
+    "interpretation": {
+      "type": "text",
+      "readOnly": true
+    },
+    "confidence": {
+      "type": "float",
+      "min": 0,
+      "max": 1,
+      "readOnly": true
+    },
+    "provenance": {
+      "type": "text",
+      "required": true,
+      "readOnly": true
+    },
+    "freshnessStatus": {
+      "type": "enum",
+      "required": true,
+      "options": [
+        "CURRENT",
+        "AGING",
+        "STALE",
+        "ARCHIVAL"
+      ],
+      "readOnly": true,
+      "displayAsLabel": true
+    },
+    "status": {
+      "type": "enum",
+      "required": true,
+      "default": "RECEIVED",
+      "options": [
+        "RECEIVED",
+        "INTERPRETED",
+        "REVIEWED",
+        "CONVERTED",
+        "DISMISSED"
+      ],
+      "readOnly": true,
+      "displayAsLabel": true
+    },
+    "transitionedAt": {
+      "type": "datetime",
+      "readOnly": true
+    },
+    "transitionedByReference": {
+      "type": "varchar",
+      "maxLength": 100,
+      "readOnly": true
+    },
+    "decisionNote": {
+      "type": "text",
+      "readOnly": true
+    },
+    "lifecycleAudit": {
+      "type": "text",
+      "required": true,
+      "readOnly": true
+    },
+    "createdAt": {
+      "type": "datetime",
+      "readOnly": true
+    }
+  },
+  "collection": {
+    "orderBy": "createdAt",
+    "order": "desc",
+    "textFilterFields": [
+      "name",
+      "interpretation",
+      "provenance",
+      "freshnessStatus",
+      "status"
+    ]
+  },
+  "deleteId": true,
+  "indexes": {
+    "status": {
+      "columns": [
+        "status"
+      ]
+    },
+    "freshnessStatus": {
+      "columns": [
+        "freshnessStatus"
+      ]
+    },
+    "createdAt": {
+      "columns": [
+        "createdAt"
+      ]
+    }
+  }
+}

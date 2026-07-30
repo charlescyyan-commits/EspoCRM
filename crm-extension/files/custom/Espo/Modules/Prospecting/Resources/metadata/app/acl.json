@@ -10,7 +10,8 @@
       "ExecutionLedger": false,
       "OptimizationInsight": false,
       "PerformanceMetric": false,
-      "FeedbackLearningObservation": false
+      "FeedbackLearningObservation": false,
+      "ReplySignal": false
     }
   },
   "adminMandatory": {
@@ -73,6 +74,12 @@
         "create": "yes",
         "read": "all",
         "edit": "no",
+        "delete": "no"
+      },
+      "ReplySignal": {
+        "create": "yes",
+        "read": "all",
+        "edit": "all",
         "delete": "no"
       }
     }

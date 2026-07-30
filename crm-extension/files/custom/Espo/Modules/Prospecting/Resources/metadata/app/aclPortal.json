@@ -10,7 +10,8 @@
       "ExecutionLedger": false,
       "OptimizationInsight": false,
       "PerformanceMetric": false,
-      "FeedbackLearningObservation": false
+      "FeedbackLearningObservation": false,
+      "ReplySignal": false
     }
   }
 }
