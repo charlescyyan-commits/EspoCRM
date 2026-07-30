@@ -547,6 +547,7 @@ class ExtensionSkeletonTests(unittest.TestCase):
             MODULE / "Services" / "OptimizationInsightReviewService.php",
             MODULE / "Services" / "C23OptimizationInsightLifecycleSaveOption.php",
             MODULE / "Hooks" / "OptimizationInsight" / "OptimizationInsightLifecycleGuard.php",
+            MODULE / "Services" / "OptimizationAssistantService.php",
             MODULE / "Entities" / "FeedbackLearningObservation.php",
             MODULE / "Services" / "FeedbackLearningObservationService.php",
             MODULE / "Services" / "C23FeedbackLearningSaveOption.php",
