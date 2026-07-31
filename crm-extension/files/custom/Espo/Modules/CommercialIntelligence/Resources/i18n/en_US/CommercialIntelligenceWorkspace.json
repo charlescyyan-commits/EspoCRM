@@ -1,0 +1,25 @@
+{
+  "labels": {
+    "workspaceTitle": "Commercial Intelligence Workspace",
+    "workspaceDescription": "Read-only assembled commercial context from governed evidence. For human review only.",
+    "advisoryDesignation": "AI-assembled commercial context — for human review only. Not a decision, forecast, or commitment.",
+    "assembledMarker": "AI / Assembled",
+    "boundaryLabel": "Assembled intelligence above — CRM business records below",
+    "crmRegionNote": "CRM business records open in their own surfaces. This workspace never edits them.",
+    "anchor": "Anchor candidate",
+    "overview": "Overview",
+    "evidenceExplorer": "Evidence explorer",
+    "source": "Source",
+    "revision": "Revision",
+    "freshness": "Freshness",
+    "validationState": "Validation state",
+    "evidence": "Evidence",
+    "sourceEvidence": "Source evidence",
+    "loading": "Loading…",
+    "noAnchor": "Open this workspace from an OpportunityCandidate to assemble its commercial context.",
+    "assemblyFailed": "Commercial context could not be assembled or is not visible to you.",
+    "noEvidence": "No governed evidence is linked to this candidate yet.",
+    "assistantEntry": "Revenue Analyst Assistant (upcoming)",
+    "briefEntry": "AI Commercial Brief (upcoming)"
+  }
+}

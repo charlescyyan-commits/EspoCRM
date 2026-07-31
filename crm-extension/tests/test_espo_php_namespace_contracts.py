@@ -22,12 +22,14 @@ ALLOWED_NAMESPACE_PREFIXES = (
     "Espo\\Entities\\",
     "Espo\\Modules\\Prospecting\\",
     "Espo\\Modules\\AIPlatform\\",
+    "Espo\\Modules\\CommercialIntelligence\\",
     "Espo\\Custom\\",
 )
 
 MODULE_NAMESPACE_ROOTS = (
     "Espo\\Modules\\Prospecting",
     "Espo\\Modules\\AIPlatform",
+    "Espo\\Modules\\CommercialIntelligence",
 )
 
 USE_OR_NAMESPACE = re.compile(

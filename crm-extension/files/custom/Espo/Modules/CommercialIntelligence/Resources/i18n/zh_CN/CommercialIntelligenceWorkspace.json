@@ -1,0 +1,25 @@
+{
+  "labels": {
+    "workspaceTitle": "商业智能工作台",
+    "workspaceDescription": "来自受治理证据的只读汇编商业上下文。仅供人工审阅。",
+    "advisoryDesignation": "AI 汇编的商业上下文——仅供人工审阅。不构成决策、预测或承诺。",
+    "assembledMarker": "AI / 汇编",
+    "boundaryLabel": "上方为汇编智能内容——下方为 CRM 业务记录",
+    "crmRegionNote": "CRM 业务记录在其自身界面中打开。本工作台从不编辑它们。",
+    "anchor": "锚定候选",
+    "overview": "概览",
+    "evidenceExplorer": "证据浏览",
+    "source": "来源",
+    "revision": "修订",
+    "freshness": "新鲜度",
+    "validationState": "校验状态",
+    "evidence": "证据",
+    "sourceEvidence": "源证据",
+    "loading": "加载中…",
+    "noAnchor": "请从 OpportunityCandidate 打开本工作台以汇编其商业上下文。",
+    "assemblyFailed": "无法汇编商业上下文,或您无权查看。",
+    "noEvidence": "该候选尚未关联任何受治理证据。",
+    "assistantEntry": "收入分析助手(即将推出)",
+    "briefEntry": "AI 商业简报(即将推出)"
+  }
+}

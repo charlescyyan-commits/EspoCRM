@@ -1,0 +1,12 @@
+[
+  {
+    "route": "/CommercialIntelligence/workspace/:candidateId",
+    "method": "get",
+    "actionClassName": "Espo\\Modules\\CommercialIntelligence\\Api\\GetWorkspaceContext"
+  },
+  {
+    "route": "/CommercialIntelligence/source/:entityType/:entityId",
+    "method": "get",
+    "actionClassName": "Espo\\Modules\\CommercialIntelligence\\Api\\GetGovernedSourceDetail"
+  }
+]

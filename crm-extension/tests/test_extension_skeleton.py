@@ -733,6 +733,34 @@ class ExtensionSkeletonTests(unittest.TestCase):
             c18_filters,
             msg="SendExecution PrimaryFilters must match the approved C18 inventory exactly",
         )
+        # Phase3C25 WP1/WP1.3 CommercialIntelligence read-only foundation — exact inventory.
+        # Read-only runtime assembly only: no entities, no hooks, no persistence.
+        c25_module = EXT / "files" / "custom" / "Espo" / "Modules" / "CommercialIntelligence"
+        c25_foundation = {
+            c25_module / "Context" / "CommercialContext.php",
+            c25_module / "Context" / "SourceArtifactReference.php",
+            c25_module / "Context" / "ArtifactReferenceParser.php",
+            c25_module / "Services" / "ContextAssemblyService.php",
+            c25_module / "Services" / "VisibilityInheritanceService.php",
+            c25_module / "Services" / "ProvenancePresenter.php",
+            c25_module / "Services" / "FreshnessPresenter.php",
+            c25_module / "Services" / "Adapters" / "C20ProvenanceReadAdapter.php",
+            c25_module / "Services" / "Adapters" / "C21IntelligenceReadAdapter.php",
+            c25_module / "Services" / "Adapters" / "C22ExecutionReadAdapter.php",
+            c25_module / "Services" / "Adapters" / "C23OptimizationReadAdapter.php",
+            c25_module / "Services" / "Adapters" / "C24RevenueReadAdapter.php",
+            c25_module / "Services" / "Adapters" / "CrmCoreAnchorReadAdapter.php",
+            c25_module / "Api" / "GetWorkspaceContext.php",
+            c25_module / "Api" / "GetGovernedSourceDetail.php",
+        }
+        for path in c25_foundation:
+            self.assertTrue(path.is_file(), msg=f"Missing C25 WP1 foundation file: {path}")
+        expected |= c25_foundation
+        self.assertEqual(
+            set(c25_module.rglob("*.php")),
+            c25_foundation,
+            msg="CommercialIntelligence module must match the approved C25 WP1 inventory exactly",
+        )
         self.assertEqual(set(php_files), expected, msg=f"Unexpected PHP files: {php_files}")
         # Phase3C24 WP2.2 OpportunityCandidate metadata/ACL foundation (non-PHP inventory).
         self.assertTrue(
