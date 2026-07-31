@@ -163,8 +163,11 @@ def test_acl_allows_authorized_read_and_service_governed_review_only() -> None:
     assert scope["acl"] is True
     assert scope["aclPortal"] is False
     assert scope["tab"] is False
+    assert scope["aclActionList"] == ["read"]
     assert load_json(ACL_DEF) == {}
-    assert acl["mandatory"]["scopeLevel"][ENTITY] is False
+    # WP1.2: read is governed by native role ACL with deny-by-default;
+    # the scope is no longer force-disabled for every non-admin role.
+    assert ENTITY not in acl["mandatory"]["scopeLevel"]
     assert acl["adminMandatory"]["scopeLevel"][ENTITY] == {
         "create": "yes",
         "read": "all",

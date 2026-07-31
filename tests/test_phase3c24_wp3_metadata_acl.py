@@ -113,7 +113,7 @@ def wp3_acl_blob() -> str:
     return json.dumps(
         {
             "mandatory": {
-                entity: acl["mandatory"]["scopeLevel"][entity]
+                entity: acl["mandatory"]["scopeLevel"].get(entity)
                 for entity in (REVENUE_INSIGHT, PIPELINE_METRIC)
             },
             "adminMandatory": {
@@ -165,7 +165,9 @@ def test_acl_definitions_valid() -> None:
 
     acl = load_json(APP_ACL)
     for entity in (REVENUE_INSIGHT, PIPELINE_METRIC):
-        assert acl["mandatory"]["scopeLevel"][entity] is False
+        # WP1.2: read is governed by native role ACL with deny-by-default;
+        # the scope is no longer force-disabled for every non-admin role.
+        assert entity not in acl["mandatory"]["scopeLevel"]
         rights = acl["adminMandatory"]["scopeLevel"][entity]
         assert rights["create"] == "yes"
         assert rights["read"] == "all"

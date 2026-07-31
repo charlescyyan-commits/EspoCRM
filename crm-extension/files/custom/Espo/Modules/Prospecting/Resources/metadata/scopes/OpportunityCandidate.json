@@ -8,5 +8,6 @@
   "importable": false,
   "module": "Prospecting",
   "type": "Base",
-  "statusField": "status"
+  "statusField": "status",
+  "aclActionList": ["read"]
 }

@@ -61,7 +61,9 @@ def test_acl_metadata_exists() -> None:
 
 def test_internal_read_permission_exists() -> None:
     acl = load_json(APP_ACL)
-    assert acl["mandatory"]["scopeLevel"][ENTITY] is False
+    # WP1.2: read is governed by native role ACL with deny-by-default;
+    # the scope is no longer force-disabled for every non-admin role.
+    assert ENTITY not in acl["mandatory"]["scopeLevel"]
     rights = acl["adminMandatory"]["scopeLevel"][ENTITY]
     assert rights == {
         "create": "yes",

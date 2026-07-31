@@ -10,11 +10,7 @@
       "ExecutionLedger": false,
       "OptimizationInsight": false,
       "PerformanceMetric": false,
-      "FeedbackLearningObservation": false,
-      "ReplySignal": false,
-      "OpportunityCandidate": false,
-      "RevenueInsight": false,
-      "PipelineMetric": false
+      "FeedbackLearningObservation": false
     }
   },
   "adminMandatory": {

@@ -223,7 +223,9 @@ def test_acl_portal_disabled_and_internal_governance_access() -> None:
     acl = load_json(METADATA / "app" / "acl.json")
     portal = load_json(METADATA / "app" / "aclPortal.json")
     for entity in (REVENUE_INSIGHT, PIPELINE_METRIC):
-        assert acl["mandatory"]["scopeLevel"][entity] is False
+        # WP1.2: read is governed by native role ACL with deny-by-default;
+        # the scope is no longer force-disabled for every non-admin role.
+        assert entity not in acl["mandatory"]["scopeLevel"]
         assert portal["mandatory"]["scopeLevel"][entity] is False
         rights = acl["adminMandatory"]["scopeLevel"][entity]
         assert rights == {
