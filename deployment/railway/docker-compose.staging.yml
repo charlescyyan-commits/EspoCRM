@@ -1,0 +1,71 @@
+# Local validation compose for Railway C25 staging scaffold.
+# Run from repository root:
+#   docker compose -f deployment/railway/docker-compose.staging.yml up -d --build
+#
+# Staging only. Uses disposable credentials in .env.example — never production.
+
+name: espocrm-c25-staging
+
+services:
+  espocrm-db:
+    image: mariadb:11.4
+    environment:
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD:-staging_root_only}
+      MARIADB_DATABASE: ${ESPOCRM_DATABASE_NAME:-espocrm_staging}
+      MARIADB_USER: ${ESPOCRM_DATABASE_USER:-espocrm_staging}
+      MARIADB_PASSWORD: ${ESPOCRM_DATABASE_PASSWORD:-staging_db_only}
+    volumes:
+      - espocrm-staging-db:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      start_period: 20s
+      timeout: 5s
+      retries: 10
+    networks:
+      - staging
+
+  espocrm:
+    build:
+      context: ../..
+      dockerfile: deployment/railway/Dockerfile
+      args:
+        ESPOCRM_VERSION: ${ESPOCRM_VERSION:-10.0.1}
+    ports:
+      - "${HOST_PORT:-18080}:${PORT:-8080}"
+    environment:
+      APP_ENV: staging
+      ESPOCRM_STAGING: "1"
+      PORT: ${PORT:-8080}
+      ESPOCRM_DATABASE_PLATFORM: Mysql
+      ESPOCRM_DATABASE_HOST: espocrm-db
+      ESPOCRM_DATABASE_PORT: "3306"
+      ESPOCRM_DATABASE_NAME: ${ESPOCRM_DATABASE_NAME:-espocrm_staging}
+      ESPOCRM_DATABASE_USER: ${ESPOCRM_DATABASE_USER:-espocrm_staging}
+      ESPOCRM_DATABASE_PASSWORD: ${ESPOCRM_DATABASE_PASSWORD:-staging_db_only}
+      ESPOCRM_ADMIN_USERNAME: ${ESPOCRM_ADMIN_USERNAME:-admin}
+      ESPOCRM_ADMIN_PASSWORD: ${ESPOCRM_ADMIN_PASSWORD:-staging_admin_only}
+      ESPOCRM_SITE_URL: ${ESPOCRM_SITE_URL:-http://localhost:18080}
+      ESPOCRM_LANGUAGE: en_US
+    volumes:
+      # EspoCRM 10 supported layout — persist data only so overlays/upgrades apply.
+      - espocrm-staging-data:/var/www/html/data
+    depends_on:
+      espocrm-db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "/usr/local/bin/healthcheck.sh"]
+      interval: 20s
+      start_period: 180s
+      timeout: 15s
+      retries: 10
+    networks:
+      - staging
+
+volumes:
+  espocrm-staging-data:
+  espocrm-staging-db:
+
+networks:
+  staging:
+    driver: bridge

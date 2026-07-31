@@ -1,0 +1,17 @@
+# Railway service hints for C25 staging.
+# Dashboard settings in README.md remain authoritative if they diverge.
+#
+# Important: build context must be the repository root so Dockerfile can
+# COPY crm-extension/ and deployment/railway/*.
+
+[build]
+builder = "DOCKERFILE"
+dockerfilePath = "deployment/railway/Dockerfile"
+# Do not use Railpack / Nixpacks for this service.
+
+[deploy]
+healthcheckPath = "/"
+healthcheckTimeout = 300
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 5
+# Start Command: leave empty — image ENTRYPOINT handles PORT + overlay + official entrypoint.
