@@ -1187,10 +1187,22 @@ NOT AUTHORIZED
 | Phase3C20 Governance | FROZEN |
 | Runtime Implementation Charter | RATIFIED |
 | RT-WP0 | EXITED |
-| RT-WP1 | MAY BE SEPARATELY AUTHORIZED |
+| RT-WP1 Charter | RATIFIED |
+| RT-WP1 Implementation | NOT AUTHORIZED |
 | RT-WP2–RT-WP8 | NOT AUTHORIZED |
 | Runtime Code | NOT AUTHORIZED |
 | C25 WP2.2 | NO GO |
+
+### 37.1 RT-WP1 Charter Status Log
+
+| Field | Value |
+| --- | --- |
+| Date | 2026-08-02 |
+| Event | RT-WP1 Implementation Charter independently ratified |
+| Verdict | RATIFIED WITH INFORMATIONAL NOTES |
+| Effect | Charter status synchronized to RATIFIED |
+| Non-effect | No implementation authorization granted |
+| Review reference | `docs/audit/PHASE3C20_RT_WP1_IMPLEMENTATION_CHARTER_RATIFICATION_REVIEW.md` |
 
 ```text
 Ratification approves the Runtime Charter as a planning and work-package reference only.
@@ -1237,7 +1249,7 @@ separate authorization.
 
 ## 38. Exact Next Task
 
-RT-WP0 exited; RT-WP1 may be separately authorized.
+RT-WP0 exited; RT-WP1 Charter is RATIFIED and RT-WP1 Implementation remains NOT AUTHORIZED.
 
 ```text
 docs/PHASE3C20_RT_WP0_RUNTIME_BASELINE.md
@@ -1246,11 +1258,11 @@ docs/PHASE3C20_RT_WP0_RUNTIME_BASELINE.md
 Exact next task:
 
 ```text
-No RT-WP1 work package is authorized by this status synchronization.
+No RT-WP1 implementation is authorized by this status synchronization.
 ```
 
 - RT-WP0 is EXITED.
-- RT-WP1 may proceed only after a separate explicit authorization.
+- RT-WP1 Charter is RATIFIED; RT-WP1 Implementation requires separate explicit authorization.
 - No runtime implementation is authorized by this status synchronization.
 
 ---
