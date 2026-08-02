@@ -2,7 +2,7 @@
 
 | Field | Value |
 | --- | --- |
-| Status | COMPLETE — governance completion only; runtime remains unimplemented |
+| Status | RATIFIED — WP3 governance complete and exited; implementation not authorized |
 | Date | 2026-08-02 |
 | Work Package | Phase3C20 WP3 |
 | Implementation Authorization | None |
@@ -36,10 +36,10 @@ Nothing in this package authorizes implementation.
 
 | Deliverable | Document | Result |
 | --- | --- | --- |
-| Completion capability portfolio | ADR-C20-005 | `COMMERCIAL_BRIEF` is PROPOSED as a future `CompletionCapability` portfolio extension, not RATIFIED |
-| Provider binding governance | ADR-C20-006 | Ownership chain and purpose rejection boundaries are fixed |
-| Invariant activation plan | ADR-C20-007 | INV-05 through INV-11 are classified; none is activated |
-| Completion package | This document | Matrices, roadmap, owners, and future gates are consolidated |
+| Completion capability portfolio | ADR-C20-005 | RATIFIED — governance direction approved; `COMMERCIAL_BRIEF` remains a future extension only, not an active enum value |
+| Provider binding governance | ADR-C20-006 | RATIFIED — ownership chain and purpose rejection boundaries approved; runtime not delivered |
+| Invariant activation plan | ADR-C20-007 | RATIFIED — INV-05 through INV-11 readiness classifications accepted; all remain DEFERRED |
+| Completion package | This document | RATIFIED / EXITED — matrices, roadmap, owners, and future gates consolidated |
 
 ## 3. Repository Verification
 
@@ -95,17 +95,34 @@ The repository does not have a `COMMERCIAL_BRIEF` `CompletionCapability` value. 
 
 The repository accepts a separate purpose string in the capability-resolution request. The matching proposed purpose identifier is `commercial_brief_generation`.
 
-That identifier is **PROPOSED** only.
+### 4.0 Four-Layer Terminology Matrix
 
-It is not RATIFIED.
+These identifiers are related but are not interchangeable:
 
-It is not activated.
+| Layer | Canonical identifier | Status in this package |
+| --- | --- | --- |
+| Completion capability candidate | `COMMERCIAL_BRIEF` | PROPOSED; not in the enum; not ratified; not active |
+| Provider-binding purpose ID | `commercial_brief_generation` | PROPOSED; evaluated only against `ProviderBinding.allowed_purposes` after future delivery |
+| Domain artifact / entity name | `CommercialBrief` | C25 commercial-intelligence artifact; not a capability; not a purpose |
+| Capability Registry family | `Capability.COMPLETION` | Existing generic registry family; distinct from the `CompletionCapability` portfolio |
 
-It is not an authorization to create a binding.
+```text
+CompletionCapability.COMMERCIAL_BRIEF  — future enum member only if separately ratified and implemented
+commercial_brief_generation            — corresponding proposed ProviderBinding purpose ID
+COMMERCIAL_BRIEF ≠ commercial_brief_generation
+```
 
-It is not an authorization to dispatch a provider.
+Do not use `COMMERCIAL_BRIEF` as an `allowed_purposes` value.
 
-C25 cannot ratify C20 capability names.
+Do not describe `commercial_brief_generation` as a current `CompletionCapability` enum member.
+
+The capability candidate and purpose ID require separate but coordinated C20 approval and delivery.
+
+Neither identifier is active.
+
+Neither identifier authorizes a binding, a dispatch, or a provider call.
+
+C25 cannot ratify either C20 identifier.
 
 ### 4.1 Capability Portfolio Matrix
 
@@ -267,7 +284,7 @@ C25 WP2.2 remains NO GO until those gates are complete.
 
 | Future work | Owner | Required before C25 WP2.2 | This package authorizes it? |
 | --- | --- | --- | --- |
-| Ratify `COMMERCIAL_BRIEF` `CompletionCapability` extension and matching purpose registration | C20 governance | Yes | No |
+| Ratify `COMMERCIAL_BRIEF` `CompletionCapability` extension and matching purpose `commercial_brief_generation` | C20 governance | Yes | No |
 | Deliver ProviderBinding policy surface | CRM/C20 policy owner | Yes | No |
 | Deliver credential-reference custody path | CRM/C20 custody owner | Yes | No |
 | Deliver controlled dispatch runtime | Connector/C20 runtime owner | Yes | No |
@@ -304,23 +321,55 @@ Any code remains NOT AUTHORIZED.
 
 ## 11. Completion Verdict
 
-**COMPLETE — GOVERNANCE ONLY.**
+**RATIFIED — WP3 GOVERNANCE COMPLETE AND EXITED.**
 
-The three external governance dependencies are now specified as C20-owned work.
+The three external governance dependencies are specified as C20-owned work.
 
-The portfolio decision is proposed rather than ratified.
+ADR-C20-005/006/007 are ratified as governance records.
 
 The provider-binding ownership chain is defined rather than delivered.
 
-The invariant activation plan is classified rather than activated.
+The invariant activation plan is ratified; C20-INV-05 through C20-INV-11 remain DEFERRED.
 
-No runtime implementation has begun.
+No runtime implementation is authorized.
 
 No connector has changed.
 
 No code authorization is granted.
 
-## 12. Validation Record
+## 12. WP3 Exit Record
+
+| Item | Result |
+| --- | --- |
+| Date | 2026-08-02 |
+| Ratification verdict | RATIFIED WITH NON-BLOCKING NOTES |
+| ADR-C20-005 | RATIFIED |
+| ADR-C20-006 | RATIFIED |
+| ADR-C20-007 | RATIFIED |
+| Repository consistency | PASS |
+| Cross-document consistency | PASS |
+| WP3 governance exit | COMPLETE |
+| Runtime delivery | INCOMPLETE |
+| Implementation authorization | NONE |
+| Next step | Phase3C20 Final Governance Freeze |
+
+## 13. Final Authorization Matrix
+
+| Item | Status |
+| --- | --- |
+| WP3 Governance Package | RATIFIED / EXITED |
+| ADR-C20-005 | RATIFIED |
+| ADR-C20-006 | RATIFIED |
+| ADR-C20-007 | RATIFIED |
+| COMMERCIAL_BRIEF enum addition | NOT AUTHORIZED |
+| commercial_brief_generation purpose delivery | NOT DELIVERED |
+| ProviderBinding runtime delivery | NOT AUTHORIZED |
+| C20-INV-05–11 activation | NOT AUTHORIZED / remain DEFERRED |
+| Runtime implementation | NOT AUTHORIZED |
+| Any Code | NOT AUTHORIZED |
+| Phase3C20 Final Governance Freeze | NEXT TASK |
+
+## 14. Validation Record
 
 | Check | Result |
 | --- | --- |
@@ -332,13 +381,14 @@ No code authorization is granted.
 | Ownership matrix present | PASS |
 | Activation matrix present | PASS |
 | Future work matrix present | PASS |
+| WP3 governance exit | COMPLETE |
 | Runtime implementation authorized | NO |
 | Connector modification authorized | NO |
 | Registry modification authorized | NO |
 | AIJob modification authorized | NO |
 | AIRequestLog modification authorized | NO |
 
-## 13. References
+## 15. References
 
 - `docs/adr/ADR-C20-005_COMPLETION_CAPABILITY_PORTFOLIO.md`
 - `docs/adr/ADR-C20-006_PROVIDER_BINDING_GOVERNANCE.md`

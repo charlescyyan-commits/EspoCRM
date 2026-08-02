@@ -2,7 +2,7 @@
 
 | Field | Value |
 | --- | --- |
-| Status | PROPOSED — governance completion reference only |
+| Status | RATIFIED — provider-binding governance contract approved; runtime delivery not authorized |
 | Date | 2026-08-02 |
 | Work Package | Phase3C20 WP3-B |
 | Scope | Provider binding governance only |
@@ -10,7 +10,9 @@
 
 ## 1. Status
 
-This ADR describes the required ownership chain for a future completion request.
+This ADR is **RATIFIED** as the provider-binding governance contract.
+
+It describes the required ownership chain for a future completion request.
 
 It documents repository facts and governance boundaries.
 
@@ -21,6 +23,8 @@ It does not add a provider.
 It does not add a connector adapter.
 
 It does not route or dispatch any request.
+
+`commercial_brief_generation` remains proposed only. No live binding currently authorizes it.
 
 ## 2. Decision
 
@@ -47,6 +51,28 @@ Binding eligibility determines whether a CRM-owned binding may serve that family
 ProviderBinding holds policy and non-secret reference metadata.
 
 The connector owns adapter execution outside the CRM module.
+
+For the CommercialBrief generation use case, the proposed ProviderBinding purpose ID is:
+
+```text
+commercial_brief_generation
+```
+
+That purpose ID corresponds to—but is not identical to—the proposed `CompletionCapability` portfolio candidate `COMMERCIAL_BRIEF`.
+
+```text
+COMMERCIAL_BRIEF ≠ commercial_brief_generation
+```
+
+`commercial_brief_generation` is the value that would be evaluated against `ProviderBinding.allowed_purposes` after a matching binding and purpose registration are delivered.
+
+`COMMERCIAL_BRIEF` must not be used as an `allowed_purposes` value.
+
+Neither identifier is ratified, registered, allowed, active, or delivered by this ADR.
+
+No binding currently authorizes `commercial_brief_generation`.
+
+No routing or dispatch implementation is claimed or authorized here.
 
 CommercialBrief owns none of those responsibilities.
 
@@ -188,7 +214,9 @@ No AIRequestLog is written during this evaluation.
 
 ## 9. CommercialBrief Boundary
 
-CommercialBrief may eventually request a C20-governed capability and purpose.
+CommercialBrief is the C25 domain artifact. It is not a capability identifier and not a ProviderBinding purpose.
+
+CommercialBrief may eventually request a C20-governed capability candidate (`COMMERCIAL_BRIEF`, if ratified) together with purpose ID `commercial_brief_generation` (if registered on an eligible binding).
 
 CommercialBrief may not introduce a capability name.
 
@@ -263,7 +291,7 @@ AIRequestLog records attempt evidence but does not itself dispatch an adapter.
 
 ## 13. Future Delivery Requirements
 
-1. Ratify a C20 completion-purpose portfolio entry.
+1. Ratify the proposed `CompletionCapability` portfolio extension `COMMERCIAL_BRIEF` and the matching purpose ID `commercial_brief_generation` as coordinated but distinct C20 decisions.
 
 2. Define the CRM ProviderBinding persistence and authorization surface.
 
@@ -299,7 +327,28 @@ Nothing in this ADR changes AIRequestLog.
 
 Nothing in this ADR creates metadata, an entity, a route, a controller, or a test.
 
-## 15. References
+## 15. Ratification Record
+
+| Item | Result |
+| --- | --- |
+| Review type | Final WP3 ADR Ratification Review |
+| Date | 2026-08-02 |
+| Verdict | RATIFIED WITH NON-BLOCKING NOTES |
+| Ownership chain | PASS |
+| `allowed_provider_bindings` contract | PASS |
+| `allowed_purposes` / `PURPOSE_NOT_ALLOWED` | PASS |
+| CRM ProviderBinding surface | NOT DELIVERED |
+| Provider routing/dispatch implementation | NOT AUTHORIZED |
+| Credential custody changes | NOT AUTHORIZED |
+| Any code | NOT AUTHORIZED |
+
+`commercial_brief_generation` is proposed only and is not delivered.
+
+No live ProviderBinding currently authorizes it.
+
+CommercialBrief owns no provider, model, routing, dispatch, or credential responsibility.
+
+## 16. References
 
 - `chitu-connector/chitu_connector/acquisition/providers/registry.py`
 - `chitu-connector/chitu_connector/acquisition/providers/capabilities.py`

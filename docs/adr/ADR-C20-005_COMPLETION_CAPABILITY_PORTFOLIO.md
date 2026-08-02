@@ -2,7 +2,7 @@
 
 | Field | Value |
 | --- | --- |
-| Status | PROPOSED — governance completion reference only |
+| Status | RATIFIED — governance direction approved; capability extension not active and implementation not authorized |
 | Date | 2026-08-02 |
 | Work Package | Phase3C20 WP3-A |
 | Scope | Completion capability portfolio only |
@@ -10,17 +10,21 @@
 
 ## 1. Status
 
-This ADR records a C20 governance recommendation.
+This ADR is **RATIFIED** as a C20 governance-direction record.
 
-It does not ratify a new capability name.
+Ratification accepts the existing four-value `CompletionCapability` portfolio model and records `COMMERCIAL_BRIEF` only as a future proposed extension direction.
+
+Ratification of this ADR does **not** ratify, add, activate, deliver, or implement the `COMMERCIAL_BRIEF` enum value itself.
+
+`COMMERCIAL_BRIEF` is not present in the enum, not active, not delivered, and not implemented.
 
 It does not activate a capability.
 
 It does not modify the connector, registry, AIJob, AIRequestLog, or PromptTemplate.
 
-Only C20 governance may ratify a C20 capability name.
+Only C20 governance may authorize a later `CompletionCapability` enum addition.
 
-C25 cannot ratify C20 capability names.
+C25 has no authority to ratify or activate C20 capability names.
 
 ## 2. Decision
 
@@ -36,9 +40,9 @@ separate, higher-level registry family.
 
 The repository does not contain `COMMERCIAL_BRIEF` as a CompletionCapability value.
 
-`COMMERCIAL_BRIEF` is therefore recorded as **PROPOSED**, not RATIFIED.
+`COMMERCIAL_BRIEF` remains a **proposed future portfolio extension only**. ADR ratification does not ratify or activate that enum value.
 
-Its proposed placement is a future extension of the existing CompletionCapability portfolio.
+Its proposed placement remains a future extension of the existing CompletionCapability portfolio.
 
 It is not proposed as a new connector capability family or a new portfolio.
 
@@ -111,7 +115,13 @@ The purpose expresses a CRM-governed business use within that registry family.
 
 `COMMERCIAL_BRIEF` is evaluated first as a CompletionCapability portfolio extension.
 
-Any corresponding purpose registration remains a separate binding-governance decision.
+It is not an `allowed_purposes` value.
+
+Any corresponding purpose registration remains a separate binding-governance decision and uses the distinct proposed purpose ID `commercial_brief_generation`.
+
+```text
+COMMERCIAL_BRIEF ≠ commercial_brief_generation
+```
 
 The purpose must be supplied to a `CapabilityResolutionRequest` with `Capability.COMPLETION`.
 
@@ -133,15 +143,30 @@ CommercialBrief must not dispatch a provider.
 
 CommercialBrief must not read a credential.
 
-## 6. Proposed Commercial Brief Purpose
+## 6. Proposed Commercial Brief Naming Layers
+
+| Layer | Canonical identifier |
+| --- | --- |
+| Completion capability candidate | `COMMERCIAL_BRIEF` |
+| Provider-binding purpose ID | `commercial_brief_generation` |
+| Domain artifact | `CommercialBrief` |
+| Registry family | `Capability.COMPLETION` |
 
 The proposed portfolio extension is `COMMERCIAL_BRIEF`.
 
-The proposed matching binding-purpose identifier is `commercial_brief_generation`.
+If separately ratified and implemented, its future enum-level form would be `CompletionCapability.COMMERCIAL_BRIEF`.
 
-This identifier is a governance proposal only.
+The corresponding proposed ProviderBinding purpose ID is `commercial_brief_generation`.
 
-It is intentionally separate from the C25 entity name.
+```text
+COMMERCIAL_BRIEF ≠ commercial_brief_generation
+```
+
+`commercial_brief_generation` is a governance proposal only.
+
+It is intentionally separate from the capability candidate `COMMERCIAL_BRIEF`.
+
+It is intentionally separate from the C25 entity name `CommercialBrief`.
 
 It is intentionally separate from an action key.
 
@@ -149,9 +174,15 @@ It is intentionally separate from a provider model name.
 
 It is intentionally separate from a prompt template key.
 
+It must never be described as a current `CompletionCapability` enum member.
+
+`COMMERCIAL_BRIEF` must never be used as an `allowed_purposes` value.
+
+Neither identifier is ratified, active, delivered, or implemented by this ADR.
+
 Its proposed CompletionProvider portfolio placement is the existing `CompletionCapability` enum.
 
-Its proposed generic registry family is `COMPLETION`.
+Its proposed generic registry family is `Capability.COMPLETION`.
 
 Its proposed owner is C20 capability governance.
 
@@ -159,7 +190,7 @@ Its proposed consumer is a future C25 generation service after separate authoriz
 
 Its proposed approval prerequisite is a C20 portfolio decision.
 
-Its proposed delivery prerequisite is an eligible CRM ProviderBinding.
+Its proposed delivery prerequisite is an eligible CRM ProviderBinding that lists `commercial_brief_generation` in `allowed_purposes`.
 
 Its proposed verification prerequisite is a controlled contract test and later runtime evidence.
 
@@ -175,13 +206,13 @@ Adding a new connector capability family would expand the registry enum.
 
 That expansion is not necessary to represent a CommercialBrief use case.
 
-Treating CommercialBrief as a purpose preserves the bounded connector capability surface.
+Representing the binding use as purpose ID `commercial_brief_generation`—while keeping `COMMERCIAL_BRIEF` as the proposed `CompletionCapability` portfolio extension and `CommercialBrief` as the C25 domain artifact—preserves the bounded connector capability surface.
 
-Treating CommercialBrief as a purpose keeps provider eligibility under CRM policy.
+That purpose-layer placement keeps provider eligibility under CRM `allowed_purposes` policy.
 
-Treating CommercialBrief as a purpose prevents C25 from owning provider selection.
+That separation prevents C25 from owning provider selection.
 
-Treating CommercialBrief as a purpose does not activate an implementation.
+Recording these proposed names does not activate an implementation.
 
 ## 8. Alternatives Considered
 
@@ -283,15 +314,24 @@ No runtime capability is activated by this ADR.
 
 The C20 completion portfolio remains bounded.
 
-## 13. Ratification Gate
+## 13. Ratification Record
 
-This ADR remains PROPOSED until an independent C20 capability-portfolio decision ratifies it.
+| Item | Result |
+| --- | --- |
+| Review type | Final WP3 ADR Ratification Review |
+| Date | 2026-08-02 |
+| Verdict | RATIFIED WITH NON-BLOCKING NOTES |
+| Existing four-value CompletionCapability portfolio | PASS |
+| `COMMERCIAL_BRIEF` future-extension direction | RATIFIED AS GOVERNANCE DIRECTION ONLY |
+| `COMMERCIAL_BRIEF` enum addition | NOT AUTHORIZED |
+| `commercial_brief_generation` purpose registration | NOT DELIVERED |
+| C25 authority | NONE |
+| Runtime implementation | NOT AUTHORIZED |
+| Any code | NOT AUTHORIZED |
 
-Any later ratification must state the exact CompletionCapability portfolio extension and any matching purpose identifier.
+`COMMERCIAL_BRIEF` is not present in the enum, not active, not delivered, and not implemented.
 
-Any later ratification must state the owning C20 authority.
-
-Any later ratification must not imply implementation authorization.
+Any later enum addition and matching purpose delivery remain separate C20 authorization and delivery tasks and do not follow from this ADR ratification alone.
 
 ## 14. References
 

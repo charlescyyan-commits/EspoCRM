@@ -2,7 +2,7 @@
 
 | Field | Value |
 | --- | --- |
-| Status | PROPOSED — activation planning only |
+| Status | RATIFIED — invariant activation plan approved; all INV-05–11 remain DEFERRED |
 | Date | 2026-08-02 |
 | Work Package | Phase3C20 WP3-C |
 | Scope | C20-INV-05 through C20-INV-11 |
@@ -10,15 +10,19 @@
 
 ## 1. Status
 
-This ADR records readiness, not activation.
+This ADR is **RATIFIED** as the invariant activation plan and readiness classification.
+
+It records readiness, not activation.
 
 The C20 invariant registry remains authoritative for current activation state.
 
-All seven reviewed invariants are currently marked DEFERRED in that registry.
+C20-INV-05 through C20-INV-11 remain DEFERRED in the authoritative invariant registry.
 
 This ADR does not change any registry status.
 
 This ADR does not modify code, metadata, tests, or runtime.
+
+Ratification approves only the activation plan and readiness classification.
 
 ## 2. Review Method
 
@@ -373,7 +377,28 @@ Nothing in this ADR modifies PromptTemplate.
 
 Nothing in this ADR modifies the connector or registry.
 
-## 15. References
+## 15. Ratification Record
+
+| Item | Result |
+| --- | --- |
+| Review type | Final WP3 ADR Ratification Review |
+| Date | 2026-08-02 |
+| Verdict | RATIFIED WITH NON-BLOCKING NOTES |
+| INV-05 readiness classification | ACCEPTED |
+| INV-06 readiness classification | ACCEPTED |
+| INV-07 readiness classification | ACCEPTED |
+| INV-08 readiness classification | ACCEPTED |
+| INV-09 readiness classification | ACCEPTED |
+| INV-10 readiness classification | ACCEPTED |
+| INV-11 readiness classification | ACCEPTED |
+| Invariant activation | NONE |
+| Registry status changes | NONE |
+| Runtime implementation | NOT AUTHORIZED |
+| Any code | NOT AUTHORIZED |
+
+C20-INV-05 through C20-INV-11 remain DEFERRED in the authoritative invariant registry.
+
+## 16. References
 
 - `docs/adr/C20_INVARIANT_REGISTRY.md`
 - `crm-extension/files/custom/Espo/Modules/AIPlatform/Services/AIJobService.php`
