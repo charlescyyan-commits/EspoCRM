@@ -165,8 +165,8 @@ are those of ADR-C20-007 §4, unchanged.
 
 | Area | Governance state | Verified runtime gap | Owner |
 | --- | --- | --- | --- |
-| Completion capability portfolio | Direction ratified | `COMMERCIAL_BRIEF` absent; adapter has no routable prompt for it | RT-WP1 |
-| Purpose delivery | Proposed | `commercial_brief_generation` not registered on any binding; registry rejects deterministically | RT-WP1 + RT-WP2 |
+| Completion capability portfolio | Four-value portfolio ratified | `COMMERCIAL_BRIEF` is not an approved capability; RT-WP1 has no code-bearing scope under the current portfolio | C20 governance; any future technical mapping is separate |
+| Purpose delivery | Proposed | `commercial_brief_generation` is not registered on any binding; registry rejects deterministically | RT-WP2 |
 | ProviderBinding CRM surface | Governance ratified | Persistence/authorization surface missing; no `allowed_provider_bindings` producer | RT-WP2 |
 | Controlled dispatch | Contract direction known | No dispatch orchestrator, connector dispatch port, or AIJob-driven path | RT-WP3 |
 | INV-05 | READY | Activation evidence required (code present) | RT-WP7 |
@@ -727,17 +727,19 @@ exact owners and boundaries.
 
 ---
 
-## 20. RT-WP1 — Completion Capability and Purpose Delivery
+## 20. RT-WP1 — No-Code Capability-Purpose Reconciliation
 
-**Purpose:** implement the approved runtime representation for the proposed
-capability and purpose, under separate authorization. **Scope (§8):** add
-`COMMERCIAL_BRIEF` to `CompletionCapability` only if separately authorized;
-preserve the capability/purpose distinction; keep the adapter non-routable for
-the new value until a valid binding authorizes it; extend registry contract
-tests for purpose rejection; no C25 code. **Entry gate:** RT-WP0 exit;
-separate authorization for the enum addition. **Exit gate:** four capabilities
-unchanged; new value not automatically routable; no binding → deterministic
-rejection; contract tests pass.
+**Purpose:** reconcile the ratified four-value capability portfolio with the
+CommercialBrief classification. `CommercialBrief` is a C25 business object and
+purpose/output contract, not an approved `CompletionCapability`. **Scope:** no
+enum addition, adapter change, registry change, ProviderBinding, purpose
+registry, dispatch, or C25 code. **Entry gate:** RT-WP0 exit and RT-WP1 Charter
+ratification. **Current state:** NO-CODE — RECONCILED. The existing repository
+virtual environment `.venv-s01` collected and passed the focused pytest contract
+set (66 tests; 26 subtests) on 2026-08-02, and the C20 boundary and invariant
+unittest suite passed 19 tests. **Exit Review:** APPROVED. **Administrative Exit:** EXITED.
+**Non-effect:** this does not authorize RT-WP2,
+provider binding, purpose registration, dispatch, or C25 WP2.2.
 
 ---
 
@@ -1064,7 +1066,7 @@ into one large commit.
 | Work package | Entry gate | Exit gate |
 | --- | --- | --- |
 | RT-WP0 | Governance freeze unchanged; charter accepted | Independent baseline review PASS |
-| RT-WP1 | RT-WP0 exit; separate authorization | Four capabilities unchanged; non-routable; deterministic rejection; contract tests pass |
+| RT-WP1 | RT-WP0 exit; no-code scope reconciliation | Existing four capabilities unchanged; non-routable baseline verified; pytest contract evidence rerun or independently reconciled |
 | RT-WP2 | RT-WP2 separately authorized AND RT-WP2 Foundation Review PASS | Foundation decisions satisfied exactly; authorized binding set; no secrets; no invocation; no counters; no CRM health probing |
 | RT-WP3 | RT-WP1 + RT-WP2 exits; AIJob ACL Foundation Gate PASS for operator-visible dispatch | INV-08 evidence; cardinality proven; no provider SDK in CRM; health-input contract defined |
 | RT-WP4 | RT-WP3 stable; §18.1; AIJob ACL Foundation Gate PASS for cancel | Valid-reason cancel; no direct mutation; INV-06 eligible; baseline frozen |
@@ -1109,7 +1111,7 @@ C25 WP2.2 may start: NO
 
 ## 35. Remaining Decision Gates
 
-These are explicit pre-implementation gates, not generic TODOs. They do not
+These are explicit pre-implementation gates, not generic open tasks. They do not
 reopen the frozen C20 governance baseline.
 
 | Decision | Classification |
@@ -1162,10 +1164,15 @@ Final Runtime Implementation Charter Ratification Review completed.
 | Runtime Charter | RATIFIED |
 | RT-WP0 | NOT AUTOMATICALLY AUTHORIZED |
 | RT-WP0 may be separately authorized | YES |
-| RT-WP1 | NOT AUTHORIZED |
+| RT-WP1 Scope | NO-CODE — RECONCILED |
+| RT-WP1 Evidence | COMPLETE |
+| RT-WP1 Exit Review | APPROVED |
+| RT-WP1 Administrative Exit | EXITED |
+| RT-WP1 Exit | EXITED |
+| RT-WP1 Runtime Code | NOT AUTHORIZED — NO CODE-BEARING SCOPE |
 | RT-WP2 | NOT AUTHORIZED |
 | RT-WP3–RT-WP8 | NOT AUTHORIZED |
-| Runtime code | NOT AUTHORIZED |
+| Runtime Code outside separately authorized work packages | NOT AUTHORIZED |
 | C20-INV-05–11 activation | NOT AUTHORIZED; remain DEFERRED |
 | C25 WP2.2 | NO GO |
 | Commit / push / tag | NOT AUTHORIZED |
@@ -1188,9 +1195,14 @@ NOT AUTHORIZED
 | Runtime Implementation Charter | RATIFIED |
 | RT-WP0 | EXITED |
 | RT-WP1 Charter | RATIFIED |
-| RT-WP1 Implementation | NOT AUTHORIZED |
+| RT-WP1 Scope | NO-CODE — RECONCILED |
+| RT-WP1 Evidence | COMPLETE |
+| RT-WP1 Exit Review | APPROVED |
+| RT-WP1 Administrative Exit | EXITED |
+| RT-WP1 Exit | EXITED |
+| RT-WP1 Runtime Code | NOT AUTHORIZED — NO CODE-BEARING SCOPE |
 | RT-WP2–RT-WP8 | NOT AUTHORIZED |
-| Runtime Code | NOT AUTHORIZED |
+| Runtime Code outside separately authorized work packages | NOT AUTHORIZED |
 | C25 WP2.2 | NO GO |
 
 ### 37.1 RT-WP1 Charter Status Log
@@ -1202,7 +1214,44 @@ NOT AUTHORIZED
 | Verdict | RATIFIED WITH INFORMATIONAL NOTES |
 | Effect | Charter status synchronized to RATIFIED |
 | Non-effect | No implementation authorization granted |
+
+### 37.2 RT-WP1 No-Code Scope Reconciliation Log
+
+| Field | Value |
+| --- | --- |
+| Date | 2026-08-02 |
+| Event | RT-WP1 no-code scope reconciled after independent authorization remediation |
+| Classification | `CommercialBrief` is a C25 purpose/output contract, not an approved CompletionCapability |
+| Scope | No enum, adapter, registry, ProviderBinding, purpose registry, dispatch, or C25 implementation change is authorized or required by RT-WP1 |
+| Evidence | Existing four-value contract, static registry and adapter boundary evidence, and 19 passing C20 unittest boundary/invariant tests |
+| Effect | RT-WP1 scope remains NO-CODE — RECONCILED; no-code exit review is now pending |
+| Non-effect | RT-WP2–RT-WP8 and C25 WP2.2 remain unauthorized; runtime code remains unauthorized |
 | Review reference | `docs/audit/PHASE3C20_RT_WP1_IMPLEMENTATION_CHARTER_RATIFICATION_REVIEW.md` |
+
+### 37.3 RT-WP1 No-Code Evidence Reconciliation Log
+
+| Field | Value |
+| --- | --- |
+| Date | 2026-08-02 |
+| Environment | Existing repository virtual environment `.venv-s01`; Python 3.12.13; pytest 9.1.1 |
+| Collection | Focused allowlist collected 66 tests without errors, skips, xfails, or deselection |
+| Result | 66 tests passed; 26 subtests passed; existing C20 unittest suite passed 19 tests |
+| Static evidence | Four-value enum unchanged; no C25 runtime reference; registry and adapter boundaries remain explicit |
+| Reconciliation result | RT-WP1 Scope: NO-CODE — RECONCILED; RT-WP1 Evidence: COMPLETE |
+| Subsequent status | Exit Review APPROVED; Administrative Exit EXITED in §37.4 |
+| Non-effect | RT-WP1 has no code-bearing scope; RT-WP2–RT-WP8, Runtime Code, and C25 WP2.2 remain unauthorized |
+| Evidence record | `docs/audit/PHASE3C20_RT_WP1_NO_CODE_EVIDENCE_RECONCILIATION.md` |
+
+### 37.4 RT-WP1 No-Code Administrative Exit Log
+
+| Field | Value |
+| --- | --- |
+| Date | 2026-08-03 |
+| Event | RT-WP1 No-Code Administrative Exit |
+| Review | `docs/audit/PHASE3C20_RT_WP1_NO_CODE_EXIT_REVIEW.md` |
+| Verdict | EXIT APPROVED WITH INFORMATIONAL NOTES |
+| Effect | RT-WP1 marked EXITED |
+| Non-effect | No RT-WP2 authorization; no Runtime Code authorization; no C25 WP2.2 authorization |
 
 ```text
 Ratification approves the Runtime Charter as a planning and work-package reference only.
@@ -1249,7 +1298,9 @@ separate authorization.
 
 ## 38. Exact Next Task
 
-RT-WP0 exited; RT-WP1 Charter is RATIFIED and RT-WP1 Implementation remains NOT AUTHORIZED.
+RT-WP0 exited; RT-WP1 Charter is RATIFIED and RT-WP1 has EXITED as a no-code
+work package. RT-WP2 Charter may be separately authorized. RT-WP2 remains NOT
+AUTHORIZED unless and until a separate authorization is issued.
 
 ```text
 docs/PHASE3C20_RT_WP0_RUNTIME_BASELINE.md
@@ -1258,11 +1309,11 @@ docs/PHASE3C20_RT_WP0_RUNTIME_BASELINE.md
 Exact next task:
 
 ```text
-No RT-WP1 implementation is authorized by this status synchronization.
+RT-WP2 Charter may be separately authorized.
 ```
 
 - RT-WP0 is EXITED.
-- RT-WP1 Charter is RATIFIED; RT-WP1 Implementation requires separate explicit authorization.
+- RT-WP1 Charter is RATIFIED; RT-WP1 Scope is NO-CODE — RECONCILED; RT-WP1 Evidence is COMPLETE; RT-WP1 Exit Review is APPROVED; RT-WP1 Administrative Exit is EXITED.
 - No runtime implementation is authorized by this status synchronization.
 
 ---

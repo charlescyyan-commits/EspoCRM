@@ -3,13 +3,13 @@
 | Field | Value |
 | --- | --- |
 | Phase / Work Package | Phase3C20 RT-WP1 |
-| Status | RATIFIED |
+| Status | RATIFIED — NO-CODE WORK PACKAGE EXITED |
 | Date | 2026-08-02 |
 | Governing baseline commit | `7846f6f5c3d33ecfe161cbe2099521ab00bac365` |
 | Governing exit tag | `phase3c20-rt-wp0-exit` |
 | Charter authoring authorization | Authorized by the RT-WP1 separate documentation authorization |
-| Implementation authorization | RT-WP1 Implementation: NOT AUTHORIZED |
-| Runtime code | Not authorized |
+| Implementation authorization | RT-WP1 Implementation: NOT AUTHORIZED — NO CODE-BEARING SCOPE |
+| Runtime code | NOT AUTHORIZED — NO CODE-BEARING SCOPE |
 | C25 WP2.2 | NO GO |
 
 ## 1. Purpose
@@ -86,6 +86,27 @@ Charter §28, with the exact file allowlist reconfirmed in that separate task:
 
 The only current portfolio is `RESEARCH_EVIDENCE`, `QUALIFICATION_INSIGHT`,
 `DRAFT_ASSISTANCE`, and `REPLY_ASSISTANCE`. This charter does not change it.
+
+### 3.1A No-Code Scope Reconciliation
+
+The independent authorization remediation classifies `CommercialBrief` as a C25
+business object, output contract, and proposed binding purpose, not as an
+approved `CompletionCapability`. `COMMERCIAL_BRIEF` is neither authorized nor
+required as an enum addition by RT-WP1.
+
+The existing four-value enum, explicit-transport adapter, deterministic
+registry rejection, and C20 boundary guards satisfy the technical baseline
+without an RT-WP1 code change. RT-WP1 must not modify the enum, adapter,
+registry, ProviderBinding, or a purpose registry. Its code-bearing scope is
+therefore empty under the current portfolio.
+
+The existing repository virtual environment `.venv-s01` provides Python 3.12.13
+and pytest 9.1.1. On 2026-08-02, the focused contract suite collected 66 tests
+and passed 66 tests with 26 subtests; the existing C20 boundary and invariant
+unittest suite also passed 19 tests. No skip, xfail, deselection, collection
+error, or test failure occurred. The evidence is reconciled and RT-WP1 may now
+enter an independent no-code exit review. This does not claim that RT-WP1 has
+exited.
 
 ### 3.2 Explicit exclusions
 
@@ -190,7 +211,10 @@ provider call, or an autonomous workflow.
 
 ## 8. Future Implementation Sequence and Evidence
 
-This is a future plan, not implementation authorization.
+This section records a conditional future path only. It is not an RT-WP1 code
+authorization. Under the reconciled four-value portfolio, RT-WP1 has no
+code-bearing implementation scope and must first complete no-code evidence
+reconciliation.
 
 1. Obtain explicit RT-WP1 implementation authorization and a scoped file
    allowlist; stop if it broadens into RT-WP2–RT-WP8.
@@ -213,10 +237,10 @@ qualification, lifecycle, outreach, or C25 authority is introduced.
 
 ## 9. Freeze and Exit Criteria
 
-RT-WP1 may enter implementation review only after separate implementation
-authorization. It may be considered for freeze review only after all authorized
-contract and negative evidence passes, the exact file allowlist is respected,
-and no RT-WP2–RT-WP8 responsibility appears.
+RT-WP1 may not enter implementation review because it has no authorized or
+required code-bearing scope. It may enter a no-code exit review only after the
+existing pytest contract evidence is rerun or otherwise independently
+reconciled, with no RT-WP2–RT-WP8 responsibility appearing.
 
 RT-WP1 may be marked exited only after independent implementation review,
 remote commit verification, and a separate status synchronization. Charter
@@ -229,20 +253,39 @@ ratification never authorizes implementation.
 | RT-WP0 | EXITED |
 | RT-WP1 Charter Authoring | COMPLETE |
 | RT-WP1 Charter Ratification | RATIFIED |
-| RT-WP1 Implementation | NOT AUTHORIZED |
+| RT-WP1 Scope | NO-CODE — RECONCILED |
+| RT-WP1 Evidence | COMPLETE |
+| RT-WP1 Exit Status | EXITED |
+| RT-WP1 Implementation | NOT AUTHORIZED — NO CODE-BEARING SCOPE |
 | RT-WP2–RT-WP8 | NOT AUTHORIZED |
-| Runtime Code | NOT AUTHORIZED |
+| Runtime Code | NOT AUTHORIZED — RT-WP1 HAS NO CODE-BEARING SCOPE |
 | C25 WP2.2 | NO GO |
 
 No section of this charter authorizes runtime implementation, a test change,
 metadata, an entity, a route, a service, a guard, a connector change, or a
 provider invocation.
 
+### 10.1 Administrative Exit Record
+
+| Field | Value |
+| --- | --- |
+| Review | RT-WP1 No-Code Exit Review |
+| Date | 2026-08-03 |
+| Verdict | EXIT APPROVED WITH INFORMATIONAL NOTES |
+| BLOCKER / HIGH / MEDIUM / LOW | NONE / NONE / NONE / NONE |
+| Evidence | 66 focused pytest passed; 26 subtests passed; 19 unittest passed |
+| Review reference | `docs/audit/PHASE3C20_RT_WP1_NO_CODE_EXIT_REVIEW.md` |
+| Administrative result | RT-WP1 is EXITED as a no-code work package. |
+| Runtime result | RT-WP1 produced no runtime code. |
+| Classification | COMMERCIAL_BRIEF is a purpose/business contract, not a CompletionCapability. |
+| Non-effect | RT-WP2 remains NOT AUTHORIZED; Runtime Code and C25 WP2.2 remain NOT AUTHORIZED and NO GO respectively. |
+
+RT-WP1 Exit Status: EXITED
+
 ## 11. Next Gate
 
 ```text
-RT-WP1 Implementation may be considered only through a separate,
-explicit implementation authorization.
+RT-WP2 Charter may be separately authorized.
 ```
 
 ## 12. References
