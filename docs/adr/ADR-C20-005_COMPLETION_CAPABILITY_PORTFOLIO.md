@@ -12,11 +12,15 @@
 
 This ADR is **RATIFIED** as a C20 governance-direction record.
 
-Ratification accepts the existing four-value `CompletionCapability` portfolio model and records `COMMERCIAL_BRIEF` only as a future proposed extension direction.
+Ratification accepts the existing CompletionCapability portfolio model and
+records `COMMERCIAL_BRIEF` as a governed portfolio identity.
 
-Ratification of this ADR does **not** ratify, add, activate, deliver, or implement the `COMMERCIAL_BRIEF` enum value itself.
+Package A RELEASED delivers `COMMERCIAL_BRIEF` as **capability identity /
+contract alignment only** (see §15 Addendum). Ratification of this ADR alone
+did not authorize that delivery; Package A was a separate C20 authorization.
 
-`COMMERCIAL_BRIEF` is not present in the enum, not active, not delivered, and not implemented.
+`COMMERCIAL_BRIEF` identity delivery does **not** authorize provider execution,
+autonomous generation, Runtime Expansion, or invariant activation.
 
 It does not activate a capability.
 
@@ -333,7 +337,44 @@ The C20 completion portfolio remains bounded.
 
 Any later enum addition and matching purpose delivery remain separate C20 authorization and delivery tasks and do not follow from this ADR ratification alone.
 
-## 14. References
+---
+
+## 15. Package A Alignment Addendum (Post-Delivery)
+
+| Field | Value |
+| --- | --- |
+| Addendum date | 2026-08-04 |
+| Package A status | **RELEASED** (`docs/audit/PHASE3C20_PACKAGE_A_RELEASE_RECORD.md`) |
+| Delivery commit | `e24a8e11e8e915d7432ad4f91377835ff9f41848` |
+| Purpose of addendum | Align this ADR’s delivery statements with Package A identity delivery |
+
+**Package A delivered (identity / contract only):**
+
+- `CompletionCapability.COMMERCIAL_BRIEF` enum identity in connector portfolio
+- contract / guard alignment referencing `COMMERCIAL_BRIEF`
+
+**Package A did NOT deliver:**
+
+- provider execution / connector HTTP invocation for CommercialBrief generation
+- autonomous generation
+- Runtime Expansion
+- invariant activation
+
+```text
+COMMERCIAL_BRIEF = delivered capability identity (Package A)
+COMMERCIAL_BRIEF ≠ live provider execution
+```
+
+Prior §1 / §13 statements that the enum value was “not present / not delivered”
+are **superseded for identity delivery status only** by Package A RELEASED.
+Governance direction, non-execution boundary, and C25 non-authority remain in force.
+
+This addendum does **not** reopen C20 architecture, authorize Runtime Expansion,
+or activate invariants.
+
+---
+
+## 16. References
 
 - `chitu-connector/chitu_connector/acquisition/providers/capabilities.py`
 - `chitu-connector/chitu_connector/acquisition/providers/registry.py`

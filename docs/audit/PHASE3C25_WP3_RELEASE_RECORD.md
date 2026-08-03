@@ -6,21 +6,23 @@
 | Phase | Phase3C25 WP3 |
 | Package | Revenue Analyst Assistant / Commercial Insight Support |
 | Delivery identity | Commercial Intelligence Support Layer |
-| Status | **DRAFT** — delivery evidence recorded; freeze review pending |
+| Status | **COMMITTED** — delivery evidence on `origin/master`; freeze complete |
 | Date | 2026-08-03 |
 | Delivery commit | `d42888f10bf5508699c62e420663f79383e63eaa` |
 | Commit message | `feat(c25): deliver wp3 commercial intelligence support layer` |
+| Release-record commit | `2833c6fb947b617e273690289a945e431a265972` |
 | Push | `origin/master` synchronized (`local == origin/master`) |
 | Verification | PASS WITH NOTES |
-| Freeze | **NOT DONE** — tag not created by this record |
+| Freeze | **FROZEN** — `phase3c25-wp3-freeze` → `2833c6fb947b617e273690289a945e431a265972` |
+| Tag object | `faf19f512ae1f9f91943859db56ac1c984464e3b` |
+| Post-freeze closure | `docs/audit/PHASE3C25_WP3_POST_FREEZE_GOVERNANCE_CLOSURE.md` |
 
 ```text
 This release record documents WP3 Commercial Intelligence Support Layer
-delivery evidence before Freeze Review.
+delivery evidence. Freeze and post-freeze governance closure are complete.
 
 It does NOT authorize Runtime Expansion, C20 changes, C22 ownership
-transfer, C24 ownership transfer, invariant activation, freeze-tag
-creation, or commit of this document.
+transfer, C24 ownership transfer, invariant activation, or WP4.
 ```
 
 ---
@@ -52,11 +54,9 @@ ownership of C20 / C22 / C24 / CRM Core lifecycles.
 
 | Gate | Evidence |
 | --- | --- |
-| WP3 Charter | `docs/PHASE3C25_NEXT_WP_CHARTER.md` |
-| Charter Review | Conditions established (assistant definition; C24 consume-only) |
-| Condition Closure | `docs/PHASE3C25_WP3_IMPLEMENTATION_PLAN.md` Part 1 — CONDITIONS CLOSED |
-| Implementation Plan | `docs/PHASE3C25_WP3_IMPLEMENTATION_PLAN.md` |
-| Implementation Authorization | **AUTHORIZED WITH CONDITIONS** |
+| WP3 Charter | `docs/PHASE3C25_WP3_CHARTER.md` |
+| Condition Closure / Plan | `docs/PHASE3C25_WP3_IMPLEMENTATION_PLAN.md` |
+| Implementation Authorization | `docs/PHASE3C25_WP3_IMPLEMENTATION_AUTHORIZATION.md` (**AUTHORIZED WITH CONDITIONS** — COMPLETE) |
 | Scoped Implementation | `crm-extension/.../CommercialIntelligence/**` WP3 artifacts + WP3 tests |
 | Verification Review | PASS WITH NOTES |
 | Commit | `d42888f10bf5508699c62e420663f79383e63eaa` |
@@ -208,15 +208,17 @@ paths and WP3 tests/fixtures. No `chitu-connector`, `AIPlatform`,
 | C25 WP2.0 | SATISFIED |
 | WP2.2 CommercialBrief | FROZEN |
 | WP3 Implementation | **RELEASED** |
-| WP3 Release Record | **DRAFT** |
-| WP3 Freeze | NOT DONE |
+| WP3 Release Record | **COMMITTED** |
+| WP3 Freeze | **FROZEN** (`phase3c25-wp3-freeze`) |
+| WP3 Governance Closure | **COMPLETE** |
 | Runtime Expansion | NOT AUTHORIZED |
 | Invariant Activation | NOT DONE |
 
 ```text
 WP3 delivery evidence recorded.
-Freeze Review is the next governance gate.
-This document does not create a freeze tag or authorize Runtime Expansion.
+Freeze tag phase3c25-wp3-freeze is created and pushed.
+Post-freeze governance closure is COMPLETE.
+This document does not authorize Runtime Expansion or WP4.
 ```
 
 ---
@@ -225,10 +227,12 @@ This document does not create a freeze tag or authorize Runtime Expansion.
 
 | Gate | Status |
 | --- | --- |
-| Freeze Review | PENDING |
-| Freeze tag | NOT DONE |
+| Freeze Review | **PASS WITH NOTES** |
+| Freeze tag | **CREATED + PUSHED** (`phase3c25-wp3-freeze`) |
+| Post-freeze governance closure | **COMPLETE** |
 | Runtime Expansion | NOT AUTHORIZED |
 | Invariant Activation | NOT DONE |
+| WP4 | NOT AUTHORIZED |
 
 ---
 
@@ -238,6 +242,7 @@ This document does not create a freeze tag or authorize Runtime Expansion.
 | --- | --- |
 | Author role | Governance documentation owner |
 | Mode | Documentation only |
-| Commit of this record | **NOT DONE** unless separately authorized |
-| Tag | **NOT CREATED** |
+| Commit of this record | `2833c6fb947b617e273690289a945e431a265972` |
+| Tag | `phase3c25-wp3-freeze` (`faf19f512ae1f9f91943859db56ac1c984464e3b`) |
 | Production code changes | **NONE** |
+| Status sync note | Headers updated post-freeze for hygiene; sync commit separate if authorized |

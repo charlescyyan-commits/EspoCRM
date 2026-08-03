@@ -24,7 +24,9 @@ It does not add a connector adapter.
 
 It does not route or dispatch any request.
 
-`commercial_brief_generation` remains proposed only. No live binding currently authorizes it.
+`commercial_brief_generation` remains proposed only for **live binding execution**.
+Package A RELEASED delivers the purpose as catalog/policy identity only
+(see §17 Addendum). No live binding currently authorizes provider invocation.
 
 ## 2. Decision
 
@@ -348,7 +350,45 @@ No live ProviderBinding currently authorizes it.
 
 CommercialBrief owns no provider, model, routing, dispatch, or credential responsibility.
 
-## 16. References
+---
+
+## 17. Package A Alignment Addendum (Post-Delivery)
+
+| Field | Value |
+| --- | --- |
+| Addendum date | 2026-08-04 |
+| Package A status | **RELEASED** (`docs/audit/PHASE3C20_PACKAGE_A_RELEASE_RECORD.md`) |
+| Delivery commit | `e24a8e11e8e915d7432ad4f91377835ff9f41848` |
+| Purpose of addendum | Align purpose-registration statements with Package A policy delivery |
+
+**Package A delivered (policy / catalog only):**
+
+- purpose ID `commercial_brief_generation` as catalog / eligibility / policy classification reference
+  (`ProviderBindingService::PURPOSE_COMMERCIAL_BRIEF_GENERATION`)
+- guard / binding validation alignment
+
+**Package A did NOT deliver:**
+
+- live ProviderBinding that authorizes outbound provider execution for the purpose
+- connector invocation / provider routing / dispatch
+- Runtime Expansion
+- invariant activation
+
+```text
+commercial_brief_generation = delivered purpose identity/policy reference (Package A)
+commercial_brief_generation ≠ authorized live provider binding execution
+```
+
+Prior §1 / §15 statements that the purpose is “proposed only / not delivered”
+are **superseded for identity/policy catalog status only** by Package A RELEASED.
+No live binding execution authorization is implied.
+
+This addendum does **not** reopen C20 architecture, authorize Runtime Expansion,
+or activate invariants.
+
+---
+
+## 18. References
 
 - `chitu-connector/chitu_connector/acquisition/providers/registry.py`
 - `chitu-connector/chitu_connector/acquisition/providers/capabilities.py`

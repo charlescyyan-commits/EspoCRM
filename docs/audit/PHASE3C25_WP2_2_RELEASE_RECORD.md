@@ -5,19 +5,21 @@
 | Document Type | Release Record (documentation only) |
 | Phase | Phase3C25 WP2.2 |
 | Package | CommercialBrief application layer |
-| Status | **RELEASED CANDIDATE** — implementation complete and verified; freeze review pending |
+| Status | **FROZEN** — freeze tag `phase3c25-wp2-2-freeze` on origin |
 | Date | 2026-08-03 |
 | Delivery commit | `d6ee0175ef9f4832c108839acfbb034cbae71923` |
 | Commit message | `feat(c25): implement wp2.2 commercialbrief application layer` |
+| Governance/release commit | `23afb9e1c825817474ad09cfbde4592e38e46fea` |
 | Verification | PASS WITH NOTES |
-| Freeze | **READY FOR REVIEW** — tag not created by this record |
+| Freeze Review | `docs/audit/PHASE3C25_WP2_2_FREEZE_REVIEW.md` — PASS WITH NOTES |
+| Freeze | **FROZEN** — tag object `08b6e29acc01124e07edd45f391e7cede8752367` |
 
 ```text
 This release record documents WP2.2 CommercialBrief application-layer
-delivery evidence and freeze-review readiness.
+delivery evidence. Freeze is complete.
 
 It does NOT authorize Runtime Expansion, C20 changes, C22 execution,
-invariant activation, or freeze-tag creation.
+or invariant activation.
 ```
 
 ---
@@ -172,7 +174,7 @@ Live provider invocation remains unauthorized.
 
 ---
 
-## 9. Freeze Readiness
+## 9. Freeze Readiness / Freeze Outcome
 
 | Item | Status |
 | --- | --- |
@@ -180,12 +182,10 @@ Live provider invocation remains unauthorized.
 | Implementation complete | **PASS** |
 | Verification complete | **PASS** |
 | Commit exists | **PASS** (`d6ee017`) |
-| Push verified | **PASS** (local HEAD == `origin/master` == `d6ee017`) |
+| Freeze review evidence | **PASS** (`docs/audit/PHASE3C25_WP2_2_FREEZE_REVIEW.md`) |
+| Freeze tag | **CREATED + PUSHED** (`phase3c25-wp2-2-freeze` → `23afb9e`) |
 | Runtime boundary preserved | **PASS** |
 | Invariant status unchanged | **PASS** |
-
-Freeze tag creation is **not** performed by this document. Independent
-freeze review remains required.
 
 ---
 
@@ -197,8 +197,8 @@ freeze review remains required.
 | C20 Package A | **RELEASED** |
 | C25 WP2.0 | **SATISFIED** |
 | WP2.2 Authorization | **COMPLETE** |
-| WP2.2 Implementation | **RELEASED CANDIDATE** |
-| WP2.2 Freeze | **READY FOR REVIEW** |
+| WP2.2 Implementation | **RELEASED** |
+| WP2.2 Freeze | **FROZEN** |
 | Runtime Expansion | **NOT AUTHORIZED** |
 | Invariant Activation | **NOT DONE** |
 
