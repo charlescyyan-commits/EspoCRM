@@ -73,6 +73,23 @@ ALLOWED_WP3_RUNTIME_FILES = {
     AI_PLATFORM / "Services" / "ProviderBindingService.php",
     AI_PLATFORM / "Services" / "ProviderBindingMutationSaveOption.php",
     AI_PLATFORM / "Hooks" / "ProviderBinding" / "ProviderBindingMutationGuard.php",
+    # RT-WP3–WP7 Lite foundation (boundary validation / metadata vocabulary only).
+    AI_PLATFORM / "Services" / "AIDispatchRequest.php",
+    AI_PLATFORM / "Services" / "AIDispatchExecutionBoundary.php",
+    AI_PLATFORM / "Services" / "AIDispatchRuntimeGuardsLite.php",
+    AI_PLATFORM / "Services" / "AIDispatchService.php",
+    AI_PLATFORM / "Services" / "AIFoundationState.php",
+    AI_PLATFORM / "Services" / "AIFoundationStateService.php",
+    AI_PLATFORM / "Services" / "AIFoundationStateTransitionGuard.php",
+    AI_PLATFORM / "Services" / "AIFailureMetadata.php",
+    AI_PLATFORM / "Services" / "AIFailureMetadataService.php",
+    AI_PLATFORM / "Services" / "AIFailureMetadataGuard.php",
+    AI_PLATFORM / "Services" / "AIReservationMetadata.php",
+    AI_PLATFORM / "Services" / "AIReservationMetadataService.php",
+    AI_PLATFORM / "Services" / "AIReservationMetadataGuard.php",
+    AI_PLATFORM / "Services" / "AIGuardRule.php",
+    AI_PLATFORM / "Services" / "AIGuardValidationResult.php",
+    AI_PLATFORM / "Services" / "AIGuardService.php",
 }
 ALLOWED_WP3_ENTITIES = {
     AI_PLATFORM / "Entities" / "AIRequestLog.php",

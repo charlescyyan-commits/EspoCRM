@@ -45,22 +45,31 @@ AUTHORIZED_METADATA_FILES = {
     "Resources/metadata/entityDefs/AIJob.json",
     "Resources/metadata/entityDefs/AIRequestLog.json",
     "Resources/metadata/entityDefs/PromptTemplate.json",
+    "Resources/metadata/entityDefs/ProviderBinding.json",
     "Resources/metadata/scopes/ProviderCredential.json",
     "Resources/metadata/scopes/AIJob.json",
     "Resources/metadata/scopes/AIRequestLog.json",
     "Resources/metadata/scopes/PromptTemplate.json",
+    "Resources/metadata/scopes/ProviderBinding.json",
     "Resources/metadata/aclDefs/ProviderCredential.json",
     "Resources/metadata/aclDefs/AIJob.json",
     "Resources/metadata/aclDefs/AIRequestLog.json",
     "Resources/metadata/aclDefs/PromptTemplate.json",
+    "Resources/metadata/aclDefs/ProviderBinding.json",
     "Resources/metadata/entityAcl/ProviderCredential.json",
     "Resources/metadata/entityAcl/PromptTemplate.json",
+    "Resources/metadata/entityAcl/ProviderBinding.json",
     "Resources/metadata/app/acl.json",
     "Resources/metadata/app/aclPortal.json",
+    "Resources/metadata/app/adminPanel.json",
     "Resources/i18n/en_US/ProviderCredential.json",
     "Resources/i18n/zh_CN/ProviderCredential.json",
+    "Resources/i18n/en_US/ProviderBinding.json",
+    "Resources/i18n/zh_CN/ProviderBinding.json",
     "Resources/layouts/ProviderCredential/list.json",
     "Resources/layouts/ProviderCredential/detail.json",
+    "Resources/layouts/ProviderBinding/list.json",
+    "Resources/layouts/ProviderBinding/detail.json",
 }
 AUTHORIZED_RUNTIME_FILES = {
     "Services/AIJobService.php",
@@ -74,6 +83,26 @@ AUTHORIZED_RUNTIME_FILES = {
     "Services/PromptTemplateService.php",
     "Services/PromptTemplateSaveOption.php",
     "Hooks/PromptTemplate/PromptTemplateMutationGuard.php",
+    "Services/ProviderBindingService.php",
+    "Services/ProviderBindingMutationSaveOption.php",
+    "Hooks/ProviderBinding/ProviderBindingMutationGuard.php",
+    # RT-WP3–WP7 Lite foundation vocabulary / boundary validation only.
+    "Services/AIDispatchRequest.php",
+    "Services/AIDispatchExecutionBoundary.php",
+    "Services/AIDispatchRuntimeGuardsLite.php",
+    "Services/AIDispatchService.php",
+    "Services/AIFoundationState.php",
+    "Services/AIFoundationStateService.php",
+    "Services/AIFoundationStateTransitionGuard.php",
+    "Services/AIFailureMetadata.php",
+    "Services/AIFailureMetadataService.php",
+    "Services/AIFailureMetadataGuard.php",
+    "Services/AIReservationMetadata.php",
+    "Services/AIReservationMetadataService.php",
+    "Services/AIReservationMetadataGuard.php",
+    "Services/AIGuardRule.php",
+    "Services/AIGuardValidationResult.php",
+    "Services/AIGuardService.php",
 }
 AUTHORIZED_RUNTIME_DIRECTORIES = {
     "Entities",
@@ -82,6 +111,7 @@ AUTHORIZED_RUNTIME_DIRECTORIES = {
     "Hooks/AIJob",
     "Hooks/AIRequestLog",
     "Hooks/PromptTemplate",
+    "Hooks/ProviderBinding",
 }
 AUTHORIZED_METADATA_DIRECTORIES = {
     "Resources/metadata/entityDefs",
@@ -89,7 +119,33 @@ AUTHORIZED_METADATA_DIRECTORIES = {
     "Resources/metadata/aclDefs",
     "Resources/layouts",
     "Resources/layouts/ProviderCredential",
+    "Resources/layouts/ProviderBinding",
 }
+# Reject-list / boundary-validation surfaces may name forbidden entities only
+# to reject them. That is not lifecycle authority.
+REJECT_VOCABULARY_FILES = {
+    "Services/AIDispatchRequest.php",
+    "Services/AIDispatchExecutionBoundary.php",
+    "Services/AIDispatchRuntimeGuardsLite.php",
+    "Services/AIDispatchService.php",
+    "Services/AIFoundationState.php",
+    "Services/AIFoundationStateService.php",
+    "Services/AIFoundationStateTransitionGuard.php",
+    "Services/AIFailureMetadata.php",
+    "Services/AIFailureMetadataService.php",
+    "Services/AIFailureMetadataGuard.php",
+    "Services/AIReservationMetadata.php",
+    "Services/AIReservationMetadataService.php",
+    "Services/AIReservationMetadataGuard.php",
+    "Services/AIGuardRule.php",
+    "Services/AIGuardValidationResult.php",
+    "Services/AIGuardService.php",
+    "Services/ProviderBindingService.php",
+    "Hooks/ProviderBinding/ProviderBindingMutationGuard.php",
+}
+REJECT_LIST_PROSPECTING_TERMS = (
+    r"\bOpportunity\b",
+)
 FORBIDDEN_RUNTIME_REFERENCES = (
     r"\bProvider\b",
     r"\bAdapter\b",
@@ -123,10 +179,18 @@ class Phase3C20WP11AIPlatformNamespaceSkeletonTests(unittest.TestCase):
         for path in AI_PLATFORM.rglob("*"):
             if not path.is_file():
                 continue
+            relative = path.relative_to(AI_PLATFORM).as_posix()
             text = read(path)
             for pattern in PROSPECTING_REFERENCES:
-                if re.search(pattern, text):
-                    offenders.append(f"{path.relative_to(ROOT)}: {pattern}")
+                if not re.search(pattern, text):
+                    continue
+                # Reject-list vocabulary may name Opportunity only to deny it.
+                if (
+                    relative in REJECT_VOCABULARY_FILES
+                    and pattern in REJECT_LIST_PROSPECTING_TERMS
+                ):
+                    continue
+                offenders.append(f"{path.relative_to(ROOT)}: {pattern}")
         self.assertEqual(offenders, [])
 
     def test_governance_marker_is_defined_only_at_module_boundary(self) -> None:
@@ -160,6 +224,13 @@ class Phase3C20WP11AIPlatformNamespaceSkeletonTests(unittest.TestCase):
             if not path.is_file():
                 continue
             if {"i18n", "layouts"}.intersection(path.relative_to(AI_PLATFORM).parts):
+                continue
+            # Approved RT-WP2–WP7 foundation services and ProviderBinding policy
+            # metadata may use Provider / Capability / Registry vocabulary.
+            if (
+                relative in AUTHORIZED_RUNTIME_FILES
+                or relative in AUTHORIZED_METADATA_FILES
+            ):
                 continue
             text = read(path)
             for pattern in FORBIDDEN_RUNTIME_REFERENCES:

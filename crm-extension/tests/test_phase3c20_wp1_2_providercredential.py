@@ -75,6 +75,51 @@ PROVIDER_BINDING_DETAIL_LAYOUT = (
     AI_PLATFORM / "Resources" / "layouts" / "ProviderBinding" / "detail.json"
 )
 
+# RT-WP3–WP7 Lite foundation surfaces (vocabulary / boundary validation only).
+AI_DISPATCH_REQUEST = AI_PLATFORM / "Services" / "AIDispatchRequest.php"
+AI_DISPATCH_BOUNDARY = AI_PLATFORM / "Services" / "AIDispatchExecutionBoundary.php"
+AI_DISPATCH_GUARDS = AI_PLATFORM / "Services" / "AIDispatchRuntimeGuardsLite.php"
+AI_DISPATCH_SERVICE = AI_PLATFORM / "Services" / "AIDispatchService.php"
+AI_FOUNDATION_STATE = AI_PLATFORM / "Services" / "AIFoundationState.php"
+AI_FOUNDATION_STATE_SERVICE = AI_PLATFORM / "Services" / "AIFoundationStateService.php"
+AI_FOUNDATION_STATE_GUARD = AI_PLATFORM / "Services" / "AIFoundationStateTransitionGuard.php"
+AI_FAILURE_METADATA = AI_PLATFORM / "Services" / "AIFailureMetadata.php"
+AI_FAILURE_METADATA_SERVICE = AI_PLATFORM / "Services" / "AIFailureMetadataService.php"
+AI_FAILURE_METADATA_GUARD = AI_PLATFORM / "Services" / "AIFailureMetadataGuard.php"
+AI_RESERVATION_METADATA = AI_PLATFORM / "Services" / "AIReservationMetadata.php"
+AI_RESERVATION_METADATA_SERVICE = AI_PLATFORM / "Services" / "AIReservationMetadataService.php"
+AI_RESERVATION_METADATA_GUARD = AI_PLATFORM / "Services" / "AIReservationMetadataGuard.php"
+AI_GUARD_RULE = AI_PLATFORM / "Services" / "AIGuardRule.php"
+AI_GUARD_RESULT = AI_PLATFORM / "Services" / "AIGuardValidationResult.php"
+AI_GUARD_SERVICE = AI_PLATFORM / "Services" / "AIGuardService.php"
+
+RUNTIME_LITE_FOUNDATION_FILES = {
+    AI_DISPATCH_REQUEST,
+    AI_DISPATCH_BOUNDARY,
+    AI_DISPATCH_GUARDS,
+    AI_DISPATCH_SERVICE,
+    AI_FOUNDATION_STATE,
+    AI_FOUNDATION_STATE_SERVICE,
+    AI_FOUNDATION_STATE_GUARD,
+    AI_FAILURE_METADATA,
+    AI_FAILURE_METADATA_SERVICE,
+    AI_FAILURE_METADATA_GUARD,
+    AI_RESERVATION_METADATA,
+    AI_RESERVATION_METADATA_SERVICE,
+    AI_RESERVATION_METADATA_GUARD,
+    AI_GUARD_RULE,
+    AI_GUARD_RESULT,
+    AI_GUARD_SERVICE,
+}
+
+# Reject-list / boundary-validation surfaces may name secret/Opportunity terms
+# only to deny them. That is not secret custody or lifecycle authority.
+REJECT_VOCABULARY_FILES = RUNTIME_LITE_FOUNDATION_FILES | {
+    PROVIDER_BINDING_SERVICE,
+    PROVIDER_BINDING_GUARD,
+}
+REJECT_LIST_ISOLATION_TERMS = {"Opportunity"}
+
 APPROVED_MODULE_FILES = {
     BINDING,
     MODULE_METADATA,
@@ -125,6 +170,7 @@ APPROVED_MODULE_FILES = {
     PROVIDER_BINDING_I18N_ZH,
     PROVIDER_BINDING_LIST_LAYOUT,
     PROVIDER_BINDING_DETAIL_LAYOUT,
+    *RUNTIME_LITE_FOUNDATION_FILES,
 }
 
 ALLOWED_FIELDS = {
@@ -313,6 +359,9 @@ class Phase3C20WP12ProviderCredentialTests(unittest.TestCase):
     def test_forbidden_secret_identifiers_are_absent_from_all_module_sources(self) -> None:
         offenders: list[str] = []
         for path in module_source_files():
+            if path in REJECT_VOCABULARY_FILES:
+                # Reject-list tokens (e.g. "secret") deny custody; they are not fields.
+                continue
             source = path.read_text(encoding="utf-8")
             for identifier in FORBIDDEN_SECRET_FIELDS:
                 if re.search(rf"\b{re.escape(identifier)}\b", source, flags=re.IGNORECASE):
@@ -353,6 +402,10 @@ class Phase3C20WP12ProviderCredentialTests(unittest.TestCase):
                 PROVIDER_BINDING_I18N_ZH,
                 PROVIDER_BINDING_SERVICE,
                 PROVIDER_BINDING_GUARD,
+                # RT-WP3 Lite passes the custody reference through the boundary
+                # without resolving it.
+                AI_DISPATCH_BOUNDARY,
+                AI_DISPATCH_SERVICE,
             },
         )
 
@@ -390,8 +443,11 @@ class Phase3C20WP12ProviderCredentialTests(unittest.TestCase):
                 continue
             source = path.read_text(encoding="utf-8")
             for term in ISOLATION_TERMS:
-                if re.search(rf"\b{re.escape(term)}\b", source):
-                    offenders.append(f"{path.relative_to(ROOT)}: {term}")
+                if not re.search(rf"\b{re.escape(term)}\b", source):
+                    continue
+                if path in REJECT_VOCABULARY_FILES and term in REJECT_LIST_ISOLATION_TERMS:
+                    continue
+                offenders.append(f"{path.relative_to(ROOT)}: {term}")
         self.assertEqual(offenders, [])
 
     def test_scope_exists_with_acl_enabled_and_no_public_surface(self) -> None:
@@ -507,6 +563,7 @@ class Phase3C20WP12ProviderCredentialTests(unittest.TestCase):
                 PROMPT_TEMPLATE_SAVE_OPTION,
                 PROVIDER_BINDING_SERVICE,
                 PROVIDER_BINDING_SAVE_OPTION,
+                *RUNTIME_LITE_FOUNDATION_FILES,
             },
         )
         self.assertEqual(
@@ -545,8 +602,11 @@ class Phase3C20WP12ProviderCredentialTests(unittest.TestCase):
         for path in module_source_files():
             source = path.read_text(encoding="utf-8")
             for term in WP_BOUNDARY_TERMS:
-                if re.search(rf"\b{re.escape(term)}\b", source, flags=re.IGNORECASE):
-                    offenders.append(f"{path.relative_to(AI_PLATFORM).as_posix()}: {term}")
+                if not re.search(rf"\b{re.escape(term)}\b", source, flags=re.IGNORECASE):
+                    continue
+                if path in REJECT_VOCABULARY_FILES and term in REJECT_LIST_ISOLATION_TERMS:
+                    continue
+                offenders.append(f"{path.relative_to(AI_PLATFORM).as_posix()}: {term}")
         self.assertEqual(offenders, [])
 
 
