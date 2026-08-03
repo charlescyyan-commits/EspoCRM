@@ -1344,7 +1344,36 @@ Charter ratification does not authorize implementation.
 
 ---
 
-## 40. References
+## 40. RT-WP3 Charter Ratification Status Synchronization
+
+The independent RT-WP3 Implementation Charter ratification review returned
+**PASS WITH INFORMATIONAL NOTES**. The RT-WP3 Charter is therefore
+RATIFIED — STATUS SYNCHRONIZED. Charter ratification does not authorize
+implementation.
+
+| Item | Status |
+| --- | --- |
+| RT-WP0 | EXITED |
+| RT-WP1 | EXITED |
+| RT-WP2 | COMPLETED + TAGGED |
+| RT-WP3 Charter | RATIFIED |
+| RT-WP3 Implementation | NOT AUTHORIZED |
+| RT-WP4–RT-WP8 | NOT AUTHORIZED |
+| Runtime Code | NOT AUTHORIZED |
+| C25 WP2.2 | NO GO |
+
+RT-WP3 remains planning-only Dispatch Foundation scope. Provider execution,
+connector calls, HTTP egress, retry, reservation, queue/worker, C25 lifecycle,
+and CommercialBrief runtime remain excluded. Capability remains the existing
+four-value technical portfolio.
+
+```text
+Charter ratification does not authorize implementation.
+```
+
+---
+
+## 41. References
 
 1. `docs/PHASE3C20_CHARTER.md`
 2. `docs/PHASE3C20_WP1_EXIT_RECONCILIATION.md`
