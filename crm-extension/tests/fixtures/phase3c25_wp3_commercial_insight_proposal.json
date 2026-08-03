@@ -1,0 +1,8 @@
+{
+  "name": "WP3 Fixture Commercial Insight",
+  "advisoryContent": "Deterministic advisory summary for human review only.",
+  "advisorySource": "FIXTURE",
+  "sourceEvidenceReference": "evidence://fixture/c25-wp3/source-1",
+  "capabilityReference": "COMMERCIAL_BRIEF",
+  "purposeReference": "commercial_insight_advisory"
+}

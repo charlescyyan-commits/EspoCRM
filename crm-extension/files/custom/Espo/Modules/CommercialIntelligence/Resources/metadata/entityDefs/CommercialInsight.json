@@ -1,0 +1,130 @@
+{
+  "fields": {
+    "name": {
+      "type": "varchar",
+      "maxLength": 255,
+      "required": true,
+      "trim": true,
+      "readOnly": true
+    },
+    "reviewStatus": {
+      "type": "enum",
+      "required": true,
+      "default": "GENERATED",
+      "options": [
+        "GENERATED",
+        "REVIEWED",
+        "ACCEPTED",
+        "DISMISSED"
+      ],
+      "readOnly": true,
+      "displayAsLabel": true
+    },
+    "advisoryContent": {
+      "type": "text",
+      "required": true,
+      "readOnly": true
+    },
+    "advisorySource": {
+      "type": "enum",
+      "required": true,
+      "options": [
+        "FIXTURE",
+        "STUB",
+        "DETERMINISTIC"
+      ],
+      "readOnly": true
+    },
+    "sourceEvidenceReference": {
+      "type": "text",
+      "required": true,
+      "readOnly": true
+    },
+    "commercialBriefReference": {
+      "type": "varchar",
+      "maxLength": 64,
+      "readOnly": true
+    },
+    "opportunityCandidateReference": {
+      "type": "varchar",
+      "maxLength": 64,
+      "readOnly": true
+    },
+    "revenueInsightReference": {
+      "type": "varchar",
+      "maxLength": 64,
+      "readOnly": true
+    },
+    "pipelineMetricReference": {
+      "type": "varchar",
+      "maxLength": 64,
+      "readOnly": true
+    },
+    "capabilityReference": {
+      "type": "varchar",
+      "maxLength": 64,
+      "required": true,
+      "default": "COMMERCIAL_BRIEF",
+      "readOnly": true
+    },
+    "purposeReference": {
+      "type": "varchar",
+      "maxLength": 64,
+      "required": true,
+      "default": "commercial_insight_advisory",
+      "readOnly": true
+    },
+    "transitionHistory": {
+      "type": "text",
+      "readOnly": true
+    },
+    "lastTransitionBy": {
+      "type": "varchar",
+      "maxLength": 100,
+      "readOnly": true
+    },
+    "lastTransitionAt": {
+      "type": "datetime",
+      "readOnly": true
+    },
+    "decisionNote": {
+      "type": "text",
+      "readOnly": true
+    },
+    "createdAt": {
+      "type": "datetime",
+      "readOnly": true
+    },
+    "createdBy": {
+      "type": "link",
+      "readOnly": true
+    }
+  },
+  "links": {
+    "createdBy": {
+      "type": "belongsTo",
+      "entity": "User"
+    }
+  },
+  "collection": {
+    "orderBy": "createdAt",
+    "order": "desc",
+    "textFilterFields": [
+      "name",
+      "reviewStatus"
+    ]
+  },
+  "deleteId": true,
+  "indexes": {
+    "reviewStatus": {
+      "columns": [
+        "reviewStatus"
+      ]
+    },
+    "createdAt": {
+      "columns": [
+        "createdAt"
+      ]
+    }
+  }
+}
