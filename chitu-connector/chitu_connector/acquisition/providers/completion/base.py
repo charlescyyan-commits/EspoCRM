@@ -11,12 +11,17 @@ from ..cost import CostEnvelope
 
 
 class CompletionCapability(Enum):
-    """The exhaustive, ratified CompletionProvider capability portfolio."""
+    """The exhaustive, ratified CompletionProvider capability portfolio.
+
+    COMMERCIAL_BRIEF is capability identity only. It does not authorize
+    adapter routing, HTTP execution, or autonomous generation.
+    """
 
     RESEARCH_EVIDENCE = "research_evidence"
     QUALIFICATION_INSIGHT = "qualification_insight"
     DRAFT_ASSISTANCE = "draft_assistance"
     REPLY_ASSISTANCE = "reply_assistance"
+    COMMERCIAL_BRIEF = "commercial_brief"
 
 
 _FINISH_REASONS = frozenset({"STOP", "LENGTH", "CONTENT_FILTER"})

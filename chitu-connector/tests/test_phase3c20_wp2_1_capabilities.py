@@ -30,7 +30,9 @@ def test_capability_enums_are_bounded_to_the_authorized_portfolio() -> None:
         "qualification_insight",
         "draft_assistance",
         "reply_assistance",
+        "commercial_brief",
     )
 
     enum_names = {item.name for item in Capability} | {item.name for item in CompletionCapability}
     assert not any("SCORE" in name or "EMAIL" in name for name in enum_names)
+    assert "COMMERCIAL_BRIEF" in enum_names

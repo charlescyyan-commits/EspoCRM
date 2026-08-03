@@ -174,13 +174,18 @@ class TestCompletionProviderFinishReason:
 
 
 class TestCompletionProviderForbiddenCapabilities:
-    def test_capability_port_remains_exactly_the_ratified_four(self) -> None:
+    def test_capability_port_remains_exactly_the_ratified_five(self) -> None:
         assert {item.value for item in CompletionCapability} == {
             "research_evidence",
             "qualification_insight",
             "draft_assistance",
             "reply_assistance",
+            "commercial_brief",
         }
+        # No COMMERCIAL_BRIEF HTTP fixture / adapter prompt mapping in Package A.
+        adapter_source = inspect.getsource(inspect.getmodule(CompletionBridgeProvider))
+        assert "COMMERCIAL_BRIEF" not in adapter_source
+        assert "commercial_brief" not in adapter_source
 
     def test_adapter_has_no_chitu_lifecycle_or_delivery_dependencies(self) -> None:
         adapter_source = inspect.getsource(inspect.getmodule(CompletionBridgeProvider))

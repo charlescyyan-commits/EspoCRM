@@ -116,11 +116,17 @@ def test_enrichment_protocol_has_reference_only_request_and_result_contract() ->
 
 def test_completion_protocol_is_limited_to_ratified_non_executing_capabilities() -> None:
     assert {item.value for item in CompletionCapability} == {
-        "research_evidence", "qualification_insight", "draft_assistance", "reply_assistance",
+        "research_evidence",
+        "qualification_insight",
+        "draft_assistance",
+        "reply_assistance",
+        "commercial_brief",
     }
     assert tuple(inspect.signature(CompletionProvider.complete).parameters) == ("self", "request")
     assert "credential" not in {field.name.casefold() for field in fields(CompletionRequest)}
     assert "credential" not in {field.name.casefold() for field in fields(CompletionResult)}
+    # Identity only — adapter routing / HTTP fixtures are not extended for COMMERCIAL_BRIEF.
+    assert CompletionCapability.COMMERCIAL_BRIEF.value == "commercial_brief"
 
 
 @pytest.mark.parametrize(

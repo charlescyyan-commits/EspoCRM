@@ -57,6 +57,7 @@ COMPLETION_PORTFOLIO = {
     "QUALIFICATION_INSIGHT",
     "DRAFT_ASSISTANCE",
     "REPLY_ASSISTANCE",
+    "COMMERCIAL_BRIEF",
 }
 
 FORBIDDEN_RUNTIME_MARKERS = (
@@ -170,7 +171,7 @@ class Phase3C20RTWP6ReservationMetadataTests(unittest.TestCase):
             ):
                 self.assertNotIn(marker, text)
 
-    def test_completion_capability_portfolio_unchanged(self) -> None:
+    def test_completion_capability_portfolio_includes_commercial_brief_identity(self) -> None:
         text = read(COMPLETION_BASE)
         match = re.search(
             r"class CompletionCapability\(Enum\):(.*?)(?:\nclass |\Z)",
@@ -181,7 +182,7 @@ class Phase3C20RTWP6ReservationMetadataTests(unittest.TestCase):
         assert match is not None
         names = set(re.findall(r'^\s+([A-Z_]+) = "', match.group(1), flags=re.M))
         self.assertEqual(names, COMPLETION_PORTFOLIO)
-        self.assertNotIn("COMMERCIAL_BRIEF", names)
+        self.assertIn("COMMERCIAL_BRIEF", names)
 
     def test_invariant_registry_statuses_unchanged(self) -> None:
         text = read(INVARIANT_REGISTRY)

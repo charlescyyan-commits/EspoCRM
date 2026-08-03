@@ -59,6 +59,7 @@ COMPLETION_PORTFOLIO = {
     "QUALIFICATION_INSIGHT",
     "DRAFT_ASSISTANCE",
     "REPLY_ASSISTANCE",
+    "COMMERCIAL_BRIEF",
 }
 ELIGIBILITY_CLASSES = {
     "NOT_AUTHORIZED",
@@ -223,7 +224,8 @@ class Phase3C20RTWP2ProviderBindingTests(unittest.TestCase):
             self.assertIn(capability, text)
         self.assertIn("COMMERCIAL_BRIEF", text)
         self.assertIn("commercial_brief_generation", text)
-        self.assertIn("not a registered purpose", text)
+        self.assertIn("PURPOSE_COMMERCIAL_BRIEF_GENERATION", text)
+        self.assertIn("allowedPurposes must contain only registered purposes", text)
         self.assertIn("rejects credential-value fields", text)
         self.assertIn("credentialReference must be a custody reference only", text)
         for marker in FORBIDDEN_RUNTIME_MARKERS:
@@ -255,10 +257,10 @@ class Phase3C20RTWP2ProviderBindingTests(unittest.TestCase):
     def test_purpose_grammar_and_portfolio_mapping_rules(self) -> None:
         text = read(SERVICE)
         self.assertIn("/^[a-z][a-z0-9_]{0,63}$/", text)
-        self.assertIn("exactly one of the four CompletionCapability values", text)
+        self.assertIn("exactly one of the five CompletionCapability values", text)
         self.assertIn("Purpose ID must not equal a capability value", text)
 
-    def test_completion_capability_portfolio_unchanged(self) -> None:
+    def test_completion_capability_portfolio_includes_commercial_brief_identity(self) -> None:
         text = read(COMPLETION_BASE)
         match = re.search(
             r"class CompletionCapability\(Enum\):(.*?)(?:\nclass |\Z)",
@@ -269,7 +271,8 @@ class Phase3C20RTWP2ProviderBindingTests(unittest.TestCase):
         assert match is not None
         names = set(re.findall(r'^\s+([A-Z_]+) = "', match.group(1), flags=re.M))
         self.assertEqual(names, COMPLETION_PORTFOLIO)
-        self.assertNotIn("COMMERCIAL_BRIEF", names)
+        self.assertIn("COMMERCIAL_BRIEF", names)
+        self.assertIn("capability identity only", text)
 
     def test_invariant_registry_statuses_unchanged(self) -> None:
         text = read(INVARIANT_REGISTRY)

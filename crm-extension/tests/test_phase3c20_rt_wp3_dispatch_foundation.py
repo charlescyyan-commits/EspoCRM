@@ -33,6 +33,7 @@ COMPLETION_PORTFOLIO = {
     "QUALIFICATION_INSIGHT",
     "DRAFT_ASSISTANCE",
     "REPLY_ASSISTANCE",
+    "COMMERCIAL_BRIEF",
 }
 
 ELIGIBILITY_CLASSES = {
@@ -121,14 +122,13 @@ class Phase3C20RTWP3DispatchFoundationTests(unittest.TestCase):
         for marker in ("curl_init", "GuzzleHttp", "ConnectorBoundary", "execute("):
             self.assertNotIn(marker, text)
 
-    def test_capability_portfolio_accepted_and_commercial_brief_rejected(self) -> None:
+    def test_capability_portfolio_accepts_commercial_brief_identity_only(self) -> None:
         text = read(DISPATCH_GUARDS)
         for capability in COMPLETION_PORTFOLIO:
             self.assertIn(capability, text)
-        self.assertIn("COMMERCIAL_BRIEF", text)
         self.assertIn("rejectInvalidCapability", text)
-        self.assertIn("not a CompletionCapability portfolio value", text)
-        self.assertIn("four CompletionCapability values", text)
+        self.assertIn("five CompletionCapability values", text)
+        self.assertNotIn("FORBIDDEN_CAPABILITY", text)
 
         live = read(COMPLETION_BASE)
         match = re.search(
@@ -140,7 +140,7 @@ class Phase3C20RTWP3DispatchFoundationTests(unittest.TestCase):
         assert match is not None
         names = set(re.findall(r'^\s+([A-Z_]+) = "', match.group(1), flags=re.M))
         self.assertEqual(names, COMPLETION_PORTFOLIO)
-        self.assertNotIn("COMMERCIAL_BRIEF", names)
+        self.assertIn("COMMERCIAL_BRIEF", names)
 
     def test_purpose_unknown_rejected(self) -> None:
         text = read(DISPATCH_SERVICE)
@@ -148,6 +148,12 @@ class Phase3C20RTWP3DispatchFoundationTests(unittest.TestCase):
         self.assertIn("Purpose is not registered for Dispatch Foundation Lite", text)
         self.assertIn("commercial_brief_generation", text)
         self.assertIn("do not infer purpose", text.lower())
+        # Lite dispatch still hard-stops commercial_brief_generation before connector.
+        self.assertIn(
+            "$purpose === 'commercial_brief_generation'",
+            text,
+        )
+        self.assertIn("stopped_before_connector_invocation", text)
 
     def test_missing_binding_rejected(self) -> None:
         guards = read(DISPATCH_GUARDS)

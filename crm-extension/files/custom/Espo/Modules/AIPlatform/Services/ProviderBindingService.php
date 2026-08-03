@@ -44,13 +44,16 @@ final class ProviderBindingService
         'QUALIFICATION_INSIGHT',
         'DRAFT_ASSISTANCE',
         'REPLY_ASSISTANCE',
+        'COMMERCIAL_BRIEF',
     ];
 
     private const PURPOSE_PATTERN = '/^[a-z][a-z0-9_]{0,63}$/';
 
-    private const FORBIDDEN_PURPOSE = 'commercial_brief_generation';
+    /** Portfolio identity must never appear as a capability-family value. */
+    private const PORTFOLIO_NOT_FAMILY = 'COMMERCIAL_BRIEF';
 
-    private const FORBIDDEN_CAPABILITY = 'COMMERCIAL_BRIEF';
+    /** Governed purpose ID for commercial brief eligibility (policy only). */
+    public const PURPOSE_COMMERCIAL_BRIEF_GENERATION = 'commercial_brief_generation';
 
     /** @var list<string> */
     private const CREATE_FIELDS = [
@@ -84,8 +87,9 @@ final class ProviderBindingService
     /**
      * Register a governed purpose → CompletionCapability mapping.
      *
-     * The catalog starts empty. commercial_brief_generation and COMMERCIAL_BRIEF
-     * are rejected. This does not select or invoke a provider.
+     * Policy catalog only. commercial_brief_generation may map to
+     * COMMERCIAL_BRIEF after registration. This does not select, invoke,
+     * dispatch, or execute a provider.
      */
     public function registerPurpose(string $purposeId, string $completionCapability): void
     {
@@ -95,14 +99,6 @@ final class ProviderBindingService
 
         $purposeId = trim($purposeId);
         $completionCapability = trim($completionCapability);
-
-        if ($purposeId === self::FORBIDDEN_PURPOSE) {
-            throw new BadRequest('commercial_brief_generation is not a registered purpose.');
-        }
-
-        if ($completionCapability === self::FORBIDDEN_CAPABILITY) {
-            throw new BadRequest('COMMERCIAL_BRIEF is not a CompletionCapability portfolio value.');
-        }
 
         if (preg_match(self::PURPOSE_PATTERN, $purposeId) !== 1) {
             throw new BadRequest('Purpose ID must match governed snake_case grammar.');
@@ -115,7 +111,7 @@ final class ProviderBindingService
         }
 
         if (!in_array($completionCapability, self::COMPLETION_PORTFOLIO, true)) {
-            throw new BadRequest('Purpose must map to exactly one of the four CompletionCapability values.');
+            throw new BadRequest('Purpose must map to exactly one of the five CompletionCapability values.');
         }
 
         $this->purposeCatalog[$purposeId] = $completionCapability;
@@ -303,15 +299,10 @@ final class ProviderBindingService
         $capability = trim($capability);
         $purpose = trim($purpose);
 
-        if ($capability === self::FORBIDDEN_CAPABILITY) {
-            return self::CLASS_CAPABILITY_MISMATCH;
-        }
-
-        if ($purpose === self::FORBIDDEN_PURPOSE) {
-            return self::CLASS_PURPOSE_NOT_REGISTERED;
-        }
-
-        if (!in_array($capability, self::CAPABILITY_FAMILY, true)) {
+        // Portfolio identities (e.g. COMMERCIAL_BRIEF) are not capability-family values.
+        if ($capability === self::PORTFOLIO_NOT_FAMILY
+            || !in_array($capability, self::CAPABILITY_FAMILY, true)
+        ) {
             return self::CLASS_CAPABILITY_MISMATCH;
         }
 
@@ -493,7 +484,7 @@ final class ProviderBindingService
         }
 
         foreach ($list as $capability) {
-            if ($capability === self::FORBIDDEN_CAPABILITY) {
+            if ($capability === self::PORTFOLIO_NOT_FAMILY) {
                 throw new BadRequest('COMMERCIAL_BRIEF is not a supported capability family value.');
             }
             if (!in_array($capability, self::CAPABILITY_FAMILY, true)) {
@@ -516,9 +507,6 @@ final class ProviderBindingService
         }
 
         foreach ($list as $purpose) {
-            if ($purpose === self::FORBIDDEN_PURPOSE) {
-                throw new BadRequest('commercial_brief_generation is not a registered purpose.');
-            }
             if (preg_match(self::PURPOSE_PATTERN, $purpose) !== 1) {
                 throw new BadRequest('allowedPurposes entries must match governed purpose grammar.');
             }

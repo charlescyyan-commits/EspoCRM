@@ -39,6 +39,7 @@ def test_completion_port_is_limited_to_the_ratified_capabilities() -> None:
         "QUALIFICATION_INSIGHT",
         "DRAFT_ASSISTANCE",
         "REPLY_ASSISTANCE",
+        "COMMERCIAL_BRIEF",
     )
 
 

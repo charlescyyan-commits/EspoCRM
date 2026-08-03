@@ -117,19 +117,11 @@ final class AIGuardService
     {
         $capability = trim($capability);
 
-        if ($capability === 'COMMERCIAL_BRIEF') {
-            return AIGuardValidationResult::reject(
-                AIGuardRule::CAPABILITY,
-                'COMMERCIAL_BRIEF_FORBIDDEN',
-                'COMMERCIAL_BRIEF is not a CompletionCapability.'
-            );
-        }
-
         if ($capability === '' || !in_array($capability, AIGuardRule::CAPABILITIES, true)) {
             return AIGuardValidationResult::reject(
                 AIGuardRule::CAPABILITY,
                 'UNKNOWN_CAPABILITY',
-                'Capability must be one of the four-value portfolio.'
+                'Capability must be one of the five-value portfolio.'
             );
         }
 
@@ -166,8 +158,8 @@ final class AIGuardService
         if ($this->containsSecretNeedle($purpose) || strcasecmp($purpose, 'COMMERCIAL_BRIEF') === 0) {
             return AIGuardValidationResult::reject(
                 AIGuardRule::PURPOSE,
-                'PURPOSE_INVALID',
-                'Purpose shape is invalid for Lite guard validation.'
+                'COMMERCIAL_BRIEF_FORBIDDEN',
+                'Purpose must not equal a CompletionCapability portfolio identity.'
             );
         }
 

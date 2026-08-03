@@ -43,6 +43,7 @@ final class AIGuardRule
         'QUALIFICATION_INSIGHT',
         'DRAFT_ASSISTANCE',
         'REPLY_ASSISTANCE',
+        'COMMERCIAL_BRIEF',
     ];
 
     /** @var list<string> */

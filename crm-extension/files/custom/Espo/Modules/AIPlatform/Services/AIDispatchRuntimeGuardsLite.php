@@ -20,24 +20,19 @@ final class AIDispatchRuntimeGuardsLite
         'QUALIFICATION_INSIGHT',
         'DRAFT_ASSISTANCE',
         'REPLY_ASSISTANCE',
+        'COMMERCIAL_BRIEF',
     ];
 
-    public const FORBIDDEN_CAPABILITY = 'COMMERCIAL_BRIEF';
-
     /**
-     * Reject capability values outside the frozen four-value portfolio,
-     * including COMMERCIAL_BRIEF and unknown / empty values.
+     * Reject capability values outside the five-value portfolio.
+     * Does not invoke a connector, open HTTP, or continue dispatch execution.
      */
     public static function rejectInvalidCapability(string $capability): void
     {
         $capability = trim($capability);
 
-        if ($capability === self::FORBIDDEN_CAPABILITY) {
-            throw new BadRequest('COMMERCIAL_BRIEF is not a CompletionCapability portfolio value.');
-        }
-
         if ($capability === '' || !in_array($capability, self::COMPLETION_PORTFOLIO, true)) {
-            throw new BadRequest('Capability must be exactly one of the four CompletionCapability values.');
+            throw new BadRequest('Capability must be exactly one of the five CompletionCapability values.');
         }
     }
 
