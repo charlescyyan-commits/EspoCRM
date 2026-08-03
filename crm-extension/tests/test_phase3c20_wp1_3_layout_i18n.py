@@ -65,6 +65,9 @@ ALLOWED_WP3_RUNTIME_FILES = {
     AI_PLATFORM / "Services" / "PromptTemplateService.php",
     AI_PLATFORM / "Services" / "PromptTemplateSaveOption.php",
     AI_PLATFORM / "Hooks" / "PromptTemplate" / "PromptTemplateMutationGuard.php",
+    AI_PLATFORM / "Services" / "ProviderBindingService.php",
+    AI_PLATFORM / "Services" / "ProviderBindingMutationSaveOption.php",
+    AI_PLATFORM / "Hooks" / "ProviderBinding" / "ProviderBindingMutationGuard.php",
 }
 ALLOWED_WP3_ENTITIES = {
     AI_PLATFORM / "Entities" / "AIRequestLog.php",

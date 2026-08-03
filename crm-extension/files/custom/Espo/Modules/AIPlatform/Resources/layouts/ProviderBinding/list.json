@@ -1,0 +1,9 @@
+[
+  {"name": "name", "width": 20, "link": true},
+  {"name": "providerId", "width": 16},
+  {"name": "adapterType", "width": 14},
+  {"name": "status", "width": 12},
+  {"name": "enabled", "width": 10},
+  {"name": "priority", "width": 10},
+  {"name": "supportedCapabilities", "width": 18}
+]

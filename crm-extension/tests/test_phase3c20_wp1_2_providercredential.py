@@ -53,6 +53,27 @@ PROMPT_TEMPLATE_SAVE_OPTION = AI_PLATFORM / "Services" / "PromptTemplateSaveOpti
 PROMPT_TEMPLATE_GUARD = (
     AI_PLATFORM / "Hooks" / "PromptTemplate" / "PromptTemplateMutationGuard.php"
 )
+PROVIDER_BINDING_ENTITY_DEF = ENTITY_DEFS / "ProviderBinding.json"
+PROVIDER_BINDING_SCOPE = AI_PLATFORM / "Resources" / "metadata" / "scopes" / "ProviderBinding.json"
+PROVIDER_BINDING_ACL_DEF = AI_PLATFORM / "Resources" / "metadata" / "aclDefs" / "ProviderBinding.json"
+PROVIDER_BINDING_ENTITY_ACL = (
+    AI_PLATFORM / "Resources" / "metadata" / "entityAcl" / "ProviderBinding.json"
+)
+PROVIDER_BINDING_SERVICE = AI_PLATFORM / "Services" / "ProviderBindingService.php"
+PROVIDER_BINDING_SAVE_OPTION = (
+    AI_PLATFORM / "Services" / "ProviderBindingMutationSaveOption.php"
+)
+PROVIDER_BINDING_GUARD = (
+    AI_PLATFORM / "Hooks" / "ProviderBinding" / "ProviderBindingMutationGuard.php"
+)
+PROVIDER_BINDING_I18N_EN = AI_PLATFORM / "Resources" / "i18n" / "en_US" / "ProviderBinding.json"
+PROVIDER_BINDING_I18N_ZH = AI_PLATFORM / "Resources" / "i18n" / "zh_CN" / "ProviderBinding.json"
+PROVIDER_BINDING_LIST_LAYOUT = (
+    AI_PLATFORM / "Resources" / "layouts" / "ProviderBinding" / "list.json"
+)
+PROVIDER_BINDING_DETAIL_LAYOUT = (
+    AI_PLATFORM / "Resources" / "layouts" / "ProviderBinding" / "detail.json"
+)
 
 APPROVED_MODULE_FILES = {
     BINDING,
@@ -93,6 +114,17 @@ APPROVED_MODULE_FILES = {
     PROMPT_TEMPLATE_SERVICE,
     PROMPT_TEMPLATE_SAVE_OPTION,
     PROMPT_TEMPLATE_GUARD,
+    PROVIDER_BINDING_ENTITY_DEF,
+    PROVIDER_BINDING_SCOPE,
+    PROVIDER_BINDING_ACL_DEF,
+    PROVIDER_BINDING_ENTITY_ACL,
+    PROVIDER_BINDING_SERVICE,
+    PROVIDER_BINDING_SAVE_OPTION,
+    PROVIDER_BINDING_GUARD,
+    PROVIDER_BINDING_I18N_EN,
+    PROVIDER_BINDING_I18N_ZH,
+    PROVIDER_BINDING_LIST_LAYOUT,
+    PROVIDER_BINDING_DETAIL_LAYOUT,
 }
 
 ALLOWED_FIELDS = {
@@ -247,7 +279,13 @@ class Phase3C20WP12ProviderCredentialTests(unittest.TestCase):
         self.assertTrue(ENTITY_DEF.is_file())
         self.assertEqual(
             set(ENTITY_DEFS.glob("*.json")),
-            {ENTITY_DEF, AI_JOB_ENTITY_DEF, AI_REQUEST_LOG_ENTITY_DEF, PROMPT_TEMPLATE_ENTITY_DEF},
+            {
+                ENTITY_DEF,
+                AI_JOB_ENTITY_DEF,
+                AI_REQUEST_LOG_ENTITY_DEF,
+                PROMPT_TEMPLATE_ENTITY_DEF,
+                PROVIDER_BINDING_ENTITY_DEF,
+            },
         )
 
         metadata = load_entity_def()
@@ -302,7 +340,21 @@ class Phase3C20WP12ProviderCredentialTests(unittest.TestCase):
             for path in module_source_files()
             if "credentialReference" in path.read_text(encoding="utf-8")
         }
-        self.assertEqual(reference_paths, {ENTITY_DEF, ENTITY_ACL, ENTITY_I18N_EN, ENTITY_I18N_ZH})
+        self.assertEqual(
+            reference_paths,
+            {
+                ENTITY_DEF,
+                ENTITY_ACL,
+                ENTITY_I18N_EN,
+                ENTITY_I18N_ZH,
+                PROVIDER_BINDING_ENTITY_DEF,
+                PROVIDER_BINDING_ENTITY_ACL,
+                PROVIDER_BINDING_I18N_EN,
+                PROVIDER_BINDING_I18N_ZH,
+                PROVIDER_BINDING_SERVICE,
+                PROVIDER_BINDING_GUARD,
+            },
+        )
 
     def test_credential_reference_has_no_runtime_resolution_path(self) -> None:
         offenders: list[str] = []
@@ -345,7 +397,13 @@ class Phase3C20WP12ProviderCredentialTests(unittest.TestCase):
     def test_scope_exists_with_acl_enabled_and_no_public_surface(self) -> None:
         self.assertEqual(
             set(SCOPE.parent.glob("*.json")),
-            {SCOPE, AI_JOB_SCOPE, AI_REQUEST_LOG_SCOPE, PROMPT_TEMPLATE_SCOPE},
+            {
+                SCOPE,
+                AI_JOB_SCOPE,
+                AI_REQUEST_LOG_SCOPE,
+                PROMPT_TEMPLATE_SCOPE,
+                PROVIDER_BINDING_SCOPE,
+            },
         )
         scope = load_json(SCOPE)
         self.assertEqual(
@@ -367,11 +425,17 @@ class Phase3C20WP12ProviderCredentialTests(unittest.TestCase):
     def test_acl_forces_admin_only_crud_and_portal_denial(self) -> None:
         self.assertEqual(
             set(ACL_DEF.parent.glob("*.json")),
-            {ACL_DEF, AI_JOB_ACL_DEF, AI_REQUEST_LOG_ACL_DEF, PROMPT_TEMPLATE_ACL_DEF},
+            {
+                ACL_DEF,
+                AI_JOB_ACL_DEF,
+                AI_REQUEST_LOG_ACL_DEF,
+                PROMPT_TEMPLATE_ACL_DEF,
+                PROVIDER_BINDING_ACL_DEF,
+            },
         )
         self.assertEqual(
             set(ENTITY_ACL.parent.glob("*.json")),
-            {ENTITY_ACL, PROMPT_TEMPLATE_ENTITY_ACL},
+            {ENTITY_ACL, PROMPT_TEMPLATE_ENTITY_ACL, PROVIDER_BINDING_ENTITY_ACL},
         )
         self.assertEqual(
             set(APP_ACL.parent.glob("*.json")),
@@ -419,7 +483,12 @@ class Phase3C20WP12ProviderCredentialTests(unittest.TestCase):
             self.assertFalse(path.exists(), msg=str(path))
         self.assertEqual(
             set((AI_PLATFORM / "Resources" / "layouts").rglob("*.json")),
-            {LIST_LAYOUT, DETAIL_LAYOUT},
+            {
+                LIST_LAYOUT,
+                DETAIL_LAYOUT,
+                PROVIDER_BINDING_LIST_LAYOUT,
+                PROVIDER_BINDING_DETAIL_LAYOUT,
+            },
         )
         for path in FORBIDDEN_PROVIDER_CREDENTIAL_RUNTIME_PATHS:
             self.assertFalse(path.exists(), msg=str(path))
@@ -436,6 +505,8 @@ class Phase3C20WP12ProviderCredentialTests(unittest.TestCase):
                 AI_REQUEST_LOG_SAVE_OPTION,
                 PROMPT_TEMPLATE_SERVICE,
                 PROMPT_TEMPLATE_SAVE_OPTION,
+                PROVIDER_BINDING_SERVICE,
+                PROVIDER_BINDING_SAVE_OPTION,
             },
         )
         self.assertEqual(
@@ -449,6 +520,10 @@ class Phase3C20WP12ProviderCredentialTests(unittest.TestCase):
         self.assertEqual(
             set((AI_PLATFORM / "Hooks" / "PromptTemplate").glob("*.php")),
             {PROMPT_TEMPLATE_GUARD},
+        )
+        self.assertEqual(
+            set((AI_PLATFORM / "Hooks" / "ProviderBinding").glob("*.php")),
+            {PROVIDER_BINDING_GUARD},
         )
         for path in (
             AI_JOB_SERVICE,

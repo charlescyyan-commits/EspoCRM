@@ -1,0 +1,118 @@
+{
+  "fields": {
+    "name": {
+      "type": "varchar",
+      "maxLength": 255,
+      "required": true,
+      "trim": true
+    },
+    "providerId": {
+      "type": "varchar",
+      "maxLength": 100,
+      "required": true,
+      "trim": true,
+      "readOnlyAfterCreate": true
+    },
+    "adapterType": {
+      "type": "varchar",
+      "maxLength": 100,
+      "required": true,
+      "trim": true,
+      "readOnlyAfterCreate": true
+    },
+    "priority": {
+      "type": "int",
+      "required": true,
+      "default": 0
+    },
+    "enabled": {
+      "type": "bool",
+      "required": true,
+      "default": false,
+      "readOnly": true
+    },
+    "status": {
+      "type": "enum",
+      "required": true,
+      "readOnly": true,
+      "default": "DRAFT",
+      "options": ["DRAFT", "ACTIVE", "DISABLED", "REVOKED"],
+      "displayAsLabel": true,
+      "style": {
+        "DRAFT": "default",
+        "ACTIVE": "success",
+        "DISABLED": "warning",
+        "REVOKED": "danger"
+      }
+    },
+    "supportedCapabilities": {
+      "type": "multiEnum",
+      "required": true,
+      "options": ["SEARCH", "ENRICHMENT", "COMPLETION"],
+      "displayAsLabel": true
+    },
+    "allowedPurposes": {
+      "type": "array",
+      "required": true,
+      "maxItemLength": 64
+    },
+    "credentialReference": {
+      "type": "varchar",
+      "maxLength": 255,
+      "required": true,
+      "trim": true,
+      "readOnlyAfterCreate": true
+    },
+    "approvedBy": {
+      "type": "link",
+      "required": false,
+      "notNull": false,
+      "readOnly": true
+    },
+    "approvedAt": {
+      "type": "datetime",
+      "required": false,
+      "notNull": false,
+      "readOnly": true
+    },
+    "provenanceReference": {
+      "type": "varchar",
+      "maxLength": 255,
+      "required": false,
+      "notNull": false,
+      "trim": true,
+      "readOnly": true
+    },
+    "description": {
+      "type": "text",
+      "required": false,
+      "notNull": false
+    },
+    "createdAt": {
+      "type": "datetime",
+      "readOnly": true
+    },
+    "modifiedAt": {
+      "type": "datetime",
+      "readOnly": true
+    }
+  },
+  "links": {
+    "approvedBy": {
+      "type": "belongsTo",
+      "entity": "User"
+    }
+  },
+  "collection": {
+    "orderBy": "createdAt",
+    "order": "desc",
+    "textFilterFields": ["name", "providerId", "adapterType", "status"]
+  },
+  "deleteId": true,
+  "indexes": {
+    "providerId": {
+      "type": "unique",
+      "columns": ["providerId", "deleteId"]
+    }
+  }
+}

@@ -3,7 +3,8 @@
     "scopeLevel": {
       "ProviderCredential": false,
       "PromptTemplate": false,
-      "AIRequestLog": false
+      "AIRequestLog": false,
+      "ProviderBinding": false
     }
   }
 }

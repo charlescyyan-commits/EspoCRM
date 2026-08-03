@@ -1,0 +1,38 @@
+{
+  "fields": {
+    "name": "名称",
+    "providerId": "提供方 ID",
+    "adapterType": "适配器类型",
+    "priority": "优先级",
+    "enabled": "启用",
+    "status": "状态",
+    "supportedCapabilities": "支持的能力",
+    "allowedPurposes": "允许的用途",
+    "credentialReference": "凭证引用",
+    "approvedBy": "审批人",
+    "approvedAt": "审批时间",
+    "provenanceReference": "溯源引用",
+    "description": "说明"
+  },
+  "links": {
+    "approvedBy": "审批人"
+  },
+  "options": {
+    "status": {
+      "DRAFT": "草稿",
+      "ACTIVE": "生效",
+      "DISABLED": "停用",
+      "REVOKED": "吊销"
+    },
+    "supportedCapabilities": {
+      "SEARCH": "检索",
+      "ENRICHMENT": "富化",
+      "COMPLETION": "补全"
+    }
+  },
+  "labels": {
+    "Create ProviderBinding": "创建提供方绑定",
+    "ProviderBindings": "提供方绑定",
+    "Provider Binding Policy": "提供方绑定策略"
+  }
+}

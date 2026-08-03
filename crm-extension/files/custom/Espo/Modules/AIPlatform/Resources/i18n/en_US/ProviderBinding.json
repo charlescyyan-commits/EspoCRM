@@ -1,0 +1,38 @@
+{
+  "fields": {
+    "name": "Name",
+    "providerId": "Provider ID",
+    "adapterType": "Adapter Type",
+    "priority": "Priority",
+    "enabled": "Enabled",
+    "status": "Status",
+    "supportedCapabilities": "Supported Capabilities",
+    "allowedPurposes": "Allowed Purposes",
+    "credentialReference": "Credential Reference",
+    "approvedBy": "Approved By",
+    "approvedAt": "Approved At",
+    "provenanceReference": "Provenance Reference",
+    "description": "Description"
+  },
+  "links": {
+    "approvedBy": "Approved By"
+  },
+  "options": {
+    "status": {
+      "DRAFT": "Draft",
+      "ACTIVE": "Active",
+      "DISABLED": "Disabled",
+      "REVOKED": "Revoked"
+    },
+    "supportedCapabilities": {
+      "SEARCH": "Search",
+      "ENRICHMENT": "Enrichment",
+      "COMPLETION": "Completion"
+    }
+  },
+  "labels": {
+    "Create ProviderBinding": "Create Provider Binding",
+    "ProviderBindings": "Provider Bindings",
+    "Provider Binding Policy": "Provider Binding Policy"
+  }
+}

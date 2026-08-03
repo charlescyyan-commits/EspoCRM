@@ -1,0 +1,14 @@
+[
+  {
+    "label": "Provider Binding Policy",
+    "rows": [
+      [{"name": "name"}, {"name": "status"}],
+      [{"name": "providerId"}, {"name": "adapterType"}],
+      [{"name": "priority"}, {"name": "enabled"}],
+      [{"name": "supportedCapabilities"}, {"name": "allowedPurposes"}],
+      [{"name": "approvedBy"}, {"name": "approvedAt"}],
+      [{"name": "provenanceReference"}, false],
+      [{"name": "description", "fullWidth": true}]
+    ]
+  }
+]

@@ -16,7 +16,12 @@ APP_ACL_PORTAL = AI_PLATFORM / "Resources" / "metadata" / "app" / "aclPortal.jso
 ENTITY_ACL = AI_PLATFORM / "Resources" / "metadata" / "entityAcl" / "ProviderCredential.json"
 I18N = AI_PLATFORM / "Resources" / "i18n"
 LAYOUTS = AI_PLATFORM / "Resources" / "layouts" / "ProviderCredential"
-APPROVED_LAYOUTS = {LAYOUTS / "list.json", LAYOUTS / "detail.json"}
+APPROVED_LAYOUTS = {
+    LAYOUTS / "list.json",
+    LAYOUTS / "detail.json",
+    AI_PLATFORM / "Resources" / "layouts" / "ProviderBinding" / "list.json",
+    AI_PLATFORM / "Resources" / "layouts" / "ProviderBinding" / "detail.json",
+}
 
 ADMIN_I18N = {
     "en_US": I18N / "en_US" / "Admin.json",
@@ -65,6 +70,9 @@ ALLOWED_WP3_RUNTIME_FILES = {
     AI_PLATFORM / "Services" / "PromptTemplateService.php",
     AI_PLATFORM / "Services" / "PromptTemplateSaveOption.php",
     AI_PLATFORM / "Hooks" / "PromptTemplate" / "PromptTemplateMutationGuard.php",
+    AI_PLATFORM / "Services" / "ProviderBindingService.php",
+    AI_PLATFORM / "Services" / "ProviderBindingMutationSaveOption.php",
+    AI_PLATFORM / "Hooks" / "ProviderBinding" / "ProviderBindingMutationGuard.php",
 }
 ALLOWED_WP3_ENTITIES = {
     AI_PLATFORM / "Entities" / "AIRequestLog.php",
@@ -92,7 +100,13 @@ class Phase3C20WP13AdminSurfaceTests(unittest.TestCase):
                     "label": "Credentials",
                     "iconClass": "fas fa-key",
                     "description": "providerCredentialReferenceCustody",
-                }
+                },
+                {
+                    "url": "#ProviderBinding",
+                    "label": "Provider Bindings",
+                    "iconClass": "fas fa-link",
+                    "description": "providerBindingPolicySurface",
+                },
             ],
         )
         self.assertNotIn("recordView", panel["itemList"][0])
@@ -101,7 +115,7 @@ class Phase3C20WP13AdminSurfaceTests(unittest.TestCase):
         metadata = load_json(ADMIN_PANEL)
         labels = {metadata["aiPlatform"]["label"]}
         labels.update(item["label"] for item in metadata["aiPlatform"]["itemList"])
-        self.assertEqual(labels, {"AI Platform", "Credentials"})
+        self.assertEqual(labels, {"AI Platform", "Credentials", "Provider Bindings"})
         self.assertTrue(labels.isdisjoint(FORBIDDEN_ADMIN_ENTRIES))
 
     def test_administration_labels_have_english_chinese_parity(self) -> None:

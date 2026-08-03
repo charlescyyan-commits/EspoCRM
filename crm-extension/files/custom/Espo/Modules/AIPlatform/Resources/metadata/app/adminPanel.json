@@ -7,6 +7,12 @@
         "label": "Credentials",
         "iconClass": "fas fa-key",
         "description": "providerCredentialReferenceCustody"
+      },
+      {
+        "url": "#ProviderBinding",
+        "label": "Provider Bindings",
+        "iconClass": "fas fa-link",
+        "description": "providerBindingPolicySurface"
       }
     ],
     "order": 80

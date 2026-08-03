@@ -3,7 +3,8 @@
     "scopeLevel": {
       "ProviderCredential": false,
       "PromptTemplate": false,
-      "AIRequestLog": false
+      "AIRequestLog": false,
+      "ProviderBinding": false
     }
   },
   "adminMandatory": {
@@ -24,6 +25,12 @@
         "create": "yes",
         "read": "all",
         "edit": "no",
+        "delete": "no"
+      },
+      "ProviderBinding": {
+        "create": "yes",
+        "read": "all",
+        "edit": "all",
         "delete": "no"
       }
     }
