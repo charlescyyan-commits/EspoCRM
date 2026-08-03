@@ -1373,7 +1373,39 @@ Charter ratification does not authorize implementation.
 
 ---
 
-## 41. References
+## 41. RT-WP4 Charter Ratification Status Synchronization
+
+The independent RT-WP4 Lite Implementation Charter ratification review returned
+**PASS** / **RATIFIED**. The RT-WP4 Lite Charter is therefore
+RATIFIED — STATUS SYNCHRONIZED. Charter ratification does not authorize
+implementation.
+
+| Item | Status |
+| --- | --- |
+| RT-WP0 | EXITED |
+| RT-WP1 | EXITED |
+| RT-WP2 | COMPLETED + TAGGED |
+| RT-WP3 | COMPLETED + TAGGED |
+| RT-WP4 Lite Charter | RATIFIED |
+| RT-WP4 Lite Implementation | NOT AUTHORIZED |
+| Full RT-WP4 Cancel-Reason (§23) | NOT AUTHORIZED |
+| RT-WP5–RT-WP8 | NOT AUTHORIZED |
+| Runtime Code | NOT AUTHORIZED |
+| C25 WP2.2 | NO GO |
+
+RT-WP4 Lite remains planning-only Execution State Foundation scope
+(`REQUESTED` / `VALIDATING` / `READY` / `BLOCKED` / `COMPLETED` / `FAILED`).
+Jobs/worker/queue/scheduler, retry, reservation, connector calls, HTTP egress,
+provider execution, full cancel-reason, and C25 lifecycle remain excluded.
+Capability remains the existing four-value technical portfolio.
+
+```text
+Charter ratification does not authorize implementation.
+```
+
+---
+
+## 42. References
 
 1. `docs/PHASE3C20_CHARTER.md`
 2. `docs/PHASE3C20_WP1_EXIT_RECONCILIATION.md`
