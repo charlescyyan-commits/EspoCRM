@@ -1441,7 +1441,46 @@ Charter ratification does not authorize implementation.
 
 ---
 
-## 43. References
+## 43. RT-WP6 Charter Ratification Status Synchronization
+
+The independent RT-WP6 Lite Implementation Charter ratification review returned
+**PASS** / **RATIFIED**. The RT-WP6 Lite Charter is therefore
+RATIFIED — STATUS SYNCHRONIZED. Charter ratification does not authorize
+implementation.
+
+| Item | Status |
+| --- | --- |
+| RT-WP0 | EXITED |
+| RT-WP1 | EXITED |
+| RT-WP2 | COMPLETED + TAGGED |
+| RT-WP3 | COMPLETED + TAGGED |
+| RT-WP4 Lite | COMPLETED + TAGGED |
+| RT-WP5 Lite | COMPLETED + TAGGED |
+| RT-WP6 Lite Charter | RATIFIED |
+| RT-WP6 Lite Implementation | NOT AUTHORIZED |
+| Full RT-WP6 Reservation Execution (§25) | NOT AUTHORIZED |
+| RT-WP7–RT-WP8 | NOT AUTHORIZED |
+| Runtime Code | NOT AUTHORIZED |
+| C25 WP2.2 | NO GO |
+
+RT-WP6 Lite remains planning-only Ownership & Reservation Metadata Foundation
+scope (reservation intent vocabulary, ownership reference, metadata contract,
+conflict representation, validation policy, audit representation). Distributed
+locks, mutex/Redis/DB locks, queue/worker/scheduler reservation, retry,
+recovery, provider/connector reservation, HTTP egress, execution
+orchestration, AIJob unique-constraint acquisition, full §25 executor, and
+C25 lifecycle remain excluded. Capability remains the existing four-value
+technical portfolio. C20-INV-02/03 remain ACTIVE; C20-INV-04–13 (including
+INV-11) remain DEFERRED.
+
+```text
+Reservation metadata ≠ reservation execution.
+Charter ratification does not authorize implementation.
+```
+
+---
+
+## 44. References
 
 1. `docs/PHASE3C20_CHARTER.md`
 2. `docs/PHASE3C20_WP1_EXIT_RECONCILIATION.md`
