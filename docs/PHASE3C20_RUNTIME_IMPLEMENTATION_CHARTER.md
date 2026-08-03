@@ -1405,7 +1405,43 @@ Charter ratification does not authorize implementation.
 
 ---
 
-## 42. References
+## 42. RT-WP5 Charter Ratification Status Synchronization
+
+The independent RT-WP5 Lite Implementation Charter ratification review returned
+**PASS** / **RATIFIED**. The RT-WP5 Lite Charter is therefore
+RATIFIED — STATUS SYNCHRONIZED. Charter ratification does not authorize
+implementation.
+
+| Item | Status |
+| --- | --- |
+| RT-WP0 | EXITED |
+| RT-WP1 | EXITED |
+| RT-WP2 | COMPLETED + TAGGED |
+| RT-WP3 | COMPLETED + TAGGED |
+| RT-WP4 Lite | COMPLETED + TAGGED |
+| RT-WP5 Lite Charter | RATIFIED |
+| RT-WP5 Lite Implementation | NOT AUTHORIZED |
+| Full RT-WP5 Retry Executor (§24) | NOT AUTHORIZED |
+| RT-WP6–RT-WP8 | NOT AUTHORIZED |
+| Runtime Code | NOT AUTHORIZED |
+| C25 WP2.2 | NO GO |
+
+RT-WP5 Lite remains planning-only Failure Metadata Foundation scope
+(failure vocabulary, classification, metadata contract, audit representation,
+state correlation to RT-WP4 `FAILED` / `BLOCKED`). Retry, recovery, queue,
+worker, scheduler, reservation, provider error execution, connector calls,
+HTTP egress, AIJob engine retry fields, full §24 executor, and C25 lifecycle
+remain excluded. Capability remains the existing four-value technical
+portfolio. C20-INV-02/03 remain ACTIVE; C20-INV-04–13 (including INV-10)
+remain DEFERRED.
+
+```text
+Charter ratification does not authorize implementation.
+```
+
+---
+
+## 43. References
 
 1. `docs/PHASE3C20_CHARTER.md`
 2. `docs/PHASE3C20_WP1_EXIT_RECONCILIATION.md`
