@@ -1,0 +1,9 @@
+{
+  "name": "Fixture Commercial Brief Proposal",
+  "proposalContent": "Advisory commercial summary for human review only.",
+  "proposalSource": "FIXTURE",
+  "sourceEvidenceReference": "evidence://fixture/c25-wp2-2/source-1",
+  "generationContext": "wp2.2-fixture-generation-context",
+  "capabilityReference": "COMMERCIAL_BRIEF",
+  "purposeReference": "commercial_brief_generation"
+}

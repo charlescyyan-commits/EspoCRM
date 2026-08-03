@@ -1,0 +1,14 @@
+{
+  "controller": "controllers/record",
+  "createDisabled": false,
+  "editDisabled": true,
+  "mergeDisabled": true,
+  "massUpdateDisabled": true,
+  "removeDisabled": true,
+  "duplicateDisabled": true,
+  "filterList": [
+    "all"
+  ],
+  "boolFilterList": [],
+  "iconClass": "fas fa-file-alt"
+}
