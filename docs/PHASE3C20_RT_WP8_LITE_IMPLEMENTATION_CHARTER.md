@@ -5,7 +5,7 @@
 | Document Type | RT-WP8 Lite Freeze Charter (planning / freeze evidence only) |
 | Work package | RT-WP8 Lite — Runtime Lite Freeze + C25 Dependency Closure |
 | Charter path | `docs/PHASE3C20_RT_WP8_LITE_IMPLEMENTATION_CHARTER.md` |
-| Status | **READY FOR RATIFICATION REVIEW** |
+| Status | **RATIFIED** — Runtime Lite governance freeze only; no implementation authorization |
 | Date | 2026-08-03 |
 | Governing baseline | C20 governance freeze `928aa5f734f8d7f643cdb45a7549fed7ada0c400` |
 | Runtime Lite sync HEAD | `06709349b362e88bc53d3fdfdc1ae0c3760d45bc` |

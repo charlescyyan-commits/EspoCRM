@@ -7,7 +7,7 @@
 | Parent package | `docs/PHASE3C25_WP2_0_C20_DEPENDENCY_RESOLUTION.md` |
 | Prior clarification | `docs/PHASE3C25_WP2_0_C20_DEPENDENCY_RESOLUTION_ADDENDUM.md` |
 | C20 release evidence | `docs/audit/PHASE3C20_PACKAGE_A_RELEASE_RECORD.md` |
-| Status | **DRAFT** — READY FOR REVIEW |
+| Status | **APPROVED FOR C25 WP2.0 CONSUMPTION** — no WP2.2 authorization |
 | Date | 2026-08-03 |
 | C20 Package A commit | `e24a8e11e8e915d7432ad4f91377835ff9f41848` |
 | Implementation Authorization | **NO** — this addendum authorizes no code, no entity, no metadata, no C25 WP2.2, no Runtime Expansion, no invariant activation, no commit, no tag |
@@ -183,10 +183,10 @@ Additional exclusions (unchanged posture):
 | --- | --- |
 | C20 Runtime Lite | **FROZEN** |
 | C20 Package A | **RELEASED** |
-| C25 WP2.0 Dependency Closure | **READY FOR REVIEW** |
+| C25 WP2.0 Dependency Closure | **SATISFIED — APPROVED FOR C25 WP2.0 CONSUMPTION** |
 | C25 WP2.2 | **NOT AUTHORIZED** |
 | Runtime Expansion | **NOT AUTHORIZED** |
 
 ---
 
-*End of Phase3C25 WP2.0 C20 Dependency Closure Addendum (DRAFT — READY FOR REVIEW).*
+*End of Phase3C25 WP2.0 C20 Dependency Closure Addendum (APPROVED FOR C25 WP2.0 CONSUMPTION — no WP2.2 authorization).*
