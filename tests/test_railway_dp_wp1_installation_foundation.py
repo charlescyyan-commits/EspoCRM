@@ -102,6 +102,33 @@ def advance_to_metadata(ledger: object, installation_id: str) -> None:
         ledger.record_phase(installation_id, state)
 
 
+def advance_from_installing_to_metadata(ledger: object, installation_id: str) -> None:
+    for state in (
+        foundation.InstallationState.REGISTERED,
+        foundation.InstallationState.HOOK_PENDING,
+        foundation.InstallationState.MIGRATION_PENDING,
+        foundation.InstallationState.METADATA_REFRESH,
+    ):
+        ledger.record_phase(installation_id, state)
+
+
+def durable_identity() -> object:
+    return foundation.ReleaseIdentity("Chitu", "1.0.0", "a" * 64, "b" * 40)
+
+
+def second_durable_identity() -> object:
+    return foundation.ReleaseIdentity("Chitu", "1.0.1", "c" * 64, "d" * 40)
+
+
+def persist_installing_record(ledger: object) -> object:
+    identity = durable_identity()
+    record = ledger.create_installation(identity)
+    ledger.record_phase(record.installation_id, foundation.InstallationState.READY)
+    ledger.record_phase(record.installation_id, foundation.InstallationState.INSTALLING)
+    ledger.record_step_result(record.installation_id, "preflight", "succeeded")
+    return record
+
+
 def test_state_machine_allows_ordered_transition_and_rejects_skip() -> None:
     assert (
         foundation.transition(
@@ -358,3 +385,136 @@ def test_runner_marks_failed_when_artifact_verification_fails(tmp_path: Path) ->
     record = ledger._records[result.installation_id]
     assert record.failure_reason is not None
     assert foundation.LedgerEvent("step", "artifact-manifest", "failed") in record.events
+
+
+def test_durable_ledger_persistence_roundtrip_and_interrupted_recovery(tmp_path: Path) -> None:
+    storage_path = tmp_path / "installation-ledger.json"
+    first = foundation.JsonFileInstallationLedger(storage_path)
+    first.acquire_lock()
+    record = persist_installing_record(first)
+    first.release_lock()
+
+    restarted = foundation.JsonFileInstallationLedger(storage_path)
+    recovery = restarted.recover(durable_identity())
+    payload = json.loads(storage_path.read_text(encoding="utf-8"))["records"][0]
+
+    assert recovery.disposition == foundation.RecoveryDisposition.RESUME
+    assert recovery.record is not None
+    assert recovery.record.installation_id == record.installation_id
+    assert recovery.record.identity == durable_identity()
+    assert recovery.record.state == foundation.InstallationState.INSTALLING
+    assert recovery.record.started_at is not None
+    assert recovery.record.updated_at is not None
+    for field_name in (
+        "installationId",
+        "extensionName",
+        "extensionVersion",
+        "manifestHash",
+        "sourceCommit",
+        "status",
+        "currentPhase",
+        "stepEvents",
+        "startedAt",
+        "updatedAt",
+        "completedAt",
+        "failureReason",
+    ):
+        assert field_name in payload
+
+
+def test_durable_ledger_completed_recovery_is_a_noop(tmp_path: Path) -> None:
+    ledger = foundation.JsonFileInstallationLedger(tmp_path / "installation-ledger.json")
+    ledger.acquire_lock()
+    record = persist_installing_record(ledger)
+    advance_from_installing_to_metadata(ledger, record.installation_id)
+    ledger.mark_completion(record.installation_id)
+    ledger.release_lock()
+
+    restarted = foundation.JsonFileInstallationLedger(ledger.storage_path)
+    recovery = restarted.recover(durable_identity())
+
+    assert recovery.disposition == foundation.RecoveryDisposition.COMPLETED_NOOP
+    assert recovery.record is not None
+    assert recovery.record.completed_at is not None
+
+
+def test_durable_ledger_failed_recovery_preserves_failure(tmp_path: Path) -> None:
+    ledger = foundation.JsonFileInstallationLedger(tmp_path / "installation-ledger.json")
+    ledger.acquire_lock()
+    record = persist_installing_record(ledger)
+    ledger.mark_failure(record.installation_id, "synthetic failure")
+    ledger.release_lock()
+
+    restarted = foundation.JsonFileInstallationLedger(ledger.storage_path)
+    recovery = restarted.recover(durable_identity())
+
+    assert recovery.disposition == foundation.RecoveryDisposition.FAILED_PRESERVED
+    assert recovery.record is not None
+    assert recovery.record.failure_reason == "synthetic failure"
+
+
+def test_durable_ledger_prevents_lock_contention(tmp_path: Path) -> None:
+    storage_path = tmp_path / "installation-ledger.json"
+    first = foundation.JsonFileInstallationLedger(storage_path)
+    second = foundation.JsonFileInstallationLedger(storage_path)
+
+    first.acquire_lock()
+    with pytest.raises(foundation.InstallationLockError):
+        second.acquire_lock()
+    first.release_lock()
+    second.acquire_lock()
+    second.release_lock()
+
+
+def test_durable_ledger_reloads_latest_state_after_lock_handoff(tmp_path: Path) -> None:
+    storage_path = tmp_path / "installation-ledger.json"
+    first = foundation.JsonFileInstallationLedger(storage_path)
+    second = foundation.JsonFileInstallationLedger(storage_path)
+
+    first.acquire_lock()
+    first_record = first.create_installation(durable_identity())
+    first.release_lock()
+
+    second.acquire_lock()
+    second_record = second.create_installation(second_durable_identity())
+    second.release_lock()
+
+    reloaded = foundation.JsonFileInstallationLedger(storage_path)
+    first_recovery = reloaded.recover(durable_identity())
+    second_recovery = reloaded.recover(second_durable_identity())
+
+    assert first_recovery.record is not None
+    assert first_recovery.record.installation_id == first_record.installation_id
+    assert second_recovery.record is not None
+    assert second_recovery.record.installation_id == second_record.installation_id
+    payload = json.loads(storage_path.read_text(encoding="utf-8"))
+    assert len(payload["records"]) == 2
+
+
+def test_durable_ledger_rejects_corruption(tmp_path: Path) -> None:
+    storage_path = tmp_path / "installation-ledger.json"
+    storage_path.write_text("{not-json", encoding="utf-8")
+
+    with pytest.raises(foundation.LedgerCorruptionError, match="cannot parse"):
+        foundation.JsonFileInstallationLedger(storage_path)
+
+
+def test_durable_ledger_idempotent_writes_and_no_business_data_mutation(tmp_path: Path) -> None:
+    storage_path = tmp_path / "control" / "installation-ledger.json"
+    business_data = tmp_path / "business-data.json"
+    business_data.write_text('{"customer":"must-not-change"}\n', encoding="utf-8")
+    before_business_data = business_data.read_bytes()
+    ledger = foundation.JsonFileInstallationLedger(storage_path)
+    ledger.acquire_lock()
+    record = ledger.create_installation(durable_identity())
+    first_payload = storage_path.read_bytes()
+    assert ledger.create_installation(durable_identity()) is record
+    assert storage_path.read_bytes() == first_payload
+
+    ledger.record_step_result(record.installation_id, "preflight", "succeeded")
+    second_payload = storage_path.read_bytes()
+    ledger.record_step_result(record.installation_id, "preflight", "succeeded")
+    assert storage_path.read_bytes() == second_payload
+    ledger.release_lock()
+
+    assert business_data.read_bytes() == before_business_data

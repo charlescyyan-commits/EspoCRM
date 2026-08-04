@@ -11,10 +11,12 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
+import tempfile
 from dataclasses import dataclass, field
 from enum import Enum
 from pathlib import Path
-from typing import Protocol
+from typing import BinaryIO, Protocol
 
 
 class InstallationState(str, Enum):
@@ -34,6 +36,14 @@ class InstallationState(str, Enum):
 
 class InvalidStateTransition(ValueError):
     """Raised when an installation state would skip a controlled phase."""
+
+
+class LedgerCorruptionError(RuntimeError):
+    """Raised when durable ledger data cannot be safely interpreted."""
+
+
+class InstallationLockError(RuntimeError):
+    """Raised when another installation process owns the durable ledger lock."""
 
 
 _ALLOWED_TRANSITIONS: dict[InstallationState, frozenset[InstallationState]] = {
@@ -365,6 +375,7 @@ class LedgerEvent:
     kind: str
     value: str
     outcome: str | None = None
+    recorded_at: str | None = None
 
 
 @dataclass
@@ -374,12 +385,30 @@ class InstallationRecord:
     state: InstallationState = InstallationState.UNKNOWN
     failure_reason: str | None = None
     events: list[LedgerEvent] = field(default_factory=list)
+    started_at: str | None = None
+    updated_at: str | None = None
+    completed_at: str | None = None
+
+
+class RecoveryDisposition(str, Enum):
+    NOT_FOUND = "NOT_FOUND"
+    RESUME = "RESUME"
+    COMPLETED_NOOP = "COMPLETED_NOOP"
+    FAILED_PRESERVED = "FAILED_PRESERVED"
+
+
+@dataclass(frozen=True)
+class LedgerRecovery:
+    disposition: RecoveryDisposition
+    record: InstallationRecord | None
 
 
 class InstallationLedger(Protocol):
     """Storage boundary; a future adapter may provide durable persistence."""
 
     def find_by_identity(self, identity: ReleaseIdentity) -> InstallationRecord | None: ...
+
+    def recover(self, identity: ReleaseIdentity) -> LedgerRecovery: ...
 
     def create_installation(self, identity: ReleaseIdentity) -> InstallationRecord: ...
 
@@ -415,6 +444,16 @@ class InMemoryInstallationLedger:
     def find_by_identity(self, identity: ReleaseIdentity) -> InstallationRecord | None:
         installation_id = self._identity_index.get(identity.key)
         return self._records.get(installation_id) if installation_id else None
+
+    def recover(self, identity: ReleaseIdentity) -> LedgerRecovery:
+        record = self.find_by_identity(identity)
+        if record is None:
+            return LedgerRecovery(RecoveryDisposition.NOT_FOUND, None)
+        if record.state == InstallationState.COMPLETED:
+            return LedgerRecovery(RecoveryDisposition.COMPLETED_NOOP, record)
+        if record.state in {InstallationState.FAILED, InstallationState.PRECHECK_FAILED}:
+            return LedgerRecovery(RecoveryDisposition.FAILED_PRESERVED, record)
+        return LedgerRecovery(RecoveryDisposition.RESUME, record)
 
     def create_installation(self, identity: ReleaseIdentity) -> InstallationRecord:
         existing = self.find_by_identity(identity)
@@ -455,7 +494,12 @@ class InMemoryInstallationLedger:
     ) -> InstallationRecord:
         record = self._record(installation_id)
         event = LedgerEvent("step", step_id, outcome)
-        if event not in record.events:
+        if not any(
+            existing.kind == event.kind
+            and existing.value == event.value
+            and existing.outcome == event.outcome
+            for existing in record.events
+        ):
             record.events.append(event)
         return record
 
@@ -490,6 +534,358 @@ class InMemoryInstallationLedger:
     @staticmethod
     def _installation_id(key: str) -> str:
         return "installation-" + hashlib.sha256(key.encode("utf-8")).hexdigest()[:24]
+
+
+class JsonFileInstallationLedger(InMemoryInstallationLedger):
+    """Durable, restart-safe JSON installation ledger with an exclusive lock.
+
+    The adapter stores only installation control state in a caller-selected
+    file. It has no database, CRM entity, UI, business-data, network, or
+    installation-action dependency. Each mutation requires an acquired lock
+    and is persisted by an atomic file replacement.
+    """
+
+    SCHEMA_VERSION = 1
+
+    def __init__(self, storage_path: Path) -> None:
+        super().__init__()
+        self._storage_path = storage_path
+        self._lock_path = storage_path.with_name(f"{storage_path.name}.lock")
+        self._lock_owned = False
+        self._lock_handle: BinaryIO | None = None
+        self._load()
+
+    @property
+    def storage_path(self) -> Path:
+        return self._storage_path
+
+    def acquire_lock(self) -> None:
+        if self._lock_owned:
+            return
+        self._lock_path.parent.mkdir(parents=True, exist_ok=True)
+        try:
+            handle = self._lock_path.open("a+b")
+            handle.seek(0, os.SEEK_END)
+            if handle.tell() == 0:
+                handle.write(b"\0")
+                handle.flush()
+            handle.seek(0)
+            self._lock_handle_acquire(handle)
+        except OSError as error:
+            if "handle" in locals():
+                handle.close()
+            raise InstallationLockError(
+                f"installation ledger is locked: {self._lock_path}"
+            ) from error
+        self._lock_handle = handle
+        self._lock_owned = True
+        try:
+            # The adapter may have been constructed before another process
+            # committed and released its own mutation. Reload only after the
+            # exclusive lock is held so every following identity lookup and
+            # mutation uses the latest validated durable snapshot.
+            self._reload_after_lock()
+        except Exception:
+            self.release_lock()
+            raise
+
+    def release_lock(self) -> None:
+        if not self._lock_owned:
+            return
+        try:
+            assert self._lock_handle is not None
+            self._lock_handle_release(self._lock_handle)
+        finally:
+            if self._lock_handle is not None:
+                self._lock_handle.close()
+            self._lock_handle = None
+            self._lock_owned = False
+
+    def create_installation(self, identity: ReleaseIdentity) -> InstallationRecord:
+        self._require_lock()
+        existing = self.find_by_identity(identity)
+        if existing is not None:
+            return existing
+        record = super().create_installation(identity)
+        self._persist_changed(record, previous_event_count=0)
+        return record
+
+    def create_precheck_failure(
+        self, manifest_reference: str, manifest_hash: str | None
+    ) -> InstallationRecord:
+        self._require_lock()
+        key = self._installation_id(
+            f"precheck:{manifest_reference}:{manifest_hash or 'unreadable'}"
+        )
+        existing = self._records.get(key)
+        if existing is not None:
+            return existing
+        record = super().create_precheck_failure(manifest_reference, manifest_hash)
+        self._persist_changed(record, previous_event_count=0)
+        return record
+
+    def record_phase(
+        self, installation_id: str, phase: InstallationState
+    ) -> InstallationRecord:
+        self._require_lock()
+        record = self._record(installation_id)
+        before_state = record.state
+        before_events = len(record.events)
+        result = super().record_phase(installation_id, phase)
+        if result.state != before_state or len(result.events) != before_events:
+            self._persist_changed(result, before_events)
+        return result
+
+    def record_step_result(
+        self, installation_id: str, step_id: str, outcome: str
+    ) -> InstallationRecord:
+        self._require_lock()
+        record = self._record(installation_id)
+        before_events = len(record.events)
+        result = super().record_step_result(installation_id, step_id, outcome)
+        if len(result.events) != before_events:
+            self._persist_changed(result, before_events)
+        return result
+
+    def mark_failure(
+        self,
+        installation_id: str,
+        reason: str,
+        state: InstallationState = InstallationState.FAILED,
+    ) -> InstallationRecord:
+        self._require_lock()
+        record = self._record(installation_id)
+        before_events = len(record.events)
+        result = super().mark_failure(installation_id, reason, state)
+        self._persist_changed(result, before_events)
+        return result
+
+    def mark_completion(self, installation_id: str) -> InstallationRecord:
+        self._require_lock()
+        record = self._record(installation_id)
+        before_events = len(record.events)
+        result = super().mark_completion(installation_id)
+        self._persist_changed(result, before_events)
+        return result
+
+    def _require_lock(self) -> None:
+        if not self._lock_owned:
+            raise InstallationLockError("acquire the installation ledger lock before mutation")
+
+    def _persist_changed(self, record: InstallationRecord, previous_event_count: int) -> None:
+        timestamp = self._timestamp()
+        if record.started_at is None:
+            record.started_at = timestamp
+        record.updated_at = timestamp
+        if record.state == InstallationState.COMPLETED and record.completed_at is None:
+            record.completed_at = timestamp
+        for index in range(previous_event_count, len(record.events)):
+            event = record.events[index]
+            record.events[index] = LedgerEvent(
+                event.kind,
+                event.value,
+                event.outcome,
+                timestamp,
+            )
+        self._persist()
+
+    def _load(self) -> None:
+        if not self._storage_path.exists():
+            return
+        try:
+            document = json.loads(self._storage_path.read_text(encoding="utf-8"))
+        except (OSError, UnicodeDecodeError, json.JSONDecodeError) as error:
+            raise LedgerCorruptionError(
+                f"cannot parse durable installation ledger: {self._storage_path}"
+            ) from error
+        if not isinstance(document, dict) or document.get("schemaVersion") != self.SCHEMA_VERSION:
+            raise LedgerCorruptionError("durable installation ledger has an unsupported schema")
+        records = document.get("records")
+        if not isinstance(records, list):
+            raise LedgerCorruptionError("durable installation ledger records must be an array")
+        for payload in records:
+            record = self._record_from_payload(payload)
+            if record.installation_id in self._records:
+                raise LedgerCorruptionError("durable installation ledger has duplicate installation IDs")
+            self._records[record.installation_id] = record
+            if record.identity is not None:
+                if record.identity.key in self._identity_index:
+                    raise LedgerCorruptionError("durable installation ledger has duplicate release identities")
+                self._identity_index[record.identity.key] = record.installation_id
+
+    def _reload_after_lock(self) -> None:
+        self._records.clear()
+        self._identity_index.clear()
+        self._load()
+
+    def _persist(self) -> None:
+        document = {
+            "schemaVersion": self.SCHEMA_VERSION,
+            "records": [
+                self._record_to_payload(self._records[installation_id])
+                for installation_id in sorted(self._records)
+            ],
+        }
+        payload = (json.dumps(document, sort_keys=True, indent=2) + "\n").encode("utf-8")
+        self._storage_path.parent.mkdir(parents=True, exist_ok=True)
+        with tempfile.NamedTemporaryFile(
+            mode="wb",
+            dir=self._storage_path.parent,
+            prefix=f".{self._storage_path.name}.",
+            delete=False,
+        ) as handle:
+            temporary_path = Path(handle.name)
+            handle.write(payload)
+            handle.flush()
+            self._sync(handle)
+        try:
+            temporary_path.replace(self._storage_path)
+        finally:
+            if temporary_path.exists():
+                temporary_path.unlink()
+
+    def _record_to_payload(self, record: InstallationRecord) -> dict[str, object]:
+        identity = record.identity
+        return {
+            "installationId": record.installation_id,
+            "extensionName": identity.extension_name if identity else None,
+            "extensionVersion": identity.extension_version if identity else None,
+            "manifestHash": identity.manifest_hash if identity else None,
+            "sourceCommit": identity.source_commit if identity else None,
+            "status": self._status_for(record.state),
+            "currentPhase": record.state.value,
+            "stepEvents": [
+                {
+                    "kind": event.kind,
+                    "value": event.value,
+                    "outcome": event.outcome,
+                    "recordedAt": event.recorded_at,
+                }
+                for event in record.events
+            ],
+            "startedAt": record.started_at,
+            "updatedAt": record.updated_at,
+            "completedAt": record.completed_at,
+            "failureReason": record.failure_reason,
+        }
+
+    def _record_from_payload(self, payload: object) -> InstallationRecord:
+        if not isinstance(payload, dict):
+            raise LedgerCorruptionError("durable installation record must be an object")
+        installation_id = payload.get("installationId")
+        phase = payload.get("currentPhase")
+        status = payload.get("status")
+        if not isinstance(installation_id, str) or not installation_id:
+            raise LedgerCorruptionError("durable installation record has no installationId")
+        try:
+            state = InstallationState(phase)
+        except (TypeError, ValueError) as error:
+            raise LedgerCorruptionError("durable installation record has an invalid currentPhase") from error
+        if status != self._status_for(state):
+            raise LedgerCorruptionError("durable installation record status does not match currentPhase")
+
+        identity_values = [
+            payload.get("extensionName"),
+            payload.get("extensionVersion"),
+            payload.get("manifestHash"),
+            payload.get("sourceCommit"),
+        ]
+        if all(value is None for value in identity_values):
+            identity = None
+        elif all(isinstance(value, str) and value for value in identity_values):
+            identity = ReleaseIdentity(
+                extension_name=identity_values[0],
+                extension_version=identity_values[1],
+                manifest_hash=identity_values[2],
+                source_commit=identity_values[3],
+            )
+        else:
+            raise LedgerCorruptionError("durable installation record has a partial release identity")
+
+        events_payload = payload.get("stepEvents")
+        if not isinstance(events_payload, list):
+            raise LedgerCorruptionError("durable installation record stepEvents must be an array")
+        events: list[LedgerEvent] = []
+        for event_payload in events_payload:
+            if not isinstance(event_payload, dict):
+                raise LedgerCorruptionError("durable installation event must be an object")
+            kind = event_payload.get("kind")
+            value = event_payload.get("value")
+            outcome = event_payload.get("outcome")
+            recorded_at = event_payload.get("recordedAt")
+            if not isinstance(kind, str) or not isinstance(value, str):
+                raise LedgerCorruptionError("durable installation event is invalid")
+            if outcome is not None and not isinstance(outcome, str):
+                raise LedgerCorruptionError("durable installation event outcome is invalid")
+            if recorded_at is not None and not isinstance(recorded_at, str):
+                raise LedgerCorruptionError("durable installation event timestamp is invalid")
+            events.append(LedgerEvent(kind, value, outcome, recorded_at))
+
+        timestamps = [payload.get("startedAt"), payload.get("updatedAt"), payload.get("completedAt")]
+        if any(value is not None and not isinstance(value, str) for value in timestamps):
+            raise LedgerCorruptionError("durable installation record timestamp is invalid")
+        failure_reason = payload.get("failureReason")
+        if failure_reason is not None and not isinstance(failure_reason, str):
+            raise LedgerCorruptionError("durable installation failure reason is invalid")
+        return InstallationRecord(
+            installation_id=installation_id,
+            identity=identity,
+            state=state,
+            failure_reason=failure_reason,
+            events=events,
+            started_at=timestamps[0],
+            updated_at=timestamps[1],
+            completed_at=timestamps[2],
+        )
+
+    @staticmethod
+    def _status_for(state: InstallationState) -> str:
+        if state == InstallationState.COMPLETED:
+            return "completed"
+        if state in {InstallationState.PRECHECK_FAILED, InstallationState.FAILED}:
+            return "failed"
+        if state == InstallationState.UNKNOWN:
+            return "planned"
+        return "running"
+
+    @staticmethod
+    def _timestamp() -> str:
+        # A monotonic wall-clock source is intentionally not required for the
+        # ledger's recovery decision; timestamps are audit metadata only.
+        from datetime import datetime, timezone
+
+        return datetime.now(timezone.utc).isoformat()
+
+    @staticmethod
+    def _lock_handle_acquire(handle: BinaryIO) -> None:
+        if os.name == "nt":
+            import msvcrt
+
+            msvcrt.locking(handle.fileno(), msvcrt.LK_NBLCK, 1)
+            return
+        import fcntl
+
+        fcntl.flock(handle.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+
+    @staticmethod
+    def _lock_handle_release(handle: BinaryIO) -> None:
+        if os.name == "nt":
+            import msvcrt
+
+            handle.seek(0)
+            msvcrt.locking(handle.fileno(), msvcrt.LK_UNLCK, 1)
+            return
+        import fcntl
+
+        fcntl.flock(handle.fileno(), fcntl.LOCK_UN)
+
+    @staticmethod
+    def _sync(handle: BinaryIO) -> None:
+        if os.name == "nt":
+            import msvcrt
+
+            msvcrt.setmode(handle.fileno(), os.O_BINARY)
+        os.fsync(handle.fileno())
 
 
 @dataclass(frozen=True)
