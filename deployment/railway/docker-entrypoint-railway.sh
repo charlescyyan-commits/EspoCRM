@@ -30,6 +30,53 @@ configure_apache_port() {
     export PORT="$port"
 }
 
+normalize_apache_mpm() {
+    local selected="prefork"
+    local module
+    local -a enabled_mpms=()
+    local -a disabled_mpms=()
+
+    if ! command -v a2dismod >/dev/null 2>&1 || ! command -v a2enmod >/dev/null 2>&1; then
+        log "error: Debian Apache module tooling (a2dismod/a2enmod) is required"
+        exit 1
+    fi
+
+    # The pinned EspoCRM 10.0.1 image enables mod_php, which requires
+    # mpm_prefork. Disable only enabled conflicting MPMs before ensuring
+    # the selected module is enabled.
+    while IFS= read -r module; do
+        module="${module#mpm_}"
+        module="${module%.load}"
+        if [ "$module" != "$selected" ]; then
+            log "disabling conflicting Apache MPM: ${module}"
+            a2dismod "$module"
+            disabled_mpms+=("$module")
+        fi
+    done < <(find /etc/apache2/mods-enabled -maxdepth 1 -type l -name 'mpm_*.load' -printf '%f\n' | sort)
+
+    if [ ! -e "/etc/apache2/mods-enabled/mpm_${selected}.load" ]; then
+        log "enabling selected Apache MPM: ${selected}"
+        a2enmod "mpm_${selected}"
+    fi
+
+    mapfile -t enabled_mpms < <(find /etc/apache2/mods-enabled -maxdepth 1 -type l -name 'mpm_*.load' -printf '%f\n' | sort)
+
+    log "selected Apache MPM: ${selected}"
+    if [ "${#disabled_mpms[@]}" -eq 0 ]; then
+        log "conflicting Apache MPMs disabled: none"
+    else
+        log "conflicting Apache MPMs disabled: ${disabled_mpms[*]}"
+    fi
+    log "final enabled Apache MPM count: ${#enabled_mpms[@]} (${enabled_mpms[*]:-none})"
+
+    if [ "${#enabled_mpms[@]}" -ne 1 ] || [ "${enabled_mpms[0]:-}" != "mpm_${selected}.load" ]; then
+        log "error: exactly one Apache MPM (${selected}) must remain enabled"
+        exit 1
+    fi
+
+    apache2ctl -t
+}
+
 sync_extension_overlay() {
     local overlay="/opt/crm-extension-overlay"
     local html="/var/www/html"
@@ -122,6 +169,7 @@ main() {
     guard_staging_isolation
     warn_volume_layout
     configure_apache_port
+    normalize_apache_mpm
     sync_extension_overlay
     clear_metadata_cache_if_installed
 

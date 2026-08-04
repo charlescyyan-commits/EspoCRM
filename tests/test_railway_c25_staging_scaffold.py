@@ -34,6 +34,8 @@ def test_dockerfile_pins_official_image_and_repo_root_context() -> None:
     assert "ESPOCRM_VERSION=10.0.1" in text
     assert "COPY crm-extension/files/" in text
     assert "COPY deployment/railway/docker-entrypoint-railway.sh" in text
+    assert "sed -i 's/\\r$//'" in text
+    assert text.index("sed -i 's/\\r$//'") < text.index("chmod +x")
     assert "ENTRYPOINT" in text
     assert "HEALTHCHECK" in text
     assert "Railpack" not in text
@@ -47,6 +49,39 @@ def test_entrypoint_binds_port_and_syncs_overlay() -> None:
     assert "docker-entrypoint.sh" in text
     assert "INSTANTLY_API_KEY" in text
     assert "APP_ENV" in text
+
+
+def test_shell_files_are_lf_normalized_by_git_and_docker() -> None:
+    attributes = (ROOT / ".gitattributes").read_text(encoding="utf-8")
+    assert "*.sh   text eol=lf" in attributes
+
+    for name in ["docker-entrypoint-railway.sh", "healthcheck.sh"]:
+        assert b"\r\n" not in (RAILWAY / name).read_bytes(), f"CRLF in {name}"
+
+
+def test_entrypoint_normalizes_apache_mpm_before_official_handoff() -> None:
+    text = (RAILWAY / "docker-entrypoint-railway.sh").read_text(encoding="utf-8")
+    assert "normalize_apache_mpm()" in text
+    assert 'local selected="prefork"' in text
+    assert "a2dismod" in text
+    assert "a2enmod" in text
+    assert "exactly one Apache MPM" in text
+    assert "apache2ctl -t" in text
+    assert text.index("normalize_apache_mpm") < text.index('exec /usr/local/bin/docker-entrypoint.sh')
+
+
+def test_entrypoint_retains_staging_and_provider_guards() -> None:
+    text = (RAILWAY / "docker-entrypoint-railway.sh").read_text(encoding="utf-8")
+    for needle in [
+        "guard_staging_isolation",
+        "ESPOCRM_ALLOW_PRODUCTION",
+        "INSTANTLY_API_KEY",
+        "APOLLO_API_KEY",
+        "APIFY_TOKEN",
+        "SMTP_PASSWORD",
+        "BREVO_API_KEY",
+    ]:
+        assert needle in text
 
 
 def test_compose_uses_data_volume_and_dynamic_port() -> None:

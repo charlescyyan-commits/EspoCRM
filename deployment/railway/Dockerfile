@@ -33,7 +33,10 @@ COPY crm-extension/files/client/custom/ /var/www/html/client/custom/
 COPY deployment/railway/docker-entrypoint-railway.sh /usr/local/bin/docker-entrypoint-railway.sh
 COPY deployment/railway/healthcheck.sh /usr/local/bin/healthcheck.sh
 
-RUN chmod +x /usr/local/bin/docker-entrypoint-railway.sh /usr/local/bin/healthcheck.sh \
+RUN sed -i 's/\r$//' \
+        /usr/local/bin/docker-entrypoint-railway.sh \
+        /usr/local/bin/healthcheck.sh \
+    && chmod +x /usr/local/bin/docker-entrypoint-railway.sh /usr/local/bin/healthcheck.sh \
     && chown -R www-data:www-data /var/www/html/custom /var/www/html/client/custom \
     && test -d /opt/crm-extension-overlay/custom/Espo/Modules/Prospecting \
     && test -f /var/www/html/custom/Espo/Modules/Prospecting/Resources/metadata/scopes/ProspectPool.json
