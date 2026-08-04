@@ -40,8 +40,12 @@ _ALLOWED_TRANSITIONS: dict[InstallationState, frozenset[InstallationState]] = {
     InstallationState.UNKNOWN: frozenset(
         {InstallationState.PRECHECK_FAILED, InstallationState.READY}
     ),
-    InstallationState.PRECHECK_FAILED: frozenset({InstallationState.READY}),
-    InstallationState.READY: frozenset({InstallationState.INSTALLING}),
+    InstallationState.PRECHECK_FAILED: frozenset(
+        {InstallationState.READY, InstallationState.FAILED}
+    ),
+    InstallationState.READY: frozenset(
+        {InstallationState.INSTALLING, InstallationState.FAILED}
+    ),
     InstallationState.INSTALLING: frozenset(
         {InstallationState.REGISTERED, InstallationState.FAILED}
     ),
@@ -98,6 +102,15 @@ class ManifestValidationResult:
     valid: bool
     identity: ReleaseIdentity | None
     manifest_hash: str | None
+    errors: tuple[str, ...] = ()
+
+
+@dataclass(frozen=True)
+class ManifestVerificationResult:
+    """The result of read-only DP-WP0 artifact verification."""
+
+    valid: bool
+    identity: ReleaseIdentity | None
     errors: tuple[str, ...] = ()
 
 
@@ -221,6 +234,129 @@ class ArtifactManifestValidator:
                 source_commit=fields["gitCommit"],
             ),
             [],
+        )
+
+
+class ArtifactManifestVerifier:
+    """Verify a DP-WP0 manifest, release identity, and listed artifact hashes.
+
+    This adapter is deliberately read-only. It does not run the manifest
+    generator, change release inputs, contact a network service, or invoke an
+    installation action.
+    """
+
+    def __init__(
+        self, repository_root: Path, validator: ArtifactManifestValidator | None = None
+    ) -> None:
+        self._repository_root = repository_root.resolve()
+        self._validator = validator or ArtifactManifestValidator()
+
+    def verify(
+        self, manifest_path: Path, expected_source_commit: str
+    ) -> ManifestVerificationResult:
+        """Verify one selected release identity and every manifest-listed file."""
+
+        validation = self._validator.validate(manifest_path)
+        if not validation.valid:
+            return ManifestVerificationResult(False, None, validation.errors)
+
+        assert validation.identity is not None
+        errors: list[str] = []
+        if validation.identity.source_commit != expected_source_commit:
+            errors.append("manifest source commit does not match the selected release")
+
+        try:
+            manifest_bytes = manifest_path.read_bytes()
+            document = json.loads(manifest_bytes.decode("utf-8"))
+        except (OSError, UnicodeDecodeError, json.JSONDecodeError) as error:
+            return ManifestVerificationResult(
+                False,
+                validation.identity,
+                (f"manifest cannot be re-read for verification: {error.__class__.__name__}",),
+            )
+        if hashlib.sha256(manifest_bytes).hexdigest() != validation.identity.manifest_hash:
+            errors.append("manifest changed during verification")
+
+        errors.extend(self._extension_identity_errors(validation.identity))
+        files = document.get("files")
+        if isinstance(files, list):
+            errors.extend(self._artifact_errors(files))
+
+        try:
+            if manifest_path.read_bytes() != manifest_bytes:
+                errors.append("manifest changed during verification")
+        except OSError as error:
+            errors.append(f"manifest cannot be re-read for verification: {error.__class__.__name__}")
+
+        return ManifestVerificationResult(
+            valid=not errors,
+            identity=validation.identity,
+            errors=tuple(errors),
+        )
+
+    def _extension_identity_errors(self, identity: ReleaseIdentity) -> list[str]:
+        extension_manifest = self._repository_root / "crm-extension" / "manifest.json"
+        try:
+            document = json.loads(extension_manifest.read_text(encoding="utf-8"))
+        except (OSError, UnicodeDecodeError, json.JSONDecodeError) as error:
+            return [f"extension manifest cannot be read: {error.__class__.__name__}"]
+        if not isinstance(document, dict):
+            return ["extension manifest root must be an object"]
+
+        extension_name = document.get("extensionName") or document.get("name")
+        extension_version = document.get("version")
+        errors: list[str] = []
+        if extension_name != identity.extension_name:
+            errors.append("manifest extension name does not match crm-extension/manifest.json")
+        if extension_version != identity.extension_version:
+            errors.append("manifest extension version does not match crm-extension/manifest.json")
+        return errors
+
+    def _artifact_errors(self, files: list[object]) -> list[str]:
+        errors: list[str] = []
+        for index, entry in enumerate(files):
+            if not isinstance(entry, dict):
+                # The schema validator reports this too; retain a clear result
+                # when the verifier is used with a custom validator.
+                errors.append(f"manifest files[{index}] must be an object")
+                continue
+            path_text = entry.get("path")
+            expected_hash = entry.get("sha256")
+            expected_bytes = entry.get("bytes")
+            if not isinstance(path_text, str) or not self._is_safe_relative_path(path_text):
+                errors.append(f"manifest files[{index}] has an unsafe path")
+                continue
+            if not isinstance(expected_hash, str) or (
+                len(expected_hash) != 64
+                or any(character not in "0123456789abcdef" for character in expected_hash)
+            ):
+                errors.append(f"manifest file has an invalid SHA-256: {path_text}")
+                continue
+            if not isinstance(expected_bytes, int) or expected_bytes < 0:
+                errors.append(f"manifest file has invalid byte count: {path_text}")
+                continue
+
+            artifact = self._repository_root / Path(path_text)
+            if not artifact.is_file() or artifact.is_symlink():
+                errors.append(f"manifest artifact is missing: {path_text}")
+                continue
+            if artifact.stat().st_size != expected_bytes:
+                errors.append(f"manifest artifact byte count mismatch: {path_text}")
+                continue
+            with artifact.open("rb") as handle:
+                actual_hash = hashlib.file_digest(handle, "sha256").hexdigest()
+            if actual_hash != expected_hash:
+                errors.append(f"manifest artifact SHA-256 mismatch: {path_text}")
+        return errors
+
+    @staticmethod
+    def _is_safe_relative_path(path_text: str) -> bool:
+        path = Path(path_text)
+        return (
+            bool(path_text)
+            and not path.is_absolute()
+            and "\\" not in path_text
+            and ".." not in path.parts
         )
 
 
@@ -368,29 +504,39 @@ class FoundationRunResult:
 class InstallationRunner:
     """Foundation-only orchestrator that intentionally stops before mutation."""
 
-    def __init__(self, validator: ArtifactManifestValidator, ledger: InstallationLedger) -> None:
+    def __init__(
+        self,
+        validator: ArtifactManifestValidator,
+        ledger: InstallationLedger,
+        verifier: ArtifactManifestVerifier,
+    ) -> None:
         self._validator = validator
         self._ledger = ledger
+        self._verifier = verifier
 
-    def run_foundation(self, manifest_path: Path) -> FoundationRunResult:
-        """Validate and ledger preflight; never register, hook, migrate, or refresh."""
+    def run_foundation(
+        self, manifest_path: Path, expected_source_commit: str
+    ) -> FoundationRunResult:
+        """Preflight and verify artifacts; never register, hook, migrate, or refresh."""
 
         validation = self._validator.validate(manifest_path)
         if not validation.valid:
             record = self._ledger.create_precheck_failure(
                 manifest_path.as_posix(), validation.manifest_hash
             )
-            self._ledger.mark_failure(
-                record.installation_id,
-                "; ".join(validation.errors),
-                InstallationState.PRECHECK_FAILED,
+            self._ledger.record_phase(
+                record.installation_id, InstallationState.PRECHECK_FAILED
             )
             self._ledger.record_step_result(
                 record.installation_id, "preflight-manifest", "failed"
             )
+            self._ledger.mark_failure(
+                record.installation_id,
+                "; ".join(validation.errors),
+            )
             return FoundationRunResult(
                 installation_id=record.installation_id,
-                state=InstallationState.PRECHECK_FAILED,
+                state=InstallationState.FAILED,
                 started=False,
                 stopped_before=None,
                 errors=validation.errors,
@@ -403,6 +549,28 @@ class InstallationRunner:
             self._ledger.record_step_result(
                 record.installation_id, "preflight-manifest", "succeeded"
             )
+
+        verification = self._verifier.verify(manifest_path, expected_source_commit)
+        if not verification.valid:
+            self._ledger.record_step_result(
+                record.installation_id, "artifact-manifest", "failed"
+            )
+            self._ledger.mark_failure(
+                record.installation_id,
+                "; ".join(verification.errors),
+            )
+            return FoundationRunResult(
+                installation_id=record.installation_id,
+                state=InstallationState.FAILED,
+                started=False,
+                stopped_before=None,
+                errors=verification.errors,
+            )
+
+        self._ledger.record_step_result(
+            record.installation_id, "artifact-manifest", "succeeded"
+        )
+        if record.state == InstallationState.READY:
             self._ledger.record_phase(record.installation_id, InstallationState.INSTALLING)
 
         return FoundationRunResult(
