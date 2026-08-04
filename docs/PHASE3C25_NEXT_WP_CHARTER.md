@@ -1,4 +1,4 @@
-# Phase3C25 Next Work Package Charter — Draft
+# Phase3C25 Next Work Package Charter
 
 | Field | Value |
 | --- | --- |
@@ -6,24 +6,44 @@
 | Proposed Work Package | **WP4 — Commercial Decision Support Layer** |
 | ADR alignment | ADR-C25-004 Human Decision Workspace Architecture (presentation / intent-collection surface) |
 | Parent | Phase3C25 — AI Commercial Intelligence Layer |
-| Status | **DRAFT** |
+| Status | **APPROVED** — Final Charter Review complete; ready for Implementation Plan drafting only |
 | Date | 2026-08-04 |
-| Baseline | C20 CLOSED; Package A RELEASED; WP2.0 SATISFIED; WP2.2 FROZEN (`phase3c25-wp2-2-freeze`); WP3 FROZEN + GOVERNANCE CLOSED (`phase3c25-wp3-freeze`) |
-| Planning Authorization | **NO** while DRAFT |
+| Baseline | C20 CLOSED; Package A RELEASED; WP2.0 SATISFIED; WP2.2 FROZEN (`phase3c25-wp2-2-freeze`); WP3 FROZEN + GOVERNANCE CLOSED (`phase3c25-wp3-freeze`); Governance Evidence Reconciliation COMPLETE (`b3814ee`) |
+| Condition Closure | `docs/audit/PHASE3C25_WP4_CHARTER_CONDITION_CLOSURE.md` |
+| Final Charter Review | **APPROVED** — READY FOR IMPLEMENTATION PLAN (drafting gate only) |
+| Planning Authorization | **NO** — charter approval does not authorize Implementation Plan as delivery authority; drafting is a separate documentation gate |
 | Implementation Authorization | **NO** |
-| Commit / push / tag | **NOT AUTHORIZED** by this draft |
+| Commit / push / tag | Evidence commit authorized separately for governance sync only |
 
 ```text
-This charter defines the next C25 commercial-intelligence work package
-after WP3 freeze and post-freeze governance closure.
+This charter defines WP4 after WP3 freeze and governance evidence
+reconciliation.
 
-As DRAFT it authorizes nothing.
-It does NOT authorize planning, implementation, delivery,
-Runtime Expansion, C20 reopening, C22/C24 ownership transfer,
-or invariant activation.
+Charter APPROVED does NOT authorize implementation, Runtime Expansion,
+C20 reopening, C22/C24 ownership transfer, or invariant activation.
+Implementation Plan drafting is the next documentation gate only.
 ```
 
 **Prior WP3 charter (historical):** `docs/PHASE3C25_WP3_CHARTER.md`
+
+---
+
+## 0. Condition Closure Summary
+
+| Condition | Requirement | Status |
+| --- | --- | --- |
+| 1 | Naming alignment — Decision Support ≠ AI decision maker | **CLOSED** (§2) |
+| 2 | Feedback boundary — human governance signal only | **CLOSED** (§3 Feedback) |
+| 3 | Transition invocation — presentation + intent only by default | **CLOSED** (§3 Transition) |
+| 4 | AI authority reinforcement | **CLOSED** (§6) |
+| 5 | Ownership boundary | **CLOSED** (§5) |
+
+```text
+Charter conditions CLOSED.
+Final Charter Review: APPROVED.
+Next gate: Implementation Plan drafting (documentation only).
+Planning / Implementation remain NOT AUTHORIZED.
+```
 
 ---
 
@@ -81,23 +101,40 @@ Next WP ≠ C20 Runtime Expansion
 
 ---
 
-## 2. Proposed WP Name
+## 2. Proposed WP Name (Condition 1 — CLOSED)
 
 **Phase3C25 WP4 — Commercial Decision Support Layer**
 
 Governance-safe naming (avoids Agent / Autonomous / Operator / Automation).
 
-**Naming equivalence (explicit):**
+### Naming equivalence (explicit)
 
 ```text
 Commercial Decision Support Layer
-  = ADR-C25-004 Human Decision Workspace
-    (implementation-facing name for the same presentation / intent-collection surface)
+  = implementation-facing name for
+    ADR-C25-004 Human Decision Workspace
+  = same presentation / intent-collection surface
 ```
 
 Aligned with ratified C25 Implementation Charter WP4 and ADR-C25-004
 as a C25-owned **presentation / intent-collection** surface — not as a
 decision owner or lifecycle owner.
+
+### “Decision Support” does NOT mean
+
+| Phrase | Forbidden interpretation |
+| --- | --- |
+| Decision Support | AI decision maker |
+| Decision Support | autonomous decision engine |
+| Decision Support | AI operator |
+| Decision Support | execution authority |
+
+**Final authority remains:** human reviewer / business user.
+
+```text
+Decision Support = help humans prepare and review decisions
+Decision Support ≠ AI decides / approves / executes
+```
 
 Alternate considered (deferred as secondary theme, not primary WP title):
 
@@ -107,7 +144,7 @@ Alternate considered (deferred as secondary theme, not primary WP title):
 
 ## 3. Scope
 
-Allowed **application intelligence** scope (planning candidates only while DRAFT):
+Allowed **application intelligence** scope (planning candidates only; not authorized for implementation by this charter):
 
 | Area | Intent |
 | --- | --- |
@@ -115,45 +152,64 @@ Allowed **application intelligence** scope (planning candidates only while DRAFT
 | Insight comparison | Compare briefs / insights / review contexts without mutating sources |
 | Recommendation presentation | Present advisory recommendations with provenance and advisory labels |
 | Review preparation | Structure human review packets from WP2.2 / WP3 artifacts |
-| Feedback collection | Collect explanation-quality / usefulness feedback as non-truth input only |
+| Feedback collection | Collect human-provided governance feedback as non-truth input only |
 | Intelligence quality improvement | Improve presentation clarity, provenance visibility, and review UX — not model-runtime training loops |
 
-### Feedback boundary (explicit)
+### Feedback boundary (Condition 2 — CLOSED)
+
+Feedback remains a **human-provided governance signal**.
+Feedback is **not** an AI runtime capability.
 
 **Allowed:**
 
-- bounded review intent
-- annotations
-- presentation / explanation-quality feedback
+- human review feedback
+- bounded annotations
+- explanation quality feedback
+- presentation improvement feedback
 
 **Forbidden:**
 
-- model training loop
-- autonomous learning
+- autonomous learning loop
+- self-training system
+- hidden model optimization runtime
 - shadow CRM fields
 - merging into C21 HumanFeedback truth ownership
 - using feedback to mutate C24 / CRM Core lifecycles
 
-### Transition invocation (explicit — no silent expansion)
+```text
+Feedback = human governance signal
+Feedback ≠ AI runtime / training / autonomous learning
+```
 
-WP4 charter default (DRAFT):
+### Transition invocation boundary (Condition 3 — CLOSED)
+
+**Default WP4 scope:**
 
 ```text
-Presentation / intent collection only
+Presentation + intent collection only
 ```
+
+**WP4 does NOT:**
+
+- execute workflow transitions
+- mutate CRM lifecycle
+- invoke C22 execution
+- replace C24 lifecycle ownership
 
 Human commercial enactment remains **outside C25** through the owning
 layer’s governed services (ADR-C25-004).
 
-**C24 governed transition invocation** is **not** authorized by this DRAFT.
-Any later design that would invoke C24 transition services from a C25 surface
-requires an explicit Implementation Plan decision and separate Implementation
-Authorization — it must not be assumed from this charter alone.
+**If future transition invocation is needed** (including C24 governed
+transition service calls from a C25 surface):
+
+- requires a **separate authorization gate**
+- requires explicit Implementation Plan decision + Implementation Authorization
+- must not be assumed from this charter alone
 
 ```text
-Allowed = present, prepare, compare, collect intent / quality feedback
-Forbidden = decide, approve, execute, mutate owned lifecycles
-Silent C24 transition invocation = NOT AUTHORIZED by this DRAFT
+Default = presentation + intent collection only
+Silent transition invocation = NOT AUTHORIZED
+Future transition invocation = separate gate
 ```
 
 ---
@@ -179,6 +235,7 @@ Not in scope:
 - AI operator
 - execution assistant
 - autonomous decisions
+- AI decision maker / autonomous decision engine
 
 ### Commercial
 
@@ -222,24 +279,29 @@ WP4 ≠ C22/C24/CRM ownership
 
 ---
 
-## 5. Ownership Boundary
+## 5. Ownership Boundary (Condition 5 — CLOSED)
 
 | Owner | Owns |
 | --- | --- |
 | **C25** | Intelligence artifacts, presentation, advisory review support, decision-support surfaces |
 | **C20** | Capability identity, purpose policy, provider governance |
 | **C22** | Prospect execution |
-| **C24** | Commercial intelligence source entities (`OpportunityCandidate`, `RevenueInsight`, `PipelineMetric`, related governance) |
-| **CRM Core** | Customer / opportunity lifecycle |
+| **C24** | `RevenueInsight`, `PipelineMetric`, `OpportunityCandidate` (and related commercial governance) |
+| **CRM Core** | Customer lifecycle, opportunity lifecycle |
 
 No ownership transfer across layers.
 
 Human commercial decisions, if enacted, are enacted **outside C25** through the
 owning layer’s governed services (per ADR-C25-004).
 
+```text
+C25 presents and collects intent.
+C24 / CRM Core / C22 retain lifecycle and execution ownership.
+```
+
 ---
 
-## 6. AI Authority Boundary
+## 6. AI Authority Boundary (Condition 4 — CLOSED)
 
 Frozen definition for this charter and any later WP4 design:
 
@@ -249,8 +311,9 @@ Frozen definition for this charter and any later WP4 design:
 - analyze
 - classify
 - propose
+- explain
 
-**AI may not:**
+**AI may NOT:**
 
 - decide
 - approve
@@ -259,7 +322,7 @@ Frozen definition for this charter and any later WP4 design:
 
 ```text
 AI = advisory support
-Human = final authority
+Human reviewer / business user = final authority
 ```
 
 ---
@@ -305,7 +368,7 @@ WP2.2 CommercialBrief (FROZEN)
     ↓
 WP3 Commercial Intelligence Support (FROZEN)
     ↓
-WP4 Commercial Decision Support Layer (this charter — DRAFT)
+WP4 Commercial Decision Support Layer (APPROVED)
 ```
 
 ---
@@ -326,6 +389,7 @@ Governance-level outcomes (not delivery KPIs):
 - outbound metrics
 - Lead / Opportunity mutation rates
 - provider runtime availability
+- AI decision / approval rates
 
 ---
 
@@ -338,16 +402,18 @@ Governance-level outcomes (not delivery KPIs):
 | C25 WP2.0 | SATISFIED |
 | WP2.2 CommercialBrief | FROZEN |
 | WP3 Commercial Intelligence | FROZEN |
-| Next WP Charter | **DRAFT** |
-| Next WP Planning | **NOT AUTHORIZED** |
-| Next WP Implementation | **NOT AUTHORIZED** |
+| WP3 Governance Closure | COMPLETE |
+| WP4 Charter | **APPROVED** |
+| WP4 Final Charter Review | **APPROVED** |
+| WP4 Planning | **NOT AUTHORIZED** |
+| WP4 Implementation | **NOT AUTHORIZED** |
 | Runtime Expansion | **NOT AUTHORIZED** |
 | Invariant Activation | **NOT DONE** |
 
 ```text
-This DRAFT authorizes nothing.
-Charter review → Implementation Plan → Implementation Authorization
-remain separate future gates.
+Charter APPROVED ≠ planning authorization
+Charter APPROVED ≠ implementation authorization
+Next gate: Implementation Plan drafting (documentation only).
 ```
 
 ---
@@ -356,12 +422,12 @@ remain separate future gates.
 
 | Item | Value |
 | --- | --- |
-| Author role | Architecture governance owner |
-| Mode | Documentation only |
+| Author role | WP4 charter governance owner |
+| Mode | Documentation-only charter evidence |
+| Condition closure record | `docs/audit/PHASE3C25_WP4_CHARTER_CONDITION_CLOSURE.md` |
 | WP3 historical charter | `docs/PHASE3C25_WP3_CHARTER.md` |
-| Commit of this draft | **NOT DONE** unless separately authorized |
 | Production code changes | **NONE** |
 
 ---
 
-*End of Phase3C25 Next WP Charter (DRAFT — no authorization).*
+*End of Phase3C25 Next WP Charter (APPROVED — no implementation authorization).*
