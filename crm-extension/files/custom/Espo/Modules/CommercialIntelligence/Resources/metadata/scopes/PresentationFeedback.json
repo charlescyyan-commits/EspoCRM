@@ -1,0 +1,12 @@
+{
+  "entity": true,
+  "object": false,
+  "tab": true,
+  "acl": true,
+  "aclPortal": false,
+  "customizable": false,
+  "importable": false,
+  "module": "CommercialIntelligence",
+  "type": "Base",
+  "aclActionList": ["create", "read"]
+}

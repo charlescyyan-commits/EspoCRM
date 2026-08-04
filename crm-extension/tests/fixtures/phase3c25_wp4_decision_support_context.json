@@ -1,0 +1,9 @@
+{
+  "name": "WP4 Decision Support Context Fixture",
+  "sourceEvidenceReference": "fixture://wp4/decision-support-context/v1",
+  "capabilityReference": "COMMERCIAL_BRIEF",
+  "purposeReference": "commercial_decision_support",
+  "commercialBriefIds": ["brief-fixture-001"],
+  "commercialInsightIds": ["insight-fixture-001"],
+  "businessReviewContextIds": ["brc-fixture-001"]
+}

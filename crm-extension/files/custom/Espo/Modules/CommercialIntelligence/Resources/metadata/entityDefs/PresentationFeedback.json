@@ -1,0 +1,89 @@
+{
+  "fields": {
+    "name": {
+      "type": "varchar",
+      "maxLength": 255,
+      "required": true,
+      "trim": true,
+      "readOnly": true
+    },
+    "feedbackType": {
+      "type": "enum",
+      "required": true,
+      "options": [
+        "PRESENTATION",
+        "EXPLANATION_QUALITY",
+        "ANNOTATION"
+      ],
+      "readOnly": true
+    },
+    "feedbackContent": {
+      "type": "text",
+      "required": true,
+      "readOnly": true
+    },
+    "decisionSupportContextReference": {
+      "type": "varchar",
+      "maxLength": 64,
+      "readOnly": true
+    },
+    "sourceEvidenceReference": {
+      "type": "text",
+      "required": true,
+      "readOnly": true
+    },
+    "capabilityReference": {
+      "type": "varchar",
+      "maxLength": 64,
+      "required": true,
+      "default": "COMMERCIAL_BRIEF",
+      "readOnly": true
+    },
+    "purposeReference": {
+      "type": "varchar",
+      "maxLength": 64,
+      "required": true,
+      "default": "commercial_decision_support",
+      "readOnly": true
+    },
+    "advisorySource": {
+      "type": "enum",
+      "required": true,
+      "options": [
+        "FIXTURE",
+        "STUB",
+        "DETERMINISTIC",
+        "HUMAN_AUTHORED"
+      ],
+      "readOnly": true
+    },
+    "createdAt": {
+      "type": "datetime",
+      "readOnly": true
+    },
+    "createdBy": {
+      "type": "link",
+      "readOnly": true
+    }
+  },
+  "links": {
+    "createdBy": {
+      "type": "belongsTo",
+      "entity": "User"
+    }
+  },
+  "collection": {
+    "orderBy": "createdAt",
+    "order": "desc",
+    "textFilterFields": ["name", "feedbackType"]
+  },
+  "deleteId": true,
+  "indexes": {
+    "feedbackType": {
+      "columns": ["feedbackType"]
+    },
+    "createdAt": {
+      "columns": ["createdAt"]
+    }
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "controller": "controllers/record",
+  "createDisabled": false,
+  "editDisabled": true,
+  "mergeDisabled": true,
+  "massUpdateDisabled": true,
+  "removeDisabled": true,
+  "duplicateDisabled": true,
+  "iconClass": "fas fa-comment-dots"
+}

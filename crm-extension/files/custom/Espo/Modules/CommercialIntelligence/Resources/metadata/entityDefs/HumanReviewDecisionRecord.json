@@ -1,0 +1,93 @@
+{
+  "fields": {
+    "name": {
+      "type": "varchar",
+      "maxLength": 255,
+      "required": true,
+      "trim": true,
+      "readOnly": true
+    },
+    "reviewStatus": {
+      "type": "enum",
+      "required": true,
+      "default": "GENERATED",
+      "options": [
+        "GENERATED",
+        "REVIEWED",
+        "ACCEPTED",
+        "DISMISSED"
+      ],
+      "readOnly": true,
+      "displayAsLabel": true
+    },
+    "decisionSupportContextReference": {
+      "type": "varchar",
+      "maxLength": 64,
+      "readOnly": true
+    },
+    "reviewComment": {
+      "type": "text",
+      "readOnly": true
+    },
+    "sourceEvidenceReference": {
+      "type": "text",
+      "required": true,
+      "readOnly": true
+    },
+    "capabilityReference": {
+      "type": "varchar",
+      "maxLength": 64,
+      "required": true,
+      "default": "COMMERCIAL_BRIEF",
+      "readOnly": true
+    },
+    "purposeReference": {
+      "type": "varchar",
+      "maxLength": 64,
+      "required": true,
+      "default": "commercial_decision_support",
+      "readOnly": true
+    },
+    "transitionHistory": {
+      "type": "text",
+      "readOnly": true
+    },
+    "lastTransitionBy": {
+      "type": "varchar",
+      "maxLength": 100,
+      "readOnly": true
+    },
+    "lastTransitionAt": {
+      "type": "datetime",
+      "readOnly": true
+    },
+    "createdAt": {
+      "type": "datetime",
+      "readOnly": true
+    },
+    "createdBy": {
+      "type": "link",
+      "readOnly": true
+    }
+  },
+  "links": {
+    "createdBy": {
+      "type": "belongsTo",
+      "entity": "User"
+    }
+  },
+  "collection": {
+    "orderBy": "createdAt",
+    "order": "desc",
+    "textFilterFields": ["name", "reviewStatus"]
+  },
+  "deleteId": true,
+  "indexes": {
+    "reviewStatus": {
+      "columns": ["reviewStatus"]
+    },
+    "createdAt": {
+      "columns": ["createdAt"]
+    }
+  }
+}
