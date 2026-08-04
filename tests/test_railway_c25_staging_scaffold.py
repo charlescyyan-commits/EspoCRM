@@ -62,12 +62,51 @@ def test_shell_files_are_lf_normalized_by_git_and_docker() -> None:
 def test_entrypoint_normalizes_apache_mpm_before_official_handoff() -> None:
     text = (RAILWAY / "docker-entrypoint-railway.sh").read_text(encoding="utf-8")
     assert "normalize_apache_mpm()" in text
-    assert 'local selected="prefork"' in text
+    assert 'local selected="mpm_prefork"' in text
     assert "a2dismod" in text
     assert "a2enmod" in text
     assert "exactly one Apache MPM" in text
     assert "apache2ctl -t" in text
     assert text.index("normalize_apache_mpm") < text.index('exec /usr/local/bin/docker-entrypoint.sh')
+
+
+def test_entrypoint_uses_complete_apache_mpm_module_names() -> None:
+    text = (RAILWAY / "docker-entrypoint-railway.sh").read_text(encoding="utf-8")
+
+    for module in ("mpm_event", "mpm_worker", "mpm_prefork"):
+        assert module in text
+
+    assert 'a2dismod "$module"' in text
+    assert 'a2enmod "$selected"' in text
+    assert 'module="${module#mpm_}"' not in text
+    assert 'module="${module%.load}"' not in text
+    assert not re.search(r"a2dismod\s+(?:[\"'])?(?:event|worker|prefork)(?:[\"'])?(?:\s|$)", text)
+    assert not re.search(r"a2enmod\s+(?:[\"'])?(?:event|worker|prefork)(?:[\"'])?(?:\s|$)", text)
+
+
+def test_entrypoint_skips_absent_conflicting_mpms_but_preserves_real_failures() -> None:
+    text = (RAILWAY / "docker-entrypoint-railway.sh").read_text(encoding="utf-8")
+
+    # The enabled symlink check bounds the non-fatal branch to modules that
+    # are absent or already disabled. a2dismod only runs after that check and
+    # is intentionally not followed by error suppression under `set -e`.
+    for module in ("mpm_event", "mpm_worker"):
+        assert f'if [ -e "/etc/apache2/mods-enabled/${{module}}.load" ]; then' in text
+        assert f'Apache MPM ${{module}} is not enabled; skipping' in text
+    assert 'a2dismod "$module"\n            disabled_mpms' in text
+    assert 'a2dismod "$module" || true' not in text
+    assert 'a2enmod "$selected" || true' not in text
+    assert 'apache2ctl -t || true' not in text
+    assert "set -euo pipefail" in text
+
+
+def test_entrypoint_enforces_prefork_as_the_only_enabled_mpm() -> None:
+    text = (RAILWAY / "docker-entrypoint-railway.sh").read_text(encoding="utf-8")
+
+    assert "for module in mpm_event mpm_worker; do" in text
+    assert 'log "enabling Apache MPM: ${selected}"' in text
+    assert "find /etc/apache2/mods-enabled -maxdepth 1 -type l -name 'mpm_*.load'" in text
+    assert '"${enabled_mpms[0]:-}" != "${selected}.load"' in text
 
 
 def test_entrypoint_retains_staging_and_provider_guards() -> None:

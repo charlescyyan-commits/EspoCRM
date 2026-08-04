@@ -31,7 +31,7 @@ configure_apache_port() {
 }
 
 normalize_apache_mpm() {
-    local selected="prefork"
+    local selected="mpm_prefork"
     local module
     local -a enabled_mpms=()
     local -a disabled_mpms=()
@@ -42,21 +42,24 @@ normalize_apache_mpm() {
     fi
 
     # The pinned EspoCRM 10.0.1 image enables mod_php, which requires
-    # mpm_prefork. Disable only enabled conflicting MPMs before ensuring
-    # the selected module is enabled.
-    while IFS= read -r module; do
-        module="${module#mpm_}"
-        module="${module%.load}"
-        if [ "$module" != "$selected" ]; then
+    # mpm_prefork. The Debian Apache enabled-module symlink is the source of
+    # truth here. Check it before calling a2dismod so absent or already
+    # disabled modules are non-fatal, while an actual a2dismod failure exits.
+    for module in mpm_event mpm_worker; do
+        if [ -e "/etc/apache2/mods-enabled/${module}.load" ]; then
             log "disabling conflicting Apache MPM: ${module}"
             a2dismod "$module"
             disabled_mpms+=("$module")
+        else
+            log "Apache MPM ${module} is not enabled; skipping"
         fi
-    done < <(find /etc/apache2/mods-enabled -maxdepth 1 -type l -name 'mpm_*.load' -printf '%f\n' | sort)
+    done
 
-    if [ ! -e "/etc/apache2/mods-enabled/mpm_${selected}.load" ]; then
-        log "enabling selected Apache MPM: ${selected}"
-        a2enmod "mpm_${selected}"
+    if [ ! -e "/etc/apache2/mods-enabled/${selected}.load" ]; then
+        log "enabling Apache MPM: ${selected}"
+        a2enmod "$selected"
+    else
+        log "Apache MPM ${selected} is already enabled"
     fi
 
     mapfile -t enabled_mpms < <(find /etc/apache2/mods-enabled -maxdepth 1 -type l -name 'mpm_*.load' -printf '%f\n' | sort)
@@ -69,7 +72,7 @@ normalize_apache_mpm() {
     fi
     log "final enabled Apache MPM count: ${#enabled_mpms[@]} (${enabled_mpms[*]:-none})"
 
-    if [ "${#enabled_mpms[@]}" -ne 1 ] || [ "${enabled_mpms[0]:-}" != "mpm_${selected}.load" ]; then
+    if [ "${#enabled_mpms[@]}" -ne 1 ] || [ "${enabled_mpms[0]:-}" != "${selected}.load" ]; then
         log "error: exactly one Apache MPM (${selected}) must remain enabled"
         exit 1
     fi
