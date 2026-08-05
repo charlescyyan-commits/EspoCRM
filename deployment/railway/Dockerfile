@@ -22,6 +22,23 @@ ENV APP_ENV=staging \
     PORT=8080 \
     C25_STAGING_DISABLE_PROVIDERS=1
 
+# Debian may carry event/worker MPM enablement in the effective build/runtime
+# layer. EspoCRM uses mod_php, which requires mpm_prefork. Disable competing
+# MPMs, enable prefork, then fail closed on Apache's *effective* module list
+# (apache2ctl -M), not only mods-enabled symlinks.
+RUN set -eu; \
+    if [ -e /etc/apache2/mods-enabled/mpm_event.load ]; then a2dismod mpm_event; fi; \
+    if [ -e /etc/apache2/mods-enabled/mpm_worker.load ]; then a2dismod mpm_worker; fi; \
+    a2enmod mpm_prefork >/dev/null; \
+    test -L /etc/apache2/mods-enabled/mpm_prefork.load; \
+    test ! -e /etc/apache2/mods-enabled/mpm_event.load; \
+    test ! -e /etc/apache2/mods-enabled/mpm_worker.load; \
+    apache2ctl -M > /tmp/dp-wp5-apache-modules.txt 2>/dev/null; \
+    test "$(grep -Ec 'mpm_(prefork|event|worker)_module' /tmp/dp-wp5-apache-modules.txt)" -eq 1; \
+    grep -q 'mpm_prefork_module' /tmp/dp-wp5-apache-modules.txt; \
+    ! grep -q 'mpm_event_module' /tmp/dp-wp5-apache-modules.txt; \
+    ! grep -q 'mpm_worker_module' /tmp/dp-wp5-apache-modules.txt
+
 # Fail a future build closed if the supplied base is a mutable tag.
 RUN printf '%s' "${ESPOCRM_BASE_IMAGE}" | grep -Eq '^.+@sha256:[0-9a-f]{64}$'
 
