@@ -38,6 +38,12 @@ from scripts.dp_wp2_phase_adapter_contract import (
     validate_phase_adapter_output,
 )
 
+NAVIGATION_PROVISIONING_PHASE = "navigation_provisioning"
+NAVIGATION_POSTCONDITION_NAME = "navigation_state_matches_definition"
+NAVIGATION_REQUIRED_MODULES = frozenset(
+    {"ProspectingDashboard", "ProspectingSearch", "DraftApproval"}
+)
+
 
 class OperatorBlockStage(str, Enum):
     """Administrative block classification; this is not a ledger state."""
@@ -46,12 +52,33 @@ class OperatorBlockStage(str, Enum):
     LATER_PHASE = "LATER_PHASE"
 
 
+class AdmissionKind(str, Enum):
+    """Administrative admission classification; not a durable lifecycle state."""
+
+    FIRST_RUNTIME_ADMISSION = "FIRST_RUNTIME_ADMISSION"
+    BASELINE_RECOVERY_ADMISSION = "BASELINE_RECOVERY_ADMISSION"
+    RESUME = "RESUME"
+    NEW_ATTEMPT = "NEW_ATTEMPT"
+
+
+BASELINE_STEP_ID = "baseline:navigation_default_to_phase3c19_ia_v1"
+
 @dataclass(frozen=True)
 class OperatorBlockCondition:
     """A pre-redacted operator decision that the orchestrator must ledger."""
 
     stage: OperatorBlockStage
     failure: RedactedFailure
+
+
+@dataclass(frozen=True)
+class RuntimeDependencyEvidence:
+    """Immutable DP-WP1 registration/module proof for first-runtime admission."""
+
+    installation_id: str
+    identity: ReleaseIdentity
+    extension_registered: bool
+    available_modules: frozenset[str]
 
 
 @dataclass(frozen=True)
@@ -63,6 +90,7 @@ class ProvisioningInvocation:
     idempotency: IdempotencyContract
     target_phase: InstallationState
     resume_postcondition: PhasePostcondition | None = None
+    dependency_evidence: RuntimeDependencyEvidence | None = None
 
 
 @dataclass(frozen=True)
@@ -75,6 +103,7 @@ class ProvisioningInvocationResult:
     adapter_invoked: bool
     completed_noop: bool
     failure_code: str | None = None
+    admission_kind: AdmissionKind | None = None
 
 
 class ProvisioningOrchestrator:
@@ -132,23 +161,24 @@ class ProvisioningOrchestrator:
                         record, recovery.disposition, operator_block
                     )
 
-                if (
-                    recovery.disposition == RecoveryDisposition.RESUME
-                    and not self._resume_is_validated(
-                        record, invocation.phase_name, invocation.resume_postcondition
+                admission_kind = AdmissionKind.NEW_ATTEMPT
+                if recovery.disposition == RecoveryDisposition.RESUME:
+                    admission_kind, admission_failure = self._classify_resume_admission(
+                        record, invocation
                     )
-                ):
-                    return self._record_operator_block(
-                        record,
-                        recovery.disposition,
-                        OperatorBlockCondition(
-                            OperatorBlockStage.LATER_PHASE,
-                            RedactedFailure(
-                                "RESUME_POSTCONDITION_UNVERIFIED",
-                                "resume postcondition is not validated",
+                    if admission_failure is not None:
+                        return self._record_operator_block(
+                            record,
+                            recovery.disposition,
+                            OperatorBlockCondition(
+                                OperatorBlockStage.LATER_PHASE,
+                                RedactedFailure(
+                                    admission_failure,
+                                    self._admission_failure_summary(admission_failure),
+                                ),
                             ),
-                        ),
-                    )
+                            admission_kind=admission_kind,
+                        )
 
                 adapter = self._adapters.get(invocation.phase_name)
                 if adapter is None:
@@ -167,8 +197,11 @@ class ProvisioningOrchestrator:
                                 "no reviewed phase adapter is registered",
                             ),
                         ),
+                        admission_kind=admission_kind,
                     )
 
+                # First-runtime admission must not invent step markers or change state
+                # before the adapter reports. REGISTERED stays REGISTERED until success.
                 record = self._admit_adapter(record, invocation.identity)
                 request = PhaseAdapterInput(
                     installation_id=record.installation_id,
@@ -197,6 +230,7 @@ class ProvisioningOrchestrator:
                             ),
                         ),
                         adapter_invoked=True,
+                        admission_kind=admission_kind,
                     )
                 except Exception:
                     record = self._record_adapter_step_result(
@@ -216,6 +250,7 @@ class ProvisioningOrchestrator:
                             ),
                         ),
                         adapter_invoked=True,
+                        admission_kind=admission_kind,
                     )
 
                 record = self._record_adapter_step_result(
@@ -232,6 +267,7 @@ class ProvisioningOrchestrator:
                         recovery.disposition,
                         OperatorBlockCondition(OperatorBlockStage.LATER_PHASE, report.failure),
                         adapter_invoked=True,
+                        admission_kind=admission_kind,
                     )
 
                 if invocation.target_phase not in self._ADAPTER_TARGETS:
@@ -246,6 +282,7 @@ class ProvisioningOrchestrator:
                             ),
                         ),
                         adapter_invoked=True,
+                        admission_kind=admission_kind,
                     )
 
                 try:
@@ -262,12 +299,19 @@ class ProvisioningOrchestrator:
                             ),
                         ),
                         adapter_invoked=True,
+                        admission_kind=admission_kind,
                     )
 
                 updated = self._ledger.record_phase(
                     invocation.identity, record.installation_id, invocation.target_phase
                 )
-                return self._result(updated, recovery.disposition, True, False)
+                return self._result(
+                    updated,
+                    recovery.disposition,
+                    True,
+                    False,
+                    admission_kind=admission_kind,
+                )
         except (InstallationLockError, LedgerInteractionLockError):
             return self._rejected("LEDGER_LOCK_UNAVAILABLE")
         except LedgerCorruptionError:
@@ -294,6 +338,7 @@ class ProvisioningOrchestrator:
         disposition: RecoveryDisposition,
         condition: OperatorBlockCondition,
         adapter_invoked: bool = False,
+        admission_kind: AdmissionKind | None = None,
     ) -> ProvisioningInvocationResult:
         """Map a block to an existing failure state; never create ``BLOCKED``."""
 
@@ -316,6 +361,7 @@ class ProvisioningOrchestrator:
             adapter_invoked,
             False,
             condition.failure.code,
+            admission_kind=admission_kind,
         )
 
     def _record_adapter_step_result(
@@ -341,6 +387,123 @@ class ProvisioningOrchestrator:
 
         suffix = postcondition_name or "adapter-report"
         return f"adapter:{phase_name}:postcondition:{suffix}"
+
+    @classmethod
+    def _navigation_step_id(cls) -> str:
+        return cls._adapter_step_id(
+            NAVIGATION_PROVISIONING_PHASE, NAVIGATION_POSTCONDITION_NAME
+        )
+
+    @classmethod
+    def _classify_resume_admission(
+        cls,
+        record: InstallationRecordSnapshot,
+        invocation: ProvisioningInvocation,
+    ) -> tuple[AdmissionKind, str | None]:
+        """Distinguish first-runtime, baseline-recovery, and evidence-bound resume.
+
+        Admission kinds are administrative classifications only. They do not write
+        lifecycle states, invent step markers, or waive adapter evidence.
+        """
+
+        if cls._is_first_runtime_admission_candidate(record, invocation):
+            evidence_failure = cls._first_runtime_evidence_failure(record, invocation)
+            if evidence_failure is not None:
+                return AdmissionKind.FIRST_RUNTIME_ADMISSION, evidence_failure
+            return AdmissionKind.FIRST_RUNTIME_ADMISSION, None
+
+        if cls._is_baseline_recovery_admission_candidate(record, invocation):
+            evidence_failure = cls._first_runtime_evidence_failure(record, invocation)
+            if evidence_failure is not None:
+                return AdmissionKind.BASELINE_RECOVERY_ADMISSION, evidence_failure
+            return AdmissionKind.BASELINE_RECOVERY_ADMISSION, None
+
+        if cls._resume_is_validated(
+            record, invocation.phase_name, invocation.resume_postcondition
+        ):
+            return AdmissionKind.RESUME, None
+
+        return AdmissionKind.RESUME, "RESUME_POSTCONDITION_UNVERIFIED"
+
+    @classmethod
+    def _is_first_runtime_admission_candidate(
+        cls,
+        record: InstallationRecordSnapshot,
+        invocation: ProvisioningInvocation,
+    ) -> bool:
+        if record.state != InstallationState.REGISTERED:
+            return False
+        if invocation.phase_name != NAVIGATION_PROVISIONING_PHASE:
+            return False
+        if invocation.target_phase != InstallationState.HOOK_PENDING:
+            return False
+        step_id = cls._navigation_step_id()
+        return not any(
+            event.kind == "step" and event.value == step_id for event in record.events
+        )
+
+    @classmethod
+    def _is_baseline_recovery_admission_candidate(
+        cls,
+        record: InstallationRecordSnapshot,
+        invocation: ProvisioningInvocation,
+    ) -> bool:
+        """Admit navigation after baseline prep when a prior navigation attempt failed."""
+
+        if record.state != InstallationState.REGISTERED:
+            return False
+        if invocation.phase_name != NAVIGATION_PROVISIONING_PHASE:
+            return False
+        if invocation.target_phase != InstallationState.HOOK_PENDING:
+            return False
+        nav_step = cls._navigation_step_id()
+        has_failed_navigation = any(
+            event.kind == "step"
+            and event.value == nav_step
+            and event.outcome == "failed"
+            for event in record.events
+        )
+        has_succeeded_navigation = any(
+            event.kind == "step"
+            and event.value == nav_step
+            and event.outcome == "succeeded"
+            for event in record.events
+        )
+        has_succeeded_baseline = any(
+            event.kind == "step"
+            and event.value == BASELINE_STEP_ID
+            and event.outcome == "succeeded"
+            for event in record.events
+        )
+        return (
+            has_failed_navigation
+            and has_succeeded_baseline
+            and not has_succeeded_navigation
+        )
+
+    @staticmethod
+    def _first_runtime_evidence_failure(
+        record: InstallationRecordSnapshot,
+        invocation: ProvisioningInvocation,
+    ) -> str | None:
+        evidence = invocation.dependency_evidence
+        if evidence is None:
+            return "NAVIGATION_DEPENDENCY_UNAVAILABLE"
+        if evidence.installation_id != record.installation_id:
+            return "NAVIGATION_DEPENDENCY_UNAVAILABLE"
+        if evidence.identity != invocation.identity or evidence.identity != record.identity:
+            return "NAVIGATION_DEPENDENCY_UNAVAILABLE"
+        if not evidence.extension_registered:
+            return "NAVIGATION_DEPENDENCY_UNAVAILABLE"
+        if not NAVIGATION_REQUIRED_MODULES.issubset(evidence.available_modules):
+            return "NAVIGATION_DEPENDENCY_UNAVAILABLE"
+        return None
+
+    @staticmethod
+    def _admission_failure_summary(failure_code: str) -> str:
+        if failure_code == "NAVIGATION_DEPENDENCY_UNAVAILABLE":
+            return "approved dependency evidence is absent or invalid"
+        return "resume postcondition is not validated"
 
     @classmethod
     def _resume_is_validated(
@@ -393,6 +556,7 @@ class ProvisioningOrchestrator:
         adapter_invoked: bool,
         completed_noop: bool,
         failure_code: str | None = None,
+        admission_kind: AdmissionKind | None = None,
     ) -> ProvisioningInvocationResult:
         return ProvisioningInvocationResult(
             installation_id=record.installation_id if record else None,
@@ -401,6 +565,7 @@ class ProvisioningOrchestrator:
             adapter_invoked=adapter_invoked,
             completed_noop=completed_noop,
             failure_code=failure_code,
+            admission_kind=admission_kind,
         )
 
     @staticmethod

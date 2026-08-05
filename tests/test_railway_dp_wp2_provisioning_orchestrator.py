@@ -102,6 +102,7 @@ def test_explicit_mock_report_is_validated_before_the_governed_transition(tmp_pa
 
     assert result.adapter_invoked is True
     assert result.state == foundation.InstallationState.REGISTERED
+    assert result.admission_kind == orchestrator.AdmissionKind.NEW_ATTEMPT
     adapter.report.assert_called_once()
     persisted = foundation.JsonFileInstallationLedger(ledger.storage_path).recover(release_identity)
     assert persisted.record is not None
@@ -111,6 +112,204 @@ def test_explicit_mock_report_is_validated_before_the_governed_transition(tmp_pa
         and event.outcome == "succeeded"
         for event in persisted.record.events
     )
+
+
+def _seed_registered(ledger: foundation.JsonFileInstallationLedger, release_identity: foundation.ReleaseIdentity):
+    setup = interaction.ProvisioningLedgerInteraction(ledger)
+    with setup.locked():
+        record = setup.create_installation(release_identity)
+        setup.record_phase(release_identity, record.installation_id, foundation.InstallationState.READY)
+        setup.record_phase(
+            release_identity, record.installation_id, foundation.InstallationState.INSTALLING
+        )
+        setup.record_phase(
+            release_identity, record.installation_id, foundation.InstallationState.REGISTERED
+        )
+        recovered = setup.recover(release_identity)
+        assert recovered.record is not None
+        return recovered.record
+
+
+def _navigation_invocation(
+    release_identity: foundation.ReleaseIdentity,
+    installation_id: str,
+    *,
+    with_evidence: bool = True,
+) -> orchestrator.ProvisioningInvocation:
+    evidence = None
+    if with_evidence:
+        evidence = orchestrator.RuntimeDependencyEvidence(
+            installation_id=installation_id,
+            identity=release_identity,
+            extension_registered=True,
+            available_modules=frozenset(
+                {"ProspectingDashboard", "ProspectingSearch", "DraftApproval"}
+            ),
+        )
+    return orchestrator.ProvisioningInvocation(
+        identity=release_identity,
+        phase_name=orchestrator.NAVIGATION_PROVISIONING_PHASE,
+        idempotency=contract.IdempotencyContract(
+            key="navigation_provisioning:v1",
+            mode=contract.IdempotencyMode.REVALIDATE_AND_NOOP,
+        ),
+        target_phase=foundation.InstallationState.HOOK_PENDING,
+        dependency_evidence=evidence,
+    )
+
+
+def test_first_registered_admission_succeeds_without_fake_marker(tmp_path) -> None:
+    ledger = foundation.JsonFileInstallationLedger(tmp_path / "ledger.json")
+    release_identity = identity()
+    seeded = _seed_registered(ledger, release_identity)
+    events_before = list(seeded.events)
+
+    adapter = Mock()
+    adapter.report.side_effect = lambda request: contract.PhaseAdapterOutput(
+        installation_id=request.installation_id,
+        identity=request.identity,
+        phase_name=request.phase_name,
+        idempotency=request.idempotency,
+        outcome=contract.PhaseOutcome.SUCCEEDED,
+        postcondition=contract.PhasePostcondition(
+            name=orchestrator.NAVIGATION_POSTCONDITION_NAME,
+            satisfied=True,
+            evidence="real-adapter-readback",
+        ),
+    )
+    runner = orchestrator.ProvisioningOrchestrator(
+        interaction.ProvisioningLedgerInteraction(ledger),
+        {orchestrator.NAVIGATION_PROVISIONING_PHASE: adapter},
+    )
+
+    result = runner.invoke(_navigation_invocation(release_identity, seeded.installation_id))
+
+    assert result.adapter_invoked is True
+    assert result.admission_kind == orchestrator.AdmissionKind.FIRST_RUNTIME_ADMISSION
+    assert result.state == foundation.InstallationState.HOOK_PENDING
+    assert result.failure_code is None
+    adapter.report.assert_called_once()
+
+    persisted = foundation.JsonFileInstallationLedger(ledger.storage_path).recover(release_identity)
+    assert persisted.record is not None
+    # No synthetic pre-adapter step was invented; only the real success step appears.
+    navigation_steps = [
+        event
+        for event in persisted.record.events
+        if event.kind == "step"
+        and event.value == orchestrator.ProvisioningOrchestrator._navigation_step_id()
+    ]
+    assert len(navigation_steps) == 1
+    assert navigation_steps[0].outcome == "succeeded"
+    assert not any(
+        event.kind == "step"
+        and event.value == orchestrator.ProvisioningOrchestrator._navigation_step_id()
+        for event in events_before
+    )
+
+
+def test_first_runtime_admission_creates_no_synthetic_step_before_adapter(tmp_path) -> None:
+    ledger = foundation.JsonFileInstallationLedger(tmp_path / "ledger.json")
+    release_identity = identity()
+    seeded = _seed_registered(ledger, release_identity)
+    call_order: list[str] = []
+
+    class TrackingInteraction(interaction.ProvisioningLedgerInteraction):
+        def record_step_result(self, *args, **kwargs):  # type: ignore[no-untyped-def]
+            call_order.append("step")
+            return super().record_step_result(*args, **kwargs)
+
+    adapter = Mock()
+
+    def report(request: contract.PhaseAdapterInput) -> contract.PhaseAdapterOutput:
+        call_order.append("adapter")
+        return contract.PhaseAdapterOutput(
+            installation_id=request.installation_id,
+            identity=request.identity,
+            phase_name=request.phase_name,
+            idempotency=request.idempotency,
+            outcome=contract.PhaseOutcome.SUCCEEDED,
+            postcondition=contract.PhasePostcondition(
+                name=orchestrator.NAVIGATION_POSTCONDITION_NAME,
+                satisfied=True,
+                evidence="observed-during-admission",
+            ),
+        )
+
+    adapter.report.side_effect = report
+    runner = orchestrator.ProvisioningOrchestrator(
+        TrackingInteraction(ledger),
+        {orchestrator.NAVIGATION_PROVISIONING_PHASE: adapter},
+    )
+
+    result = runner.invoke(_navigation_invocation(release_identity, seeded.installation_id))
+
+    assert result.admission_kind == orchestrator.AdmissionKind.FIRST_RUNTIME_ADMISSION
+    assert call_order == ["adapter", "step"]
+    assert result.state == foundation.InstallationState.HOOK_PENDING
+
+
+def test_first_runtime_admission_preserves_adapter_failure(tmp_path) -> None:
+    ledger = foundation.JsonFileInstallationLedger(tmp_path / "ledger.json")
+    release_identity = identity()
+    seeded = _seed_registered(ledger, release_identity)
+    adapter = Mock()
+    adapter.report.side_effect = lambda request: contract.PhaseAdapterOutput(
+        installation_id=request.installation_id,
+        identity=request.identity,
+        phase_name=request.phase_name,
+        idempotency=request.idempotency,
+        outcome=contract.PhaseOutcome.FAILED,
+        postcondition=contract.PhasePostcondition(
+            name=orchestrator.NAVIGATION_POSTCONDITION_NAME,
+            satisfied=False,
+            evidence="adapter-rejected",
+        ),
+        failure=contract.RedactedFailure(
+            "NAVIGATION_WRITE_FAILED", "navigation write failed closed"
+        ),
+    )
+    runner = orchestrator.ProvisioningOrchestrator(
+        interaction.ProvisioningLedgerInteraction(ledger),
+        {orchestrator.NAVIGATION_PROVISIONING_PHASE: adapter},
+    )
+
+    result = runner.invoke(_navigation_invocation(release_identity, seeded.installation_id))
+
+    assert result.adapter_invoked is True
+    assert result.admission_kind == orchestrator.AdmissionKind.FIRST_RUNTIME_ADMISSION
+    assert result.state == foundation.InstallationState.FAILED
+    assert result.failure_code == "NAVIGATION_WRITE_FAILED"
+    recovered = foundation.JsonFileInstallationLedger(ledger.storage_path).recover(release_identity)
+    assert recovered.disposition == foundation.RecoveryDisposition.FAILED_PRESERVED
+    assert recovered.record is not None
+    assert any(
+        event.kind == "step"
+        and event.value == orchestrator.ProvisioningOrchestrator._navigation_step_id()
+        and event.outcome == "failed"
+        for event in recovered.record.events
+    )
+
+
+def test_first_runtime_admission_rejects_missing_dependency_evidence(tmp_path) -> None:
+    ledger = foundation.JsonFileInstallationLedger(tmp_path / "ledger.json")
+    release_identity = identity()
+    seeded = _seed_registered(ledger, release_identity)
+    adapter = Mock()
+    runner = orchestrator.ProvisioningOrchestrator(
+        interaction.ProvisioningLedgerInteraction(ledger),
+        {orchestrator.NAVIGATION_PROVISIONING_PHASE: adapter},
+    )
+
+    result = runner.invoke(
+        _navigation_invocation(release_identity, seeded.installation_id, with_evidence=False)
+    )
+
+    assert result.adapter_invoked is False
+    assert result.failure_code == "NAVIGATION_DEPENDENCY_UNAVAILABLE"
+    assert result.state == foundation.InstallationState.FAILED
+    adapter.report.assert_not_called()
+
 
 
 def test_invalid_adapter_identity_report_fails_closed_without_target_transition(tmp_path) -> None:
