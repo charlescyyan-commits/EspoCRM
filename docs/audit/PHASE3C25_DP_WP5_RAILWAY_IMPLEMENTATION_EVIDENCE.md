@@ -50,6 +50,9 @@ passes, then alters one byte and confirms rejection.
 
 It has no overlay-sync, cache-clear, upstream-entrypoint delegation,
 installation, migration, rebuild, hook, or `AfterInstall` execution route.
+Before `exec "$@"`, `guard_apache_mpm_prefork` removes any event/worker MPM,
+checks the effective `apache2ctl -M` output, and fails closed unless exactly
+one `mpm_prefork` module is loaded.
 
 ## 3. Healthcheck checks
 
@@ -76,7 +79,7 @@ Offline static suite executed:
 
 ```text
 C:\Users\98624\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe -m unittest discover -s tests -p test_railway_c25_staging_scaffold.py -v
-Ran 10 tests in 0.057s
+Ran 13 tests in 0.057s
 OK
 ```
 
@@ -84,11 +87,11 @@ Static input checksums recorded after that run:
 
 | File | SHA-256 |
 | --- | --- |
-| `deployment/railway/Dockerfile` | `69f365f098f9929b806ca1ba2a2689e42b7112a48b6927a6a8157ffef186b575` |
-| `deployment/railway/docker-entrypoint-railway.sh` | `0095bea3b5faa44b775d9c181dc8fee23949265dff4fde8fe443df6a33ead963` |
+| `deployment/railway/Dockerfile` | `27593291c738ec21e36035c10e2489fc7d6e9c673add463410436b78981e1ed0` |
+| `deployment/railway/docker-entrypoint-railway.sh` | `fd0656c9ce9690621dee674aeef3bb3ad8a41e245f1191475fb6a27dba968f81` |
 | `deployment/railway/healthcheck.sh` | `dc972a3a2fbaf4458be2fe726ff660da5c171f55b0f37c31c0fedea2ebeb0d50` |
 | `deployment/railway/verify_deployment_identity.py` | `80479a4dce7c4977badf31dd3d7388f278d8c52dbd41a485d72288833233581d` |
-| `tests/test_railway_c25_staging_scaffold.py` | `6ed555f7649d9fe71c07e890486bed3fcd943b48eba77452d8a49a01b58a29f6` |
+| `tests/test_railway_c25_staging_scaffold.py` | `f37ccfd5205604f9527ac2ea481890f1679564555dd663bece094b2ca35ab565` |
 
 An independent review is required before any DP-WP5 implementation freeze; a
 separate authorization is required before deployment.

@@ -83,6 +83,37 @@ class RailwayExecutionBoundaryTests(unittest.TestCase):
         ):
             self.assertNotIn(forbidden, lowered)
 
+    def test_entrypoint_mpm_guard_exists_and_runs_before_exec(self) -> None:
+        text = (RAILWAY / "docker-entrypoint-railway.sh").read_text(encoding="utf-8")
+        definition = text.index("guard_apache_mpm_prefork()")
+        main = text.index("main()")
+        invocation = text.index("guard_apache_mpm_prefork", main)
+        exec_index = text.index('exec "$@"')
+
+        self.assertLess(definition, invocation)
+        self.assertLess(invocation, exec_index)
+        self.assertIn("apache2ctl -M", text[definition:main])
+
+    def test_entrypoint_mpm_guard_fails_closed_on_event_or_worker_conflict(self) -> None:
+        text = (RAILWAY / "docker-entrypoint-railway.sh").read_text(encoding="utf-8")
+        guard = text[text.index("guard_apache_mpm_prefork()"):text.index("main()")]
+
+        self.assertIn("a2dismod mpm_event", guard)
+        self.assertIn("a2dismod mpm_worker", guard)
+        self.assertIn("mpm_event_module", guard)
+        self.assertIn("mpm_worker_module", guard)
+        self.assertIn('if [ "$mpm_count" -ne 1 ]', guard)
+        self.assertGreaterEqual(guard.count("exit 1"), 3)
+
+    def test_entrypoint_mpm_guard_fails_closed_when_prefork_is_missing(self) -> None:
+        text = (RAILWAY / "docker-entrypoint-railway.sh").read_text(encoding="utf-8")
+        guard = text[text.index("guard_apache_mpm_prefork()"):text.index("main()")]
+
+        self.assertIn("a2enmod mpm_prefork", guard)
+        self.assertIn("mpm_prefork_module", guard)
+        self.assertIn("mpm_prefork_module is not loaded", guard)
+        self.assertIn("exit 1", guard)
+
     def test_healthcheck_is_read_only_http_availability_only(self) -> None:
         text = (RAILWAY / "healthcheck.sh").read_text(encoding="utf-8").lower()
         self.assertIn("curl", text)
