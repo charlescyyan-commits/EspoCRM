@@ -1,13 +1,13 @@
 {
   "entity": true,
   "object": false,
-  "tab": true,
+  "tab": false,
   "acl": true,
   "aclPortal": false,
   "customizable": false,
   "importable": false,
   "module": "CommercialIntelligence",
   "type": "Base",
-  "statusField": "reviewStatus",
-  "aclActionList": ["create", "read"]
+  "statusField": null,
+  "aclActionList": ["read"]
 }

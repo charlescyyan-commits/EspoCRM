@@ -1,0 +1,64 @@
+{
+  "fields": {
+    "opportunityCandidate": "机会候选",
+    "reportingPeriod": "报告周期",
+    "generatedAt": "生成时间",
+    "generationVersion": "生成版本",
+    "customerSituation": "客户情境",
+    "commercialSignals": "商业信号",
+    "riskFactors": "风险因素",
+    "suggestedReviewPoints": "建议审阅点",
+    "sourceEvidence": "来源证据",
+    "evidenceSetHash": "证据集哈希",
+    "claimSourceMap": "主张来源映射",
+    "sourceAIJob": "来源 AI 作业",
+    "sourceAIRequestLog": "来源 AI 请求日志",
+    "provider": "提供方",
+    "model": "模型",
+    "promptTemplateId": "提示模板 Id",
+    "promptTemplateVersion": "提示模板版本",
+    "capability": "能力",
+    "purpose": "用途",
+    "advisoryDesignation": "咨询性标注",
+    "legalDesignation": "法律标注",
+    "reviewStatus": "审阅状态",
+    "acceptanceScope": "接受范围",
+    "outcomeReason": "结果原因",
+    "validityDisposition": "有效性处置",
+    "retentionDisposition": "保留处置",
+    "supersedesBrief": "替代简报",
+    "createdAt": "创建时间",
+    "createdBy": "创建人",
+    "modifiedAt": "修改时间"
+  },
+  "labels": {
+    "Create CommercialBrief": "创建商业简报",
+    "CommercialBriefs": "商业简报"
+  },
+  "options": {
+    "reviewStatus": {
+      "GENERATED": "已生成",
+      "REVIEWED": "已审阅",
+      "ACCEPTED": "已接受",
+      "DISMISSED": "已驳回"
+    },
+    "acceptanceScope": {
+      "": "",
+      "DECISION_SUPPORT_MATERIAL_ONLY": "仅决策支持材料"
+    },
+    "validityDisposition": {
+      "NONE": "无",
+      "INVALIDATED": "已作废"
+    },
+    "retentionDisposition": {
+      "ACTIVE": "有效",
+      "ARCHIVED": "已归档"
+    }
+  },
+  "scopeNames": {
+    "CommercialBrief": "AI 商业简报"
+  },
+  "scopeNamesPlural": {
+    "CommercialBrief": "AI 商业简报"
+  }
+}

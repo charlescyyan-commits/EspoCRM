@@ -1,0 +1,38 @@
+{
+  "version": 1,
+  "governanceMarker": "adr-c25-007-commercial-brief-v1",
+  "actionRoleBindings": {
+    "brief.generate": {
+      "roleIds": [],
+      "roleNames": ["Commercial Brief Operator"]
+    },
+    "brief.regenerate": {
+      "roleIds": [],
+      "roleNames": ["Commercial Brief Operator"]
+    },
+    "brief.review": {
+      "roleIds": [],
+      "roleNames": ["Commercial Brief Reviewer"]
+    },
+    "brief.accept": {
+      "roleIds": [],
+      "roleNames": ["Commercial Brief Reviewer"]
+    },
+    "brief.dismiss": {
+      "roleIds": [],
+      "roleNames": ["Commercial Brief Reviewer"]
+    },
+    "brief.invalidate": {
+      "roleIds": [],
+      "roleNames": ["Commercial Brief Reviewer"]
+    },
+    "brief.archive": {
+      "roleIds": [],
+      "roleNames": ["Commercial Brief Operator"]
+    },
+    "brief.delete": {
+      "roleIds": [],
+      "roleNames": ["Governed Deletion"]
+    }
+  }
+}

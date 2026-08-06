@@ -1,10 +1,130 @@
 {
   "fields": {
-    "name": {
+    "opportunityCandidate": {
+      "type": "link",
+      "required": true,
+      "readOnly": true
+    },
+    "reportingPeriod": {
+      "type": "varchar",
+      "maxLength": 128,
+      "required": true,
+      "trim": true,
+      "readOnly": true
+    },
+    "generatedAt": {
+      "type": "datetime",
+      "required": true,
+      "readOnly": true
+    },
+    "generationVersion": {
+      "type": "varchar",
+      "maxLength": 64,
+      "required": true,
+      "trim": true,
+      "readOnly": true
+    },
+    "customerSituation": {
+      "type": "text",
+      "required": true,
+      "readOnly": true
+    },
+    "commercialSignals": {
+      "type": "text",
+      "required": true,
+      "readOnly": true
+    },
+    "riskFactors": {
+      "type": "text",
+      "required": true,
+      "readOnly": true
+    },
+    "suggestedReviewPoints": {
+      "type": "text",
+      "required": true,
+      "readOnly": true
+    },
+    "sourceEvidence": {
+      "type": "text",
+      "required": true,
+      "readOnly": true
+    },
+    "evidenceSetHash": {
+      "type": "varchar",
+      "maxLength": 64,
+      "required": true,
+      "trim": true,
+      "readOnly": true
+    },
+    "claimSourceMap": {
+      "type": "text",
+      "required": true,
+      "readOnly": true
+    },
+    "sourceAIJob": {
+      "type": "link",
+      "required": true,
+      "readOnly": true
+    },
+    "sourceAIRequestLog": {
+      "type": "link",
+      "required": true,
+      "readOnly": true
+    },
+    "provider": {
+      "type": "varchar",
+      "maxLength": 128,
+      "required": true,
+      "trim": true,
+      "readOnly": true
+    },
+    "model": {
+      "type": "varchar",
+      "maxLength": 128,
+      "required": true,
+      "trim": true,
+      "readOnly": true
+    },
+    "promptTemplateId": {
+      "type": "varchar",
+      "maxLength": 128,
+      "required": true,
+      "trim": true,
+      "readOnly": true
+    },
+    "promptTemplateVersion": {
+      "type": "varchar",
+      "maxLength": 64,
+      "required": true,
+      "trim": true,
+      "readOnly": true
+    },
+    "capability": {
+      "type": "varchar",
+      "maxLength": 64,
+      "required": true,
+      "trim": true,
+      "readOnly": true
+    },
+    "purpose": {
+      "type": "varchar",
+      "maxLength": 64,
+      "required": true,
+      "trim": true,
+      "readOnly": true
+    },
+    "advisoryDesignation": {
       "type": "varchar",
       "maxLength": 255,
       "required": true,
-      "trim": true,
+      "default": "AI-generated commercial summary — for human review only. Not a forecast, commitment, or decision.",
+      "readOnly": true
+    },
+    "legalDesignation": {
+      "type": "varchar",
+      "maxLength": 128,
+      "required": true,
+      "default": "AI-GENERATED_ADVISORY_PROJECTION_NOT_A_COMMERCIAL_DECISION",
       "readOnly": true
     },
     "reviewStatus": {
@@ -20,69 +140,42 @@
       "readOnly": true,
       "displayAsLabel": true
     },
-    "proposalContent": {
-      "type": "text",
-      "required": true,
-      "readOnly": true
-    },
-    "proposalSource": {
+    "acceptanceScope": {
       "type": "enum",
-      "required": true,
       "options": [
-        "FIXTURE",
-        "MANUAL",
-        "STUB"
+        "",
+        "DECISION_SUPPORT_MATERIAL_ONLY"
       ],
       "readOnly": true
     },
-    "sourceEvidenceReference": {
-      "type": "text",
-      "required": true,
-      "readOnly": true
-    },
-    "generationContext": {
-      "type": "text",
-      "required": true,
-      "readOnly": true
-    },
-    "capabilityReference": {
-      "type": "varchar",
-      "maxLength": 64,
-      "required": true,
-      "default": "COMMERCIAL_BRIEF",
-      "readOnly": true
-    },
-    "purposeReference": {
-      "type": "varchar",
-      "maxLength": 64,
-      "required": true,
-      "default": "commercial_brief_generation",
-      "readOnly": true
-    },
-    "transitionHistory": {
+    "outcomeReason": {
       "type": "text",
       "readOnly": true
     },
-    "lastTransitionBy": {
-      "type": "varchar",
-      "maxLength": 100,
-      "readOnly": true
+    "validityDisposition": {
+      "type": "enum",
+      "required": true,
+      "default": "NONE",
+      "options": [
+        "NONE",
+        "INVALIDATED"
+      ],
+      "readOnly": true,
+      "displayAsLabel": true
     },
-    "lastTransitionAt": {
-      "type": "datetime",
-      "readOnly": true
+    "retentionDisposition": {
+      "type": "enum",
+      "required": true,
+      "default": "ACTIVE",
+      "options": [
+        "ACTIVE",
+        "ARCHIVED"
+      ],
+      "readOnly": true,
+      "displayAsLabel": true
     },
-    "reviewedBy": {
-      "type": "varchar",
-      "maxLength": 100,
-      "readOnly": true
-    },
-    "reviewedAt": {
-      "type": "datetime",
-      "readOnly": true
-    },
-    "decisionNote": {
-      "type": "text",
+    "supersedesBrief": {
+      "type": "link",
       "readOnly": true
     },
     "createdAt": {
@@ -92,9 +185,29 @@
     "createdBy": {
       "type": "link",
       "readOnly": true
+    },
+    "modifiedAt": {
+      "type": "datetime",
+      "readOnly": true
     }
   },
   "links": {
+    "opportunityCandidate": {
+      "type": "belongsTo",
+      "entity": "OpportunityCandidate"
+    },
+    "sourceAIJob": {
+      "type": "belongsTo",
+      "entity": "AIJob"
+    },
+    "sourceAIRequestLog": {
+      "type": "belongsTo",
+      "entity": "AIRequestLog"
+    },
+    "supersedesBrief": {
+      "type": "belongsTo",
+      "entity": "CommercialBrief"
+    },
     "createdBy": {
       "type": "belongsTo",
       "entity": "User"
@@ -104,9 +217,9 @@
     "orderBy": "createdAt",
     "order": "desc",
     "textFilterFields": [
-      "name",
       "reviewStatus",
-      "capabilityReference"
+      "capability",
+      "purpose"
     ]
   },
   "deleteId": true,
@@ -116,9 +229,29 @@
         "reviewStatus"
       ]
     },
+    "validityDisposition": {
+      "columns": [
+        "validityDisposition"
+      ]
+    },
+    "retentionDisposition": {
+      "columns": [
+        "retentionDisposition"
+      ]
+    },
+    "opportunityCandidate": {
+      "columns": [
+        "opportunityCandidateId"
+      ]
+    },
     "createdAt": {
       "columns": [
         "createdAt"
+      ]
+    },
+    "evidenceSetHash": {
+      "columns": [
+        "evidenceSetHash"
       ]
     }
   }

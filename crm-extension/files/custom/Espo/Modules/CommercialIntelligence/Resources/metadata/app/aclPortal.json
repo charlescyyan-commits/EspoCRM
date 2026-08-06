@@ -1,7 +1,8 @@
 {
   "mandatory": {
     "scopeLevel": {
-      "CommercialIntelligenceWorkspace": false
+      "CommercialIntelligenceWorkspace": false,
+      "CommercialBrief": false
     }
   }
 }

@@ -1,0 +1,64 @@
+{
+  "fields": {
+    "opportunityCandidate": "Opportunity Candidate",
+    "reportingPeriod": "Reporting Period",
+    "generatedAt": "Generated At",
+    "generationVersion": "Generation Version",
+    "customerSituation": "Customer Situation",
+    "commercialSignals": "Commercial Signals",
+    "riskFactors": "Risk Factors",
+    "suggestedReviewPoints": "Suggested Review Points",
+    "sourceEvidence": "Source Evidence",
+    "evidenceSetHash": "Evidence Set Hash",
+    "claimSourceMap": "Claim Source Map",
+    "sourceAIJob": "Source AI Job",
+    "sourceAIRequestLog": "Source AI Request Log",
+    "provider": "Provider",
+    "model": "Model",
+    "promptTemplateId": "Prompt Template Id",
+    "promptTemplateVersion": "Prompt Template Version",
+    "capability": "Capability",
+    "purpose": "Purpose",
+    "advisoryDesignation": "Advisory Designation",
+    "legalDesignation": "Legal Designation",
+    "reviewStatus": "Review Status",
+    "acceptanceScope": "Acceptance Scope",
+    "outcomeReason": "Outcome Reason",
+    "validityDisposition": "Validity Disposition",
+    "retentionDisposition": "Retention Disposition",
+    "supersedesBrief": "Supersedes Brief",
+    "createdAt": "Created At",
+    "createdBy": "Created By",
+    "modifiedAt": "Modified At"
+  },
+  "labels": {
+    "Create CommercialBrief": "Create Commercial Brief",
+    "CommercialBriefs": "Commercial Briefs"
+  },
+  "options": {
+    "reviewStatus": {
+      "GENERATED": "Generated",
+      "REVIEWED": "Reviewed",
+      "ACCEPTED": "Accepted",
+      "DISMISSED": "Dismissed"
+    },
+    "acceptanceScope": {
+      "": "",
+      "DECISION_SUPPORT_MATERIAL_ONLY": "Decision Support Material Only"
+    },
+    "validityDisposition": {
+      "NONE": "None",
+      "INVALIDATED": "Invalidated"
+    },
+    "retentionDisposition": {
+      "ACTIVE": "Active",
+      "ARCHIVED": "Archived"
+    }
+  },
+  "scopeNames": {
+    "CommercialBrief": "AI Commercial Brief"
+  },
+  "scopeNamesPlural": {
+    "CommercialBrief": "AI Commercial Briefs"
+  }
+}

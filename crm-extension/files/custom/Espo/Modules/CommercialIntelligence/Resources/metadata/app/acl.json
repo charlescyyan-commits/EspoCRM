@@ -1,0 +1,12 @@
+{
+  "adminMandatory": {
+    "scopeLevel": {
+      "CommercialBrief": {
+        "create": "no",
+        "read": "all",
+        "edit": "no",
+        "delete": "no"
+      }
+    }
+  }
+}
