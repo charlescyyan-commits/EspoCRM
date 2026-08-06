@@ -39,6 +39,21 @@
 > activation, generation runtime, provider call, deployment, or WP2
 > implementation is authorized by this alignment.
 
+> **Administrative synchronization note (2026-08-06):** Historical WP2.2
+> records exist in the repository (`PHASE3C25_WP2_2_*` and
+> `docs/audit/PHASE3C25_WP2_2_*`). They are **HISTORICAL / SUPERSEDED** and
+> do not change the states asserted in §36/§38: WP2.1B **NOT AUTHORIZED**,
+> WP2.2 **NOT AUTHORIZED**, WP2.3 **NOT AUTHORIZED**, **Any Code** **NOT
+> AUTHORIZED**. See
+> `docs/PHASE3C25_WP2_AUTHORIZATION_STATE_SYNCHRONIZATION.md`.
+>
+> **Amendment record (2026-08-06) — WP2.1B Implementation Authorization
+> issued:** `docs/PHASE3C25_WP2_1B_IMPLEMENTATION_AUTHORIZATION.md` grants
+> WP2.1B implementation **AUTHORIZED WITH CONDITIONS** (scope §23.2,
+> allowlist §28.1, conditions C1–C4). §36/§38 "WP2.1B NOT AUTHORIZED" rows
+> are superseded for WP2.1B by that record; WP2.2 / WP2.3 / **Any Code**
+> (outside the WP2.1B scope) remain **NOT AUTHORIZED**.
+
 ---
 
 ## 2. Executive Implementation Verdict

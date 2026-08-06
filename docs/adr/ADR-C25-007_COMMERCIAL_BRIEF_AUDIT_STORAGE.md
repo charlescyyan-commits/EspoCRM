@@ -22,6 +22,16 @@ Implementation Plan text; it records the audit-storage judgment those
 documents explicitly reserved for an ADR (charter §13.1, OQ-B; Plan §15.4,
 §23.1).
 
+> **Amendment record (2026-08-06) — WP2.1B Implementation Authorization
+> issued:** `docs/PHASE3C25_WP2_1B_IMPLEMENTATION_AUTHORIZATION.md` grants
+> WP2.1B implementation **AUTHORIZED WITH CONDITIONS** (CommercialBrief
+> persistence only). This ADR remains RATIFIED (documentation only) and
+> assigns the audit writer to **WP2.3**. The save token
+> `CommercialBriefSaveOption::AUDIT_WRITE_AUTHORIZED` is a constant on the
+> WP2.1B save-option class (delivered by WP2.1B), but **no audit writer is
+> authorized** in WP2.1B. WP2.3 audit implementation remains **NOT
+> AUTHORIZED**.
+
 ## 2. Context
 
 WP2 (`CommercialBrief`) requires an append-only audit trail for generation
@@ -442,6 +452,11 @@ Final Ratification Review completed.
 | Conditional Allowlist | PASS |
 | Remaining Blockers | None |
 | WP2.1A | RATIFIED |
-| WP2.1B | NOT AUTHORIZED |
+| WP2.1B | AUTHORIZED WITH CONDITIONS (2026-08-06) |
 | WP2.3 | NOT AUTHORIZED |
-| Any Code | NOT AUTHORIZED |
+| Any Code | NOT AUTHORIZED (outside the WP2.1B scope) |
+
+> **Amendment record (2026-08-06):** Per
+> `docs/PHASE3C25_WP2_1B_IMPLEMENTATION_AUTHORIZATION.md`, WP2.1B =
+> **AUTHORIZED WITH CONDITIONS**; WP2.3 / Any Code (outside the WP2.1B
+> scope) remain **NOT AUTHORIZED**.

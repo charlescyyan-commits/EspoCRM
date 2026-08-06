@@ -65,6 +65,20 @@
 > authorizes no WP2 implementation, generation runtime, provider call, or
 > deployment.
 
+> **Administrative synchronization note (2026-08-06):** Historical WP2.2
+> records exist in the repository (`PHASE3C25_WP2_2_*` and
+> `docs/audit/PHASE3C25_WP2_2_*`). They are **HISTORICAL / SUPERSEDED** and
+> do not change the state asserted here: WP2 implementation remains **NOT
+> AUTHORIZED**; Any Code remains **NOT AUTHORIZED**. See
+> `docs/PHASE3C25_WP2_AUTHORIZATION_STATE_SYNCHRONIZATION.md`.
+>
+> **Amendment record (2026-08-06) — WP2.1B Implementation Authorization
+> issued:** `docs/PHASE3C25_WP2_1B_IMPLEMENTATION_AUTHORIZATION.md` grants
+> WP2.1B implementation **AUTHORIZED WITH CONDITIONS** (CommercialBrief
+> persistence layer only). This charter authorizes no code itself; the
+> WP2.1B authorization is the separate record referenced above. WP2
+> implementation remains otherwise **NOT AUTHORIZED**.
+
 ---
 
 ## 1. Purpose and Scope

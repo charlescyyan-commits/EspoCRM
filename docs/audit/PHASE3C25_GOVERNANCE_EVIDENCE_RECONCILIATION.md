@@ -14,6 +14,13 @@ Mode: Documentation / ADR / governance evidence only
 No WP4 implementation. No Runtime Expansion. No invariant activation.
 ```
 
+> **Administrative synchronization note (2026-08-06):** For C25
+> authorization-state purposes this record is superseded by
+> `docs/audit/PHASE3C25_STATE_RECONCILIATION.md` (2026-08-06). Its "WP2.2
+> FROZEN" row is **HISTORICAL / SUPERSEDED** — see
+> `docs/PHASE3C25_WP2_AUTHORIZATION_STATE_SYNCHRONIZATION.md`. WP3/WP4 rows
+> remain governed by their own freeze records and the State Reconciliation.
+
 ---
 
 ## 1. Executive Verdict

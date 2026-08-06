@@ -4,7 +4,7 @@
 | --- | --- |
 | Document Type | Implementation Authorization (governance) |
 | Work Package | WP2.2 — CommercialBrief application-layer implementation |
-| Status | **AUTHORIZED WITH CONDITIONS** |
+| Status | **SUPERSEDED / HISTORICAL** — not part of the current authoritative chain (see Administrative Synchronization Note 2026-08-06) |
 | Date | 2026-08-03 |
 | Authorization Charter | `docs/PHASE3C25_WP2_2_AUTHORIZATION_CHARTER.md` |
 | Implementation Plan | `docs/PHASE3C25_WP2_2_IMPLEMENTATION_PLAN.md` (APPROVED — READY FOR IMPLEMENTATION AUTHORIZATION) |
@@ -20,6 +20,17 @@ Does NOT authorize Runtime Expansion, C20 changes, C22 execution,
 autonomous commercial execution, live provider invocation, or AIJob
 executor work.
 ```
+
+> **Administrative synchronization note (2026-08-06):** This document is a
+> **SUPERSEDED / HISTORICAL** record and is **not** part of the current
+> authoritative authorization chain. Its "AUTHORIZED WITH CONDITIONS /
+> READY TO START" status is superseded: the WP2.2 Authorization Charter was
+> never approved, the WP2.2 Implementation Plan was never ratified, the WP2.0
+> closure records it cites explicitly record "C25 WP2.2 NOT AUTHORIZED", and
+> its own "commit / push / tag NOT AUTHORIZED" clause was not honored (commit
+> `d6ee017`, tag `phase3c25-wp2-2-freeze`). Current authorization state:
+> WP2.2 implementation **NOT AUTHORIZED**. See
+> `docs/PHASE3C25_WP2_AUTHORIZATION_STATE_SYNCHRONIZATION.md`.
 
 ---
 

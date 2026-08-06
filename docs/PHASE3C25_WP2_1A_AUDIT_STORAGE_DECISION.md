@@ -17,6 +17,19 @@
 > authorizes no implementation, generation runtime, provider call, or
 > deployment.
 
+> **Administrative synchronization note (2026-08-06):** Historical WP2.2
+> records exist in the repository (`PHASE3C25_WP2_2_*` and
+> `docs/audit/PHASE3C25_WP2_2_*`). They are **HISTORICAL / SUPERSEDED** and
+> do not change the state asserted here: WP2.1B remains **NOT AUTHORIZED**,
+> WP2.3 remains **NOT AUTHORIZED**, **Any Code** remains **NOT AUTHORIZED**.
+> See `docs/PHASE3C25_WP2_AUTHORIZATION_STATE_SYNCHRONIZATION.md`.
+>
+> **Amendment record (2026-08-06) — WP2.1B Implementation Authorization
+> issued:** `docs/PHASE3C25_WP2_1B_IMPLEMENTATION_AUTHORIZATION.md` grants
+> WP2.1B implementation **AUTHORIZED WITH CONDITIONS** (CommercialBrief
+> persistence only; **no audit**). WP2.1A remains RATIFIED (documentation
+> only); WP2.3 audit implementation remains **NOT AUTHORIZED**.
+
 ---
 
 ## 1. Executive Verdict

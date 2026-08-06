@@ -6,7 +6,7 @@
 | Work Package | WP2.2 — CommercialBrief artifact + governed review lifecycle |
 | Parent Authorization Charter | `docs/PHASE3C25_WP2_2_AUTHORIZATION_CHARTER.md` (APPROVED WITH CONDITIONS) |
 | Parent WP2 Charter | `docs/PHASE3C25_WP2_IMPLEMENTATION_CHARTER.md` (RATIFIED) |
-| Status | **DRAFT** |
+| Status | **DRAFT — NOT ADOPTED (HISTORICAL)** — see Administrative Synchronization Note (2026-08-06) |
 | Date | 2026-08-03 |
 | C20 closure | Tag `phase3c20-governance-closure` |
 | C25 WP2.0 | SATISFIED — READY FOR CONSUMPTION |
@@ -24,6 +24,15 @@ It resolves Authorization Charter conditions:
 It does NOT authorize implementation, migration, entity creation,
 connector/provider invocation, AIJob executor work, or C25 WP2.2 delivery.
 ```
+
+> **Administrative synchronization note (2026-08-06):** This plan is
+> **NOT ADOPTED (HISTORICAL)**. It was never ratified as an approved
+> implementation plan; its own final-state table records "WP2.2
+> Implementation | NOT AUTHORIZED". Its "APPROVED WITH CONDITIONS" claim
+> about the WP2.2 Authorization Charter (§header, §1, §16) is unsupported —
+> the charter was never approved. Current authorization state: WP2.2
+> implementation **NOT AUTHORIZED**. See
+> `docs/PHASE3C25_WP2_AUTHORIZATION_STATE_SYNCHRONIZATION.md`.
 
 ---
 

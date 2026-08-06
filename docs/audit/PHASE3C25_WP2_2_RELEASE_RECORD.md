@@ -5,7 +5,7 @@
 | Document Type | Release Record (documentation only) |
 | Phase | Phase3C25 WP2.2 |
 | Package | CommercialBrief application layer |
-| Status | **FROZEN** — freeze tag `phase3c25-wp2-2-freeze` on origin |
+| Status | **HISTORICAL RECORD** — records tree state only; see Administrative Synchronization Note (2026-08-06) |
 | Date | 2026-08-03 |
 | Delivery commit | `d6ee0175ef9f4832c108839acfbb034cbae71923` |
 | Commit message | `feat(c25): implement wp2.2 commercialbrief application layer` |
@@ -21,6 +21,16 @@ delivery evidence. Freeze is complete.
 It does NOT authorize Runtime Expansion, C20 changes, C22 execution,
 or invariant activation.
 ```
+
+> **Administrative synchronization note (2026-08-06):** This document is a
+> **HISTORICAL RECORD**. It records that a WP2.2 implementation (commit
+> `d6ee017`) and freeze tag (`phase3c25-wp2-2-freeze`) exist in the tree, but
+> that delivery is **not** part of the current authoritative authorization
+> state. The WP2.2 authorization chain was never validly completed (charter
+> never approved; plan never ratified). Current authorization state: WP2.2
+> implementation **NOT AUTHORIZED**; disposition of the code/tag is a
+> separate governance action. See
+> `docs/PHASE3C25_WP2_AUTHORIZATION_STATE_SYNCHRONIZATION.md`.
 
 ---
 

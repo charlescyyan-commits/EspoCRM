@@ -4,6 +4,14 @@
 **Record type:** Independent governance state record
 **Authority:** This document is the authoritative reconciled C25 state record.
 
+> **Amendment record (2026-08-06) — WP2.1B Implementation Authorization
+> issued:** `docs/PHASE3C25_WP2_1B_IMPLEMENTATION_AUTHORIZATION.md` issues
+> WP2.1B implementation as **AUTHORIZED WITH CONDITIONS** (derived from the
+> WP2.1B Implementation Authorization Review — PASS WITH CONDITIONS). §4
+> below is amended: WP2.1B is **AUTHORIZED WITH CONDITIONS** and removed from
+> the "NOT AUTHORIZED" list. WP2 generation, WP2.3+ implementation, C20
+> invariant activation, and production deployment remain **NOT AUTHORIZED**.
+
 ## 1. Executive Verdict
 
 ```text
@@ -51,10 +59,12 @@ C25 whole layer.
 
 ## 4. Authorization Boundary
 
-The following remain explicitly **NOT AUTHORIZED**:
+The following remain explicitly **NOT AUTHORIZED** (as amended 2026-08-06:
+WP2.1B implementation is now **AUTHORIZED WITH CONDITIONS** per
+`docs/PHASE3C25_WP2_1B_IMPLEMENTATION_AUTHORIZATION.md`):
 
 - WP2 generation;
-- WP2.1B and WP2.3+ implementation;
+- WP2.3+ implementation (audit / lifecycle / generation-adjacent);
 - C20 invariant activation; and
 - production deployment.
 

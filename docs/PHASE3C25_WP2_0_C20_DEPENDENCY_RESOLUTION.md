@@ -11,6 +11,22 @@
 | Governing plan | `docs/PHASE3C25_WP2_IMPLEMENTATION_PLAN.md` (RATIFIED WITH NON-BLOCKING NOTES) |
 | Implementation Authorization | **NO** — this package authorizes no code, no entity, no metadata, no scope, no ACL, no controller, no route, no migration, no test, no C20 change, no ProviderRoute, no commit, no push, no tag |
 
+> **Amendment record (2026-08-06):** Status and §1 updated to reflect the C20
+> Dependency Closure Amendment ratified at `b632f1d` (foundation gate =
+> Capability identity + Purpose policy + Boundary evidence; C20-INV-05…11
+> remain DEFERRED). Original package authored 2026-08-01. Historical WP2.2
+> records (`PHASE3C25_WP2_2_*`) are **HISTORICAL / SUPERSEDED** and do not
+> change the state asserted here: WP2 implementation remains **NOT
+> AUTHORIZED**. See
+> `docs/PHASE3C25_WP2_AUTHORIZATION_STATE_SYNCHRONIZATION.md`.
+>
+> **Amendment record (2026-08-06) — WP2.1B Implementation Authorization
+> issued:** `docs/PHASE3C25_WP2_1B_IMPLEMENTATION_AUTHORIZATION.md` grants
+> WP2.1B implementation **AUTHORIZED WITH CONDITIONS**, consuming the
+> foundation gate satisfied by this package (Capability identity + Purpose
+> policy + Boundary evidence). WP2.2 / WP2.3 and WP2 generation remain **NOT
+> AUTHORIZED**.
+
 ---
 
 ## 1. Executive Verdict

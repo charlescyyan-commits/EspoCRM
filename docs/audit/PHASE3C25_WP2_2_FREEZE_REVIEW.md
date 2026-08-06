@@ -20,6 +20,13 @@ governance chain is reproducible from git.
 It does NOT modify CommercialBrief implementation or authorize Runtime Expansion.
 ```
 
+> **Administrative synchronization note (2026-08-06):** This document is a
+> **HISTORICAL RECORD** of a retrospective freeze review ("freeze already on
+> origin"). It records tree state only and does **not** establish current
+> authorization. Current authorization state: WP2.2 implementation **NOT
+> AUTHORIZED**. See
+> `docs/PHASE3C25_WP2_AUTHORIZATION_STATE_SYNCHRONIZATION.md`.
+
 ---
 
 ## 1. Freeze Integrity
