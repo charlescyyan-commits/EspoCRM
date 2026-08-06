@@ -47,12 +47,23 @@
 > - Verdict: RATIFIED WITH NON-BLOCKING NOTES
 > - Lifecycle: PASS — reviewStatus / validityDisposition / retentionDisposition split approved
 > - A1–A6: PASS — no regression
-> - C20 dependency: NOT FULLY SATISFIED — remains WP2.0 hard precondition
+> - C20 dependency (status at the time of this record): NOT FULLY SATISFIED —
+>   later superseded for foundation-gate purposes by the ratified C20 closure
+>   evidence; implementation remains separately unauthorized
 > - Implementation Plan: AUTHORIZED
 > - Code implementation: NOT AUTHORIZED
 > - Required next document: `docs/PHASE3C25_WP2_IMPLEMENTATION_PLAN.md`
 > - Ratification scope: Ratification authorizes planning only and does not authorize CommercialBrief entity creation, C20 changes, tests, AI invocation, scheduler/worker changes, commit, push, or tag.
 > - Review evidence: Final Ratification Review completed in read-only repository review session on 2026-08-01.
+
+> **Governance alignment amendment (2026-08-06):** C20 Dependency Closure
+> Amendment ratified at `b632f1d` (`RATIFIED WITH INFORMATIONAL NOTES`). For
+> the C25 WP2 foundation gate, the prior D-3 requirement of
+> `INV-05…11 ACTIVE` is superseded by **Capability identity + Purpose policy +
+> Boundary evidence**. C20 runtime invariants remain deferred and the C20
+> invariant registry remains the runtime status authority. This amendment
+> authorizes no WP2 implementation, generation runtime, provider call, or
+> deployment.
 
 ---
 
@@ -495,49 +506,30 @@ C25 WP2 invocation dependency:        NOT FULLY SATISFIED TODAY —
   `(capability, purpose) → provider + model` (G11 §4.2.7, §6.1; G12 §5.1).
   C25 must **not** create, own, or mutate it.
 
-### 10.3 Governance Dependencies Not Satisfied Today (Exact List — Three C20-Governed Readiness Dependencies)
+### 10.3 Ratified C20 Foundation Gate
 
-Three C20-governed readiness dependencies must be secured before any C25
-generation can route:
+The prior WP2.0 dependency assessment identified three C20-governed
+readiness dependencies. The C20 Dependency Closure Amendment and its
+ratification now close the governance requirements for C25 WP2 foundation
+review through the following evidence set:
 
-1. **`CompletionCapability` portfolio gap.** The ratified portfolio enum
-   `CompletionCapability` is `{RESEARCH_EVIDENCE, QUALIFICATION_INSIGHT,
-   DRAFT_ASSISTANCE, REPLY_ASSISTANCE}` — documented as the "exhaustive,
-   ratified portfolio" (`completion/base.py`). **None of the four values
-   covers commercial-brief generation.** `DRAFT_ASSISTANCE` (operator draft
-   text from a `ProspectPool`, no persisted immutable review lifecycle) is
-   the nearest but is semantically and governancely distinct; reusing it
-   would overload the portfolio and pollute its provenance semantics.
-   → **C20 governance must add a `CompletionCapability` value for brief
-   generation (proposed name `COMMERCIAL_BRIEF`)** through C20's own process
-   (amendment to G13 + connector contract change). C25 proposes and
-   consumes; it does not decide, implement, or ratify. `COMMERCIAL_BRIEF`
-   is a **proposed capability name only** — the final name, granularity,
-   and portfolio placement of the capability are decided by C20 governance.
-2. **Provider binding / allowed-provider-binding surface.** The CRM-side
-   surface that supplies the binding set
-   (`allowed_provider_bindings` — the CRM-authorized candidate binding
-   collection provided to the Capability Registry in
-   `CapabilityResolutionRequest`) — the `ProviderRoute` configuration /
-   `ProviderBinding` policy surface — is not yet implemented (G13 §9.2
-   defers "ProviderRoute configuration UI" to WP3; no `ProviderRoute`
-   entityDefs/PHP class exists in the tree). C20 must deliver the binding
-   surface before any C25 generation can route. Purpose eligibility is
-   expressed **within the binding** through the binding's allowed purposes
-   filter (`PURPOSE_NOT_ALLOWED` when the purpose is unsupported); it is
-   **not** an independent CRM route entity and **not** an existing
-   standalone configuration surface. WP2.0 must verify the real
-   `CapabilityResolutionRequest` fields and DTO contract before naming any
-   metadata or UI surface. C25 does **not** decide the `ProviderBinding`
-   database or UI form.
-3. **C20 invariant activation verification.** `AIJob`/`AIRequestLog`/
-   `PromptTemplate` code and metadata exist, but C20-INV-05…11 remain
-   `DEFERRED` in the C20 registry (G14): 05/06 — status transition guard;
-   07 — append-only request log; 08 — provider-invocation / request-log
-   cardinality; 09 — prompt-template immutability; 10 — retry eligibility;
-   11 — idempotency. **None of these invariants is claimed ACTIVE today.**
-   WP2 provenance validation requires them to be **verified ACTIVE and
-   enforced** before brief provenance is validated against them.
+**Capability identity + Purpose policy + Boundary evidence**
+
+1. **Capability identity.** `COMMERCIAL_BRIEF` is available as the governed
+   capability identity for foundation consumption. C25 consumes the identity;
+   it does not own the C20 capability registry or add a capability value.
+2. **Purpose policy.** `commercial_brief_generation` is available as a
+   policy purpose with classification and eligibility reference. Provider
+   execution is not enabled.
+3. **Boundary evidence.** ProviderBinding purpose-policy alignment,
+   capability mapping, eligibility classification, and provenance contract
+   are available for governance review. C25 does not own routing, credentials,
+   binding mutation, or dispatch.
+
+C20-INV-05…11 remain runtime maturity items with their registry status
+unchanged. They are not required to be ACTIVE for the WP2 foundation gate and
+must not be represented as activated by C25. Later runtime verification,
+invariant activation, and Runtime Expansion remain separately governed.
 
 ### 10.4 Prohibited Actions Under This Section
 
@@ -548,11 +540,12 @@ generation can route:
 - **Do not** decide the `ProviderBinding` database or UI form from C25.
 - **Do not** implement provider routing or dispatch in C25.
 - **Do not** hold provider, model, credential, SDK, or transport ownership in
-  C25 (C20 D3; C25-INV-SEC-001).
+  C25 (C20 boundary; C25-INV-SEC-001).
 
-WP2.0 (C20 Dependency Resolution, section 23) is the governed vehicle for
-securing these dependencies and is the **hard precondition** for any
-generation implementation.
+WP2.0 (C20 Dependency Resolution, section 23) remains the governed vehicle
+for recording the closure evidence and is the **hard precondition** for any
+generation implementation. Its foundation gate is now satisfied by the
+ratified evidence set above; implementation remains separately unauthorized.
 
 ---
 
@@ -599,7 +592,7 @@ Human requester
 ```
 
 C25 holds **no** credentials, **no** provider/model selection, and **no**
-transport (C20 D3; G5 §3.1; C25-INV-SEC-001).
+transport (C20 boundary; G5 §3.1; C25-INV-SEC-001).
 
 ---
 
@@ -1068,7 +1061,7 @@ rules:
 | ACL bypass via brief | Reference-level only storage; live ACL-checked source navigation; safe 404 on denial |
 | Prompt injection / capability escalation | Template-driven prompts + structured `context` payloads (G13 §6.1/§7.3 — CompletionRequest sanitization); C25 has no write/send/trigger tools (C25-INV-SEC-001); structural absence, not prompt refusal |
 | PII / secrets in brief content | Structured context; no credential fields anywhere (G13 §6.1/§7.2); secrets never in brief, request, or result; audit events carry references, not content |
-| Credential / provider / SDK ownership | None — C20 sole egress; C25-INV-SEC-001; C20 D3 |
+| Credential / provider / SDK ownership | None — C20 sole egress; C25-INV-SEC-001; C20 boundary |
 | Stale evidence read as current | Freshness surfacing mandatory; STALE/ARCHIVAL never suppressed; evidence-changed indicator |
 | Acceptance misread as approval | `acceptanceScope` machine-readable; Gate 8 ≠ Gate 9 (G9) |
 | Narrative compounding across versions | No prior-brief reads at generation (G4 §6); superseded versions de-emphasized |
@@ -1103,7 +1096,7 @@ implementation):
 
 | WP | Name | Scope | Key gates |
 | --- | --- | --- | --- |
-| **WP2.0** | C20 Dependency Resolution | Secure the C20-governed `CompletionCapability` value for brief generation (final name/granularity/portfolio placement decided by C20); confirm the route-binding surface and the C25 purpose within binding-level allowed-purpose filtering — the frozen `CapabilityResolutionRequest` DTO carries the `allowed_provider_bindings` binding collection supplied by the CRM, and purpose eligibility is expressed through each binding's `allowed_purposes` / `PURPOSE_NOT_ALLOWED` — verifying the real field names and DTO contract before naming any metadata/UI surface; verify C20-INV-05…11 ACTIVE; freeze the C25→C20 invocation contract. **No C25 code.** | Section 10 verdict; C20 ratification |
+| **WP2.0** | C20 Dependency Resolution | Consume and record the ratified foundation gate: capability identity, purpose policy, ProviderBinding boundary, eligibility, mapping, and provenance evidence; freeze the C25→C20 boundary contract. C20-INV-05…11 remain deferred runtime maturity items and are not activated by WP2. **No C25 code.** | Section 10 verdict; C20 ratification |
 | **WP2.1** | CommercialBrief Contract and Persistence | `CommercialBrief` entity + scope metadata; mandatory/forbidden fields; immutability guard; review-status guard + save option and disposition guards + save options; transition/disposition service + action keys; append-only audit mechanism; supersession validator | D2; immutability; entity budget = 1 |
 | **WP2.2** | Generation and Validation Boundary | `BriefGenerationService` (human-initiated; sync or governed-async C20 AIJob); `BriefValidationService` (mandatory fields, provenance completeness, forbidden-field guard, evidence anchoring, minimum evidence D4); idempotency key; failure/partial handling; generation versioning | D4 (minimum evidence); idempotency; no-partial rule |
 | **WP2.3** | Human Review Lifecycle and Audit | `BriefLifecycleTransitionService` full review/disposition matrix (§12, §16.1); acceptance semantics; append-only review audit; feedback; invalidation (D3), supersession, archival, governed deletion (D5); Gate 8/Gate 9 separation | D3 (invalidation); D5 (deletion); audit append-only |
@@ -1146,9 +1139,10 @@ WP2 is a freeze candidate only when all of the following hold:
    `reviewStatus` / `validityDisposition` / `retentionDisposition`
    orthogonality demonstrated (§12); minimum evidence gate; governed
    deletion path; brief purpose binding defined via C20 (G3 §3.10).
-2. **Section 10 dependency resolution signed** — C20-governed
-   `CompletionCapability` value ratified; route-binding surface confirmed;
-   C20-INV-05…11 verified ACTIVE.
+2. **Section 10 foundation dependency resolution signed** — capability
+   identity, purpose policy, and boundary evidence ratified and recorded.
+   C20-INV-05…11 runtime activation is not a WP2 foundation-gate
+   requirement; any later runtime verification is separately authorized.
 3. **All §24 boundary tests green**, including the **ACCEPTED zero-side-effect
    proof** (runtime verification).
 4. **Entity budget honored** — exactly one persistent C25 artifact
@@ -1169,7 +1163,7 @@ WP2 is a freeze candidate only when all of the following hold:
 | --- | --- | --- | --- |
 | OQ-A | When a reader loses source ACL: per-claim masking vs. whole-brief restriction vs. marker-only visibility | **Resolved — mandatory default (§15.3):** structured claim → source mapping with per-claim masking and "restricted-evidence" markers; whole-brief restriction only as conservative fallback when claims cannot be safely separated; "keep full claim + risk marker only" is **not** an allowed default | Default recorded by charter amendment (ratified 2026-08-01); implementation demonstrated in WP2.4 |
 | OQ-B | Review-event persistence: reuse Espo audit/stream vs. internal append-only storage vs. first-class entity | **Priority order (§13.1):** (1) reuse existing Espo audit/stream if it guarantees append-only actor/timestamp/action-key/from-to-state/reason/`acceptanceScope`/brief-ID/provenance-reference with no update and no delete; (2) otherwise internal append-only storage — not a CRM scope, no navigation/list/search, no ordinary CRUD, atomic transition-service writes — with an ADR judgment before implementation on whether it constitutes a new first-class entity. Mutable audit fields on `CommercialBrief` are forbidden | Ratify audit-storage design in WP2.1 Foundation Review |
-| OQ-C | C20 `CompletionCapability` value name and scope for brief generation | Proposed `COMMERCIAL_BRIEF` (proposed name only); exact name, granularity, and portfolio placement governed by C20 | C20 governance ratification (WP2.0) |
+| OQ-C | C20 `CompletionCapability` value name and scope for brief generation | `COMMERCIAL_BRIEF` capability identity and `commercial_brief_generation` purpose policy are available for foundation consumption; runtime execution remains outside scope | C20 dependency closure ratified; implementation still requires separate authorization |
 | OQ-D | Minimum-evidence definition beyond "≥ 1 governed source; chain complete" | ≥ 1 governed source artifact + complete artifact chain; numeric threshold (if any) via WP2.2 Foundation Review | WP2.2 gate |
 | OQ-E | Idempotency dedupe window (how long a deterministic key suppresses re-generation) | Bounded window per brief purpose; expired keys become new generations (audit-marked) | WP2.2 gate |
 | OQ-F | Archive / retention policy details (D5): archive retention period, governed-deletion retention, eligible review states for archive, restoration policy (if any) | Decided at the WP2.3 gate under D5; the lifecycle field model (§12.2) is resolved and is **not** re-opened by OQ-F | WP2.3 gate |
@@ -1213,7 +1207,7 @@ dependency verdict (§10), HUMAN_REQUEST_ONLY semantics (§11).
 | Charter status | **RATIFIED** — RATIFIED WITH NON-BLOCKING NOTES (Final Ratification Review, 2026-08-01) |
 | Implementation Plan | **YES** — authoring of `docs/PHASE3C25_WP2_IMPLEMENTATION_PLAN.md` is authorized |
 | Code implementation | **NO** |
-| WP2.0 dependency | **MANDATORY before any generation implementation** — C20 Completion capability portfolio decision; provider binding / allowed-provider-binding surface; C20-INV-05…11 activation and verification (§10.3) |
+| WP2.0 dependency | **MANDATORY before any generation implementation** — ratified foundation gate evidence: capability identity + purpose policy + boundary evidence (§10.3). Runtime invariant activation is not required for this foundation gate. |
 
 Ratification does **not** authorize: `CommercialBrief` entity creation;
 metadata or scope creation; ACL / action configuration; controller or
@@ -1226,8 +1220,9 @@ push, or tag.
 - **Scope specification only** for WP2 (WP2.0–WP2.5), grounded in the
   ratified governance documents (section 2).
 - The **resolved architecture decisions** recorded herein (sections 5–22).
-- The **C20 dependency verdict** (section 10) as a governance finding to be
-  secured through C20's own process.
+- The **C20 dependency verdict** (section 10) as ratified foundation evidence
+  consumed from the C20 governance record; runtime expansion remains a
+  separate C20 process.
 - The **candidate work-package decomposition** (section 23) and required
   tests/freeze criteria (sections 24–25).
 - The **open questions and ratification gates** (section 26).
@@ -1260,7 +1255,8 @@ push, or tag.
 
 Before any WP2 code:
 
-1. C20 dependency resolution ratified (section 10.3).
+1. C20 dependency resolution ratified with capability identity + purpose policy
+   + boundary evidence (section 10.3).
 2. WP2 Foundation Review approved (per sub-package).
 3. Independent C20–C25 boundary verification.
 4. Deferred gates D3/D4/D5/D7 dispositioned.

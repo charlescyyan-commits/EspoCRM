@@ -9,6 +9,14 @@
 | Date | 2026-08-01 |
 | Implementation Authorization | **NO** — no code, table, entity, metadata, migration, writer, guard, service, route, or test is authorized |
 
+> **Governance alignment amendment (2026-08-06):** The C20 Dependency Closure
+> Amendment is ratified at `b632f1d`. WP2.1A consumes the foundation gate
+> **Capability identity + Purpose policy + Boundary evidence**. The former
+> D-3 `INV-05…11 ACTIVE` requirement is not required for this foundation
+> decision; C20-INV-05…11 remain deferred runtime maturity items. This record
+> authorizes no implementation, generation runtime, provider call, or
+> deployment.
+
 ---
 
 ## 1. Executive Verdict
@@ -28,8 +36,9 @@ governance ledger. All seven Go/No-Go checks pass (§15).
 
 WP2.1A is RATIFIED. This package is an Implementation Planning Reference Only.
 Code Implementation Not Authorized. WP2.1B remains NOT AUTHORIZED. WP2.3
-remains NOT AUTHORIZED. Generation implementation remains NO GO (External C20
-Dependencies). Any code remains NOT AUTHORIZED.
+remains NOT AUTHORIZED. The C20 foundation gate is ratified, but generation
+implementation remains NOT AUTHORIZED pending its separate predecessor gates
+and authorization. Any code remains NOT AUTHORIZED.
 
 ---
 
@@ -295,8 +304,9 @@ modification, migration/SQL files, scheduler/job files, stream config.
 3. WP2.1B (separately authorized) — CommercialBrief persistence; no audit.
 4. WP2.3 (separately authorized, after ADR ratified) — audit implementation
    per §11 + lifecycle/disposition integration + audit tests.
-5. WP2.2 remains **NO GO** until C20 closure conditions (WP2.0 addendum §8)
-   are met — independent of this package.
+5. WP2.2 remains **NOT AUTHORIZED** until its predecessor gates are met. The
+   C20 closure conditions are satisfied for foundation consumption by the WP2.0
+   closure addendum; this does not authorize generation runtime.
 
 ---
 
@@ -353,14 +363,14 @@ Not Authorized.
 |------|--------|
 | WP2.1A | RATIFIED |
 | WP2.1B | NOT AUTHORIZED |
-| WP2.2 Generation | NO GO (External C20 Dependencies) |
+| WP2.2 Generation | NOT AUTHORIZED — predecessor and implementation gates remain |
 | WP2.3 | NOT AUTHORIZED |
 | Any Code | NOT AUTHORIZED |
 
 WP2.1A is RATIFIED. This package is an Implementation Planning Reference Only.
 Code Implementation Not Authorized. WP2.1B remains NOT AUTHORIZED. WP2.3
-remains NOT AUTHORIZED. Generation implementation remains NO GO. Any code
-remains NOT AUTHORIZED.
+remains NOT AUTHORIZED. Generation implementation remains NOT AUTHORIZED.
+Any code remains NOT AUTHORIZED.
 
 ---
 

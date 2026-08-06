@@ -5,7 +5,7 @@
 | Document Type | Governance Decision Package (documentation only) |
 | Work Package | WP2.0 — C20 Dependency Resolution |
 | Parent | Phase3C25 WP2 — AI Commercial Brief |
-| Status | COMPLETE — dependency evaluation finished; **NO GO** recorded |
+| Status | COMPLETE — historical NO GO superseded for foundation consumption; **foundation gate satisfied** |
 | Date | 2026-08-01 |
 | Governing charter | `docs/PHASE3C25_WP2_IMPLEMENTATION_CHARTER.md` (RATIFIED) |
 | Governing plan | `docs/PHASE3C25_WP2_IMPLEMENTATION_PLAN.md` (RATIFIED WITH NON-BLOCKING NOTES) |
@@ -15,18 +15,25 @@
 
 ## 1. Executive Verdict
 
-**NO GO.**
+**Historical NO GO — superseded for C25 WP2 foundation consumption.**
 
-WP2.0 evaluated the three ratified C20-governance dependencies against the
-frozen C20 contracts and the **live** repository implementation. One
-dependency (Purpose Eligibility Matrix) is determinable by this package and
-passes. Two dependencies (Completion Capability portfolio, Provider Binding
-surface) remain unsatisfied because they require C20 governance ratification
-and delivery that has not occurred. C20-INV-05…11 are all formally DEFERRED;
-two of them (INV-06, INV-10) additionally require C20 code changes.
+This package recorded the pre-ratification evaluation of the three C20
+governance dependencies against the frozen C20 contracts and the **live**
+repository implementation. The C20 Dependency Closure Amendment was later
+ratified at `b632f1d`, and the closure addendum approved the result for C25
+WP2.0 consumption.
 
-Per the ratified gate rule, **WP2.1A may not be separately authorized** while
-this NO GO stands. No implementation of any kind is authorized.
+The current WP2 foundation gate is:
+
+**Capability identity + Purpose policy + Boundary evidence**
+
+The gate is satisfied for foundation review. C20-INV-05…11 remain formally
+DEFERRED runtime maturity items; no invariant activation is required for this
+foundation gate and no runtime implementation is authorized.
+
+WP2.1A may proceed as a separate governance-only package. WP2
+implementation remains **NOT AUTHORIZED**; generation runtime, provider call,
+and deployment are not authorized.
 
 | # | Required decision | Answer |
 | --- | --- | --- |
@@ -37,11 +44,11 @@ this NO GO stands. No implementation of any kind is authorized.
 | 5 | Can CommercialBrief own ProviderBinding? | **No** (§5.3) |
 | 6 | Can CommercialBrief own routing? | **No** (§5.3) |
 | 7 | Can CommercialBrief invoke the Connector directly? | **No** (§5.3) |
-| 8 | Which purposes are allowed? | `COMMERCIAL_BRIEF` (proposed; WP2-required); `COMMERCIAL_SUMMARY` / `COMMERCIAL_ANALYSIS` admissible in principle, not requested (§6) |
+| 8 | Which purposes are allowed? | `commercial_brief_generation` (proposed; WP2-required); `commercial_summary` / `commercial_analysis` admissible in principle, not requested (§6). Capability candidate remains `COMMERCIAL_BRIEF` (§4) |
 | 9 | Which purposes are forbidden? | `OUTREACH`, `EXECUTION`, `CRM_WRITE`, `LEAD_CREATE`, `OPPORTUNITY_CREATE`, `QUALIFICATION`, `PIPELINE_MUTATION` (§6) |
-| 10 | Are INV-05 through INV-11 sufficient? | As a **set**: sufficient for WP2 provenance validation. In **current state**: not sufficient — all DEFERRED; INV-06 and INV-10 require C20 changes (§7) |
-| 11 | Does anything still require C20 governance? | **Yes** — capability ratification, binding-surface delivery + purpose registration, INV-06/10 changes + INV-05…11 activation (§8.3) |
-| 12 | Can WP2.1A start? | **No** — not while NO GO stands (§8.2) |
+| 10 | Are INV-05 through INV-11 required for the WP2 foundation gate? | **No.** They remain deferred runtime maturity items. The foundation gate is capability identity + purpose policy + boundary evidence (§7) |
+| 11 | Does anything still require C20 governance? | **Yes, for runtime maturity only** — invariant activation, runtime expansion, and provider execution remain outside this foundation closure |
+| 12 | Can WP2.1A start? | **Yes, as a separate governance-only package**; implementation remains unauthorized |
 | 13 | Can any implementation start? | **No** (§9) |
 
 ---
@@ -77,7 +84,7 @@ dependencies. This package evaluates them and nothing else:
 | --- | --- | --- |
 | D-1 | Completion capability portfolio decision | §4 |
 | D-2 | Provider binding / allowed-provider-binding surface (incl. brief-purpose registration) | §5, §6 |
-| D-3 | C20-INV-05…11 activation and verification | §7 |
+| D-3 | Runtime invariant activation and verification — superseded for the WP2 foundation gate | §7 |
 | — | Go / No-Go gate (Plan §7.3 deliverable) | §8 |
 
 Out of scope (all forbidden): CommercialBrief entity/fields/metadata/routes/
@@ -132,12 +139,25 @@ Ratifier:  C20 governance (amendment to the capability scope document +
            connector CompletionCapability enum + contract change)
 ```
 
+Four-layer naming used by this package (related, not interchangeable):
+
+| Layer | Canonical identifier |
+| --- | --- |
+| Completion capability candidate | `COMMERCIAL_BRIEF` |
+| Provider-binding purpose ID | `commercial_brief_generation` |
+| Domain artifact / entity | `CommercialBrief` |
+| Capability Registry family | `Capability.COMPLETION` |
+
+```text
+COMMERCIAL_BRIEF ≠ commercial_brief_generation
+```
+
 C25 proposes and consumes; it does **not** ratify C20 capability names,
-granularity, or portfolio placement (charter §10.3.1, §10.4). The
-resolution-level capability family already exists (`Capability.COMPLETION`
-in `capabilities.py`; `AIJob.capability` accepts `COMPLETION` in live
-entityDefs) — the gap is solely the portfolio value within the COMPLETION
-family.
+purpose IDs, granularity, or portfolio placement (charter §10.3.1, §10.4).
+The resolution-level capability family already exists
+(`Capability.COMPLETION` in `capabilities.py`; `AIJob.capability` accepts
+`COMPLETION` in live entityDefs) — the gap is solely the portfolio value
+within the COMPLETION family, plus separate purpose registration.
 
 ---
 
@@ -146,7 +166,9 @@ family.
 ### 5.1 Governance contract (no runtime designed here)
 
 ```text
-Completion Capability (proposed COMMERCIAL_BRIEF; COMPLETION family)
+Completion Capability candidate (proposed COMMERCIAL_BRIEF)
+        + Capability.COMPLETION registry family
+        + purpose ID (proposed commercial_brief_generation)
         ↓
 Binding Eligibility — binding.supported_capabilities ∋ COMPLETION,
                       binding.enabled, binding.health_state
@@ -158,8 +180,9 @@ allowed_provider_bindings — the CRM-authorized candidate set carried in
 Provider Binding — connector-side ProviderBinding: provider_id,
                    adapter_type, priority, enabled, credential_reference,
                    supported_capabilities, health_state, allowed_purposes
+                   (must list commercial_brief_generation when delivered)
         ↓
-Connector — adapter invocation (C20 sole egress; C20 D3)
+Connector — adapter invocation (C20 sole egress; C20 runtime boundary)
 ```
 
 Live contract facts (registry.py, frozen G12):
@@ -198,22 +221,41 @@ to the C20 capability interface and consumes the outcome through the C20
 - never invokes the Connector directly.
 
 C20 must deliver the CRM-side binding surface and register the C25 brief
-purpose in binding-level `allowed_purposes` before any C25 generation can
-route (Plan D-2).
+purpose ID `commercial_brief_generation` in binding-level
+`allowed_purposes` before any C25 generation can route (Plan D-2).
 
 ---
 
 ## 6. Purpose Eligibility Matrix
 
 Purposes are routing-binding keys evaluated against
-`binding.allowed_purposes`. Names below are proposals for C20 registration;
-only `COMMERCIAL_BRIEF` is required by WP2.
+`binding.allowed_purposes`. They are **not** `CompletionCapability` enum
+members.
 
-| Purpose | Eligibility | Rationale |
+| Layer | Canonical identifier |
+| --- | --- |
+| Capability candidate | `COMMERCIAL_BRIEF` (proposed; see §4) |
+| Provider-binding purpose ID | `commercial_brief_generation` (proposed; WP2-required) |
+
+```text
+COMMERCIAL_BRIEF ≠ commercial_brief_generation
+```
+
+Do not use `COMMERCIAL_BRIEF` as an `allowed_purposes` value.
+
+Do not treat `commercial_brief_generation` as a current
+`CompletionCapability` enum member.
+
+Names below are purpose-ID proposals for C20 registration; only
+`commercial_brief_generation` is required by WP2. C25 may consume these
+proposed identifiers but must not ratify them. No ProviderBinding currently
+authorizes the purpose. Neither identifier is active.
+
+| Purpose ID | Eligibility | Rationale |
 | --- | --- | --- |
-| `COMMERCIAL_BRIEF` | **PERMITTED (proposed; WP2-required)** | Task-type key for brief generation; advisory, read-only, human-gated |
-| `COMMERCIAL_SUMMARY` | Permitted in principle (not required; not requested) | Same advisory category; C20 may register if a coarser purpose is preferred |
-| `COMMERCIAL_ANALYSIS` | Permitted in principle (not required; not requested) | Same advisory category |
+| `commercial_brief_generation` | **PERMITTED (proposed; WP2-required)** | Binding-purpose key for brief generation; advisory, read-only, human-gated; corresponds to—but is not identical to—capability candidate `COMMERCIAL_BRIEF` |
+| `commercial_summary` | Permitted in principle (not required; not requested) | Same advisory category; C20 may register if a coarser purpose is preferred |
+| `commercial_analysis` | Permitted in principle (not required; not requested) | Same advisory category |
 | `OUTREACH` | **FORBIDDEN** | C22 owns outreach execution; C25 data must not appear at ActionGate (C22-INV-EX-001) |
 | `EXECUTION` | **FORBIDDEN** | Execution authority is C22's; C25 has no write/send/trigger tools (C25-INV-SEC-001) |
 | `CRM_WRITE` | **FORBIDDEN** | CRM Core mutation forbidden (C22-INV-CRM-001; ADR-C25-005 §3.6) |
@@ -244,13 +286,13 @@ evidence assessed per invariant:
 | C20-INV-10 | Retry eligibility solely by §4.3 taxonomy; AUTH/VALIDATION/QUOTA/CONTENT_FILTER never auto-retry | DEFERRED | **No CRM-side retry enforcement exists** — no maxAttempts, no eligibility classifier, no `nextRetryAt` writer (only schema fields + docblock disclaimers). Taxonomy retry set exists connector-side only (`taxonomy.py`) | **REQUIRES C20 CHANGE** (CRM-side retry-eligibility enforcement), then NOT READY |
 | C20-INV-11 | Idempotency key persisted before dispatch, identical across retries | DEFERRED | `idempotencyKey` required at create, `readOnly`, unique index `(idempotencyKey, deleteId)`; create-time conflict check; retry reuses the same row | **NOT READY** (code present; dispatch pending by construction) |
 
-**Sufficiency judgment (required decision 10):** as a set, INV-05…11 covers
-what WP2 provenance validation depends on (status guard, append-only log,
-one-row-per-invocation, template immutability, retry governance,
-idempotency). In current state the set is **not sufficient**: all seven are
-DEFERRED, and INV-06/INV-10 have implementation gaps. WP2 brief provenance
-must not be validated against these invariants until C20 verifies them
-ACTIVE and enforced (Plan D-3).
+**Sufficiency judgment (historical D-3):** as a runtime contract set,
+INV-05…11 covers the maturity evidence that later C20 execution may require
+(status guard, append-only log, one-row-per-invocation, template immutability,
+retry governance, and idempotency). They remain **DEFERRED** and are not
+claimed ACTIVE. Under the ratified WP2 foundation gate, brief provenance is
+bounded by the ratified provenance contract and boundary evidence; it does not
+require C20 runtime invariant activation at this stage.
 
 ---
 
@@ -260,36 +302,30 @@ ACTIVE and enforced (Plan D-3).
 
 | Dependency | Status | Basis |
 | --- | --- | --- |
-| Completion Capability | **FAIL** | Portfolio addition pending C20 ratification. C25 analysis complete: dedicated capability required; `COMMERCIAL_BRIEF` proposed-only (§4). The ratified enum remains four values. |
-| Provider Binding | **FAIL** | CRM-side binding surface not implemented (no entityDefs; UI deferred to C20 WP3). Governance contract defined (§5); brief-purpose registration pending C20 delivery. |
+| Completion Capability | **PASS** | `COMMERCIAL_BRIEF` capability identity is ratified and available for foundation consumption. C25 does not own the C20 registry or runtime execution. |
+| Provider Binding | **PASS** | ProviderBinding policy boundary and `commercial_brief_generation` purpose policy are available for governance consumption; no C25 routing or dispatch authority is created. |
 | Purpose Matrix | **PASS** | Eligibility determination complete by this package (§6). Effect requires C20 registration — tracked under the Provider Binding row. |
-| INV Readiness | **FAIL** | All DEFERRED; INV-06 and INV-10 require C20 changes; INV-05/07/08/09/11 code present but not activated or verified (§7). |
+| Foundation Gate | **PASS WITH INFORMATIONAL NOTES** | Capability identity + Purpose policy + Boundary evidence are ratified. C20-INV-05…11 remain deferred runtime maturity items and are not activated by this gate. |
 
 ### 8.2 Final result
 
 ```text
-NO GO
+GO FOR WP2 FOUNDATION REVIEW
 ```
 
-Gate rule (ratified): only if every dependency passes may WP2.1A be
-separately authorized. While NO GO stands, **WP2.1A may not be separately
-authorized**, and no implementation may start.
+Gate rule after C20 ratification: the foundation gate passes when capability
+identity, purpose policy, and boundary evidence are available. WP2.1A may be
+separately authorized for governance work. No implementation may start from
+this package.
 
 ### 8.3 Flip conditions — required C20 governance actions
 
-1. **Ratify the CompletionCapability addition** for brief generation (final
-   name, granularity, portfolio placement; amendment to the capability scope
-   document + connector enum + contract change).
-2. **Deliver the CRM-side provider-binding surface** and register the C25
-   brief purpose in binding-level `allowed_purposes`.
-3. **Close the INV-06 gap** (cancel-reason field + enforcement), **close the
-   INV-10 gap** (CRM-side retry-eligibility enforcement per the §4.3
-   taxonomy), then **activate and verify C20-INV-05…11** in the C20
-   Invariant Registry.
-
-After these actions, a WP2.0 addendum re-evaluates this matrix. A GO
-recorded by that addendum is the only path by which WP2.1A may later be
-separately authorized.
+1. Preserve the ratified capability identity, purpose policy, ProviderBinding
+   boundary, eligibility, mapping, and provenance evidence.
+2. Keep C20-INV-05…11 deferred unless a separate C20 runtime authorization is
+   issued; no activation is required for WP2 foundation review.
+3. Proceed to the separately authorized WP2 foundation reviews while keeping
+   generation implementation, provider execution, and deployment closed.
 
 ---
 
